@@ -1,0 +1,64 @@
+<x-guest-layout>
+	{{-- Header Section --}}
+	<div class="px-6 py-6 bg-primary text-white">
+		<div class="flex justify-between items-center">
+			<x-application-logo class="w-12 h-12" />
+			<a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
+				@if(auth()->user()->profile_photo)
+					<img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
+				@else
+					<img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
+				@endif
+			</a>
+		</div>
+
+		<div class="pt-8 pb-8">
+			<h1 class="text-xl font-bold">Info Developer</h1>
+			<p class="text-sm opacity-90">Tentang pembuat aplikasi</p>
+		</div>
+	</div>
+
+	{{-- Content Section --}}
+	<div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
+		<div class="space-y-6">
+			{{-- Developer Info --}}
+			<div class="bg-white rounded-2xl p-6 shadow-sm">
+				<div class="text-center">
+					<div class="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-primary/20">
+						<img src="{{ asset('images/wayan-pardi.png') }}" alt="Developer" class="w-full h-full object-cover" />
+					</div>
+					<h3 class="text-lg font-semibold text-gray-800">Wayan Pardi</h3>
+					<p class="text-gray-600 text-sm">Pengembang Virtual Living Museum</p>
+				</div>
+			</div>
+
+			{{-- Contact Info --}}
+			<div class="bg-white rounded-2xl p-6 shadow-sm">
+				<h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Kontak</h3>
+				<div class="space-y-4">
+					<div class="flex items-center space-x-3 py-2">
+						<i class="fas fa-phone text-primary w-5"></i>
+						<span class="text-gray-700">+62 812-3443-1643</span>
+					</div>
+					<div class="flex items-center space-x-3 py-2">
+						<i class="fas fa-envelope text-primary w-5"></i>
+						<span class="text-gray-700">wayan.pardi@undiksha.ac.id</span>
+					</div>
+					<div class="flex items-center space-x-3 py-2">
+						<i class="fas fa-briefcase text-primary w-5"></i>
+						<span class="text-gray-700">Dosen</span>
+					</div>
+					<div class="flex items-start space-x-3 py-2">
+						<i class="fas fa-map-marker-alt text-primary w-5 mt-1"></i>
+						<div class="text-gray-700 flex-1">
+							<div>Perumahan Graha Adi Terrace Blok H Nomor 4 Banyuning, Buleleng, Bali</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{-- Bottom Navigation --}}
+	<x-bottom-nav />
+</x-guest-layout>

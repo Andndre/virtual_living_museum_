@@ -19,7 +19,7 @@ class IsAdmin
         if ($request->user()) {
             if ($request->user()->role === 'admin') {
                 return $next($request);
-            } else {
+            } elseif ($request->user()->role === 'user') {
                 return redirect()->route('guest.home');
             }
         }

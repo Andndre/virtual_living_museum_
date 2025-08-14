@@ -13,7 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => App\Http\Middleware\IsAdmin::class,
-            'guest' => App\Http\Middleware\IsGuest::class,
+            'user' => App\Http\Middleware\IsUser::class,
+        ]);
+        
+        // Add SetLocale middleware to web group
+        $middleware->web(append: [
+            App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
