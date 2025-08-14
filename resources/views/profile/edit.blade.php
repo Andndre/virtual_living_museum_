@@ -113,14 +113,15 @@
 				})
 				.then(data => {
 					if (data.success) {
-						// Show success message if needed
-						console.log('Profile photo updated successfully');
+						// Show success message
+						console.log('{{ __("app.photo_updated") }}');
+						// You can add a toast notification here if needed
 					} else {
-						console.error('Error updating profile photo:', data);
+						console.error('{{ __("app.upload_error") }}:', data);
 					}
 				})
 				.catch(error => {
-					console.error('Error:', error);
+					console.error('{{ __("app.error_occurred") }}:', error);
 				});
 			}
 		}

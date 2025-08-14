@@ -70,10 +70,20 @@ return [
 
     // Messages
     'language_changed' => 'Language changed successfully',
+    'profile_updated' => 'Profile updated successfully',
+    'photo_updated' => 'Profile photo updated successfully',
+    'error_occurred' => 'An error occurred',
+    'upload_error' => 'Failed to upload photo',
+    'file_too_large' => 'File size is too large',
+    'invalid_file_type' => 'Invalid file type',
 
     // Profile Forms
     'profile_information' => 'Profile Information',
     'update_profile_desc' => 'Update your account\'s profile information and email address.',
+    'edit_profile' => 'Edit Profile',
+    'edit_profile_photo' => 'Edit Profile Photo',
+    'change_photo' => 'Change Photo',
+    'upload_photo' => 'Upload Photo',
     'name' => 'Name',
     'email' => 'Email',
     'save' => 'Save',

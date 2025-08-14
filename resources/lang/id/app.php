@@ -70,10 +70,20 @@ return [
 
     // Messages
     'language_changed' => 'Bahasa berhasil diubah',
+    'profile_updated' => 'Profil berhasil diperbarui',
+    'photo_updated' => 'Foto profil berhasil diperbarui',
+    'error_occurred' => 'Terjadi kesalahan',
+    'upload_error' => 'Gagal mengupload foto',
+    'file_too_large' => 'Ukuran file terlalu besar',
+    'invalid_file_type' => 'Tipe file tidak valid',
 
     // Profile Forms
     'profile_information' => 'Informasi Profil',
     'update_profile_desc' => 'Perbarui informasi profil dan alamat email akun Anda.',
+    'edit_profile' => 'Edit Profil',
+    'edit_profile_photo' => 'Edit Foto Profil',
+    'change_photo' => 'Ubah Foto',
+    'upload_photo' => 'Upload Foto',
     'name' => 'Nama',
     'email' => 'Email',
     'save' => 'Simpan',
