@@ -13,8 +13,8 @@
 		</div>
 
 		<div class="pt-8 pb-8">
-			<h1 class="text-xl font-bold">Info Developer</h1>
-			<p class="text-sm opacity-90">Tentang pembuat aplikasi</p>
+			<h1 class="text-xl font-bold">{{ __('app.developer_info') }}</h1>
+			<p class="text-sm opacity-90">{{ __('app.about_developer') }}</p>
 		</div>
 	</div>
 
@@ -27,14 +27,14 @@
 					<div class="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-primary/20">
 						<img src="{{ asset('images/wayan-pardi.png') }}" alt="Developer" class="w-full h-full object-cover" />
 					</div>
-					<h3 class="text-lg font-semibold text-gray-800">Wayan Pardi</h3>
-					<p class="text-gray-600 text-sm">Pengembang Virtual Living Museum</p>
+					<h3 class="text-lg font-semibold text-gray-800">{{ __('app.developer_name') }}</h3>
+					<p class="text-gray-600 text-sm">{{ __('app.developer_role') }}</p>
 				</div>
 			</div>
 
 			{{-- Contact Info --}}
 			<div class="bg-white rounded-2xl p-6 shadow-sm">
-				<h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Kontak</h3>
+				<h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.contact_info') }}</h3>
 				<div class="space-y-4">
 					<div class="flex items-center space-x-3 py-2">
 						<i class="fas fa-phone text-primary w-5"></i>
@@ -46,7 +46,7 @@
 					</div>
 					<div class="flex items-center space-x-3 py-2">
 						<i class="fas fa-briefcase text-primary w-5"></i>
-						<span class="text-gray-700">Dosen</span>
+						<span class="text-gray-700">{{ __('app.lecturer') }}</span>
 					</div>
 					<div class="flex items-start space-x-3 py-2">
 						<i class="fas fa-map-marker-alt text-primary w-5 mt-1"></i>

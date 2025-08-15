@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -46,5 +47,46 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+    public function jawabanUser(): HasMany
+    {
+        return $this->hasMany(JawabanUser::class, 'user_id', 'id');
+    }
+
+    public function situsPeninggalan(): HasMany
+    {
+        return $this->hasMany(SitusPeninggalan::class, 'user_id', 'id');
+    }
+
+    public function aksesSitusUser(): HasMany
+    {
+        return $this->hasMany(AksesSitusUser::class, 'user_id', 'id');
+    }
+
+    public function kritikSaran(): HasMany
+    {
+        return $this->hasMany(KritikSaran::class, 'user_id', 'id');
+    }
+
+    public function laporanPeninggalan(): HasMany
+    {
+        return $this->hasMany(LaporanPeninggalan::class, 'user_id', 'id');
+    }
+
+    public function laporanKomentar(): HasMany
+    {
+        return $this->hasMany(LaporanKomentar::class, 'user_id', 'id');
+    }
+
+    public function laporanSuka(): HasMany
+    {
+        return $this->hasMany(LaporanSuka::class, 'user_id', 'id');
+    }
+
+    public function logAktivitas(): HasMany
+    {
+        return $this->hasMany(LogAktivitas::class, 'user_id', 'id');
     }
 }

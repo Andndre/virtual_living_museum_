@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Posttest extends Model
+{
+    protected $table = 'posttest';
+    protected $primaryKey = 'posttest_id';
+    public $timestamps = false;
+    
+    protected $fillable = [
+        'materi_id',
+        'pertanyaan',
+        'pilihan_a',
+        'pilihan_b',
+        'pilihan_c',
+        'pilihan_d',
+        'jawaban_benar'
+    ];
+
+    protected $casts = [
+        'materi_id' => 'integer',
+    ];
+
+    // Relationships
+    public function materi(): BelongsTo
+    {
+        return $this->belongsTo(Materi::class, 'materi_id', 'materi_id');
+    }
+}

@@ -106,4 +106,12 @@ return [
     'delete_account_warning' => 'Setelah akun Anda dihapus, semua sumber daya dan data akan dihapus secara permanen. Silakan masukkan kata sandi Anda untuk mengkonfirmasi bahwa Anda ingin menghapus akun secara permanen.',
     'password' => 'Kata Sandi',
     'cancel' => 'Batal',
+
+    // Developer Page
+    'developer_info' => 'Info Developer',
+    'about_developer' => 'Tentang pembuat aplikasi',
+    'developer_name' => 'Wayan Pardi',
+    'developer_role' => 'Pengembang Virtual Living Museum',
+    'contact_info' => 'Informasi Kontak',
+    'lecturer' => 'Dosen',
 ];

@@ -5,7 +5,7 @@ return [
     'home' => 'Home',
     'guide' => 'Guide',
     'settings' => 'Settings',
-    'developer_info' => 'Developer Info',
+    'developer_info' => 'Information',
     'ar_scanner' => 'AR Scanner',
 
     // Common
@@ -106,4 +106,12 @@ return [
     'delete_account_warning' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
     'password' => 'Password',
     'cancel' => 'Cancel',
+
+    // Developer Page
+    'developer_info' => 'Developer Info',
+    'about_developer' => 'About the application developer',
+    'developer_name' => 'Wayan Pardi',
+    'developer_role' => 'Virtual Living Museum Developer',
+    'contact_info' => 'Contact Information',
+    'lecturer' => 'Lecturer',
 ];
