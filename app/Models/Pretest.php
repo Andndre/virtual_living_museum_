@@ -9,7 +9,7 @@ class Pretest extends Model
 {
     protected $table = 'pretest';
     protected $primaryKey = 'pretest_id';
-    public $timestamps = false;
+    public $timestamps = true;
     
     protected $fillable = [
         'materi_id',

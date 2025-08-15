@@ -9,7 +9,7 @@ class Posttest extends Model
 {
     protected $table = 'posttest';
     protected $primaryKey = 'posttest_id';
-    public $timestamps = false;
+    public $timestamps = true;
     
     protected $fillable = [
         'materi_id',

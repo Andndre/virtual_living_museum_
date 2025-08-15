@@ -45,6 +45,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // New users default to 'user' role, so redirect to user home
+        return redirect(route('guest.home', absolute: false));
     }
 }

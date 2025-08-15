@@ -5,16 +5,55 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @else
+                        <a href="{{ route('guest.home') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(auth()->user()->role === 'admin')
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
+                            Kelola Pengguna
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.materi')" :active="request()->routeIs('admin.materi*')">
+                            Kelola Materi
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.situs')" :active="request()->routeIs('admin.situs*')">
+                            Kelola Situs
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
+                            Virtual Museum
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
+                            Kelola Laporan
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.feedback')" :active="request()->routeIs('admin.feedback*')">
+                            Kritik & Saran
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('guest.home')" :active="request()->routeIs('guest.home')">
+                            {{ __('Home') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('guest.panduan')" :active="request()->routeIs('guest.panduan')">
+                            {{ __('Guide') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('guest.pengembang')" :active="request()->routeIs('guest.pengembang')">
+                            {{ __('app.developers') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('guest.ar-marker')" :active="request()->routeIs('guest.ar-marker')">
+                            {{ __('app.ar_marker') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -67,9 +106,42 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @if(auth()->user()->role === 'admin')
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
+                    Kelola Pengguna
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.materi')" :active="request()->routeIs('admin.materi*')">
+                    Kelola Materi
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.situs')" :active="request()->routeIs('admin.situs*')">
+                    Kelola Situs
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
+                    Virtual Museum
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
+                    Kelola Laporan
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.feedback')" :active="request()->routeIs('admin.feedback*')">
+                    Kritik & Saran
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('guest.home')" :active="request()->routeIs('guest.home')">
+                    {{ __('Home') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('guest.panduan')" :active="request()->routeIs('guest.panduan')">
+                    {{ __('Guide') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('guest.pengembang')" :active="request()->routeIs('guest.pengembang')">
+                    {{ __('app.developers') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('guest.ar-marker')" :active="request()->routeIs('guest.ar-marker')">
+                    {{ __('app.ar_marker') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
