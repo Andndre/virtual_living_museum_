@@ -13,7 +13,13 @@
                         <li>
                             <div class="flex items-center">
                                 <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
-                                <span class="text-gray-900 font-medium">Posttest {{ $materi->judul }}</span>
+                                <span class="text-gray-500">{{ $materi->judul }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
+                                <span class="text-gray-900 font-medium">Posttest</span>
                             </div>
                         </li>
                     </ol>
@@ -21,8 +27,8 @@
                 
                 <div class="sm:flex sm:items-center sm:justify-between">
                     <div class="mb-4 sm:mb-0">
-                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Kelola Posttest</h1>
-                        <p class="mt-2 text-sm sm:text-base text-gray-600">Mengelola soal posttest untuk materi: <strong>{{ $materi->judul }}</strong></p>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Soal Posttest</h1>
+                        <p class="mt-2 text-sm sm:text-base text-gray-600">Kelola soal posttest untuk materi: <strong>{{ $materi->judul }}</strong></p>
                     </div>
                     <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                         <a href="{{ route('admin.posttest.create', $materi->materi_id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
@@ -39,9 +45,24 @@
                 </div>
             </div>
 
+            <!-- Success/Error Messages -->
+            @if(session('success'))
+                <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-                <div class="bg-white overflow-hidden shadow-lg rounded-lg border border-gray-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="p-4 sm:p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -50,7 +71,7 @@
                             <div class="ml-3 sm:ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Soal</dt>
-                                    <dd class="text-lg sm:text-xl font-semibold text-gray-900">{{ $posttests->count() }}</dd>
+                                    <dd class="text-lg sm:text-lg font-medium text-gray-900">{{ $posttests->count() }}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -59,221 +80,90 @@
             </div>
 
             <!-- Content -->
-            @if($posttests->count() > 0)
-                <div class="bg-white shadow-lg overflow-hidden sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <h3 class="text-lg leading-6 font-medium text-gray-900">Daftar Soal Posttest</h3>
-                                <p class="mt-1 text-sm text-gray-500">
-                                    Klik pada soal untuk melihat detail, atau gunakan tombol aksi untuk mengelola.
-                                </p>
-                            </div>
-                            <div class="mt-3 sm:mt-0 text-sm text-gray-500">
-                                Total: {{ $posttests->count() }} soal
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Desktop View -->
-                    <div class="hidden lg:block">
-                        <ul class="divide-y divide-gray-200">
-                            @foreach($posttests as $index => $posttest)
-                            <li class="px-4 py-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-start space-x-4 flex-1">
-                                        <!-- Nomor Soal -->
-                                        <div class="flex-shrink-0">
-                                            <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                                <span class="text-sm font-medium text-white">{{ $index + 1 }}</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Konten Soal -->
-                                        <div class="flex-1 min-w-0">
-                                            <div class="focus:outline-none">
-                                                <!-- Pertanyaan -->
-                                                <p class="text-sm font-medium text-gray-900 mb-2">
-                                                    {{ Str::limit($posttest->pertanyaan, 100, '...') }}
-                                                </p>
-                                                
-                                                <!-- Pilihan Jawaban -->
-                                                <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                                    <div class="flex items-center">
-                                                        <span class="inline-flex items-center justify-center h-5 w-5 rounded-full {{ $posttest->jawaban_benar === 'A' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">A</span>
-                                                        <span class="truncate">{{ Str::limit($posttest->pilihan_a, 30) }}</span>
-                                                    </div>
-                                                    <div class="flex items-center">
-                                                        <span class="inline-flex items-center justify-center h-5 w-5 rounded-full {{ $posttest->jawaban_benar === 'B' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">B</span>
-                                                        <span class="truncate">{{ Str::limit($posttest->pilihan_b, 30) }}</span>
-                                                    </div>
-                                                    <div class="flex items-center">
-                                                        <span class="inline-flex items-center justify-center h-5 w-5 rounded-full {{ $posttest->jawaban_benar === 'C' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">C</span>
-                                                        <span class="truncate">{{ Str::limit($posttest->pilihan_c, 30) }}</span>
-                                                    </div>
-                                                    <div class="flex items-center">
-                                                        <span class="inline-flex items-center justify-center h-5 w-5 rounded-full {{ $posttest->jawaban_benar === 'D' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">D</span>
-                                                        <span class="truncate">{{ Str::limit($posttest->pilihan_d, 30) }}</span>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Metadata -->
-                                                <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
-                                                    <span class="flex items-center">
-                                                        <i class="fas fa-check-circle mr-1"></i>
-                                                        Jawaban: {{ $posttest->jawaban_benar }}
-                                                    </span>
-                                                    <span class="flex items-center">
-                                                        <i class="fas fa-calendar mr-1"></i>
-                                                        {{ $posttest->created_at->format('d M Y') }}
-                                                    </span>
-                                                    @if($posttest->updated_at != $posttest->created_at)
-                                                    <span class="flex items-center">
-                                                        <i class="fas fa-edit mr-1"></i>
-                                                        Diperbarui {{ $posttest->updated_at->diffForHumans() }}
-                                                    </span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Actions -->
-                                    <div class="flex items-center space-x-2">
-                                        <a href="{{ route('admin.posttest.show', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                           class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-xs leading-4 font-medium rounded text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                                            <i class="fas fa-eye mr-1"></i>
-                                            Detail
-                                        </a>
-                                        <a href="{{ route('admin.posttest.edit', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                           class="inline-flex items-center px-3 py-1 border border-blue-300 shadow-sm text-xs leading-4 font-medium rounded text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
-                                            <i class="fas fa-edit mr-1"></i>
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('admin.posttest.destroy', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                              method="POST" 
-                                              class="inline-block" 
-                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus soal ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="inline-flex items-center px-3 py-1 border border-red-300 shadow-sm text-xs leading-4 font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
-                                                <i class="fas fa-trash mr-1"></i>
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
+            <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 sm:p-6">
+                    @forelse($posttests as $index => $posttest)
+                        <div class="mb-4 sm:mb-6 p-3 sm:p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 space-y-2 sm:space-y-0">
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        Soal {{ $posttests->firstItem() + $index }}
+                                    </span>
                                 </div>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    
-                    <!-- Mobile View -->
-                    <div class="lg:hidden">
-                        <div class="divide-y divide-gray-200">
-                            @foreach($posttests as $index => $posttest)
-                            <div class="p-4">
-                                <div class="flex items-start space-x-3">
-                                    <!-- Nomor Soal -->
-                                    <div class="flex-shrink-0">
-                                        <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-                                            <span class="text-xs font-medium text-white">{{ $index + 1 }}</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Content -->
-                                    <div class="flex-1 min-w-0">
-                                        <!-- Pertanyaan -->
-                                        <p class="text-sm font-medium text-gray-900 mb-3">
-                                            {{ Str::limit($posttest->pertanyaan, 80, '...') }}
-                                        </p>
-                                        
-                                        <!-- Pilihan Jawaban - Compact -->
-                                        <div class="space-y-1 mb-3">
-                                            <div class="flex items-center text-xs">
-                                                <span class="inline-flex items-center justify-center h-4 w-4 rounded-full {{ $posttest->jawaban_benar === 'A' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">A</span>
-                                                <span class="truncate text-gray-600">{{ Str::limit($posttest->pilihan_a, 40) }}</span>
-                                            </div>
-                                            <div class="flex items-center text-xs">
-                                                <span class="inline-flex items-center justify-center h-4 w-4 rounded-full {{ $posttest->jawaban_benar === 'B' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">B</span>
-                                                <span class="truncate text-gray-600">{{ Str::limit($posttest->pilihan_b, 40) }}</span>
-                                            </div>
-                                            <div class="flex items-center text-xs">
-                                                <span class="inline-flex items-center justify-center h-4 w-4 rounded-full {{ $posttest->jawaban_benar === 'C' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">C</span>
-                                                <span class="truncate text-gray-600">{{ Str::limit($posttest->pilihan_c, 40) }}</span>
-                                            </div>
-                                            <div class="flex items-center text-xs">
-                                                <span class="inline-flex items-center justify-center h-4 w-4 rounded-full {{ $posttest->jawaban_benar === 'D' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }} mr-2 text-xs font-medium">D</span>
-                                                <span class="truncate text-gray-600">{{ Str::limit($posttest->pilihan_d, 40) }}</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Metadata -->
-                                        <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
-                                            <span class="flex items-center">
-                                                <i class="fas fa-check-circle mr-1 text-green-500"></i>
-                                                {{ $posttest->jawaban_benar }}
-                                            </span>
-                                            <span class="flex items-center">
-                                                <i class="fas fa-calendar mr-1"></i>
-                                                {{ $posttest->created_at->format('d/m') }}
-                                            </span>
-                                        </div>
-                                        
-                                        <!-- Mobile Actions -->
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('admin.posttest.show', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                               class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                                                <i class="fas fa-eye mr-1"></i>
-                                                Detail
-                                            </a>
-                                            <a href="{{ route('admin.posttest.edit', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                               class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-blue-300 shadow-sm text-xs font-medium rounded text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
-                                                <i class="fas fa-edit mr-1"></i>
-                                                Edit
-                                            </a>
-                                            <form action="{{ route('admin.posttest.destroy', [$materi->materi_id, $posttest->posttest_id]) }}" 
-                                                  method="POST" 
-                                                  class="flex-1" 
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus soal ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        class="w-full inline-flex items-center justify-center px-3 py-2 border border-red-300 shadow-sm text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
-                                                    <i class="fas fa-trash mr-1"></i>
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
+                                <div class="flex space-x-2 self-end sm:self-auto">
+                                    <a href="{{ route('admin.posttest.show', [$materi->materi_id, $posttest->posttest_id]) }}" class="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded" title="Lihat Detail">
+                                        <i class="fas fa-eye text-sm"></i>
+                                    </a>
+                                    <a href="{{ route('admin.posttest.edit', [$materi->materi_id, $posttest->posttest_id]) }}" class="p-2 text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50 rounded" title="Edit">
+                                        <i class="fas fa-edit text-sm"></i>
+                                    </a>
+                                    <form action="{{ route('admin.posttest.destroy', [$materi->materi_id, $posttest->posttest_id]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus soal ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded" title="Hapus">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            @endforeach
+                            
+                            <!-- Question -->
+                            <div class="mb-4">
+                                <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2 leading-relaxed">{{ $posttest->pertanyaan }}</h3>
+                            </div>
+                            
+                            <!-- Options -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3">
+                                <div class="flex items-start space-x-2 p-2 rounded {{ $posttest->jawaban_benar === 'A' ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex-shrink-0 mt-0.5">A</span>
+                                    <span class="text-sm text-gray-900">{{ $posttest->pilihan_a }}</span>
+                                    @if($posttest->jawaban_benar === 'A')
+                                        <i class="fas fa-check text-green-600 ml-auto"></i>
+                                    @endif
+                                </div>
+                                <div class="flex items-start space-x-2 p-2 rounded {{ $posttest->jawaban_benar === 'B' ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex-shrink-0 mt-0.5">B</span>
+                                    <span class="text-sm text-gray-900">{{ $posttest->pilihan_b }}</span>
+                                    @if($posttest->jawaban_benar === 'B')
+                                        <i class="fas fa-check text-green-600 ml-auto"></i>
+                                    @endif
+                                </div>
+                                <div class="flex items-start space-x-2 p-2 rounded {{ $posttest->jawaban_benar === 'C' ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex-shrink-0 mt-0.5">C</span>
+                                    <span class="text-sm text-gray-900">{{ $posttest->pilihan_c }}</span>
+                                    @if($posttest->jawaban_benar === 'C')
+                                        <i class="fas fa-check text-green-600 ml-auto"></i>
+                                    @endif
+                                </div>
+                                <div class="flex items-start space-x-2 p-2 rounded {{ $posttest->jawaban_benar === 'D' ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }}">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 text-xs font-medium rounded-full flex-shrink-0 mt-0.5">D</span>
+                                    <span class="text-sm text-gray-900">{{ $posttest->pilihan_d }}</span>
+                                    @if($posttest->jawaban_benar === 'D')
+                                        <i class="fas fa-check text-green-600 ml-auto"></i>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            @else
-                <!-- Empty State -->
-                <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-12 text-center">
-                        <div class="mx-auto h-20 w-20 sm:h-24 sm:w-24 text-gray-400">
-                            <i class="fas fa-question-circle text-5xl sm:text-6xl"></i>
-                        </div>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Belum Ada Soal Posttest</h3>
-                        <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto px-4">
-                            Mulai membuat soal posttest untuk materi "{{ $materi->judul }}" dengan mengklik tombol di bawah.
-                        </p>
-                        <div class="mt-6">
-                            <a href="{{ route('admin.posttest.create', $materi->materi_id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                    @empty
+                        <div class="text-center py-12">
+                            <i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada soal posttest</h3>
+                            <p class="text-gray-500 mb-4">Mulai tambahkan soal posttest untuk materi ini.</p>
+                            <a href="{{ route('admin.posttest.create', $materi->materi_id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 hover:text-blue-500">
                                 <i class="fas fa-plus mr-2"></i>
-                                <span class="hidden sm:inline">Tambah Soal Pertama</span>
-                                <span class="sm:hidden">Tambah Soal</span>
+                                Tambah Soal Pertama
                             </a>
                         </div>
-                    </div>
+                    @endforelse
+
+                    <!-- Pagination -->
+                    @if($posttests->hasPages())
+                        <div class="mt-6">
+                            {{ $posttests->links() }}
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 </x-app-layout>

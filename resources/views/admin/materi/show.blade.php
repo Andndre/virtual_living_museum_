@@ -96,17 +96,6 @@
                                         <i class="fas fa-monument text-yellow-600 text-xl"></i>
                                     </div>
                                 </div>
-
-                                <!-- Jawaban User -->
-                                <div class="border rounded-lg p-4">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <h4 class="font-medium text-gray-900">Jawaban User</h4>
-                                            <p class="text-sm text-gray-500">{{ $materi->jawabanUser()->count() }} jawaban</p>
-                                        </div>
-                                        <i class="fas fa-clipboard-check text-green-600 text-xl"></i>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
