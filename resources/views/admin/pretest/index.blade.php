@@ -77,54 +77,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-4 sm:p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-xl sm:text-2xl text-green-600"></i>
-                            </div>
-                            <div class="ml-3 sm:ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Soal A</dt>
-                                    <dd class="text-lg sm:text-lg font-medium text-gray-900">{{ $pretests->where('jawaban_benar', 'A')->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-4 sm:p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-xl sm:text-2xl text-green-600"></i>
-                            </div>
-                            <div class="ml-3 sm:ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Soal B</dt>
-                                    <dd class="text-lg sm:text-lg font-medium text-gray-900">{{ $pretests->where('jawaban_benar', 'B')->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-4 sm:p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-xl sm:text-2xl text-green-600"></i>
-                            </div>
-                            <div class="ml-3 sm:ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Soal C & D</dt>
-                                    <dd class="text-lg sm:text-lg font-medium text-gray-900">{{ $pretests->whereIn('jawaban_benar', ['C', 'D'])->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Content -->

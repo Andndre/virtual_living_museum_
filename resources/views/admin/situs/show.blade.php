@@ -73,11 +73,11 @@
                                     <dd class="mt-1 text-lg font-semibold text-gray-900">{{ $situs->nama }}</dd>
                                 </div>
                                 <div>
-                                    <dt class="text-sm font-medium text-gray-500">Era/Masa</dt>
+                                    <dt class="text-sm font-medium text-gray-500">Masa</dt>
                                     <dd class="mt-1">
-                                        @if($situs->materi && $situs->materi->kategori)
+                                        @if($situs->materi && $situs->materi)
                                             <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-800">
-                                                {{ $situs->materi->kategori }}
+                                                {{ $situs->materi->judul }}
                                             </span>
                                         @else
                                             <span class="text-gray-400">Tidak ada kategori</span>
@@ -374,7 +374,7 @@
             marker.bindPopup(`
                 <div class="text-center">
                     <h3 class="font-semibold text-gray-900">${situsName}</h3>
-                    <p class="text-sm text-gray-600 mt-1">{{ $situs->materi->kategori ?? 'Tidak ada kategori' }}</p>
+                    <p class="text-sm text-gray-600 mt-1">{{ $situs->materi->judul }}</p>
                     <p class="text-xs text-gray-500 mt-2">
                         <strong>Koordinat:</strong><br>
                         ${situsLat}, ${situsLng}
