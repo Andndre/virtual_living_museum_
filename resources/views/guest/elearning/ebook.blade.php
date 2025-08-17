@@ -21,62 +21,134 @@
 
     {{-- E-book Viewer Section --}}
     <div class="bg-white min-h-screen">
-        <div class="container mx-auto px-4 py-6">
-            {{-- PDF Viewer Container --}}
-            <div id="flipbook-container" class="w-full bg-gray-100 rounded-2xl shadow-lg overflow-hidden">
-                <div id="flipbook" class="flipbook-viewport">
-                    <div class="loading-container flex items-center justify-center h-96">
-                        <div class="text-center">
-                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                            <p class="text-gray-600">Memuat e-book...</p>
-                        </div>
+        <div class="container mx-auto px-2 py-3 md:px-4 md:py-6">
+            {{-- Flipbook Container --}}
+            <div id="flipbook-container" class="w-full bg-gray-100 rounded-xl md:rounded-2xl shadow-lg overflow-hidden relative min-h-[85vh] md:min-h-[80vh]">
+                <div class="loading-container flex items-center justify-center h-96">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p class="text-gray-600">Memuat e-book...</p>
                     </div>
+                </div>
+                
+                {{-- Flipbook Element --}}
+                <div id="flipbook" class="flipbook hidden mx-auto" style="width: 700px; height: 900px;">
+                    <!-- Pages will be dynamically inserted here -->
                 </div>
             </div>
 
             {{-- Navigation Controls --}}
-            <div class="flex justify-center items-center space-x-4 mt-6">
-                <button id="prev-page" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300" disabled>
-                    <i class="fas fa-chevron-left mr-2"></i>
-                    Sebelumnya
+            <div class="flex justify-center items-center space-x-2 md:space-x-4 mt-3 md:mt-6">
+                <button id="prev-page" class="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 text-sm md:text-base" disabled>
+                    <i class="fas fa-chevron-left mr-1 md:mr-2"></i>
+                    <span class="hidden sm:inline">Sebelumnya</span>
+                    <span class="sm:hidden">Prev</span>
                 </button>
                 
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-600">Halaman</span>
-                    <span id="current-page" class="font-semibold">1</span>
-                    <span class="text-sm text-gray-600">dari</span>
-                    <span id="total-pages" class="font-semibold">-</span>
+                <div class="flex items-center space-x-1 md:space-x-2">
+                    <span class="text-xs md:text-sm text-gray-600">Hal.</span>
+                    <span id="current-page" class="font-semibold text-sm md:text-base">1</span>
+                    <span class="text-xs md:text-sm text-gray-600">dari</span>
+                    <span id="total-pages" class="font-semibold text-sm md:text-base">-</span>
                 </div>
                 
-                <button id="next-page" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Selanjutnya
-                    <i class="fas fa-chevron-right ml-2"></i>
+                <button id="next-page" class="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm md:text-base">
+                    <span class="hidden sm:inline">Selanjutnya</span>
+                    <span class="sm:hidden">Next</span>
+                    <i class="fas fa-chevron-right ml-1 md:ml-2"></i>
                 </button>
             </div>
 
             {{-- Additional Controls --}}
-            <div class="flex justify-center items-center space-x-4 mt-4">
-                <button id="zoom-out" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-search-minus"></i>
+            <div class="flex justify-center items-center space-x-2 md:space-x-4 mt-3 md:mt-4">
+                <button id="zoom-out" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-search-minus text-sm md:text-base"></i>
                 </button>
                 
-                <span id="zoom-level" class="text-sm text-gray-600">100%</span>
+                <span id="zoom-level" class="text-xs md:text-sm text-gray-600">100%</span>
                 
-                <button id="zoom-in" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-search-plus"></i>
+                <button id="zoom-in" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-search-plus text-sm md:text-base"></i>
                 </button>
                 
-                <button id="fullscreen" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-expand"></i>
+                <button id="fullscreen" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-expand text-sm md:text-base"></i>
+                </button>
+                
+                <button id="auto-flip" class="px-2 py-2 md:px-3 md:py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-xs md:text-sm">
+                    <i class="fas fa-play mr-1"></i>
+                    <span class="hidden sm:inline">Auto Flip</span>
+                    <span class="sm:hidden">Auto</span>
                 </button>
             </div>
         </div>
     </div>
 
-    {{-- PDF.js Library --}}
+    {{-- PDF.js & Turn.js Libraries --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     
-    {{-- Flipbook Script --}}
+    {{-- Multiple Turn.js sources for better reliability --}}
+    <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
+    
+    {{-- Fallback loading system --}}
+    <script>
+        // Check if turn.js loaded, if not try alternatives
+        $(document).ready(function() {
+            function checkAndInitialize() {
+                if (typeof $.fn.turn !== 'undefined') {
+                    console.log('Turn.js loaded successfully');
+                    initializePDFViewer();
+                } else {
+                    console.log('Turn.js not loaded, trying alternative sources...');
+                    tryAlternativeSources();
+                }
+            }
+
+            function tryAlternativeSources() {
+                const alternatives = [
+                    'https://raw.githack.com/blasten/turn.js/master/turn.min.js',
+                    'https://gitcdn.link/repo/blasten/turn.js/master/turn.min.js',
+                    'https://unpkg.com/turn.js@4.1.0/turn.min.js'
+                ];
+
+                let currentIndex = 0;
+
+                function loadNext() {
+                    if (currentIndex >= alternatives.length) {
+                        console.warn('All Turn.js sources failed, using simple viewer');
+                        initializePDFViewer();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = alternatives[currentIndex];
+                    script.onload = function() {
+                        if (typeof $.fn.turn !== 'undefined') {
+                            console.log(`Turn.js loaded from alternative source: ${alternatives[currentIndex]}`);
+                            initializePDFViewer();
+                        } else {
+                            currentIndex++;
+                            loadNext();
+                        }
+                    };
+                    script.onerror = function() {
+                        console.warn(`Failed to load Turn.js from: ${alternatives[currentIndex]}`);
+                        currentIndex++;
+                        loadNext();
+                    };
+                    document.head.appendChild(script);
+                }
+
+                loadNext();
+            }
+
+            // Give initial script 2 seconds to load
+            setTimeout(checkAndInitialize, 2000);
+        });
+    </script>
+    
+    {{-- Enhanced Flipbook Script --}}
     <script>
         // Set PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -85,51 +157,237 @@
         let currentPage = 1;
         let totalPages = 0;
         let scale = 1.0;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        let isAutoFlipping = false;
+        let autoFlipInterval = null;
+        let renderedPages = {};
+        let flipbookInitialized = false;
 
         // PDF URL
         const pdfUrl = '{{ asset("storage/" . $ebook->path_file) }}';
 
-        // Load PDF
-        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-            pdfDoc = pdf;
-            totalPages = pdf.numPages;
-            document.getElementById('total-pages').textContent = totalPages;
-            renderPage(currentPage);
-            hideLoading();
-        }).catch(function(error) {
-            console.error('Error loading PDF:', error);
-            showError();
-        });
+        // Main initialization function
+        function initializePDFViewer() {
+            // Load PDF and initialize flipbook
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                totalPages = pdf.numPages;
+                document.getElementById('total-pages').textContent = totalPages;
+                
+                // Pre-render first few pages for smooth experience
+                renderMultiplePages().then(() => {
+                    if (typeof $.fn.turn !== 'undefined') {
+                        initializeFlipbook();
+                    } else {
+                        initializeSimpleViewer();
+                    }
+                    hideLoading();
+                });
+            }).catch(function(error) {
+                console.error('Error loading PDF:', error);
+                showError();
+            });
+        }
 
-        function renderPage(pageNum) {
+        // Fallback simple viewer without Turn.js
+        function initializeSimpleViewer() {
+            console.log('Initializing simple PDF viewer...');
+            const flipbook = document.getElementById('flipbook');
+            flipbook.style.width = '100%';
+            flipbook.style.height = '900px';
+            flipbook.style.minHeight = '700px';
+            flipbook.style.display = 'flex';
+            flipbook.style.justifyContent = 'center';
+            flipbook.style.alignItems = 'center';
+            flipbook.style.padding = '20px';
+            flipbook.classList.remove('hidden');
+            
+            // Render first page
+            renderSimplePage(1);
+            updatePageInfo();
+            updateNavigationButtons();
+        }
+
+        function renderSimplePage(pageNum) {
             if (!pdfDoc) return;
-
+            
+            const flipbook = document.getElementById('flipbook');
+            flipbook.innerHTML = '<div class="flex justify-center items-center w-full h-full"><canvas id="simple-canvas"></canvas></div>';
+            
+            const canvas = document.getElementById('simple-canvas');
+            const ctx = canvas.getContext('2d');
+            
             pdfDoc.getPage(pageNum).then(function(page) {
-                const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                const containerWidth = flipbook.clientWidth - 40; // Account for padding
+                const containerHeight = flipbook.clientHeight - 40;
+                
+                const viewport = page.getViewport({ scale: 1.0 });
+                
+                // Calculate scale to fit container while maintaining aspect ratio
+                const scaleX = containerWidth / viewport.width;
+                const scaleY = containerHeight / viewport.height;
+                // Use higher minimum scale for mobile devices
+                const isMobile = window.innerWidth <= 768;
+                const minScale = isMobile ? 2.5 : 2.0;
+                const optimalScale = Math.max(Math.min(scaleX, scaleY, scale), minScale);
+                
+                const scaledViewport = page.getViewport({ scale: optimalScale });
+                
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
+                canvas.style.maxWidth = '100%';
+                canvas.style.maxHeight = '100%';
+                canvas.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
+                canvas.style.borderRadius = '12px';
+                canvas.style.background = 'white';
 
                 const renderContext = {
                     canvasContext: ctx,
-                    viewport: viewport
+                    viewport: scaledViewport
                 };
 
                 page.render(renderContext).promise.then(function() {
-                    // Update flipbook container
-                    const flipbook = document.getElementById('flipbook');
-                    flipbook.innerHTML = '';
-                    flipbook.appendChild(canvas);
-                    
-                    // Update page number
-                    document.getElementById('current-page').textContent = pageNum;
-                    
-                    // Update navigation buttons
-                    document.getElementById('prev-page').disabled = pageNum <= 1;
-                    document.getElementById('next-page').disabled = pageNum >= totalPages;
+                    currentPage = pageNum;
+                    updatePageInfo();
+                    updateNavigationButtons();
                 });
             });
+        }
+
+        // Render multiple pages for flipbook
+        async function renderMultiplePages() {
+            const promises = [];
+            const pagesToPreload = Math.min(6, totalPages); // Preload first 6 pages
+            
+            for (let i = 1; i <= pagesToPreload; i++) {
+                promises.push(renderPageToCanvas(i));
+            }
+            
+            await Promise.all(promises);
+        }
+
+        // Render a specific page to canvas
+        function renderPageToCanvas(pageNum) {
+            return new Promise((resolve) => {
+                if (renderedPages[pageNum]) {
+                    resolve(renderedPages[pageNum]);
+                    return;
+                }
+
+                pdfDoc.getPage(pageNum).then(function(page) {
+                    // Use higher scale for single page display, extra high for mobile
+                    const isMobile = window.innerWidth <= 768;
+                    const renderScale = isMobile ? Math.max(scale * 2.5, 2.5) : Math.max(scale * 2, 2.0);
+                    const viewport = page.getViewport({ scale: renderScale });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+
+                    page.render(renderContext).promise.then(function() {
+                        renderedPages[pageNum] = canvas;
+                        resolve(canvas);
+                    });
+                });
+            });
+        }
+
+        // Initialize Turn.js flipbook
+        function initializeFlipbook() {
+            if (typeof $.fn.turn === 'undefined') {
+                console.warn('Turn.js not available, using simple viewer');
+                initializeSimpleViewer();
+                return;
+            }
+
+            console.log('Initializing Turn.js flipbook...');
+            const flipbook = $('#flipbook');
+            
+            // Clear existing content
+            flipbook.empty();
+            
+            // Add pages to flipbook
+            for (let i = 1; i <= totalPages; i++) {
+                const pageDiv = $(`<div class="page page-${i}"></div>`);
+                if (renderedPages[i]) {
+                    pageDiv.append(renderedPages[i]);
+                } else {
+                    pageDiv.html(`
+                        <div class="flex items-center justify-center h-full">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                                <p class="text-sm text-gray-600">Loading page ${i}...</p>
+                            </div>
+                        </div>
+                    `);
+                    // Load page lazily
+                    setTimeout(() => loadPageLazy(i), i * 200);
+                }
+                flipbook.append(pageDiv);
+            }
+
+            // Initialize Turn.js with error handling
+            try {
+                flipbook.turn({
+                    width: 700,
+                    height: 900,
+                    autoCenter: true,
+                    display: 'single',  // Changed from 'double' to 'single'
+                    acceleration: true,
+                    gradients: true,
+                    elevation: 50,
+                    when: {
+                        turning: function(event, page, view) {
+                            currentPage = page;
+                            updatePageInfo();
+                            updateNavigationButtons();
+                        },
+                        turned: function(event, page, view) {
+                            // Load next pages if needed
+                            const nextPage = page + 1;
+                            if (nextPage <= totalPages && !renderedPages[nextPage]) {
+                                loadPageLazy(nextPage);
+                            }
+                            if (nextPage + 1 <= totalPages && !renderedPages[nextPage + 1]) {
+                                loadPageLazy(nextPage + 1);
+                            }
+                        }
+                    }
+                });
+
+                flipbook.removeClass('hidden');
+                flipbookInitialized = true;
+                updatePageInfo();
+                updateNavigationButtons();
+                console.log('Turn.js flipbook initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Turn.js:', error);
+                initializeSimpleViewer();
+            }
+        }
+
+        // Load page lazily
+        function loadPageLazy(pageNum) {
+            if (renderedPages[pageNum]) return;
+            
+            renderPageToCanvas(pageNum).then((canvas) => {
+                const pageDiv = $(`.page-${pageNum}`);
+                pageDiv.empty().append(canvas);
+            });
+        }
+
+        function updatePageInfo() {
+            document.getElementById('current-page').textContent = currentPage;
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prev-page').disabled = currentPage <= 1;
+            document.getElementById('next-page').disabled = currentPage >= totalPages;
         }
 
         function hideLoading() {
@@ -140,8 +398,8 @@
         }
 
         function showError() {
-            const flipbook = document.getElementById('flipbook');
-            flipbook.innerHTML = `
+            const container = document.getElementById('flipbook-container');
+            container.innerHTML = `
                 <div class="flex items-center justify-center h-96">
                     <div class="text-center">
                         <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
@@ -156,31 +414,91 @@
 
         // Navigation event listeners
         document.getElementById('prev-page').addEventListener('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderPage(currentPage);
+            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                $('#flipbook').turn('previous');
+            } else {
+                // Simple navigation
+                if (currentPage > 1) {
+                    renderSimplePage(currentPage - 1);
+                }
             }
         });
 
         document.getElementById('next-page').addEventListener('click', function() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderPage(currentPage);
+            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                $('#flipbook').turn('next');
+            } else {
+                // Simple navigation
+                if (currentPage < totalPages) {
+                    renderSimplePage(currentPage + 1);
+                }
             }
         });
 
         // Zoom controls
         document.getElementById('zoom-in').addEventListener('click', function() {
             scale += 0.25;
-            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
-            renderPage(currentPage);
+            updateZoom();
         });
 
         document.getElementById('zoom-out').addEventListener('click', function() {
             if (scale > 0.5) {
                 scale -= 0.25;
-                document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
-                renderPage(currentPage);
+                updateZoom();
+            }
+        });
+
+        function updateZoom() {
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+            
+            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                // Re-render visible pages with new scale
+                const currentPages = $('#flipbook').turn('view');
+                currentPages.forEach(page => {
+                    if (page > 0) {
+                        delete renderedPages[page];
+                        loadPageLazy(page);
+                    }
+                });
+                
+                // Update flipbook size for single page
+                const newWidth = 700 * scale;
+                const newHeight = 900 * scale;
+                $('#flipbook').turn('size', newWidth, newHeight);
+            } else {
+                // Simple viewer zoom
+                delete renderedPages[currentPage];
+                renderSimplePage(currentPage);
+            }
+        }
+
+        // Auto flip functionality
+        document.getElementById('auto-flip').addEventListener('click', function() {
+            const button = this;
+            if (isAutoFlipping) {
+                clearInterval(autoFlipInterval);
+                isAutoFlipping = false;
+                button.innerHTML = '<i class="fas fa-play mr-1"></i> Auto Flip';
+                button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                button.classList.add('bg-green-500', 'hover:bg-green-600');
+            } else {
+                autoFlipInterval = setInterval(() => {
+                    if (currentPage < totalPages) {
+                        if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                            $('#flipbook').turn('next');
+                        } else {
+                            renderSimplePage(currentPage + 1);
+                        }
+                    } else {
+                        // Stop auto flip when reaching end
+                        button.click();
+                    }
+                }, 3000); // Flip every 3 seconds
+                
+                isAutoFlipping = true;
+                button.innerHTML = '<i class="fas fa-stop mr-1"></i> Stop Auto';
+                button.classList.remove('bg-green-500', 'hover:bg-green-600');
+                button.classList.add('bg-red-500', 'hover:bg-red-600');
             }
         });
 
@@ -200,44 +518,202 @@
 
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft' && currentPage > 1) {
-                currentPage--;
-                renderPage(currentPage);
-            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
-                currentPage++;
-                renderPage(currentPage);
+            if (e.key === 'ArrowLeft') {
+                if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                    $('#flipbook').turn('previous');
+                } else if (currentPage > 1) {
+                    renderSimplePage(currentPage - 1);
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                    $('#flipbook').turn('next');
+                } else if (currentPage < totalPages) {
+                    renderSimplePage(currentPage + 1);
+                }
+            } else if (e.key === 'Escape' && isAutoFlipping) {
+                document.getElementById('auto-flip').click();
+            }
+        });
+
+        // Handle window resize
+        $(window).resize(function() {
+            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
+                const container = $('#flipbook-container');
+                const containerWidth = container.width();
+                const containerHeight = container.height();
+                
+                // Calculate optimal size for single page display
+                const maxWidth = Math.min(containerWidth - 40, 700);
+                const maxHeight = Math.min(containerHeight - 40, 900);
+                
+                // Maintain aspect ratio (A4-like: 0.77)
+                const aspectRatio = 700 / 900;
+                
+                let finalWidth, finalHeight;
+                if (maxWidth / maxHeight > aspectRatio) {
+                    finalHeight = maxHeight;
+                    finalWidth = finalHeight * aspectRatio;
+                } else {
+                    finalWidth = maxWidth;
+                    finalHeight = finalWidth / aspectRatio;
+                }
+                
+                $('#flipbook').turn('size', finalWidth, finalHeight);
             }
         });
     </script>
 
     <style>
-        .flipbook-viewport {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 600px;
-            padding: 20px;
-            background: #f8f9fa;
+        /* Flipbook Styles for Single Page */
+        .flipbook {
+            margin: 20px auto;
+            min-height: 900px;
         }
 
-        .flipbook-viewport canvas {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        .flipbook .page {
+            background-color: white;
+            background-size: 100% 100%;
+            border: 1px solid #ccc;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 8px;
+        }
+
+        .flipbook .page canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .flipbook .even {
+            background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
+        }
+
+        .flipbook .odd {
+            background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
+        }
+
+        /* Container improvements for single page */
+        #flipbook-container {
+            padding: 20px;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Responsive adjustments for single page */
+        @media (max-width: 1024px) {
+            .flipbook {
+                width: 100% !important;
+                height: 80vh !important;
+                min-height: 700px !important;
+            }
+            
+            #flipbook-container {
+                min-height: 85vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .flipbook {
+                width: 100% !important;
+                height: 85vh !important;
+                min-height: 650px !important;
+            }
+            
+            #flipbook-container {
+                min-height: 90vh;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .flipbook {
+                width: 100% !important;
+                height: 90vh !important;
+                min-height: 600px !important;
+            }
+            
+            #flipbook-container {
+                min-height: 95vh;
+                padding: 4px;
+            }
+        }
+
+        /* Fullscreen styles for single page */
+        #flipbook-container:fullscreen {
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #flipbook-container:fullscreen .flipbook {
+            margin: 0;
+            width: 80vw !important;
+            height: 95vh !important;
+        }
+
+        /* Mobile fullscreen adjustments */
+        @media (max-width: 768px) {
+            #flipbook-container:fullscreen .flipbook {
+                width: 95vw !important;
+                height: 98vh !important;
+            }
+        }
+
+        /* Loading animation for pages */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page canvas {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Turn.js custom styles for single page */
+        .turn-page {
+            background-color: #fafafa;
+            border-radius: 8px;
+        }
+
+        .shadow {
+            -webkit-transition: -webkit-box-shadow 0.5s;
+            -moz-transition: -moz-box-shadow 0.5s;
+            -o-transition: box-shadow 0.5s;
+            transition: box-shadow 0.5s;
+        }
+
+        /* Simple viewer improvements */
+        #simple-canvas {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             background: white;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
             max-width: 100%;
             height: auto;
         }
 
-        #flipbook-container:-webkit-full-screen .flipbook-viewport {
-            min-height: 100vh;
+        /* Mobile canvas improvements */
+        @media (max-width: 480px) {
+            #simple-canvas {
+                border-radius: 8px;
+                border-width: 1px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
         }
 
-        #flipbook-container:-moz-full-screen .flipbook-viewport {
-            min-height: 100vh;
-        }
-
-        #flipbook-container:fullscreen .flipbook-viewport {
-            min-height: 100vh;
+        /* Page turning effect improvements */
+        .flipbook .turn-page-wrapper {
+            border-radius: 8px;
+            overflow: hidden;
         }
     </style>
 </x-elearning-layout>
