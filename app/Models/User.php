@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LogAktivitas::class, 'user_id', 'id');
     }
+
+    public function progressMateri(): HasMany
+    {
+        return $this->hasMany(ProgressMateri::class, 'user_id', 'id');
+    }
 }

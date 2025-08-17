@@ -13,7 +13,8 @@ class Materi extends Model
     protected $fillable = [
         'judul',
         'deskripsi',
-        'urutan'
+        'urutan',
+        'gambar_sampul'
     ];
 
     protected $casts = [
@@ -44,5 +45,10 @@ class Materi extends Model
     public function situsPeninggalan(): HasMany
     {
         return $this->hasMany(SitusPeninggalan::class, 'materi_id', 'materi_id');
+    }
+
+    public function progressMateri(): HasMany
+    {
+        return $this->hasMany(ProgressMateri::class, 'materi_id', 'materi_id');
     }
 }

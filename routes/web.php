@@ -19,6 +19,18 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/pengaturan', [HomeController::class, 'pengaturan'])->name('guest.pengaturan');
     Route::get('/pengembang', [HomeController::class, 'pengembang'])->name('guest.pengembang');
     Route::get('/ar-marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
+    
+    // E-Learning routes
+    Route::get('/elearning', [HomeController::class, 'elearning'])->name('guest.elearning');
+    Route::get('/elearning/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
+    Route::get('/elearning/materi/{materi_id}/pretest', [HomeController::class, 'elearningPretest'])->name('guest.elearning.pretest');
+    Route::post('/elearning/materi/{materi_id}/pretest', [HomeController::class, 'submitPretest'])->name('guest.elearning.pretest.submit');
+    Route::get('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'elearningPosttest'])->name('guest.elearning.posttest');
+    Route::post('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'submitPosttest'])->name('guest.elearning.posttest.submit');
+    Route::get('/elearning/ebook/{ebook_id}', [HomeController::class, 'elearningEbook'])->name('guest.elearning.ebook');
+    
+    // Situs detail route
+    Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {

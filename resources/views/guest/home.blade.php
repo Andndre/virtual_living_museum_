@@ -23,7 +23,7 @@
 		<div class="grid grid-cols-3 gap-6">
 			{{-- E-Learning --}}
 			<div class="flex flex-col items-center">
-				<a href="#" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+				<a href="{{ route('guest.elearning') }}" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
 					<img src="{{ asset('images/icons/elearning.png') }}" alt="E-Learning" class="w-12 h-12" />
 				</a>
 				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.elearning') }}</span>
