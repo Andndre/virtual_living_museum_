@@ -139,7 +139,7 @@
                                         Pada {{ date('H:i', strtotime($item->created_at)) }} WITA
                                     </div>
                                     <div class="font-medium text-gray-900">
-                                        {{ $item->deskripsi }}
+                                        {{ $item->aktivitas }}
                                     </div>
                                 </div>
                             </div>
