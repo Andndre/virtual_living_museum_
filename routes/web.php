@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');
+    
+    // AR routes
+    Route::get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {

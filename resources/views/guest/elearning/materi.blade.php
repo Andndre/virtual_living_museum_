@@ -263,19 +263,15 @@
                                     <div class="flex">
                                         {{-- Situs Image --}}
                                         <div class="w-24 h-24 flex-shrink-0">
-                                            @if($situs->path_gambar && file_exists(storage_path('app/public/' . $situs->path_gambar)))
-                                                <img src="{{ asset('storage/' . $situs->path_gambar) }}" alt="{{ $situs->nama }}" class="w-full h-full object-cover">
-                                            @else
-                                                <div class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                                                    <i class="fas fa-map-marker-alt text-white text-xl"></i>
-                                                </div>
-                                            @endif
+                                            <div class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                                <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                                            </div>
                                         </div>
                                         
                                         {{-- Situs Content --}}
                                         <div class="flex-1 p-4">
                                             <h3 class="font-semibold text-gray-900 mb-1">{{ $situs->nama }}</h3>
-                                            <p class="text-sm text-gray-600 mb-3">{{ $situs->lokasi }}</p>
+                                            <p class="text-sm text-gray-600 mb-3">{{ $situs->alamat }}</p>
                                             
                                             <a href="{{ route('guest.situs.detail', $situs->situs_id) }}"
                                                class="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white text-xs font-medium rounded-lg hover:bg-orange-700 transition-colors">

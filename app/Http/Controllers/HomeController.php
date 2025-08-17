@@ -9,6 +9,7 @@ use App\Models\Ebook;
 use App\Models\JawabanUser;
 use App\Models\LogAktivitas;
 use App\Models\ProgressMateri;
+use App\Models\VirtualMuseum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -396,6 +397,23 @@ class HomeController extends Controller
         }
         
         return view('guest.situs.detail', compact('situs'));
+    }
+
+    public function arMuseum(Request $request, $situs_id, $museum_id)
+    {
+        $user = Auth::user();
+        $situs = \App\Models\SitusPeninggalan::findOrFail($situs_id);
+        $museum = \App\Models\VirtualMuseum::with(['virtualMuseumObjects'])->findOrFail($museum_id);
+        
+        // Verify that this museum belongs to the situs
+        if ($museum->situs_id != $situs_id) {
+            abort(404, 'Museum tidak ditemukan di situs ini.');
+        }
+        
+        // Log AR activity
+        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: ' . $museum->nama . ' di ' . $situs->nama);
+        
+        return view('guest.ar.museum', compact('situs', 'museum'));
     }
 
     /**

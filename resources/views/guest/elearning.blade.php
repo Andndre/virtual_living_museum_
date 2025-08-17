@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-elearning-layout>
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center mb-6">
@@ -218,4 +218,4 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
     </style>
-</x-guest-layout>
+</x-elearning-layout>
