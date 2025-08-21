@@ -54,16 +54,16 @@
                                 $isCorrect = $jawabanUser ? $jawabanUser->benar : false;
                             @endphp
                             <div class="p-4 rounded-xl border @if($isCorrect) border-green-300 bg-green-50 @else border-red-300 bg-red-50 @endif">
-                                <div class="flex items-center mb-2">
+                                <div class="flex items-center justify-between mb-2">
                                     <span class="font-bold mr-2">Soal {{ $idx+1 }}:</span>
-                                    <span class="flex-1 text-gray-800">{{ $question->pertanyaan }}</span>
                                     @if($isCorrect)
                                         <span class="ml-2 px-2 py-1 rounded bg-green-500 text-white text-xs font-semibold">Benar</span>
                                     @else
                                         <span class="ml-2 px-2 py-1 rounded bg-red-500 text-white text-xs font-semibold">Salah</span>
                                     @endif
                                 </div>
-                                <div class="space-y-2 mt-2">
+                                <div class="text-gray-800 mb-3">{!! nl2br(e($question->pertanyaan)) !!}</div>
+                                <div class="space-y-2">
                                     @foreach(['A' => $question->pilihan_a, 'B' => $question->pilihan_b, 'C' => $question->pilihan_c, 'D' => $question->pilihan_d] as $key => $option)
                                         @php
                                             $isUser = $userChoice === $key;
@@ -209,12 +209,13 @@
                             </button>
                             
                             <div class="flex space-x-3">
-                                <button type="button" id="next-btn" onclick="nextQuestion()" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                                    Selanjutnya
-                                    <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                                
-                                <button type="button" id="submit-btn" onclick="submitQuiz()" class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors hidden">
+                                @if($totalQuestions > 1)
+                                    <button type="button" id="next-btn" onclick="nextQuestion()" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                        Selanjutnya
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                @endif
+                                <button type="button" id="submit-btn" onclick="submitQuiz()" class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors @if($totalQuestions > 1) hidden @endif">
                                     <i class="fas fa-check mr-2"></i>
                                     Selesai
                                 </button>
@@ -254,18 +255,18 @@
         let isAnswered = false;
         const totalQuestions = {{ $totalQuestions }};
         const questions = document.querySelectorAll('.quiz-question');
-        
+
         function startQuiz() {
             document.querySelector('.bg-white.rounded-2xl.shadow-sm.p-6.mb-6').style.display = 'none';
             document.getElementById('quiz-container').classList.remove('hidden');
         }
-        
+
         function showQuestion(index) {
             isAnswered = false;
             questions.forEach((q, i) => {
                 q.classList.toggle('hidden', i !== index);
             });
-            
+
             // Reset question state
             const currentQuestionEl = questions[index];
             const options = currentQuestionEl.querySelectorAll('.answer-option');
@@ -278,152 +279,92 @@
                 letter.classList.remove('bg-green-500', 'bg-red-500', 'text-white');
                 letter.classList.add('bg-gray-100', 'text-gray-600');
             });
-            
+
             // Update progress
             const progress = ((index + 1) / totalQuestions) * 100;
             document.getElementById('progress-bar').style.width = progress + '%';
             document.getElementById('progress-text').textContent = `${index + 1} dari ${totalQuestions}`;
-            
+
             // Update navigation buttons
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const submitBtn = document.getElementById('submit-btn');
-            
+
             prevBtn.classList.toggle('hidden', index === 0);
             nextBtn.classList.toggle('hidden', index === totalQuestions - 1);
             submitBtn.classList.toggle('hidden', index !== totalQuestions - 1);
-            
-            // Hide notification
-            hideNotification();
+
+            // Disable next/submit until answered
+            if (totalQuestions === 1) {
+                // Only one question: nextBtn always disabled, submitBtn enabled only after answer
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            } else {
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            }
         }
-        
+
         function nextQuestion() {
             if (currentQuestion < totalQuestions - 1) {
                 currentQuestion++;
                 showQuestion(currentQuestion);
             }
         }
-        
+
         function previousQuestion() {
             if (currentQuestion > 0) {
                 currentQuestion--;
                 showQuestion(currentQuestion);
             }
         }
-        
+
         function continueToNext() {
-            hideNotification();
-            if (currentQuestion < totalQuestions - 1) {
-                setTimeout(() => {
-                    nextQuestion();
-                }, 300);
-            } else {
-                // Last question - show submit button
-                document.getElementById('submit-btn').classList.remove('hidden');
-                document.getElementById('next-btn').classList.add('hidden');
-            }
+            // Not used in this version
         }
-        
+
         function submitQuiz() {
             // Check if all questions are answered
             const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
-            
+
             if (answeredQuestions < totalQuestions) {
                 alert(`Mohon jawab semua pertanyaan. Anda baru menjawab ${answeredQuestions} dari ${totalQuestions} soal.`);
                 return;
             }
-            
+
             // Submit the form
             document.getElementById('quiz-form').submit();
         }
-        
-        function showNotification(isCorrect, correctAnswer) {
-            const notification = document.getElementById('answer-notification');
-            const content = document.getElementById('notification-content');
-            const icon = document.getElementById('notification-icon');
-            const title = document.getElementById('notification-title');
-            const subtitle = document.getElementById('notification-subtitle');
-            const continueBtn = document.getElementById('continue-btn');
-            
-            if (isCorrect) {
-                content.className = 'mx-6 mb-6 p-4 rounded-xl shadow-lg bg-green-500';
-                icon.className = 'w-8 h-8 rounded-full flex items-center justify-center bg-green-600';
-                icon.innerHTML = '<i class="fas fa-check text-white"></i>';
-                title.textContent = 'Benar!';
-                subtitle.textContent = 'Jawaban Anda tepat';
-            } else {
-                content.className = 'mx-6 mb-6 p-4 rounded-xl shadow-lg bg-red-500';
-                icon.className = 'w-8 h-8 rounded-full flex items-center justify-center bg-red-600';
-                icon.innerHTML = '<i class="fas fa-times text-white"></i>';
-                title.textContent = 'Salah!';
-                subtitle.textContent = `Jawaban yang benar adalah opsi ${correctAnswer}`;
-            }
-            
-            if (currentQuestion === totalQuestions - 1) {
-                continueBtn.textContent = 'Lihat Hasil';
-            } else {
-                continueBtn.textContent = 'Selanjutnya';
-            }
-            
-            // Show notification
-            notification.classList.remove('translate-y-full');
-            notification.classList.add('translate-y-0');
-        }
-        
+
+        // Hide notification (not used)
         function hideNotification() {
             const notification = document.getElementById('answer-notification');
             notification.classList.remove('translate-y-0');
             notification.classList.add('translate-y-full');
         }
-        
-        // Handle answer selection with immediate feedback
+
+        // Handle answer selection: enable next/submit, no feedback
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.addEventListener('change', function() {
-                    if (isAnswered) return; // Prevent multiple selections
+                    if (isAnswered) return;
                     isAnswered = true;
-                    
-                    const selectedOption = this.closest('.answer-option');
-                    const selectedAnswer = selectedOption.dataset.answer;
-                    const correctAnswer = selectedOption.dataset.correct;
-                    const isCorrect = selectedAnswer === correctAnswer;
-                    
-                    // Get all options for this question
-                    const allOptions = selectedOption.closest('.quiz-question').querySelectorAll('.answer-option');
-                    
-                    // Style all options based on correct/incorrect
-                    allOptions.forEach(option => {
-                        const optionAnswer = option.dataset.answer;
-                        const icon = option.querySelector('.answer-icon');
-                        const letter = option.querySelector('.option-letter');
-                        const radio = option.querySelector('input[type="radio"]');
-                        
-                        // Don't disable radio buttons as it prevents form submission
-                        // radio.disabled = true;
-                        
-                        if (optionAnswer === correctAnswer) {
-                            // Correct answer styling
-                            option.classList.remove('border-gray-200');
-                            option.classList.add('bg-green-100', 'border-green-500');
-                            letter.classList.remove('bg-gray-100', 'text-gray-600');
-                            letter.classList.add('bg-green-500', 'text-white');
-                            icon.innerHTML = '<i class="fas fa-check text-green-600"></i>';
-                            icon.style.opacity = '1';
-                        } else if (optionAnswer === selectedAnswer && !isCorrect) {
-                            // Selected wrong answer styling
-                            option.classList.remove('border-gray-200');
-                            option.classList.add('bg-red-100', 'border-red-500');
-                            letter.classList.remove('bg-gray-100', 'text-gray-600');
-                            letter.classList.add('bg-red-500', 'text-white');
-                            icon.innerHTML = '<i class="fas fa-times text-red-600"></i>';
-                            icon.style.opacity = '1';
+
+                    const currentQuestionEl = questions[currentQuestion];
+                    const nextBtn = document.getElementById('next-btn');
+                    const submitBtn = document.getElementById('submit-btn');
+
+                    if (totalQuestions === 1) {
+                        // Only one question: enable submitBtn
+                        submitBtn.disabled = false;
+                    } else {
+                        // Enable next or submit button
+                        if (currentQuestion === totalQuestions - 1) {
+                            submitBtn.disabled = false;
+                        } else {
+                            nextBtn.disabled = false;
                         }
-                    });
-                    
-                    // Show notification after a short delay
-                    setTimeout(() => {
-                        showNotification(isCorrect, correctAnswer);
-                    }, 500);
+                    }
                 });
             });
         });
