@@ -44,8 +44,8 @@
                         </div>
                         <!-- PageFlip container -->
                         <div id="pageflip-viewer" class="w-full h-full"></div>
-                        <!-- Fullscreen page indicator -->
-                        <div id="fullscreen-page-indicator" class="pointer-events-none select-none hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 text-white text-6xl font-extrabold drop-shadow-lg opacity-90 transition-opacity duration-500"></div>
+                        <!-- Fullscreen page indicator (moved to bottom, small, black text) -->
+                        <div id="fullscreen-page-indicator" class="pointer-events-none select-none hidden absolute left-1/2 bottom-4 -translate-x-1/2 z-50 text-black text-base font-semibold bg-white/80 rounded-lg px-4 py-1 shadow transition-opacity duration-500"></div>
                         <!-- Fullscreen navigation controls -->
                         <button id="fullscreen-prev" class="absolute left-2 top-1/2 -translate-y-1/2 z-50 bg-black/40 hover:bg-black/70 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none transition hidden" style="backdrop-filter: blur(2px);">
                             <i class="fas fa-chevron-left"></i>

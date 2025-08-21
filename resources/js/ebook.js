@@ -4,6 +4,13 @@ import { PageFlip } from 'page-flip';
 // import * as pdfjsLib from 'pdfjs-dist';
 
 window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, csrfToken }) {
+    // Helper untuk deteksi fullscreen
+    function isFullscreen() {
+        return document.fullscreenElement === flipbookContainer ||
+            document.webkitFullscreenElement === flipbookContainer ||
+            document.mozFullScreenElement === flipbookContainer ||
+            document.msFullscreenElement === flipbookContainer;
+    }
     // Ukuran fix untuk flipbook dan render PDF agar anti-blur
     const PAGE_WIDTH = 1400;
     const PAGE_HEIGHT = 1980;
@@ -185,6 +192,18 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             updatePageInfo();
             updateNavigationButtons();
             if (currentPage === totalPages) {
+                // Jika sedang fullscreen, keluar dari fullscreen
+                if (isFullscreen()) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
                 fetch(`/elearning/ebook/${ebookId}/read`, {
                     method: 'POST',
                     headers: {
@@ -195,7 +214,16 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
                     showFinishDialog();
                 });
             }
+            // Update nomor halaman di fullscreen
+            updateFullscreenPageIndicator();
         });
+
+        // Tampilkan/hide tombol navigasi & nomor halaman di fullscreen
+        document.addEventListener('fullscreenchange', handleFullscreenUI);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenUI);
+        document.addEventListener('mozfullscreenchange', handleFullscreenUI);
+        document.addEventListener('MSFullscreenChange', handleFullscreenUI);
+        handleFullscreenUI();
     }
 
     function updatePageInfo() {
@@ -204,7 +232,56 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
     function updateNavigationButtons() {
         document.getElementById('prev-page').disabled = currentPage <= 1;
         document.getElementById('next-page').disabled = currentPage >= totalPages;
+        // Update tombol fullscreen jika ada
+        updateFullscreenNavButtons();
     }
+
+    // Tampilkan nomor halaman di fullscreen
+    function updateFullscreenPageIndicator() {
+        const indicator = document.getElementById('fullscreen-page-indicator');
+        if (isFullscreen()) {
+            indicator.textContent = `Halaman ${currentPage} / ${totalPages}`;
+            indicator.classList.remove('hidden');
+        } else {
+            indicator.classList.add('hidden');
+        }
+    }
+
+    // Tampilkan tombol prev/next di fullscreen
+    function updateFullscreenNavButtons() {
+        const prevBtn = document.getElementById('fullscreen-prev');
+        const nextBtn = document.getElementById('fullscreen-next');
+        if (isFullscreen()) {
+            prevBtn.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
+        } else {
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+        }
+    }
+
+    // Handler untuk perubahan fullscreen
+    function handleFullscreenUI() {
+        updateFullscreenPageIndicator();
+        updateFullscreenNavButtons();
+    }
+
+    // Event tombol prev/next fullscreen
+    document.getElementById('fullscreen-prev').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (flipbookInitialized && pageFlip && currentPage > 1) {
+            pageFlip.flipPrev();
+        }
+    });
+    document.getElementById('fullscreen-next').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (flipbookInitialized && pageFlip && currentPage < totalPages) {
+            pageFlip.flipNext();
+        }
+    });
+    
     function hideLoading() {
         const loadingContainer = document.querySelector('.loading-container');
         if (loadingContainer && loadingContainer.style) {
@@ -283,4 +360,4 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             }
         }
     });
-};
+}
