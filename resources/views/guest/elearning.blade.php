@@ -92,7 +92,7 @@
                                            class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
                                             @if($materi->is_completed)
                                                 <i class="fas fa-redo mr-1"></i>
-                                                Ulangi
+                                                Lihat
                                             @elseif($materi->is_started)
                                                 <i class="fas fa-play mr-1"></i>
                                                 Lanjutkan

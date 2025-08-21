@@ -77,7 +77,7 @@ class HomeController extends Controller
             $materiLevel = $materi->urutan;
             if ($materiLevel < $user->level_sekarang + 1) {
                 $materi->is_completed = true;
-                $materi->is_available = false;
+                $materi->is_available = true;
             } elseif ($materiLevel == $user->level_sekarang + 1) {
                 $materi->is_completed = false;
                 $materi->is_available = true;
@@ -93,7 +93,7 @@ class HomeController extends Controller
         $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
 
         $nextMateri = $materis->first(function ($materi) {
-            return $materi->is_available;
+            return $materi->is_available && !$materi->is_completed;
         });
 
         $riwayatAktivitas = LogAktivitas::where('user_id', $user->id)
