@@ -181,7 +181,12 @@
             <div id="ebook-content" class="tab-content hidden">
                 @if($materi->ebook->count() > 0)
                     <h2 class="text-xl font-bold text-center text-gray-900 mb-6">E-Book</h2>
-                    
+                    <div class="mb-6">
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-900 text-sm text-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <span>Anda harus membaca <span class="font-semibold">seluruh halaman pada e-book</span> untuk menyelesaikan e-book ini dan dapat melanjutkan ke tingkatan selanjutnya.</span>
+                        </div>
+                    </div>
                     @if(!$ebook_available)
                         <div class="bg-gray-100 rounded-2xl p-8 text-center">
                             <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
