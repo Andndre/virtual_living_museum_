@@ -44,15 +44,16 @@
                         </div>
                         <!-- PageFlip container -->
                         <div id="pageflip-viewer" class="w-full h-full"></div>
-                        <!-- Fullscreen page indicator (moved to bottom, small, black text) -->
-                        <div id="fullscreen-page-indicator" class="pointer-events-none select-none hidden absolute left-1/2 bottom-4 -translate-x-1/2 z-50 text-black text-base font-semibold bg-white/80 rounded-lg px-4 py-1 shadow transition-opacity duration-500"></div>
-                        <!-- Fullscreen navigation controls -->
-                        <button id="fullscreen-prev" class="absolute left-2 top-1/2 -translate-y-1/2 z-50 bg-black/40 hover:bg-black/70 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none transition hidden" style="backdrop-filter: blur(2px);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="fullscreen-next" class="absolute right-2 top-1/2 -translate-y-1/2 z-50 bg-black/40 hover:bg-black/70 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none transition hidden" style="backdrop-filter: blur(2px);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <!-- Fullscreen controls (bottom, small, horizontal) -->
+                        <div id="fullscreen-controls" class="hidden absolute left-1/2 bottom-4 -translate-x-1/2 z-50 flex items-center gap-3">
+                            <button id="fullscreen-prev" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div id="fullscreen-page-indicator" class="pointer-events-none select-none text-black text-base font-semibold bg-white/80 rounded-lg px-4 py-1 shadow"></div>
+                            <button id="fullscreen-next" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

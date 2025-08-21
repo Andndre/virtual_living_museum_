@@ -239,11 +239,12 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
     // Tampilkan nomor halaman di fullscreen
     function updateFullscreenPageIndicator() {
         const indicator = document.getElementById('fullscreen-page-indicator');
+        const controls = document.getElementById('fullscreen-controls');
         if (isFullscreen()) {
             indicator.textContent = `Halaman ${currentPage} / ${totalPages}`;
-            indicator.classList.remove('hidden');
+            controls.classList.remove('hidden');
         } else {
-            indicator.classList.add('hidden');
+            controls.classList.add('hidden');
         }
     }
 
@@ -252,13 +253,8 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
         const prevBtn = document.getElementById('fullscreen-prev');
         const nextBtn = document.getElementById('fullscreen-next');
         if (isFullscreen()) {
-            prevBtn.classList.remove('hidden');
-            nextBtn.classList.remove('hidden');
             prevBtn.disabled = currentPage <= 1;
             nextBtn.disabled = currentPage >= totalPages;
-        } else {
-            prevBtn.classList.add('hidden');
-            nextBtn.classList.add('hidden');
         }
     }
 
