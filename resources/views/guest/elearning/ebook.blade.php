@@ -23,17 +23,37 @@
     <div class="bg-white min-h-screen">
         <div class="container mx-auto px-2 py-3 md:px-4 md:py-6">
             {{-- Flipbook Container --}}
-            <div id="flipbook-container" class="w-full bg-gray-100 rounded-xl md:rounded-2xl shadow-lg overflow-hidden relative min-h-[85vh] md:min-h-[80vh]">
-                <div class="loading-container flex items-center justify-center h-96">
+            <div id="flipbook-container" class="w-full bg-gray-100 rounded-xl md:rounded-2xl shadow-lg overflow-hidden flex flex-col items-center justify-center min-h-[85vh] md:min-h-[80vh] relative">
+                <!-- Loading Spinner -->
+                <div class="loading-container absolute inset-0 flex items-center justify-center z-40 bg-white/80">
                     <div class="text-center">
                         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                         <p class="text-gray-600">Memuat e-book...</p>
                     </div>
                 </div>
-                
                 {{-- Flipbook Element --}}
-                <div id="flipbook" class="flipbook hidden mx-auto">
-                    <!-- Pages will be dynamically inserted here -->
+                <div class="w-full flex justify-center items-center">
+                    <div id="flipbook" class="flipbook hidden relative">
+                        <!-- Overlay hanya menutupi flipbook -->
+                        <div id="flipbook-start-overlay" class="absolute left-0 top-0 w-full h-full z-50 flex flex-col items-center justify-center bg-black/60 text-white text-center cursor-pointer select-none" style="backdrop-filter: blur(2px);">
+                            <div>
+                                <div class="text-2xl font-bold mb-2">Klik untuk mulai membaca</div>
+                                <div class="mb-4 text-base">E-book akan tampil fullscreen</div>
+                                <button class="px-6 py-3 bg-blue-600 rounded-lg font-semibold text-white text-lg hover:bg-blue-700 transition">Mulai Membaca</button>
+                            </div>
+                        </div>
+                        <!-- PageFlip container -->
+                        <div id="pageflip-viewer" class="w-full h-full"></div>
+                        <!-- Fullscreen page indicator -->
+                        <div id="fullscreen-page-indicator" class="pointer-events-none select-none hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 text-white text-6xl font-extrabold drop-shadow-lg opacity-90 transition-opacity duration-500"></div>
+                        <!-- Fullscreen navigation controls -->
+                        <button id="fullscreen-prev" class="absolute left-2 top-1/2 -translate-y-1/2 z-50 bg-black/40 hover:bg-black/70 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none transition hidden" style="backdrop-filter: blur(2px);">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="fullscreen-next" class="absolute right-2 top-1/2 -translate-y-1/2 z-50 bg-black/40 hover:bg-black/70 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none transition hidden" style="backdrop-filter: blur(2px);">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -85,371 +105,20 @@
     </div>
 
     {{-- PDF.js & Turn.js Libraries --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JANGAN ADA JQUERY LAIN DI LAYOUT/HEADER -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+    @vite(['resources/js/ebook.js'])
     <script>
-        $(document).ready(function() {
-            if (typeof $.fn.turn !== 'undefined') {
-                initializePDFViewer();
-            } else {
-                showError();
-            }
-        });
-    </script>
-    
-    {{-- Enhanced Flipbook Script --}}
-    <script>
-        // Set PDF.js worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-        let pdfDoc = null;
-        let currentPage = 1;
-        let totalPages = 0;
-        let scale = 1.0;
-        let isAutoFlipping = false;
-        let autoFlipInterval = null;
-        let renderedPages = {};
-        let flipbookInitialized = false;
-
-        // PDF URL
-        const pdfUrl = '{{ asset("storage/" . $ebook->path_file) }}';
-
-        // Materi URL for redirect after finish
-        const materiUrl = @json(route('guest.elearning.materi', $ebook->materi_id));
-
-        // Show finish dialog
-        function showFinishDialog() {
-            if (document.getElementById('finish-dialog')) return;
-            const dialog = document.createElement('div');
-            dialog.id = 'finish-dialog';
-            dialog.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/40';
-            dialog.innerHTML = `
-                <div class="bg-white rounded-xl shadow-xl p-6 max-w-xs w-full text-center animate-fadeIn">
-                    <h2 class="text-lg font-bold mb-2">E-Book Selesai Dibaca!</h2>
-                    <p class="mb-4 text-gray-700">Anda telah membaca semua halaman e-book ini.<br>Lanjut ke materi atau tetap membaca?</p>
-                    <div class="flex justify-center gap-2">
-                        <button id="btn-to-materi" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Kembali ke Materi</button>
-                        <button id="btn-continue-reading" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">Tetap Membaca</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(dialog);
-            document.getElementById('btn-to-materi').onclick = function() {
-                window.location.href = materiUrl;
-            };
-            document.getElementById('btn-continue-reading').onclick = function() {
-                dialog.remove();
-            };
-        }
-
-        // Main initialization function
-        function initializePDFViewer() {
-            // Load PDF and initialize flipbook
-            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-                pdfDoc = pdf;
-                totalPages = pdf.numPages;
-                document.getElementById('total-pages').textContent = totalPages;
-                
-                // Pre-render first few pages for smooth experience
-                renderMultiplePages().then(() => {
-                    if (typeof $.fn.turn !== 'undefined') {
-                        initializeFlipbook();
-                    } else {
-                        initializeSimpleViewer();
-                    }
-                    hideLoading();
-                });
-            }).catch(function(error) {
-                console.error('Error loading PDF:', error);
-                showError();
+        document.addEventListener('DOMContentLoaded', function() {
+            window.initEbookPageFlip({
+                pdfUrl: @json(asset('storage/' . $ebook->path_file)),
+                totalPages: {{ $ebook->jumlah_halaman ?? 'null' }},
+                materiUrl: @json(route('guest.elearning.materi', $ebook->materi_id)),
+                ebookId: {{ $ebook->ebook_id }},
+                csrfToken: @json(csrf_token())
             });
-        }
-
-
-
-        // Render multiple pages for flipbook
-        async function renderMultiplePages() {
-            const promises = [];
-            const pagesToPreload = Math.min(2, totalPages); // Preload hanya 2 halaman pertama
-            for (let i = 1; i <= pagesToPreload; i++) {
-                promises.push(renderPageToCanvas(i));
-            }
-            await Promise.all(promises);
-        }
-
-        // Render a specific page to canvas
-        function renderPageToCanvas(pageNum) {
-            return new Promise((resolve) => {
-                if (renderedPages[pageNum]) {
-                    resolve(renderedPages[pageNum]);
-                    return;
-                }
-
-                pdfDoc.getPage(pageNum).then(function(page) {
-                    // Use higher scale for single page display, extra high for mobile
-                    const isMobile = window.innerWidth <= 768;
-                    const renderScale = isMobile ? Math.max(scale * 2.5, 2.5) : Math.max(scale * 2, 2.0);
-                    const viewport = page.getViewport({ scale: renderScale });
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-
-                    const renderContext = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
-
-                    page.render(renderContext).promise.then(function() {
-                        renderedPages[pageNum] = canvas;
-                        resolve(canvas);
-                    });
-                });
-            });
-        }
-
-        // Initialize Turn.js flipbook
-        function initializeFlipbook() {
-            if (typeof $.fn.turn === 'undefined') {
-                showError();
-                return;
-            }
-
-            const flipbook = $('#flipbook');
-            flipbook.empty();
-            for (let i = 1; i <= totalPages; i++) {
-                const pageDiv = $(`<div class="page page-${i}"></div>`);
-                if (renderedPages[i]) {
-                    pageDiv.append(renderedPages[i]);
-                } else {
-                    pageDiv.html(`
-                        <div class="flex items-center justify-center h-full">
-                            <div class="text-center">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                                <p class="text-sm text-gray-600">Loading page ${i}...</p>
-                            </div>
-                        </div>
-                    `);
-                }
-                flipbook.append(pageDiv);
-            }
-            try {
-                flipbook.turn({
-                    width: 700,
-                    height: 900,
-                    autoCenter: true,
-                    display: 'single',
-                    acceleration: true,
-                    gradients: true,
-                    elevation: 50,
-                    when: {
-                        turning: function(event, page, view) {
-                            currentPage = page;
-                            updatePageInfo();
-                            updateNavigationButtons();
-                            if (!renderedPages[page]) {
-                                loadPageLazy(page);
-                            }
-                        },
-                        turned: function(event, page, view) {
-                            const nextPage = page + 1;
-                            if (nextPage <= totalPages && !renderedPages[nextPage]) {
-                                loadPageLazy(nextPage);
-                            }
-                            if (page === totalPages) {
-                                fetch(`{{ url('/elearning/ebook/' . $ebook->ebook_id . '/read') }}`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Accept': 'application/json'
-                                    }
-                                }).then(() => {
-                                    showFinishDialog();
-                                });
-                            }
-                        }
-                    }
-                });
-                flipbook.removeClass('hidden');
-                flipbookInitialized = true;
-                updatePageInfo();
-                updateNavigationButtons();
-            } catch (error) {
-                showError();
-            }
-        }
-
-        // Load page lazily
-        function loadPageLazy(pageNum) {
-            if (renderedPages[pageNum]) return;
-            
-            renderPageToCanvas(pageNum).then((canvas) => {
-                const pageDiv = $(`.page-${pageNum}`);
-                pageDiv.empty().append(canvas);
-            });
-        }
-
-        function updatePageInfo() {
-            document.getElementById('current-page').textContent = currentPage;
-        }
-
-        function updateNavigationButtons() {
-            document.getElementById('prev-page').disabled = currentPage <= 1;
-            document.getElementById('next-page').disabled = currentPage >= totalPages;
-        }
-
-        function hideLoading() {
-            const loadingContainer = document.querySelector('.loading-container');
-            if (loadingContainer) {
-                loadingContainer.style.display = 'none';
-            }
-        }
-
-        function showError() {
-            const container = document.getElementById('flipbook-container');
-            container.innerHTML = `
-                <div class="flex items-center justify-center h-96">
-                    <div class="text-center">
-                        <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
-                        <p class="text-gray-600">Gagal memuat e-book</p>
-                        <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            Coba Lagi
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Navigation event listeners
-        document.getElementById('prev-page').addEventListener('click', function() {
-            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                $('#flipbook').turn('previous');
-            }
-        });
-
-        document.getElementById('next-page').addEventListener('click', function() {
-            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                $('#flipbook').turn('next');
-            }
-        });
-
-        // Zoom controls
-        document.getElementById('zoom-in').addEventListener('click', function() {
-            scale += 0.25;
-            updateZoom();
-        });
-
-        document.getElementById('zoom-out').addEventListener('click', function() {
-            if (scale > 0.5) {
-                scale -= 0.25;
-                updateZoom();
-            }
-        });
-
-        function updateZoom() {
-            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
-            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                // Re-render visible pages with new scale
-                const currentPages = $('#flipbook').turn('view');
-                currentPages.forEach(page => {
-                    if (page > 0) {
-                        delete renderedPages[page];
-                        loadPageLazy(page);
-                    }
-                });
-                // Update flipbook size for single page
-                const newWidth = 700 * scale;
-                const newHeight = 900 * scale;
-                $('#flipbook').turn('size', newWidth, newHeight);
-            }
-        }
-
-        // Auto flip functionality
-        document.getElementById('auto-flip').addEventListener('click', function() {
-            const button = this;
-            if (isAutoFlipping) {
-                clearInterval(autoFlipInterval);
-                isAutoFlipping = false;
-                button.innerHTML = '<i class="fas fa-play mr-1"></i> Auto Flip';
-                button.classList.remove('bg-red-500', 'hover:bg-red-600');
-                button.classList.add('bg-green-500', 'hover:bg-green-600');
-            } else {
-                autoFlipInterval = setInterval(() => {
-                    if (currentPage < totalPages) {
-                        if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                            $('#flipbook').turn('next');
-                        } else {
-                            renderSimplePage(currentPage + 1);
-                        }
-                    } else {
-                        // Stop auto flip when reaching end
-                        button.click();
-                    }
-                }, 3000); // Flip every 3 seconds
-                
-                isAutoFlipping = true;
-                button.innerHTML = '<i class="fas fa-stop mr-1"></i> Stop Auto';
-                button.classList.remove('bg-green-500', 'hover:bg-green-600');
-                button.classList.add('bg-red-500', 'hover:bg-red-600');
-            }
-        });
-
-        // Fullscreen control
-        document.getElementById('fullscreen').addEventListener('click', function() {
-            const container = document.getElementById('flipbook-container');
-            if (container.requestFullscreen) {
-                container.requestFullscreen();
-            } else if (container.webkitRequestFullscreen) {
-                container.webkitRequestFullscreen();
-            } else if (container.mozRequestFullScreen) {
-                container.mozRequestFullScreen();
-            } else if (container.msRequestFullscreen) {
-                container.msRequestFullscreen();
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') {
-                if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                    $('#flipbook').turn('previous');
-                }
-            } else if (e.key === 'ArrowRight') {
-                if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                    $('#flipbook').turn('next');
-                }
-            } else if (e.key === 'Escape' && isAutoFlipping) {
-                document.getElementById('auto-flip').click();
-            }
-        });
-
-        // Handle window resize
-        $(window).resize(function() {
-            if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
-                const container = $('#flipbook-container');
-                const containerWidth = container.width();
-                const containerHeight = container.height();
-                
-                // Calculate optimal size for single page display
-                const maxWidth = Math.min(containerWidth - 40, 700);
-                const maxHeight = Math.min(containerHeight - 40, 900);
-                
-                // Maintain aspect ratio (A4-like: 0.77)
-                const aspectRatio = 700 / 900;
-                
-                let finalWidth, finalHeight;
-                if (maxWidth / maxHeight > aspectRatio) {
-                    finalHeight = maxHeight;
-                    finalWidth = finalHeight * aspectRatio;
-                } else {
-                    finalWidth = maxWidth;
-                    finalHeight = finalWidth / aspectRatio;
-                }
-                
-                $('#flipbook').turn('size', finalWidth, finalHeight);
-            }
         });
     </script>
 
