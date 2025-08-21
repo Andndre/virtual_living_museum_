@@ -14,6 +14,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
     // Ukuran fix untuk flipbook dan render PDF agar anti-blur
     const PAGE_WIDTH = 1400;
     const PAGE_HEIGHT = 1980;
+		let pdfDoc = null;
     let currentPage = 1;
     let scale = 1.0;
     let renderedPages = {};
