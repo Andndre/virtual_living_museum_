@@ -70,11 +70,11 @@ class User extends Authenticatable
     // Ini dijalankan ketika user menyelesaikan progress TERBARU, JIKA MEMBUKA YANG SEBELUMNYA TIDAK DIANGGAP
     public function incrementProgressLevel(): void {
         // jika sudah 4, maka reset menjadi 0, dan increment level
+        $this->increment('progress_level_sekarang');
         if ($this->progress_level_sekarang >= 4) {
             $this->progress_level_sekarang = 0;
+            $this->save();
             $this->incrementLevel();
-        } else {
-            $this->increment('progress_level_sekarang');
         }
     }
 

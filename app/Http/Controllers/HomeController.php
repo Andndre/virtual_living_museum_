@@ -236,12 +236,6 @@ class HomeController extends Controller
             ]);
         }
         
-        // Update progress materi to pretest_selesai
-        $progress = ProgressMateri::getOrCreate($user->id, $materi_id);
-        if ($progress->status === ProgressMateri::STATUS_BELUM_MULAI) {
-            $progress->updateStatus(ProgressMateri::STATUS_PRETEST_SELESAI);
-        }
-
         // Update progress materi
         // Seharusnya ini akan selalu True untuk sekarang
         // karena pretest tidak bisa diulang
@@ -268,32 +262,31 @@ class HomeController extends Controller
                 ->with('error', 'Selesaikan pretest terlebih dahulu.');
         }
         
-        // Check if posttest is already completed
-        $isCompleted = $this->isPosttestCompleted($user->id, $materi_id);
-        
+        // Check if posttest is already completed (hanya true jika sudah ada jawaban user di DB)
+        $userAnswers = JawabanUser::where('user_id', $user->id)
+            ->where('materi_id', $materi_id)
+            ->where('jenis', 'posttest')
+            ->get();
+        $isCompleted = $userAnswers->count() > 0;
+
         $questions = $materi->posttest;
         $totalQuestions = $questions->count();
-        
+
         // Get results if completed
         $score = 0;
         $correctAnswers = 0;
-        
+
         if ($isCompleted) {
-            $userAnswers = JawabanUser::where('user_id', $user->id)
-                ->where('materi_id', $materi_id)
-                ->where('jenis', 'posttest')
-                ->get();
-            
             $correctAnswers = $userAnswers->where('benar', true)->count();
             $score = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 100) : 0;
         }
-        
+
         return view('guest.elearning.posttest', compact(
-            'materi', 
-            'questions', 
-            'totalQuestions', 
-            'isCompleted', 
-            'score', 
+            'materi',
+            'questions',
+            'totalQuestions',
+            'isCompleted',
+            'score',
             'correctAnswers'
         ));
     }
@@ -306,25 +299,35 @@ class HomeController extends Controller
         $userAuth = Auth::user();
         $user = User::findOrFail($userAuth->id);
         $materi = Materi::with('posttest')->findOrFail($materi_id);
-        
+
+        // Validate the request
+        $request->validate([
+            'answers' => 'required|array',
+            'answers.*' => 'required|in:A,B,C,D'
+        ], [
+            'answers.required' => 'Mohon jawab semua pertanyaan.',
+            'answers.*.required' => 'Setiap pertanyaan harus dijawab.',
+            'answers.*.in' => 'Jawaban harus berupa A, B, C, atau D.'
+        ]);
+
         $answers = $request->input('answers', []);
         $correctCount = 0;
         $totalQuestions = $materi->posttest->count();
-        
+
         foreach ($materi->posttest as $question) {
             $userAnswer = $answers[$question->posttest_id] ?? null;
-            
+
             // Skip saving if no answer provided
             if ($userAnswer === null) {
                 continue;
             }
-            
+
             $isCorrect = $userAnswer === $question->jawaban_benar;
-            
+
             if ($isCorrect) {
                 $correctCount++;
             }
-            
+
             // Save answer
             JawabanUser::create([
                 'user_id' => $user->id,
@@ -338,14 +341,21 @@ class HomeController extends Controller
             ]);
         }
 
-        // Increment progress
-        if ($materi->shouldIncrementProgress($user, 1)) {
+        // Increment user progress if needed
+        if ($materi->shouldIncrementProgress($user, 4)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul}");
         }
-        
+
+        // Calculate score and correct answers for result display
+        $score = $totalQuestions > 0 ? round(($correctCount / $totalQuestions) * 100) : 0;
+
         return redirect()->route('guest.elearning.posttest', $materi_id)
-            ->with('success', 'Posttest berhasil diselesaikan!');
+            ->with([
+                'success' => 'Posttest berhasil diselesaikan!',
+                'score' => $score,
+                'correctAnswers' => $correctCount
+            ]);
     }
 
     /**
@@ -478,13 +488,16 @@ class HomeController extends Controller
      */
     private function isPosttestCompleted($user_id, $materi_id)
     {
-        $posttest = Materi::find($materi_id)->posttest ?? collect();
-        if ($posttest->isEmpty()) return true; // No posttest means completed
-        
-        return JawabanUser::where('user_id', $user_id)
-            ->where('materi_id', $materi_id)
-            ->where('jenis', 'posttest')
-            ->exists();
+        $materi = Materi::find($materi_id);
+        if (!$materi) return false;
+        $user = User::find($user_id);
+        if (!$user) return false;
+
+        // Jika materi sudah lewat level user, pasti sudah selesai
+        if ($materi->urutan < $user->level_sekarang + 1) return true;
+
+        // Jika progress user pada materi ini sudah mencapai atau melewati step posttest
+        return $user->progress_level_sekarang >= User::POST_TEST;
     }
 
     /**
