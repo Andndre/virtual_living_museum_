@@ -4,6 +4,9 @@ import { PageFlip } from 'page-flip';
 // import * as pdfjsLib from 'pdfjs-dist';
 
 window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, csrfToken }) {
+    // Ukuran fix untuk flipbook dan render PDF agar anti-blur
+    const PAGE_WIDTH = 1400;
+    const PAGE_HEIGHT = 1980;
     let pdfDoc = null;
     let currentPage = 1;
     let scale = 1.0;
@@ -94,6 +97,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
         for (let i = 1; i <= totalPages; i++) {
             promises.push(renderPageToCanvas(i));
         }
+        // Tunggu semua canvas selesai render
         await Promise.all(promises);
     }
 
@@ -105,13 +109,22 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             }
             window['pdfjsLib'].getDocument(pdfUrl).promise.then(function(pdf) {
                 pdf.getPage(pageNum).then(function(page) {
-                    const isMobile = window.innerWidth <= 768;
-                    const renderScale = isMobile ? Math.max(scale * 2.5, 2.5) : Math.max(scale * 2, 2.0);
+                    const devicePixelRatio = window.devicePixelRatio || 1;
+                    // Skala agar hasil render PDF = PAGE_WIDTH x PAGE_HEIGHT
+                    const pdfOriginalWidth = page.view[2];
+                    const pdfOriginalHeight = page.view[3];
+                    const scaleX = (PAGE_WIDTH * devicePixelRatio) / pdfOriginalWidth;
+                    const scaleY = (PAGE_HEIGHT * devicePixelRatio) / pdfOriginalHeight;
+										console.log(`Rendering page ${pageNum} with scaleX: ${scaleX}, scaleY: ${scaleY}`);
+                    const renderScale = Math.min(scaleX, scaleY);
                     const viewport = page.getViewport({ scale: renderScale });
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    canvas.height = viewport.height;
                     canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    // Set style width/height agar sesuai flipbook (CSS), tapi canvas-nya tetap resolusi tinggi
+                    canvas.style.width = PAGE_WIDTH + 'px';
+                    canvas.style.height = PAGE_HEIGHT + 'px';
                     const renderContext = {
                         canvasContext: ctx,
                         viewport: viewport
@@ -129,13 +142,13 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
         const viewer = document.getElementById('pageflip-viewer');
         viewer.innerHTML = '';
         pageFlip = new PageFlip(viewer, {
-            width: 700,
-            height: 990,
+            width: PAGE_WIDTH,
+            height: PAGE_HEIGHT,
             size: 'stretch',
             minWidth: 315,
             minHeight: 420,
-            maxWidth: 1200,
-            maxHeight: 1600,
+            maxWidth: PAGE_WIDTH,
+            maxHeight: PAGE_HEIGHT,
             drawShadow: true,
             flippingTime: 700,
             usePortrait: true,
@@ -149,24 +162,21 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             showPageCorners: true,
             mode: 'single'
         });
-        const pages = [];
+        // Kumpulkan semua canvas hasil render
+        const canvases = [];
         for (let i = 1; i <= totalPages; i++) {
             if (renderedPages[i]) {
-                const img = document.createElement('img');
-                img.src = renderedPages[i].toDataURL();
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'contain';
-                pages.push({
-                    src: img.src,
-                    width: renderedPages[i].width,
-                    height: renderedPages[i].height
-                });
+                canvases.push(renderedPages[i]);
             } else {
-                pages.push({ src: '', width: 700, height: 990 });
+                // Jika gagal render, tambahkan canvas kosong
+                const blank = document.createElement('canvas');
+                blank.width = PAGE_WIDTH;
+                blank.height = PAGE_HEIGHT;
+                canvases.push(blank);
             }
         }
-        pageFlip.loadFromImages(pages.map(p => p.src));
+        // Masukkan langsung canvas ke PageFlip
+        pageFlip.loadFromHTML(canvases);
         flipbookInitialized = true;
         updatePageInfo();
         updateNavigationButtons();

@@ -157,13 +157,13 @@
             overflow: hidden;
         }
 
-        .flipbook .page canvas {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: contain;
+        .flipbook .page canvas,
+        .flipbook .page img {
+            display: block;
             max-width: 100%;
             max-height: 100%;
-            aspect-ratio: 210/297;
+            object-fit: contain;
+            margin: 0 auto;
             background: white;
         }
 
