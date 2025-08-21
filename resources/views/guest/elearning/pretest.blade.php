@@ -25,7 +25,6 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Pre-test Selesai!</h3>
                     <p class="text-gray-600 mb-6">Anda telah menyelesaikan pre-test untuk materi ini.</p>
-                    
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div class="bg-blue-50 rounded-lg p-4">
                             <div class="text-2xl font-bold text-blue-600">{{ $score }}%</div>
@@ -36,7 +35,68 @@
                             <div class="text-sm text-green-600">Benar</div>
                         </div>
                     </div>
-
+                </div>
+                {{-- Evaluasi Soal --}}
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold mb-4 text-gray-800">Evaluasi Jawaban Anda</h4>
+                    <div class="space-y-6">
+                        @php
+                            $userAnswers = \App\Models\JawabanUser::where('user_id', Auth::id())
+                                ->where('materi_id', $materi->materi_id)
+                                ->where('jenis', 'pretest')
+                                ->get()
+                                ->keyBy('soal_id');
+                        @endphp
+                        @foreach($questions as $idx => $question)
+                            @php
+                                $jawabanUser = $userAnswers[$question->pretest_id] ?? null;
+                                $userChoice = $jawabanUser->jawaban_user ?? null;
+                                $isCorrect = $jawabanUser ? $jawabanUser->benar : false;
+                            @endphp
+                            <div class="p-4 rounded-xl border @if($isCorrect) border-green-300 bg-green-50 @else border-red-300 bg-red-50 @endif">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold mr-2">Soal {{ $idx+1 }}:</span>
+                                    <span class="flex-1 text-gray-800">{{ $question->pertanyaan }}</span>
+                                    @if($isCorrect)
+                                        <span class="ml-2 px-2 py-1 rounded bg-green-500 text-white text-xs font-semibold">Benar</span>
+                                    @else
+                                        <span class="ml-2 px-2 py-1 rounded bg-red-500 text-white text-xs font-semibold">Salah</span>
+                                    @endif
+                                </div>
+                                <div class="space-y-2 mt-2">
+                                    @foreach(['A' => $question->pilihan_a, 'B' => $question->pilihan_b, 'C' => $question->pilihan_c, 'D' => $question->pilihan_d] as $key => $option)
+                                        @php
+                                            $isUser = $userChoice === $key;
+                                            $isBenar = $question->jawaban_benar === $key;
+                                        @endphp
+                                        <div class="flex items-center p-3 rounded-lg border transition-all duration-200
+                                            @if($isBenar) border-green-500 bg-green-50 @elseif($isUser) border-red-500 bg-red-50 @else border-gray-200 @endif">
+                                            <span class="option-letter w-8 h-8 flex items-center justify-center rounded-full font-bold mr-4
+                                                @if($isBenar) bg-green-500 text-white @elseif($isUser) bg-red-500 text-white @else bg-gray-100 text-gray-600 @endif">
+                                                {{ $key }}
+                                            </span>
+                                            <span class="flex-1">{{ $option }}</span>
+                                            {{-- Icon logic --}}
+                                            @if($isCorrect)
+                                                @if($isUser && $isBenar)
+                                                    <span class="ml-2"><i class="fas fa-check text-green-600 text-lg"></i></span>
+                                                @endif
+                                            @else
+                                                @if($isUser && !$isBenar)
+                                                    <span class="ml-2"><i class="fas fa-times text-red-600 text-lg"></i></span>
+                                                @endif
+                                                @if($isBenar)
+                                                    <span class="ml-2"><i class="fas fa-check text-green-600 text-lg"></i></span>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="text-center mt-8">
                     <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" 
                        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-arrow-right mr-2"></i>
