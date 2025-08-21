@@ -294,14 +294,17 @@
             nextBtn.classList.toggle('hidden', index === totalQuestions - 1);
             submitBtn.classList.toggle('hidden', index !== totalQuestions - 1);
 
-            // Disable next/submit until answered
+            // Disable next/submit until answered, kecuali sudah pernah dijawab
+            const answered = currentQuestionEl.querySelector('input[type="radio"]:checked');
             if (totalQuestions === 1) {
-                // Only one question: nextBtn always disabled, submitBtn enabled only after answer
                 nextBtn.disabled = true;
-                submitBtn.disabled = true;
+                submitBtn.disabled = !answered;
             } else {
-                nextBtn.disabled = true;
-                submitBtn.disabled = true;
+                if (currentQuestion === totalQuestions - 1) {
+                    submitBtn.disabled = !answered;
+                } else {
+                    nextBtn.disabled = !answered;
+                }
             }
         }
 
