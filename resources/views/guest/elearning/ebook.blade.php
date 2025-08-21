@@ -165,6 +165,34 @@
         // PDF URL
         const pdfUrl = '{{ asset("storage/" . $ebook->path_file) }}';
 
+        // Materi URL for redirect after finish
+        const materiUrl = @json(route('guest.elearning.materi', $ebook->materi_id));
+
+        // Show finish dialog
+        function showFinishDialog() {
+            if (document.getElementById('finish-dialog')) return;
+            const dialog = document.createElement('div');
+            dialog.id = 'finish-dialog';
+            dialog.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/40';
+            dialog.innerHTML = `
+                <div class="bg-white rounded-xl shadow-xl p-6 max-w-xs w-full text-center animate-fadeIn">
+                    <h2 class="text-lg font-bold mb-2">E-Book Selesai Dibaca!</h2>
+                    <p class="mb-4 text-gray-700">Anda telah membaca semua halaman e-book ini.<br>Lanjut ke materi atau tetap membaca?</p>
+                    <div class="flex justify-center gap-2">
+                        <button id="btn-to-materi" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Kembali ke Materi</button>
+                        <button id="btn-continue-reading" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">Tetap Membaca</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+            document.getElementById('btn-to-materi').onclick = function() {
+                window.location.href = materiUrl;
+            };
+            document.getElementById('btn-continue-reading').onclick = function() {
+                dialog.remove();
+            };
+        }
+
         // Main initialization function
         function initializePDFViewer() {
             // Load PDF and initialize flipbook
@@ -209,19 +237,14 @@
 
         function renderSimplePage(pageNum) {
             if (!pdfDoc) return;
-            
             const flipbook = document.getElementById('flipbook');
             flipbook.innerHTML = '<div class="flex justify-center items-center w-full h-full"><canvas id="simple-canvas"></canvas></div>';
-            
             const canvas = document.getElementById('simple-canvas');
             const ctx = canvas.getContext('2d');
-            
             pdfDoc.getPage(pageNum).then(function(page) {
                 const containerWidth = flipbook.clientWidth - 40; // Account for padding
                 const containerHeight = flipbook.clientHeight - 40;
-                
                 const viewport = page.getViewport({ scale: 1.0 });
-                
                 // Calculate scale to fit container while maintaining aspect ratio
                 const scaleX = containerWidth / viewport.width;
                 const scaleY = containerHeight / viewport.height;
@@ -229,9 +252,7 @@
                 const isMobile = window.innerWidth <= 768;
                 const minScale = isMobile ? 2.5 : 2.0;
                 const optimalScale = Math.max(Math.min(scaleX, scaleY, scale), minScale);
-                
                 const scaledViewport = page.getViewport({ scale: optimalScale });
-                
                 canvas.height = scaledViewport.height;
                 canvas.width = scaledViewport.width;
                 canvas.style.maxWidth = '100%';
@@ -239,16 +260,26 @@
                 canvas.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
                 canvas.style.borderRadius = '12px';
                 canvas.style.background = 'white';
-
                 const renderContext = {
                     canvasContext: ctx,
                     viewport: scaledViewport
                 };
-
                 page.render(renderContext).promise.then(function() {
                     currentPage = pageNum;
                     updatePageInfo();
                     updateNavigationButtons();
+                    // Jika user membuka halaman terakhir di simple viewer, kirim AJAX dan tampilkan dialog
+                    if (pageNum === totalPages) {
+                        fetch(`{{ url('/elearning/ebook/' . $ebook->ebook_id . '/read') }}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        }).then(() => {
+                            showFinishDialog();
+                        });
+                    }
                 });
             });
         }
@@ -256,12 +287,10 @@
         // Render multiple pages for flipbook
         async function renderMultiplePages() {
             const promises = [];
-            const pagesToPreload = Math.min(6, totalPages); // Preload first 6 pages
-            
+            const pagesToPreload = Math.min(2, totalPages); // Preload hanya 2 halaman pertama
             for (let i = 1; i <= pagesToPreload; i++) {
                 promises.push(renderPageToCanvas(i));
             }
-            
             await Promise.all(promises);
         }
 
@@ -307,10 +336,10 @@
 
             console.log('Initializing Turn.js flipbook...');
             const flipbook = $('#flipbook');
-            
+
             // Clear existing content
             flipbook.empty();
-            
+
             // Add pages to flipbook
             for (let i = 1; i <= totalPages; i++) {
                 const pageDiv = $(`<div class="page page-${i}"></div>`);
@@ -325,8 +354,6 @@
                             </div>
                         </div>
                     `);
-                    // Load page lazily
-                    setTimeout(() => loadPageLazy(i), i * 200);
                 }
                 flipbook.append(pageDiv);
             }
@@ -337,7 +364,7 @@
                     width: 700,
                     height: 900,
                     autoCenter: true,
-                    display: 'single',  // Changed from 'double' to 'single'
+                    display: 'single',
                     acceleration: true,
                     gradients: true,
                     elevation: 50,
@@ -346,6 +373,10 @@
                             currentPage = page;
                             updatePageInfo();
                             updateNavigationButtons();
+                            // Selalu load page yang akan diakses
+                            if (!renderedPages[page]) {
+                                loadPageLazy(page);
+                            }
                         },
                         turned: function(event, page, view) {
                             // Load next pages if needed
@@ -353,8 +384,17 @@
                             if (nextPage <= totalPages && !renderedPages[nextPage]) {
                                 loadPageLazy(nextPage);
                             }
-                            if (nextPage + 1 <= totalPages && !renderedPages[nextPage + 1]) {
-                                loadPageLazy(nextPage + 1);
+                            // Jika user membuka halaman terakhir, kirim AJAX ke backend untuk increment progress dan tampilkan dialog
+                            if (page === totalPages) {
+                                fetch(`{{ url('/elearning/ebook/' . $ebook->ebook_id . '/read') }}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json'
+                                    }
+                                }).then(() => {
+                                    showFinishDialog();
+                                });
                             }
                         }
                     }
@@ -564,6 +604,11 @@
     </script>
 
     <style>
+        /* Fade in animation for dialog */
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease;
+        }
+
         /* Flipbook Styles for Single Page */
         .flipbook {
             margin: 20px auto;

@@ -21,6 +21,17 @@ class Materi extends Model
         'urutan' => 'integer',
     ];
 
+    // cek ini level keberapa
+    public function getLevel(): Int {
+        return $this->urutan;
+    }
+
+    public function shouldIncrementProgress(User $user, int $progress): bool
+    {
+        return $this->urutan > $user->level_sekarang || 
+                ($this->urutan == $user->level_sekarang && $progress > $user->progress_level_sekarang);
+    }
+
     // Relationships
     public function pretest(): HasMany
     {

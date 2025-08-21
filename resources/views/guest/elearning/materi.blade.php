@@ -373,10 +373,17 @@
             document.getElementById(tabName + '-tab').classList.add('bg-white/20');
         }
 
-        // Initialize first available tab
+        // Initialize tab based on query param
         document.addEventListener('DOMContentLoaded', function() {
-            // Always start with pretest tab
-            switchTab('pretest');
+            // Ambil query string ?tab=xxx
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            const allowedTabs = ['pretest','ebook','museum','posttest'];
+            if(tab && allowedTabs.includes(tab)) {
+                switchTab(tab);
+            } else {
+                switchTab('pretest');
+            }
         });
     </script>
 </x-elearning-layout>

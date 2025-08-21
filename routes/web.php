@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'elearningPosttest'])->name('guest.elearning.posttest');
     Route::post('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'submitPosttest'])->name('guest.elearning.posttest.submit');
     Route::get('/elearning/ebook/{ebook_id}', [HomeController::class, 'elearningEbook'])->name('guest.elearning.ebook');
+    // Mark e-book as read (AJAX)
+    Route::post('/elearning/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
     
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');

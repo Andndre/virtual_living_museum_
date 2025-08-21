@@ -9,9 +9,8 @@ use App\Models\Ebook;
 use App\Models\JawabanUser;
 use App\Models\LogAktivitas;
 use App\Models\ProgressMateri;
-use App\Models\VirtualMuseum;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -67,51 +66,44 @@ class HomeController extends Controller
         $user = Auth::user();
         
         // Get all materis ordered by urutan
-        $allMateris = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
+        $materis = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
             ->orderBy('urutan')
             ->get();
-        
-        $materis = $allMateris->map(function ($materi, $index) use ($user, $allMateris) {
-            // Check if previous materi is completed (for sequential access)
-            $previousMateriCompleted = $index === 0 ? true : $this->isMateriCompleted($user->id, $allMateris[$index - 1]->materi_id ?? null);
-            
-            // Calculate materi progress
-            $materiProgress = $this->calculateMateriProgress($user->id, $materi->materi_id);
-            
-            $materi->is_available = $previousMateriCompleted;
-            $materi->is_completed = $materiProgress['is_completed'];
-            $materi->is_started = $materiProgress['is_started'];
-            $materi->total_pretest = $materi->pretest->count();
-            $materi->total_posttest = $materi->posttest->count();
-            $materi->total_ebook = $materi->ebook->count();
-            $materi->total_situs = $materi->situsPeninggalan->count();
-            
+
+        // Tandai status tiap materi (completed, available, locked) berdasarkan level user
+        $materis = $materis->map(function ($materi) use ($user) {
+            $materiLevel = $materi->urutan;
+            if ($materiLevel < $user->level_sekarang + 1) {
+                $materi->is_completed = true;
+                $materi->is_available = false;
+            } elseif ($materiLevel == $user->level_sekarang + 1) {
+                $materi->is_completed = false;
+                $materi->is_available = true;
+            } else {
+                $materi->is_completed = false;
+                $materi->is_available = false;
+            }
             return $materi;
         });
-        
-        // Calculate overall progress
+
         $totalMateri = $materis->count();
         $completedMateri = $materis->where('is_completed', true)->count();
         $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
-        
-        // Get next materi to continue (first incomplete available materi)
-        $nextMateri = $materis->where('is_available', true)
-            ->where('is_completed', false)
-            ->first();
-        
-        // Get riwayat aktivitas grouped by date
+
+        $nextMateri = $materis->first(function ($materi) {
+            return $materi->is_available;
+        });
+
         $riwayatAktivitas = LogAktivitas::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->take(50) // Limit to last 50 activities
+            ->take(50)
             ->get()
             ->groupBy(function($item) {
                 return $item->created_at->format('Y-m-d');
             });
-        
+
         return view('guest.elearning', compact(
-            'materis', 
-            'totalMateri', 
-            'completedMateri', 
+            'materis',
             'progressPercentage',
             'nextMateri',
             'riwayatAktivitas'
@@ -124,47 +116,33 @@ class HomeController extends Controller
     public function elearningMateri(Request $request, $materi_id)
     {
         $user = Auth::user();
-        $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
-            ->findOrFail($materi_id);
-        
-        // Check if materi is available (sequential learning)
-        $previousMateri = Materi::where('urutan', '<', $materi->urutan)->orderBy('urutan', 'desc')->first();
-        if ($previousMateri && !$this->isMateriCompleted($user->id, $previousMateri->materi_id)) {
-            return redirect()->route('guest.elearning')->with('error', 'Selesaikan materi sebelumnya terlebih dahulu.');
-        }
-        
-        // Calculate progress
-        $materiProgress = $this->calculateMateriProgress($user->id, $materi->materi_id);
-        $progressPercentage = $materiProgress['progress_percentage'];
-        $completedSteps = $materiProgress['completed_steps'];
-        $totalSteps = $materiProgress['total_steps'];
-        
-        // Check test completion status
-        $pretest_completed = $this->isPretestCompleted($user->id, $materi->materi_id);
-        $posttest_completed = $this->isPosttestCompleted($user->id, $materi->materi_id);
-        
-        // Check detailed progress for sequential access
+        $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])->findOrFail($materi_id);
+
+        // Cek status progress user pada materi ini
+        $materiLevel = $materi->urutan;
+        $isAvailable = ($materiLevel == $user->level_sekarang + 1);
+        $isCompleted = ($materiLevel < $user->level_sekarang + 1);
+
+        // Progress step: 1=pretest, 2=ebook, 3=museum, 4=posttest
+        $progress = $user->progress_level_sekarang;
+
+        $pretest_completed = $isCompleted || $progress >= User::PRE_TEST;
         $ebook_available = $pretest_completed;
-        $all_ebooks_read = $this->areAllEbooksRead($user->id, $materi->materi_id);
-        $museum_available = $ebook_available && $all_ebooks_read;
-        $all_museums_visited = $this->areAllMuseumsVisited($user->id, $materi->materi_id);
-        $posttest_available = $museum_available && $all_museums_visited;
-        
-        // Log activity
-        $this->logActivity($user->id, "Mengakses materi: {$materi->judul}");
-        
+        $all_ebooks_read = $isCompleted || $progress >= User::EBOOK;
+        $museum_available = $all_ebooks_read;
+        $all_museums_visited = $isCompleted || $progress >= User::VIRTUAL_LIVING_MUSEUM;
+        $posttest_available = $all_museums_visited;
+        $posttest_completed = $isCompleted || $progress >= User::POST_TEST;
+
         return view('guest.elearning.materi', compact(
-            'materi', 
-            'progressPercentage', 
-            'completedSteps', 
-            'totalSteps',
+            'materi',
             'pretest_completed',
-            'posttest_completed',
             'ebook_available',
             'all_ebooks_read',
             'museum_available',
             'all_museums_visited',
-            'posttest_available'
+            'posttest_available',
+            'posttest_completed'
         ));
     }
 
@@ -211,7 +189,8 @@ class HomeController extends Controller
      */
     public function submitPretest(Request $request, $materi_id)
     {
-        $user = Auth::user();
+        $userAuth = Auth::user();
+        $user = User::findOrFail($userAuth->id);
         $materi = Materi::with('pretest')->findOrFail($materi_id);
         
         // Validate the request
@@ -260,10 +239,14 @@ class HomeController extends Controller
         if ($progress->status === ProgressMateri::STATUS_BELUM_MULAI) {
             $progress->updateStatus(ProgressMateri::STATUS_PRETEST_SELESAI);
         }
-        
-        // Log activity
-        $score = $totalQuestions > 0 ? round(($correctCount / $totalQuestions) * 100) : 0;
-        $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul} dengan nilai {$score}%");
+
+        // Update progress materi
+        // Seharusnya ini akan selalu True untuk sekarang
+        // karena pretest tidak bisa diulang
+        if ($materi->shouldIncrementProgress($user, 1)) {
+            $user->incrementProgressLevel();
+            $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul}");
+        }
         
         return redirect()->route('guest.elearning.pretest', $materi_id)
             ->with('success', 'Pretest berhasil diselesaikan!');
@@ -318,7 +301,8 @@ class HomeController extends Controller
      */
     public function submitPosttest(Request $request, $materi_id)
     {
-        $user = Auth::user();
+        $userAuth = Auth::user();
+        $user = User::findOrFail($userAuth->id);
         $materi = Materi::with('posttest')->findOrFail($materi_id);
         
         $answers = $request->input('answers', []);
@@ -351,10 +335,12 @@ class HomeController extends Controller
                 'answered_at' => now()
             ]);
         }
-        
-        // Log activity
-        $score = $totalQuestions > 0 ? round(($correctCount / $totalQuestions) * 100) : 0;
-        $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul} dengan nilai {$score}%");
+
+        // Increment progress
+        if ($materi->shouldIncrementProgress($user, 1)) {
+            $user->incrementProgressLevel();
+            $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul}");
+        }
         
         return redirect()->route('guest.elearning.posttest', $materi_id)
             ->with('success', 'Posttest berhasil diselesaikan!');
@@ -438,13 +424,16 @@ class HomeController extends Controller
      */
     private function isPretestCompleted($user_id, $materi_id)
     {
-        $pretest = Materi::find($materi_id)->pretest ?? collect();
-        if ($pretest->isEmpty()) return true; // No pretest means completed
-        
-        return JawabanUser::where('user_id', $user_id)
-            ->where('materi_id', $materi_id)
-            ->where('jenis', 'pretest')
-            ->exists();
+        $materi = Materi::find($materi_id);
+        if (!$materi) return false;
+        $user = User::find($user_id);
+        if (!$user) return false;
+
+        // Jika materi sudah lewat level user, pasti sudah selesai
+        if ($materi->urutan < $user->level_sekarang + 1) return true;
+
+        // Jika progress user pada materi ini sudah mencapai atau melewati step pretest
+        return $user->progress_level_sekarang >= User::PRE_TEST;
     }
 
     /**
@@ -527,48 +516,48 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $ebook = Ebook::with('materi')->findOrFail($ebook_id);
-        
+
         // Check if user has completed pretest for this materi
         $pretestCompleted = $this->isPretestCompleted($user->id, $ebook->materi_id);
-        
         if (!$pretestCompleted) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'Anda harus menyelesaikan pre-test terlebih dahulu untuk mengakses e-book ini.');
         }
-        
+
         // Check if file exists
         if (!$ebook->path_file || !file_exists(storage_path('app/public/' . $ebook->path_file))) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'File e-book tidak ditemukan.');
         }
-        
+
         // Log activity with ebook_id for tracking
         $this->logActivity($user->id, 'Telah membaca E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
-        
-        // Update progress to ebook_selesai if all ebooks in this materi have been read
-        $progress = ProgressMateri::getOrCreate($user->id, $ebook->materi_id);
-        if ($progress->status === ProgressMateri::STATUS_PRETEST_SELESAI) {
-            // Get all ebook IDs for this materi
-            $allEbookIds = Ebook::where('materi_id', $ebook->materi_id)->pluck('ebook_id')->toArray();
-            
-            // Check how many unique ebooks have been read by this user for this materi
-            $readEbookIds = [];
-            foreach ($allEbookIds as $ebookId) {
-                $hasRead = LogAktivitas::where('user_id', $user->id)
-                    ->where('aktivitas', 'LIKE', '%[ebook_id:' . $ebookId . ']%')
-                    ->exists();
-                if ($hasRead) {
-                    $readEbookIds[] = $ebookId;
-                }
-            }
-                
-            // If all ebooks have been read, update progress
-            if (count($readEbookIds) >= count($allEbookIds)) {
-                $progress->updateStatus(ProgressMateri::STATUS_EBOOK_SELESAI);
-            }
-        }
-        
+
+        // Catatan: Progress level akan diupdate via AJAX saat user membaca halaman terakhir (lihat endpoint di bawah)
+
         return view('guest.elearning.ebook', compact('ebook'));
+    }
+
+    /**
+     * Endpoint untuk AJAX: update progress_level_sekarang user jika sudah membaca semua halaman e-book
+     */
+    public function markEbookRead(Request $request, $ebook_id)
+    {
+        $userAuth = Auth::user();
+        $user = User::findOrFail($userAuth->id);
+        $ebook = Ebook::with('materi')->findOrFail($ebook_id);
+
+        // Cek apakah user sudah pada step EBOOK dan materi yang benar
+        $materi = $ebook->materi;
+        if ($materi && $materi->urutan == $user->level_sekarang + 1 && $user->progress_level_sekarang == \App\Models\User::PRE_TEST) {
+            // Increment progress ke EBOOK
+            $user->incrementProgressLevel();
+        }
+
+        // Log aktivitas jika perlu
+        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
+
+        return response()->json(['success' => true]);
     }
 
     /**

@@ -25,10 +25,22 @@
                 </div>
                 <div class="flex-1">
                     <p class="text-blue-100 text-sm">Lanjutkan dari tempat Anda tinggalkan</p>
-                    <h3 class="text-white font-semibold">Pre-test Masa</h3>
+                    @php
+                        $stepLabel = 'Pre-test';
+                        if(auth()->user()->progress_level_sekarang == 1) $stepLabel = 'E-Book';
+                        elseif(auth()->user()->progress_level_sekarang == 2) $stepLabel = 'Virtual Museum';
+                        elseif(auth()->user()->progress_level_sekarang == 3) $stepLabel = 'Post-test';
+                    @endphp
+                    <h3 class="text-white font-semibold">{{ $stepLabel }}</h3>
                     <h3 class="text-white font-bold">{{ $nextMateri->judul }}</h3>
                 </div>
-                <a href="{{ route('guest.elearning.materi', $nextMateri->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                @php
+                    $tabParam = 'pretest';
+                    if(auth()->user()->progress_level_sekarang == 1) $tabParam = 'ebook';
+                    elseif(auth()->user()->progress_level_sekarang == 2) $tabParam = 'museum';
+                    elseif(auth()->user()->progress_level_sekarang == 3) $tabParam = 'posttest';
+                @endphp
+                <a href="{{ route('guest.elearning.materi', $nextMateri->materi_id) }}?tab={{ $tabParam }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
                     <i class="fas fa-arrow-right text-white text-xl"></i>
                 </a>
             </div>
