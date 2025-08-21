@@ -11,6 +11,8 @@ use App\Models\LogAktivitas;
 use App\Models\ProgressMateri;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MuseumUserVisit;
+use App\Models\VirtualMuseum;
 
 class HomeController extends Controller
 {
@@ -387,18 +389,53 @@ class HomeController extends Controller
 
     public function arMuseum(Request $request, $situs_id, $museum_id)
     {
-        $user = Auth::user();
+        $userAuth = Auth::user();
+        $user = User::findOrFail($userAuth->id);
         $situs = \App\Models\SitusPeninggalan::findOrFail($situs_id);
-        $museum = \App\Models\VirtualMuseum::with(['virtualMuseumObjects'])->findOrFail($museum_id);
-        
+        $museum = VirtualMuseum::with(['virtualMuseumObjects'])->findOrFail($museum_id);
         // Verify that this museum belongs to the situs
         if ($museum->situs_id != $situs_id) {
             abort(404, 'Museum tidak ditemukan di situs ini.');
         }
-        
+
         // Log AR activity
         $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: ' . $museum->nama . ' di ' . $situs->nama);
-        
+
+        // --- Museum Visit Tracking Logic ---
+        // 1. Catat kunjungan user ke museum ini (jika belum ada)
+        MuseumUserVisit::firstOrCreate([
+            'user_id' => $user->id,
+            'museum_id' => $museum->museum_id
+        ], [
+            'visited_at' => now()
+        ]);
+
+        // 2. Jika materi terkait ada, cek apakah semua museum pada materi ini sudah dikunjungi user
+        if ($situs->materi_id) {
+            $materiId = $situs->materi_id;
+            $materi = Materi::findOrFail($materiId);
+            // Ambil semua museum_id pada materi ini
+            $allMuseumIds = VirtualMuseum::whereIn('situs_id',
+                \App\Models\SitusPeninggalan::where('materi_id', $materiId)->pluck('situs_id')
+            )->pluck('museum_id')->toArray();
+
+            // dd($allMuseumIds);
+
+            // Ambil semua museum_id yang sudah dikunjungi user
+            $visitedMuseumIds = MuseumUserVisit::where('user_id', $user->id)
+                ->whereIn('museum_id', $allMuseumIds)
+                ->pluck('museum_id')->unique()->toArray();
+
+
+            // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
+            if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
+                if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->urutan) {
+                    $user->incrementProgressLevel();
+                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Museum pada materi ID: ' . $materiId);
+                }
+            }
+        }
+
         return view('guest.ar.museum', compact('situs', 'museum'));
     }
 
