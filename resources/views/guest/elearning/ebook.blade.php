@@ -32,7 +32,7 @@
                 </div>
                 
                 {{-- Flipbook Element --}}
-                <div id="flipbook" class="flipbook hidden mx-auto" style="width: 700px; height: 900px;">
+                <div id="flipbook" class="flipbook hidden mx-auto">
                     <!-- Pages will be dynamically inserted here -->
                 </div>
             </div>
@@ -87,64 +87,14 @@
     {{-- PDF.js & Turn.js Libraries --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    
-    {{-- Multiple Turn.js sources for better reliability --}}
     <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
-    
-    {{-- Fallback loading system --}}
     <script>
-        // Check if turn.js loaded, if not try alternatives
         $(document).ready(function() {
-            function checkAndInitialize() {
-                if (typeof $.fn.turn !== 'undefined') {
-                    console.log('Turn.js loaded successfully');
-                    initializePDFViewer();
-                } else {
-                    console.log('Turn.js not loaded, trying alternative sources...');
-                    tryAlternativeSources();
-                }
+            if (typeof $.fn.turn !== 'undefined') {
+                initializePDFViewer();
+            } else {
+                showError();
             }
-
-            function tryAlternativeSources() {
-                const alternatives = [
-                    'https://raw.githack.com/blasten/turn.js/master/turn.min.js',
-                    'https://gitcdn.link/repo/blasten/turn.js/master/turn.min.js',
-                    'https://unpkg.com/turn.js@4.1.0/turn.min.js'
-                ];
-
-                let currentIndex = 0;
-
-                function loadNext() {
-                    if (currentIndex >= alternatives.length) {
-                        console.warn('All Turn.js sources failed, using simple viewer');
-                        initializePDFViewer();
-                        return;
-                    }
-
-                    const script = document.createElement('script');
-                    script.src = alternatives[currentIndex];
-                    script.onload = function() {
-                        if (typeof $.fn.turn !== 'undefined') {
-                            console.log(`Turn.js loaded from alternative source: ${alternatives[currentIndex]}`);
-                            initializePDFViewer();
-                        } else {
-                            currentIndex++;
-                            loadNext();
-                        }
-                    };
-                    script.onerror = function() {
-                        console.warn(`Failed to load Turn.js from: ${alternatives[currentIndex]}`);
-                        currentIndex++;
-                        loadNext();
-                    };
-                    document.head.appendChild(script);
-                }
-
-                loadNext();
-            }
-
-            // Give initial script 2 seconds to load
-            setTimeout(checkAndInitialize, 2000);
         });
     </script>
     
@@ -216,73 +166,7 @@
             });
         }
 
-        // Fallback simple viewer without Turn.js
-        function initializeSimpleViewer() {
-            console.log('Initializing simple PDF viewer...');
-            const flipbook = document.getElementById('flipbook');
-            flipbook.style.width = '100%';
-            flipbook.style.height = '900px';
-            flipbook.style.minHeight = '700px';
-            flipbook.style.display = 'flex';
-            flipbook.style.justifyContent = 'center';
-            flipbook.style.alignItems = 'center';
-            flipbook.style.padding = '20px';
-            flipbook.classList.remove('hidden');
-            
-            // Render first page
-            renderSimplePage(1);
-            updatePageInfo();
-            updateNavigationButtons();
-        }
 
-        function renderSimplePage(pageNum) {
-            if (!pdfDoc) return;
-            const flipbook = document.getElementById('flipbook');
-            flipbook.innerHTML = '<div class="flex justify-center items-center w-full h-full"><canvas id="simple-canvas"></canvas></div>';
-            const canvas = document.getElementById('simple-canvas');
-            const ctx = canvas.getContext('2d');
-            pdfDoc.getPage(pageNum).then(function(page) {
-                const containerWidth = flipbook.clientWidth - 40; // Account for padding
-                const containerHeight = flipbook.clientHeight - 40;
-                const viewport = page.getViewport({ scale: 1.0 });
-                // Calculate scale to fit container while maintaining aspect ratio
-                const scaleX = containerWidth / viewport.width;
-                const scaleY = containerHeight / viewport.height;
-                // Use higher minimum scale for mobile devices
-                const isMobile = window.innerWidth <= 768;
-                const minScale = isMobile ? 2.5 : 2.0;
-                const optimalScale = Math.max(Math.min(scaleX, scaleY, scale), minScale);
-                const scaledViewport = page.getViewport({ scale: optimalScale });
-                canvas.height = scaledViewport.height;
-                canvas.width = scaledViewport.width;
-                canvas.style.maxWidth = '100%';
-                canvas.style.maxHeight = '100%';
-                canvas.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
-                canvas.style.borderRadius = '12px';
-                canvas.style.background = 'white';
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: scaledViewport
-                };
-                page.render(renderContext).promise.then(function() {
-                    currentPage = pageNum;
-                    updatePageInfo();
-                    updateNavigationButtons();
-                    // Jika user membuka halaman terakhir di simple viewer, kirim AJAX dan tampilkan dialog
-                    if (pageNum === totalPages) {
-                        fetch(`{{ url('/elearning/ebook/' . $ebook->ebook_id . '/read') }}`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
-                        }).then(() => {
-                            showFinishDialog();
-                        });
-                    }
-                });
-            });
-        }
 
         // Render multiple pages for flipbook
         async function renderMultiplePages() {
@@ -329,18 +213,12 @@
         // Initialize Turn.js flipbook
         function initializeFlipbook() {
             if (typeof $.fn.turn === 'undefined') {
-                console.warn('Turn.js not available, using simple viewer');
-                initializeSimpleViewer();
+                showError();
                 return;
             }
 
-            console.log('Initializing Turn.js flipbook...');
             const flipbook = $('#flipbook');
-
-            // Clear existing content
             flipbook.empty();
-
-            // Add pages to flipbook
             for (let i = 1; i <= totalPages; i++) {
                 const pageDiv = $(`<div class="page page-${i}"></div>`);
                 if (renderedPages[i]) {
@@ -357,8 +235,6 @@
                 }
                 flipbook.append(pageDiv);
             }
-
-            // Initialize Turn.js with error handling
             try {
                 flipbook.turn({
                     width: 700,
@@ -373,18 +249,15 @@
                             currentPage = page;
                             updatePageInfo();
                             updateNavigationButtons();
-                            // Selalu load page yang akan diakses
                             if (!renderedPages[page]) {
                                 loadPageLazy(page);
                             }
                         },
                         turned: function(event, page, view) {
-                            // Load next pages if needed
                             const nextPage = page + 1;
                             if (nextPage <= totalPages && !renderedPages[nextPage]) {
                                 loadPageLazy(nextPage);
                             }
-                            // Jika user membuka halaman terakhir, kirim AJAX ke backend untuk increment progress dan tampilkan dialog
                             if (page === totalPages) {
                                 fetch(`{{ url('/elearning/ebook/' . $ebook->ebook_id . '/read') }}`, {
                                     method: 'POST',
@@ -399,15 +272,12 @@
                         }
                     }
                 });
-
                 flipbook.removeClass('hidden');
                 flipbookInitialized = true;
                 updatePageInfo();
                 updateNavigationButtons();
-                console.log('Turn.js flipbook initialized successfully');
             } catch (error) {
-                console.error('Error initializing Turn.js:', error);
-                initializeSimpleViewer();
+                showError();
             }
         }
 
@@ -456,22 +326,12 @@
         document.getElementById('prev-page').addEventListener('click', function() {
             if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
                 $('#flipbook').turn('previous');
-            } else {
-                // Simple navigation
-                if (currentPage > 1) {
-                    renderSimplePage(currentPage - 1);
-                }
             }
         });
 
         document.getElementById('next-page').addEventListener('click', function() {
             if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
                 $('#flipbook').turn('next');
-            } else {
-                // Simple navigation
-                if (currentPage < totalPages) {
-                    renderSimplePage(currentPage + 1);
-                }
             }
         });
 
@@ -490,7 +350,6 @@
 
         function updateZoom() {
             document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
-            
             if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
                 // Re-render visible pages with new scale
                 const currentPages = $('#flipbook').turn('view');
@@ -500,15 +359,10 @@
                         loadPageLazy(page);
                     }
                 });
-                
                 // Update flipbook size for single page
                 const newWidth = 700 * scale;
                 const newHeight = 900 * scale;
                 $('#flipbook').turn('size', newWidth, newHeight);
-            } else {
-                // Simple viewer zoom
-                delete renderedPages[currentPage];
-                renderSimplePage(currentPage);
             }
         }
 
@@ -561,14 +415,10 @@
             if (e.key === 'ArrowLeft') {
                 if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
                     $('#flipbook').turn('previous');
-                } else if (currentPage > 1) {
-                    renderSimplePage(currentPage - 1);
                 }
             } else if (e.key === 'ArrowRight') {
                 if (flipbookInitialized && typeof $.fn.turn !== 'undefined') {
                     $('#flipbook').turn('next');
-                } else if (currentPage < totalPages) {
-                    renderSimplePage(currentPage + 1);
                 }
             } else if (e.key === 'Escape' && isAutoFlipping) {
                 document.getElementById('auto-flip').click();
@@ -612,7 +462,15 @@
         /* Flipbook Styles for Single Page */
         .flipbook {
             margin: 20px auto;
-            min-height: 900px;
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 210/297;
+            min-height: 320px;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .flipbook .page {
@@ -624,14 +482,20 @@
             align-items: center;
             justify-content: center;
             border-radius: 8px;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 210/297;
+            overflow: hidden;
         }
 
         .flipbook .page canvas {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
             object-fit: contain;
             max-width: 100%;
             max-height: 100%;
+            aspect-ratio: 210/297;
+            background: white;
         }
 
         .flipbook .even {
@@ -654,11 +518,9 @@
         /* Responsive adjustments for single page */
         @media (max-width: 1024px) {
             .flipbook {
-                width: 100% !important;
-                height: 80vh !important;
-                min-height: 700px !important;
+                max-width: 100vw;
+                min-height: 220px;
             }
-            
             #flipbook-container {
                 min-height: 85vh;
             }
@@ -666,11 +528,9 @@
 
         @media (max-width: 768px) {
             .flipbook {
-                width: 100% !important;
-                height: 85vh !important;
-                min-height: 650px !important;
+                max-width: 100vw;
+                min-height: 180px;
             }
-            
             #flipbook-container {
                 min-height: 90vh;
                 padding: 8px;
@@ -679,11 +539,9 @@
 
         @media (max-width: 480px) {
             .flipbook {
-                width: 100% !important;
-                height: 90vh !important;
-                min-height: 600px !important;
+                max-width: 100vw;
+                min-height: 120px;
             }
-            
             #flipbook-container {
                 min-height: 95vh;
                 padding: 4px;
