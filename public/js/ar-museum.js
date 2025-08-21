@@ -160,6 +160,8 @@ class RendererManager {
     onSessionStart() {
         document.getElementById("tracking-prompt").style.display = "block";
         document.getElementById("expand-bottom-sheet").style.display = "block";
+        // hilangkan tombol #ar-button-container #ARButton
+        document.getElementById("ar-button-container").style.display = "none";
         for (const callback of this.onSessionStarts) {
             callback();
         }

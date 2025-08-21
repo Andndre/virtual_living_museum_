@@ -74,6 +74,33 @@
             }
         }
     </style>
+    <style>
+        #ar-button-container #ARButton {
+            position: absolute !important;
+            left: 50% !important;
+            bottom: 20px !important;
+            transform: translateX(-50%) !important;
+            width: 200px !important;
+            padding: 16px 8px !important;
+            border: 2px solid #fff !important;
+            border-radius: 9999px !important;
+            background: #2563eb !important; /* bg-primary (Tailwind blue-600) */
+            color: #fff !important;
+            font: 600 15px 'Inter', 'sans-serif' !important;
+            text-align: center !important;
+            opacity: 0.95 !important;
+            outline: none !important;
+            z-index: 10000001 !important;
+            cursor: pointer !important;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.12) !important;
+            transition: opacity 0.2s, background 0.2s, border 0.2s !important;
+        }
+        #ar-button-container #ARButton:hover {
+            opacity: 1 !important;
+            background: #1d4ed8 !important; /* biru lebih gelap saat hover */
+            border-width: 3px !important;
+        }
+    </style>
 </head>
 
 <body>
