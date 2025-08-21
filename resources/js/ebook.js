@@ -14,11 +14,8 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
     // Ukuran fix untuk flipbook dan render PDF agar anti-blur
     const PAGE_WIDTH = 1400;
     const PAGE_HEIGHT = 1980;
-    let pdfDoc = null;
     let currentPage = 1;
     let scale = 1.0;
-    let isAutoFlipping = false;
-    let autoFlipInterval = null;
     let renderedPages = {};
     let flipbookInitialized = false;
     let pageFlip = null;
@@ -319,32 +316,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             pageFlip.flipNext();
         }
     });
-    document.getElementById('zoom-in').addEventListener('click', function() {
-        scale += 0.25;
-        renderMultiplePages().then(() => {
-            initializePageFlip();
-        });
-    });
-    document.getElementById('zoom-out').addEventListener('click', function() {
-        if (scale > 0.5) {
-            scale -= 0.25;
-            renderMultiplePages().then(() => {
-                initializePageFlip();
-            });
-        }
-    });
-    document.getElementById('fullscreen').addEventListener('click', function() {
-        const container = document.getElementById('flipbook-container');
-        if (container.requestFullscreen) {
-            container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen();
-        } else if (container.mozRequestFullScreen) {
-            container.mozRequestFullScreen();
-        } else if (container.msRequestFullscreen) {
-            container.msRequestFullscreen();
-        }
-    });
+    
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft') {
             if (flipbookInitialized && pageFlip) {

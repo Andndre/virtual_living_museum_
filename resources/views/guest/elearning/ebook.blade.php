@@ -79,29 +79,6 @@
                     <i class="fas fa-chevron-right ml-1 md:ml-2"></i>
                 </button>
             </div>
-
-            {{-- Additional Controls --}}
-            <div class="flex justify-center items-center space-x-2 md:space-x-4 mt-3 md:mt-4">
-                <button id="zoom-out" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-search-minus text-sm md:text-base"></i>
-                </button>
-                
-                <span id="zoom-level" class="text-xs md:text-sm text-gray-600">100%</span>
-                
-                <button id="zoom-in" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-search-plus text-sm md:text-base"></i>
-                </button>
-                
-                <button id="fullscreen" class="px-2 py-2 md:px-3 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    <i class="fas fa-expand text-sm md:text-base"></i>
-                </button>
-                
-                <button id="auto-flip" class="px-2 py-2 md:px-3 md:py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-xs md:text-sm">
-                    <i class="fas fa-play mr-1"></i>
-                    <span class="hidden sm:inline">Auto Flip</span>
-                    <span class="sm:hidden">Auto</span>
-                </button>
-            </div>
         </div>
     </div>
 
