@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Museum - {{ $museum->nama }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <title>AR</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Joti+One&display=swap" rel="stylesheet">
+
+
+
     <script type="importmap">
         {
           "imports": {
@@ -15,143 +26,155 @@
           }
         }
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+    <script src="https://launchar.app/sdk/v1?key=5aBe43oIyUoBC3PyhermEi3oqqswm07z&redirect=true"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @yield('css')
+
     <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .toaster {
+            background-color: black;
+            color: white;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.25rem;
+            position: relative;
+            animation: slide-in 0.2s forwards, slide-out 0.2s 2.5s forwards;
         }
-        
-        @keyframes pulse-reticle {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
                 opacity: 1;
+                transform: translateX(0);
             }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 0.7;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes slide-out {
+            from {
                 opacity: 1;
+                transform: translateX(0);
             }
-        }
-        
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        .pulse-reticle {
-            animation: pulse-reticle 1.5s infinite;
-        }
-        
-        #object-selector {
-            transition: bottom 0.3s ease;
-        }
-        
-        .show-object-selector {
-            bottom: 0 !important;
+
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
         }
     </style>
 </head>
-<<body class="m-0 p-0 bg-black text-white font-sans overflow-hidden">
-    {{-- Loading Screen --}}
-    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-col justify-center items-center z-50">
-        <div class="loading-spinner w-12 h-12 border-4 border-white border-opacity-30 border-t-white rounded-full mb-5"></div>
-        <h2 class="text-2xl font-bold">Memuat Pengalaman AR</h2>
-        <p class="text-lg">{{ $museum->nama }}</p>
-        <p class="text-sm opacity-80">Pastikan Anda berada di tempat dengan pencahayaan cukup</p>
-    </div>
 
-    {{-- AR Container --}}
-    <div id="ar-container" class="relative w-screen h-screen hidden">
-        <canvas id="ar-canvas" class="w-full h-full"></canvas>
-        
-        {{-- AR UI Overlays --}}
-        <div id="ar-ui" class="absolute inset-0 pointer-events-none z-20">
-            {{-- Back Button --}}
-            <button id="back-button" class="absolute top-5 left-5 bg-black bg-opacity-70 border-2 border-white text-white px-4 py-3 rounded-full text-base cursor-pointer transition-all duration-300 hover:bg-white hover:bg-opacity-20 hover:scale-105 pointer-events-auto">
-                <i class="fas fa-arrow-left"></i> Kembali
-            </button>
-
-            {{-- Status Text --}}
-            <div id="status-text" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 py-3 px-5 rounded-full text-center backdrop-blur-md pointer-events-auto">
-                <p id="status-message" class="m-0">Memuat AR...</p>
+<body>
+    <script>
+        var popupVisible = false;
+    </script>
+    <div class="px-6 py-6 bg-primary text-white rounded-b-3xl">
+        <div class="flex items-center space-x-4">
+            <a href="{{ route('guest.home') }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+            <div class="flex-1">
+                <h1 class="text-lg font-bold">Virtual Museum AR</h1>
+                <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
             </div>
-            
-            {{-- Object Toggle Button --}}
-            @if($museum->virtualMuseumObjects->count() > 0)
-            <button id="object-toggle-button" class="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 border-2 border-green-500 text-white py-3 px-6 rounded-full text-base cursor-pointer transition-all duration-300 backdrop-blur-md hover:bg-green-500 hover:bg-opacity-30 hover:scale-105 pointer-events-auto">
-                <i class="fas fa-list mr-2"></i>
-                Objek Peninggalan ({{ $museum->virtualMuseumObjects->count() }})
-            </button>
+        </div>
+    </div>
+    <div id="overlay" class="fixed inset-0 z-[999999] flex flex-col justify-center items-center pointer-events-none">
+        <div id="instructions"
+            class="z-[100000] w-full text-center hidden absolute top-0 p-4 bg-primary text-white rounded-t-xl">Tekan lingkaran untuk memunculkan ruangan</div>
+        {{-- <audio id="audio-portal">
+            @if (session()->has('locale') && session('locale') == 'id')
+                <source src="{{ asset('assets/music/indonesia-wayang-kamasan-gallery.mp3') }}" type="audio/mpeg">
+            @else
+                <source src="{{ asset('assets/music/english-wayang-kamasan-gallery.mp3') }}" type="audio/mpeg">
             @endif
-            
-            {{-- Reticle for ground detection --}}
-            <div id="reticle" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 border-2 border-green-500 rounded-full bg-green-500 bg-opacity-30 hidden z-10 pulse-reticle"></div>
+        </audio> --}}
+        <div id="tracking-prompt" class="absolute left-1/2 bottom-[44] hidden animate-pulse">
+            <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;" />
+        </div>
+        <div id="toaster-container" class="fixed bottom-0 right-0 m-4 z-[99999]"></div>
+        <div id="bottom-sheet"
+            class="fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-2xl transform translate-y-full transition-transform duration-300 h-16 z-[10000000] pointer-events-auto">
+            <div class="p-4 border-b">
+                    <h3 class="text-lg font-bold text-primary pointer-events-auto">Objek Peninggalan</h3>
+            </div>
+            <div id="bottom-sheet-content" class="hidden p-4 overflow-y-scroll h-[80vh] text-gray-800 text-center pointer-events-auto">
+                <ul id="lukisan-list" class="py-2 flex flex-col gap-6">
+                    @foreach ($museum->virtualMuseumObjects as $i => $object)
+                        <li>
+                            <img class="w-60 max-w-full mx-auto rounded-xl shadow"
+                                src="{{ asset('/storage/' . $object->gambar_real) }}" alt="">
+                            <p class="mt-2">{{ $object->deskripsi }}</p>
+                        </li>
+                    @endforeach
+                    <li>
+                        <div class="pt-8"></div>
+                    </li>
+                </ul>
+                <button id="close-bottom-sheet" class="absolute top-2 right-2 text-gray-600 text-2xl">&times;</button>
+            </div>
         </div>
     </div>
-
-    {{-- Error Message Container --}}
-    <div id="error-container" class="hidden">
-        <div class="bg-red-500 bg-opacity-90 text-white p-5 rounded-lg m-5 text-center">
-            <h3 class="text-lg font-bold mb-2">AR Tidak Didukung</h3>
-            <p id="error-text" class="mb-3">Browser atau perangkat Anda tidak mendukung WebXR.</p>
-            <button onclick="goBack()" class="bg-white text-red-500 border-none py-2 px-5 rounded cursor-pointer">
-                Kembali ke Halaman Sebelumnya
-            </button>
-        </div>
+        <button id="expand-bottom-sheet"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary text-white font-bold px-6 py-3 rounded-full border-2 border-white shadow-lg z-[90000]"
+            style="display: none;">
+            Lihat Detail Objek
+        </button>
+        <script>
+            document.getElementById('expand-bottom-sheet').addEventListener('click', function() {
+                document.getElementById('bottom-sheet').style.transform = 'translateY(0)';
+                document.getElementById('bottom-sheet').style.height = '80vh';
+                document.getElementById('bottom-sheet-content').style.display = 'block';
+            });
+            document.getElementById('close-bottom-sheet').addEventListener('click', function() {
+                document.getElementById('bottom-sheet').style.transform = 'translateY(100%)';
+                document.getElementById('bottom-sheet').style.height = '16px';
+                document.getElementById('bottom-sheet-content').style.display = 'none';
+            });
+        </script>
     </div>
-
-    {{-- Object Selector Panel --}}
-    @if($museum->virtualMuseumObjects->count() > 0)
-    <div id="object-selector" class="fixed -bottom-full left-0 right-0 bg-white bg-opacity-95 rounded-t-3xl p-5 backdrop-blur-2xl max-h-96 overflow-y-auto z-50 text-gray-800">
-        <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-gray-200">
-            <h3 class="m-0 text-gray-800 text-xl font-bold">Objek Peninggalan</h3>
-            <button class="bg-red-500 text-white border-none rounded-full w-8 h-8 cursor-pointer flex items-center justify-center text-sm" onclick="closeObjectSelector()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div id="object-list">
-            @foreach($museum->virtualMuseumObjects as $object)
-            <div class="flex items-start p-4 my-3 border-2 border-gray-200 rounded-2xl bg-white shadow-lg transition-all duration-300 hover:border-green-500 hover:shadow-green-200 hover:shadow-lg hover:-translate-y-1">
-                @if($object->thumbnail_path)
-                    <img src="{{ asset('storage/' . $object->thumbnail_path) }}" alt="{{ $object->nama_objek }}" class="w-20 h-20 rounded-lg mr-4 object-cover border-2 border-gray-300">
-                @else
-                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mr-4 flex items-center justify-center border-2 border-gray-300">
-                        <i class="fas fa-image text-white text-2xl"></i>
-                    </div>
-                @endif
-                <div class="flex-1">
-                    <h4 class="m-0 mb-2 text-base text-gray-800 font-bold">{{ $object->nama_objek }}</h4>
-                    @if($object->periode)
-                        <div class="mb-2 text-xs text-gray-600 bg-gray-100 py-1 px-2 rounded-lg inline-block">{{ $object->periode }}</div>
-                    @endif
-                    @if($object->deskripsi)
-                        <p class="m-0 text-sm text-gray-600 leading-normal">{{ $object->deskripsi }}</p>
-                    @else
-                        <p class="m-0 text-sm text-gray-400 italic">Deskripsi tidak tersedia</p>
-                    @endif
+    <div id="app">
+        <div class="flex flex-col items-center justify-center max-w-5xl min-w-[320px] min-h-[80vh] p-8 gap-4 mx-auto text-center absolute inset-0 z-[15]">
+            <div class="flex justify-center mb-2">
+                <x-application-logo class="w-12 h-12" />
+            </div>
+            <h2 class="text-2xl font-bold text-primary mb-2 text-center">Virtual Living Museum</h2>
+            <div id="ar-not-supported" class="w-full bg-white rounded-xl shadow p-6 mt-4">
+            <p class="text-red-600 font-semibold">Teknologi WebXR tidak didukung di perangkat Anda.</p>
+            <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a href="https://launch.variant3d.com/docs" class="underline">https://launch.variant3d.com</a>.</p>
+            <div class="flex flex-col justify-center items-center mt-4">
+                <div id="qr-code" class="p-4 bg-white mx-auto text-black flex flex-col items-center gap-3 rounded-lg shadow">
+                    <span class="sr-only">Loading...</span>
+                    <p>Memuat QR</p>
                 </div>
             </div>
-            @endforeach
+        </div>
+        <div id="loading-container" class="w-4/5 bg-gray-300 h-2 rounded-full max-w-xl mx-auto my-8">
+            <div id="loading-bar" class="h-full bg-orange-400 rounded-full transition-all duration-200" style="width:0%"></div>
         </div>
     </div>
-    @endif
+    <div id="ar-button-container"></div>
 
-    {{-- Three.js WebXR Implementation --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-
-    {{-- Museum data for JavaScript --}}
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <script>
-        window.museumData = {
-            museum_id: {{ $museum->museum_id }},
-            museum_name: '{{ $museum->nama }}',
-            situs_name: '{{ $situs->nama }}',
-            object_count: {{ $museum->virtualMuseumObjects->count() }}
-        };
+        var museum = @json($museum);
+        console.log(museum);
     </script>
 
     {{-- AR Museum Implementation --}}
     <script type="module" src="{{ asset('js/ar-museum.js') }}"></script>
 </body>
+
 </html>

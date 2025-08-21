@@ -365,35 +365,6 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $situs = \App\Models\SitusPeninggalan::with(['virtualMuseum', 'materi'])->findOrFail($situs_id);
-        
-        // Log activity with situs_id for tracking
-        $this->logActivity($user->id, 'Telah mengunjungi Virtual Museum: ' . $situs->nama . ' [situs_id:' . $situs->situs_id . ']');
-        
-        // Update progress to museum_selesai if all museums in this materi have been visited
-        if ($situs->materi_id) {
-            $progress = ProgressMateri::getOrCreate($user->id, $situs->materi_id);
-            if ($progress->status === ProgressMateri::STATUS_EBOOK_SELESAI) {
-                // Get all situs IDs for this materi
-                $allSitusIds = \App\Models\SitusPeninggalan::where('materi_id', $situs->materi_id)->pluck('situs_id')->toArray();
-                
-                // Check how many unique situs have been visited by this user for this materi
-                $visitedSitusIds = [];
-                foreach ($allSitusIds as $situsId) {
-                    $hasVisited = LogAktivitas::where('user_id', $user->id)
-                        ->where('aktivitas', 'LIKE', '%[situs_id:' . $situsId . ']%')
-                        ->exists();
-                    if ($hasVisited) {
-                        $visitedSitusIds[] = $situsId;
-                    }
-                }
-                    
-                // If all situs have been visited, update progress
-                if (count($visitedSitusIds) >= count($allSitusIds)) {
-                    $progress->updateStatus(ProgressMateri::STATUS_MUSEUM_SELESAI);
-                }
-            }
-        }
-        
         return view('guest.situs.detail', compact('situs'));
     }
 
@@ -402,7 +373,7 @@ class HomeController extends Controller
         $userAuth = Auth::user();
         $user = User::findOrFail($userAuth->id);
         $situs = \App\Models\SitusPeninggalan::findOrFail($situs_id);
-        $museum = VirtualMuseum::with(['virtualMuseumObjects'])->findOrFail($museum_id);
+        $museum = VirtualMuseum::with('virtualMuseumObjects')->findOrFail($museum_id);
         // Verify that this museum belongs to the situs
         if ($museum->situs_id != $situs_id) {
             abort(404, 'Museum tidak ditemukan di situs ini.');
@@ -445,6 +416,8 @@ class HomeController extends Controller
                 }
             }
         }
+
+        // dd($museum);
 
         return view('guest.ar.museum', compact('situs', 'museum'));
     }

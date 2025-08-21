@@ -1,178 +1,226 @@
-// AR Museum WebXR Implementation
 import * as THREE from "three";
+import { GLTFLoader } from "three/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
+import { ARButton } from "three/jsm/webxr/ARButton.js";
 
-class ARMuseum {
-    constructor(museumData) {
-        this.museumData = museumData;
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.reticle = null;
-        this.hitTestSource = null;
-        this.hitTestSourceRequested = false;
-        this.session = null;
-        this.isARActive = false;
-        this.controller = null;
-        
-        this.init();
-    }
+let initialized = false;
 
-    async init() {
-        try {
-            await this.checkWebXRSupport();
-            await this.initializeAR();
-        } catch (error) {
-            console.error('AR initialization failed:', error);
-            this.showError(error.message);
+window.addEventListener("vlaunch-initialized", (e) => {
+    initialized = true;
+    document.getElementById("qr-code").innerHTML = "";
+    generateLaunchCode();
+});
+
+if (VLaunch.initialized) {
+    document.getElementById("qr-code").innerHTML = "";
+    generateLaunchCode();
+} else {
+    setTimeout(() => {
+        if (!initialized) {
+            document.getElementById("qr-code").innerHTML =
+                "Web XR tidak didukung di Variant Launch Anda";
+            generateQRCode(window.location.href);
         }
-    }
+    }, 10000);
+}
 
-    async checkWebXRSupport() {
-        if (!navigator.xr) {
-            throw new Error('WebXR tidak didukung di browser ini. Gunakan Chrome atau Edge terbaru.');
-        }
+async function generateQRCode(text) {
+    new QRCode("qr-code", {
+        text: text,
+        width: 128,
+        height: 128,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+    });
+}
 
-        const supported = await navigator.xr.isSessionSupported('immersive-ar');
-        if (!supported) {
-            throw new Error('AR tidak didukung di perangkat ini. Pastikan menggunakan device yang kompatibel.');
-        }
-    }
+async function generateLaunchCode() {
+    let url = await VLaunch.getLaunchUrl(window.location.href);
 
-    async initializeAR() {
-        // Hide loading screen
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('ar-container').style.display = 'block';
+    await generateQRCode(url);
+    showToaster("QR berhasil dibuat");
+    console.log("Launch Code Generated");
+}
 
-        // Initialize Three.js
-        this.setupThreeJS();
-        await this.setupWebXRSession();
-        
-        // Update status to show AR is ready
-        this.updateStatus('AR siap! Arahkan kamera ke permukaan datar.');
-        
-        // Start render loop
-        this.renderer.setAnimationLoop((timestamp, frame) => this.render(timestamp, frame));
-    }
+const planes = [
+    "lukisan-1",
+    "lukisan-2",
+    "lukisan-3",
+    "lukisan-4",
+    "lukisan-5",
+];
 
-    setupThreeJS() {
-        // Initialize scene
+const lukisanFrames = [
+    "lukisan-1-frame",
+    "lukisan-2-frame",
+    "lukisan-3-frame",
+    "lukisan-4-frame",
+    "lukisan-5-frame",
+];
+
+class SceneManager {
+    constructor(renderer) {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-        
-        // Setup renderer
-        this.renderer = new THREE.WebGLRenderer({ 
-            canvas: document.getElementById('ar-canvas'),
-            antialias: true,
-            alpha: true 
-        });
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.xr.enabled = true;
+        this.camera = new THREE.PerspectiveCamera(
+            70,
+            window.innerWidth / window.innerHeight,
+            0.01,
+            999
+        );
 
-        // Add lighting
-        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-        light.position.set(0.5, 1, 0.25);
-        this.scene.add(light);
-
-        // Create reticle (visual indicator for placement)
-        const geometry = new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0x4CAF50, transparent: true, opacity: 0.5 });
-        this.reticle = new THREE.Mesh(geometry, material);
+        this.reticle = new THREE.Mesh(
+            new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial()
+        );
         this.reticle.matrixAutoUpdate = false;
         this.reticle.visible = false;
         this.scene.add(this.reticle);
 
-        // Setup controller
-        this.controller = this.renderer.xr.getController(0);
-        this.controller.addEventListener('select', () => this.onSelect());
+        /**
+         * The model to be placed in the scene.
+         * @type {THREE.Object3D | null}
+         */
+        this.model = null;
+        this.planeFound = false;
+        this.placed = false;
+
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        light.position.set(0.5, 1, 0.25);
+        this.scene.add(light);
+
+        this.controller = renderer.xr.getController(0);
         this.scene.add(this.controller);
+
+        window.addEventListener("resize", this.onWindowResize.bind(this));
     }
 
-    async setupWebXRSession() {
-        const sessionInit = {
-            requiredFeatures: ['hit-test'],
-            optionalFeatures: ['dom-overlay']
-        };
+    setOnSelect(onSelect) {
+        this.controller.addEventListener("select", () => {
+            if (this.reticle.visible) onSelect(this.reticle.matrix);
+        });
+    }
 
-        // Add dom overlay only if element exists
-        const domOverlayRoot = document.getElementById('ar-ui');
-        if (domOverlayRoot) {
-            sessionInit.domOverlay = { root: domOverlayRoot };
-        }
+    onWindowResize() {
+        console.log("Resized");
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+    }
+}
 
-        try {
-            this.session = await navigator.xr.requestSession('immersive-ar', sessionInit);
-            this.renderer.xr.setSession(this.session);
-            this.isARActive = true;
+/**
+ * Displays a toaster notification with the given message.
+ *
+ * @param {string} message - The message to display in the toaster.
+ */
+function showToaster(message) {
+    console.log(message);
+    // const toasterContainer = document.getElementById("toaster-container");
+    // const toaster = document.createElement("div");
+    // toaster.className = "toaster";
+    // toaster.innerText = message;
+    // toasterContainer.appendChild(toaster);
 
-            // Setup session event listeners
-            this.session.addEventListener('end', () => this.onSessionEnd());
+    // setTimeout(() => {
+    //     toaster.remove();
+    // }, 3000);
+}
+/**
+ * Manages the rendering process and XR session for the application.
+ */
+class RendererManager {
+    /**
+     * Creates an instance of RendererManager.
+     * Initializes the WebGLRenderer and sets up XR session event listeners.
+     */
+    constructor() {
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+        });
+        this.onSessionStarts = [];
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.xr.enabled = true;
+        document.body.appendChild(this.renderer.domElement);
 
-            console.log('AR session started successfully');
-        } catch (error) {
-            // If hit-test fails, try without it
-            try {
-                const fallbackSessionInit = {
-                    optionalFeatures: ['dom-overlay']
-                };
-                
-                if (domOverlayRoot) {
-                    fallbackSessionInit.domOverlay = { root: domOverlayRoot };
-                }
-                
-                this.session = await navigator.xr.requestSession('immersive-ar', fallbackSessionInit);
-                this.renderer.xr.setSession(this.session);
-                this.isARActive = true;
-                this.session.addEventListener('end', () => this.onSessionEnd());
-                
-                console.log('AR session started without hit-test');
-                this.updateStatus('AR dimulai (mode terbatas)');
-            } catch (fallbackError) {
-                throw new Error(`Gagal memulai sesi AR: ${fallbackError.message}`);
-            }
+        this.hitTestSource = null;
+        this.hitTestSourceRequested = false;
+
+        this.renderer.xr.addEventListener(
+            "sessionstart",
+            this.onSessionStart.bind(this)
+        );
+    }
+
+    /**
+     * Handles the start of an XR session.
+     * Displays the tracking prompt.
+     */
+    onSessionStart() {
+        document.getElementById("tracking-prompt").style.display = "block";
+        document.getElementById("expand-bottom-sheet").style.display = "block";
+        for (const callback of this.onSessionStarts) {
+            callback();
         }
     }
 
-    render(timestamp, frame) {
-        if (frame && this.isARActive) {
+    /**
+     * Starts the animation loop for rendering.
+     * @param {Object} sceneManager - The scene manager containing the scene and camera.
+     */
+    animate(sceneManager) {
+        this.renderer.setAnimationLoop((timestamp, frame) =>
+            this.render(timestamp, frame, sceneManager)
+        );
+    }
+
+    /**
+     * Renders the scene for each frame.
+     * Handles hit test source requests and hit test results.
+     * @param {number} timestamp - The current timestamp.
+     * @param {XRFrame} frame - The current XR frame.
+     * @param {Object} sceneManager - The scene manager containing the scene and camera.
+     */
+    render(timestamp, frame, sceneManager) {
+        if (frame) {
             const referenceSpace = this.renderer.xr.getReferenceSpace();
             const session = this.renderer.xr.getSession();
 
-            // Request hit test source if not already requested
             if (!this.hitTestSourceRequested) {
                 this.requestHitTestSource(session, referenceSpace);
             }
 
-            // Handle hit test results
             if (this.hitTestSource) {
-                const hitTestResults = frame.getHitTestResults(this.hitTestSource);
-                this.handleHitTestResults(hitTestResults, referenceSpace);
+                const hitTestResults = frame.getHitTestResults(
+                    this.hitTestSource
+                );
+                this.handleHitTestResults(
+                    hitTestResults,
+                    referenceSpace,
+                    sceneManager
+                );
             }
         }
 
-        if (this.renderer && this.scene && this.camera && this.isARActive) {
-            this.renderer.render(this.scene, this.camera);
-        }
+        this.renderer.render(sceneManager.scene, sceneManager.camera);
     }
 
+    /**
+     * Requests a hit test source for the XR session.
+     * @param {XRSession} session - The current XR session.
+     * @param {XRReferenceSpace} referenceSpace - The reference space for the XR session.
+     */
     requestHitTestSource(session, referenceSpace) {
-        // Use viewer space instead of local-floor to avoid NotSupportedError
-        session.requestReferenceSpace('viewer').then((viewerSpace) => {
-            session.requestHitTestSource({ space: viewerSpace })
+        session.requestReferenceSpace("viewer").then((viewerSpace) => {
+            session
+                .requestHitTestSource({ space: viewerSpace })
                 .then((source) => {
                     this.hitTestSource = source;
-                    console.log('Hit test source created successfully');
-                })
-                .catch((error) => {
-                    console.warn('Hit test source request failed, continuing without hit test:', error);
-                    this.updateStatus('AR aktif - mode sederhana (tanpa deteksi permukaan)');
                 });
-        }).catch((error) => {
-            console.warn('Viewer reference space request failed:', error);
-            this.updateStatus('AR aktif - mode sederhana');
         });
 
-        session.addEventListener('end', () => {
+        session.addEventListener("end", () => {
             this.hitTestSourceRequested = false;
             this.hitTestSource = null;
         });
@@ -180,258 +228,151 @@ class ARMuseum {
         this.hitTestSourceRequested = true;
     }
 
-    handleHitTestResults(hitTestResults, referenceSpace) {
+    /**
+     * Handles the results of a hit test.
+     * Updates the visibility and position of the reticle based on hit test results.
+     * @param {Array<XRHitTestResult>} hitTestResults - The results of the hit test.
+     * @param {XRReferenceSpace} referenceSpace - The reference space for the XR session.
+     * @param {Object} sceneManager - The scene manager containing the scene and camera.
+     */
+    handleHitTestResults(hitTestResults, referenceSpace, sceneManager) {
+        if (sceneManager.placed) {
+            return;
+        }
         if (hitTestResults.length > 0) {
+            if (!sceneManager.planeFound) {
+                sceneManager.reticle.visible = false;
+                document.getElementById("tracking-prompt").style.display =
+                    "none";
+                console.log("Plane found");
+                document.getElementById("instructions").style.display = "block";
+            }
+
             const hit = hitTestResults[0];
-            this.reticle.visible = true;
-            
-            try {
-                this.reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                // Update status when surface is detected
-                this.updateStatus('Permukaan terdeteksi! Tap untuk menempatkan objek.');
-            } catch (error) {
-                console.warn('Error updating reticle position:', error);
-                this.reticle.visible = false;
-            }
+            sceneManager.reticle.visible = true;
+            sceneManager.reticle.matrix.fromArray(
+                hit.getPose(referenceSpace).transform.matrix
+            );
         } else {
-            this.reticle.visible = false;
-            // Only show searching message if we have hit test capability
-            if (this.hitTestSource) {
-                this.updateStatus('Cari permukaan datar...');
-            }
+            sceneManager.reticle.visible = false;
         }
-    }
-
-    onSelect() {
-        if (this.reticle.visible && this.hitTestSource) {
-            // Place object using hit test position
-            const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            const cube = new THREE.Mesh(geometry, material);
-            
-            // Copy reticle position
-            cube.position.setFromMatrixPosition(this.reticle.matrix);
-            cube.quaternion.setFromRotationMatrix(this.reticle.matrix);
-            
-            this.scene.add(cube);
-            this.updateStatus('Objek ditempatkan! Gunakan tombol "Objek Peninggalan" untuk info lebih lanjut.');
-        } else {
-            // Place object in front of camera as fallback
-            const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-            const material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-            const cube = new THREE.Mesh(geometry, material);
-            
-            // Position in front of camera
-            cube.position.set(0, 0, -1);
-            this.scene.add(cube);
-            this.updateStatus('Objek ditempatkan di depan kamera! Gunakan tombol "Objek Peninggalan" untuk info lebih lanjut.');
-        }
-    }
-
-    onSessionEnd() {
-        this.isARActive = false;
-        this.hitTestSource = null;
-        this.hitTestSourceRequested = false;
-        this.session = null;
-        console.log('AR session ended');
-    }
-
-    updateStatus(message) {
-        const statusElement = document.getElementById('status-message');
-        if (statusElement) {
-            statusElement.textContent = message;
-        }
-    }
-
-    showError(message) {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('ar-container').style.display = 'none';
-        document.getElementById('error-container').style.display = 'block';
-        
-        const errorTextElement = document.getElementById('error-text');
-        if (errorTextElement) {
-            errorTextElement.textContent = message;
-        }
-    }
-
-    // Object selector panel functions
-    openObjectSelector() {
-        const panel = document.getElementById('object-selector');
-        if (panel) {
-            panel.style.bottom = '0';
-        }
-    }
-
-    closeObjectSelector() {
-        const panel = document.getElementById('object-selector');
-        if (panel) {
-            panel.style.bottom = '-100%';
-        }
-    }
-
-    toggleObjectSelector() {
-        const panel = document.getElementById('object-selector');
-        if (panel) {
-            const currentBottom = panel.style.bottom;
-            if (currentBottom === '0px' || currentBottom === '0') {
-                this.closeObjectSelector();
-            } else {
-                this.openObjectSelector();
-            }
-        }
-    }
-
-    goBack() {
-        if (this.session && this.isARActive) {
-            this.session.end().catch(console.warn);
-        }
-        window.history.back();
-    }
-
-    // Handle window resize
-    onWindowResize() {
-        if (this.camera && this.renderer) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-    }
-
-    // Cleanup function
-    destroy() {
-        if (this.session) {
-            this.session.end().catch(console.warn);
-        }
-        if (this.renderer) {
-            this.renderer.setAnimationLoop(null);
-            this.renderer.dispose();
-        }
-        this.isARActive = false;
     }
 }
 
-// Global AR instance
-let arMuseumInstance = null;
+class ModelLoader {
+    static loader = new GLTFLoader();
+    static dracoLoader = new DRACOLoader();
 
-// Check WebXR support and initialize
-if ('xr' in navigator) {
-    navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-        if (supported) {
-            // Hide AR not supported message if it exists
-            const notSupportedEl = document.getElementById('ar-not-supported');
-            if (notSupportedEl) {
-                notSupportedEl.style.display = 'none';
-            }
-            
-            // Initialize AR when page loads
-            window.addEventListener('load', () => {
-                // Small delay to ensure all resources are loaded
-                setTimeout(() => {
-                    const museumData = window.museumData || {};
-                    arMuseumInstance = new ARMuseum(museumData);
-                }, 1000);
-            });
-        } else {
-            // Show not supported message
-            const loadingScreen = document.getElementById('loading-screen');
-            const errorContainer = document.getElementById('error-container');
-            
-            if (loadingScreen) loadingScreen.style.display = 'none';
-            if (errorContainer) {
-                errorContainer.style.display = 'block';
-                const errorText = document.getElementById('error-text');
-                if (errorText) {
-                    errorText.textContent = 'AR tidak didukung di perangkat ini.';
-                }
-            }
+    static async loadModel(name, onProgress) {
+        this.dracoLoader.setDecoderConfig({ type: "js" });
+        this.dracoLoader.setDecoderPath(
+            "https://www.gstatic.com/draco/v1/decoders/"
+        );
+        this.loader.setDRACOLoader(this.dracoLoader);
+        const model = await this.loader.loadAsync(name, onProgress);
+        return model.scenes[0];
+    }
+}
+
+function createARButton(renderer) {
+    if (!document.querySelector("#ar-button-container button")) {
+        document.querySelector("#ar-button-container").appendChild(
+            ARButton.createButton(renderer, {
+                requiredFeatures: ["local", "hit-test", "dom-overlay"],
+                domOverlay: { root: document.querySelector("#overlay") },
+            })
+        );
+    }
+}
+
+async function main() {
+    showToaster("Initializing AR...");
+    document.getElementById("ar-not-supported").style.display = "none";
+    const rendererManager = new RendererManager();
+    const sceneManager = new SceneManager(rendererManager.renderer);
+
+    showToaster("Loading model...");
+    const model = await ModelLoader.loadModel(
+        '/storage/' + museum.path_obj,
+        (event) => {
+            const fileSize = event.total || 43445936;
+            let progress = (event.loaded / fileSize) * 100;
+            console.log(event.loaded, event.total || fileSize, progress);
+            progress = Math.min(progress, 100); // Ensure progress does not exceed 100%
+            document.getElementById("loading-container").style.display =
+                "block";
+            document.getElementById("loading-bar").style.width = `${progress}%`;
+            showToaster(`Loading progress: ${progress}%`);
         }
-    }).catch(() => {
-        // WebXR check failed
-        const loadingScreen = document.getElementById('loading-screen');
-        const errorContainer = document.getElementById('error-container');
-        
-        if (loadingScreen) loadingScreen.style.display = 'none';
-        if (errorContainer) {
-            errorContainer.style.display = 'block';
-            const errorText = document.getElementById('error-text');
-            if (errorText) {
-                errorText.textContent = 'Gagal mengecek dukungan WebXR.';
-            }
+    );
+
+    document.getElementById("loading-container").style.display = "none";
+
+    showToaster("Model loaded, creating AR button");
+    createARButton(rendererManager.renderer);
+
+    showToaster("Adding model to scene");
+    model.visible = false;
+    sceneManager.scene.add(model);
+    model.updateMatrixWorld(true);
+    sceneManager.model = model;
+    sceneManager.setOnSelect((matrix) => {
+        if (model.visible) return;
+        document.getElementById("instructions").style.display = "none";
+        console.log("Placing model");
+        console.log("Position: ", model.position);
+        console.log("Quaternion: ", model.quaternion);
+        console.log("Scale: ", model.scale);
+        matrix.decompose(model.position, model.quaternion, model.scale);
+
+        const targetPosition = new THREE.Vector3();
+        sceneManager.camera.getWorldPosition(targetPosition);
+
+        const direction = new THREE.Vector3();
+        direction.subVectors(targetPosition, model.position);
+        direction.y = 0;
+        model.lookAt(direction.add(model.position));
+        model.visible = true;
+        sceneManager.reticle.visible = false;
+        sceneManager.placed = true;
+
+        // const audio = document.getElementById("audio-portal");
+        // audio.addEventListener("canplay", async () => {
+        //     showToaster("Audio can play");
+        //     console.log("Audio can play");
+        //     await audio.play().catch((error) => {
+        //         showToaster("Audio play error: " + error.message);
+        //         console.error("Audio play error:", error);
+        //     });
+        // });
+
+        // audio.addEventListener("error", (e) => {
+        //     showToaster("Audio error: " + e.message);
+        //     console.error("Audio error:", e);
+        // });
+
+        // if (audio.readyState >= 2) {
+        //     showToaster("Audio already loaded");
+        //     console.log("Audio already loaded");
+        //     audio.dispatchEvent(new Event("canplay"));
+        // } else {
+        //     showToaster("Loading audio");
+        //     console.log("Loading audio");
+        //     audio.load();
+        // }
+    });
+
+    showToaster("Starting animation loop");
+
+    rendererManager.animate(sceneManager);
+}
+
+if ("xr" in navigator) {
+    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
+        if (supported) {
+            //hide "ar-not-supported"
+            document.getElementById("ar-not-supported").style.display = "none";
+            main();
         }
     });
-} else {
-    // WebXR not available
-    const loadingScreen = document.getElementById('loading-screen');
-    const errorContainer = document.getElementById('error-container');
-    
-    if (loadingScreen) loadingScreen.style.display = 'none';
-    if (errorContainer) {
-        errorContainer.style.display = 'block';
-        const errorText = document.getElementById('error-text');
-        if (errorText) {
-            errorText.textContent = 'WebXR tidak tersedia di browser ini.';
-        }
-    }
 }
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Back button
-    const backButton = document.getElementById('back-button');
-    if (backButton) {
-        backButton.addEventListener('click', () => {
-            if (arMuseumInstance) {
-                arMuseumInstance.goBack();
-            } else {
-                window.history.back();
-            }
-        });
-    }
-
-    // Object toggle button
-    const objectToggleButton = document.getElementById('object-toggle-button');
-    if (objectToggleButton) {
-        objectToggleButton.addEventListener('click', () => {
-            if (arMuseumInstance) {
-                arMuseumInstance.toggleObjectSelector();
-            }
-        });
-    }
-
-    // Close button for object selector
-    window.closeObjectSelector = () => {
-        if (arMuseumInstance) {
-            arMuseumInstance.closeObjectSelector();
-        }
-    };
-
-    // Go back function for error page
-    window.goBack = () => {
-        if (arMuseumInstance) {
-            arMuseumInstance.goBack();
-        } else {
-            window.history.back();
-        }
-    };
-});
-
-// Window resize handler
-window.addEventListener('resize', () => {
-    if (arMuseumInstance) {
-        arMuseumInstance.onWindowResize();
-    }
-});
-
-// Handle page visibility change
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden && arMuseumInstance && arMuseumInstance.session) {
-        arMuseumInstance.session.end();
-    }
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-    if (arMuseumInstance) {
-        arMuseumInstance.destroy();
-    }
-});
