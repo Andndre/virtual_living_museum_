@@ -241,7 +241,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
         const indicator = document.getElementById('fullscreen-page-indicator');
         const controls = document.getElementById('fullscreen-controls');
         if (isFullscreen()) {
-            indicator.textContent = `Halaman ${currentPage} / ${totalPages}`;
+            indicator.textContent = `${currentPage} / ${totalPages}`;
             controls.classList.remove('hidden');
         } else {
             controls.classList.add('hidden');
