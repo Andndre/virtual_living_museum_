@@ -157,7 +157,7 @@
         <button id="expand-bottom-sheet"
         class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary text-white font-bold px-6 py-3 rounded-full border-2 border-white shadow-lg z-[90000]"
             style="display: none;">
-            Lihat Detail Objek
+            Lihat Objek Peninggalan
         </button>
         <script>
             document.getElementById('expand-bottom-sheet').addEventListener('click', function() {
