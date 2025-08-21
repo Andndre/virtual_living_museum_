@@ -107,7 +107,7 @@
     <script>
         var popupVisible = false;
     </script>
-    <div class="px-6 py-6 bg-primary text-white rounded-b-3xl">
+    <div class="px-6 py-6 bg-primary text-white rounded-b-3xl pointer-events-auto">
         <div class="flex items-center space-x-4">
             <a href="{{ route('guest.home') }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
                 <i class="fas fa-arrow-left text-xl"></i>
@@ -118,7 +118,7 @@
             </div>
         </div>
     </div>
-    <div id="overlay" class="fixed inset-0 z-[999999] flex flex-col justify-center items-center pointer-events-none">
+    <div id="overlay" class="absolute inset-0 z-[999999] flex flex-col justify-center items-center pointer-events-none">
         <div id="instructions"
             class="z-[100000] w-full text-center hidden absolute top-0 p-4 bg-primary text-white rounded-t-xl">Tekan lingkaran untuk memunculkan ruangan</div>
         {{-- <audio id="audio-portal">
@@ -173,7 +173,7 @@
         </script>
     </div>
     <div id="app">
-        <div class="flex flex-col items-center justify-center max-w-5xl min-w-[320px] min-h-[80vh] p-8 gap-4 mx-auto text-center absolute inset-0 z-[15]">
+    <div class="flex flex-col items-center justify-center max-w-5xl min-w-[320px] min-h-[80vh] p-8 gap-4 mx-auto text-center absolute inset-0 z-[15] pointer-events-none">
             <div class="flex justify-center mb-2">
                 <x-application-logo class="w-12 h-12" />
             </div>
