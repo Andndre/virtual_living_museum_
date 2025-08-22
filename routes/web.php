@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\HomeController;
@@ -5,6 +6,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return redirect()->route('guest.home');
@@ -19,6 +21,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/pengaturan', [HomeController::class, 'pengaturan'])->name('guest.pengaturan');
     Route::get('/pengembang', [HomeController::class, 'pengembang'])->name('guest.pengembang');
     Route::get('/ar-marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
+    Route::get('/ar-marker/camera', [\App\Http\Controllers\ArMarkerCameraController::class, 'index'])->name('ar-marker.camera');
     
     // E-Learning routes
     Route::get('/elearning', [HomeController::class, 'elearning'])->name('guest.elearning');
