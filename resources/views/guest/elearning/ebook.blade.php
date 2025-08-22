@@ -49,7 +49,7 @@
                             <button id="fullscreen-prev" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <div id="fullscreen-page-indicator" class="pointer-events-none select-none text-black text-base font-semibold bg-white/80 rounded-lg px-4 py-1 shadow"></div>
+                            <div id="fullscreen-page-indicator" class="pointer-events-none select-none text-black text-base font-semibold bg-white/80 rounded-lg px-1 py-1 shadow"></div>
                             <button id="fullscreen-next" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
