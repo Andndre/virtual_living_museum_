@@ -268,9 +268,9 @@
                                     <div class="flex">
                                         {{-- Situs Image --}}
                                         <div class="w-24 h-24 flex-shrink-0">
-                                            <div class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                                                <i class="fas fa-map-marker-alt text-white text-xl"></i>
-                                            </div>
+                                            <img src="{{ $situs->thumbnailUrl }}" 
+                                                 alt="{{ $situs->nama }}" 
+                                                 class="w-full h-full object-cover">
                                         </div>
                                         
                                         {{-- Situs Content --}}

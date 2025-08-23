@@ -22,6 +22,7 @@ class SitusPeninggalan extends Model
         'lng',
         'materi_id',
         'user_id',
+        'thumbnail',
     ];
 
     protected $casts = [
@@ -55,5 +56,19 @@ class SitusPeninggalan extends Model
     public function aksesSitusUser(): HasMany
     {
         return $this->hasMany(AksesSitusUser::class, 'situs_id', 'situs_id');
+    }
+    
+    /**
+     * Get the URL for the thumbnail image
+     *
+     * @return string
+     */
+    public function getThumbnailUrlAttribute(): string
+    {
+        if ($this->thumbnail) {
+            return asset('storage/' . $this->thumbnail);
+        }
+        
+        return asset('images/placeholder/default-situs.png');
     }
 }

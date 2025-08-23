@@ -19,13 +19,10 @@
         {{-- Hero Image Section --}}
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
             <div class="aspect-[16/9] bg-gradient-to-br from-orange-400 to-orange-600 relative">
-                {{-- Default hero image with situs name --}}
-                <div class="w-full h-full flex items-center justify-center">
-                    <div class="text-center text-white">
-                        <i class="fas fa-map-marker-alt text-6xl mb-4 opacity-80"></i>
-                        <h3 class="text-xl font-bold">{{ $situs->nama }}</h3>
-                    </div>
-                </div>
+                {{-- Tampilkan thumbnail menggunakan accessor --}}
+                <img src="{{ $situs->thumbnailUrl }}" 
+                     alt="{{ $situs->nama }}" 
+                     class="w-full h-full object-cover">
                 
                 {{-- Overlay with basic info --}}
                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">

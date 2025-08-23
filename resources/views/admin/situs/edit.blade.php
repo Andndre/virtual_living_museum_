@@ -68,7 +68,7 @@
 
             <!-- Form -->
             <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                <form action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="px-4 py-5 sm:p-6 space-y-6">
@@ -217,6 +217,37 @@
                             @enderror
                         </div>
 
+                        <!-- Thumbnail Image -->
+                        <div>
+                            <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-1">
+                                Gambar Thumbnail
+                            </label>
+                            <div class="mt-1 flex items-center">
+                                <div id="thumbnail-preview" class="{{ $situs->thumbnail ? '' : 'hidden' }} mb-3">
+                                    <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}" 
+                                         alt="Thumbnail Preview" 
+                                         class="h-32 w-auto object-cover rounded-lg border border-gray-300">
+                                    <button type="button" id="remove-thumbnail" class="mt-1 text-xs text-red-600 hover:text-red-800">
+                                        <i class="fas fa-times mr-1"></i> Hapus
+                                    </button>
+                                </div>
+                                <div class="mt-1 w-full">
+                                    <label class="block w-full px-3 py-2 border border-gray-300 border-dashed rounded-md cursor-pointer hover:bg-gray-50">
+                                        <div class="flex items-center justify-center">
+                                            <i class="fas fa-cloud-upload-alt text-gray-400 mr-2"></i>
+                                            <span class="text-sm text-gray-500">{{ $situs->thumbnail ? 'Ganti gambar' : 'Klik untuk unggah gambar' }}</span>
+                                        </div>
+                                        <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="sr-only"
+                                            onchange="previewThumbnail(this)">
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG, GIF. Ukuran maks: 2MB.</p>
+                            @error('thumbnail')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Virtual Objects Info -->
                         @if($situs->virtualMuseumObject->count() > 0)
                             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -356,5 +387,31 @@
                 }
             });
         });
+
+        // Thumbnail preview function
+        function previewThumbnail(input) {
+            const preview = document.getElementById('thumbnail-preview');
+            const img = preview.querySelector('img');
+            const removeBtn = document.getElementById('remove-thumbnail');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+                
+                // Add remove button functionality
+                removeBtn.addEventListener('click', function() {
+                    input.value = '';
+                    preview.classList.add('hidden');
+                });
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
     </script>
 </x-app-layout>

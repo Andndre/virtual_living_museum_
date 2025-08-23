@@ -67,6 +67,14 @@
                     <div class="bg-white shadow-lg rounded-lg border border-gray-200">
                         <div class="px-4 py-5 sm:p-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Dasar</h3>
+                            
+                            <!-- Thumbnail Image -->
+                            <div class="mb-5">
+                                <img src="{{ $situs->thumbnailUrl }}" 
+                                     alt="{{ $situs->nama }}" 
+                                     class="h-48 w-full object-cover rounded-lg border border-gray-200 shadow-md">
+                            </div>
+                            
                             <dl class="grid grid-cols-1 gap-4">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Nama Situs</dt>

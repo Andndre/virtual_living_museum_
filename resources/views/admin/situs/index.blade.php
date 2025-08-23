@@ -154,8 +154,23 @@
                                 @foreach($situs as $site)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $site->nama }}</div>
-                                        <div class="text-sm text-gray-500">{{ Str::limit($site->deskripsi, 50) }}</div>
+                                        <div class="flex items-center">
+                                            @if($site->thumbnail)
+                                                <div class="flex-shrink-0 h-10 w-10 mr-3">
+                                                    <img class="h-10 w-10 rounded-lg object-cover" 
+                                                         src="{{ asset('storage/' . $site->thumbnail) }}" 
+                                                         alt="{{ $site->nama }}">
+                                                </div>
+                                            @else
+                                                <div class="flex-shrink-0 h-10 w-10 mr-3 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-landmark text-gray-400"></i>
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">{{ $site->nama }}</div>
+                                                <div class="text-sm text-gray-500">{{ Str::limit($site->deskripsi, 50) }}</div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="text-sm text-gray-900">{{ Str::limit($site->alamat, 40) }}</div>
@@ -237,11 +252,19 @@
                             @foreach($situs as $site)
                             <div class="p-4">
                                 <div class="flex items-start space-x-3">
-                                    <!-- Icon -->
+                                    <!-- Thumbnail Image -->
                                     <div class="flex-shrink-0">
-                                        <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                            <i class="fas fa-map-marker-alt text-white text-sm"></i>
-                                        </div>
+                                        @if($site->thumbnail)
+                                            <div class="h-12 w-12 rounded-lg overflow-hidden">
+                                                <img class="h-12 w-12 object-cover" 
+                                                     src="{{ asset('storage/' . $site->thumbnail) }}" 
+                                                     alt="{{ $site->nama }}">
+                                            </div>
+                                        @else
+                                            <div class="h-12 w-12 rounded-lg bg-blue-600 flex items-center justify-center">
+                                                <i class="fas fa-landmark text-white text-sm"></i>
+                                            </div>
+                                        @endif
                                     </div>
                                     
                                     <!-- Content -->

@@ -48,10 +48,17 @@ class SitusController extends Controller
             'masa' => 'required|string|max:100',
             'materi_id' => 'required|exists:materi,materi_id',
             'user_id' => 'required|exists:users,id',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
             DB::beginTransaction();
+
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $request->file('thumbnail')->store('situs-thumbnails', 'public');
+                $validated['thumbnail'] = $thumbnailPath;
+            }
 
             $situs = SitusPeninggalan::create($validated);
 
@@ -92,10 +99,22 @@ class SitusController extends Controller
             'masa' => 'required|string|max:100',
             'materi_id' => 'required|exists:materi,materi_id',
             'user_id' => 'required|exists:users,id',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
             DB::beginTransaction();
+
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                // Delete previous thumbnail if exists
+                if ($situs->thumbnail) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($situs->thumbnail);
+                }
+                
+                $thumbnailPath = $request->file('thumbnail')->store('situs-thumbnails', 'public');
+                $validated['thumbnail'] = $thumbnailPath;
+            }
 
             $situs->update($validated);
 
@@ -125,6 +144,11 @@ class SitusController extends Controller
             if ($situs->virtualMuseumObject()->count() > 0) {
                 return redirect()->back()
                     ->with('error', 'Tidak dapat menghapus situs yang masih memiliki objek virtual museum.');
+            }
+
+            // Delete thumbnail if exists
+            if ($situs->thumbnail) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($situs->thumbnail);
             }
 
             $situs->delete();
