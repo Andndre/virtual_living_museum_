@@ -9,6 +9,16 @@
                 transition: transform 0.3s ease-in-out;
                 transform: translateY(100%);
                 background-image: linear-gradient(to top, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%);
+                padding-bottom: env(safe-area-inset-bottom, 0);
+            }
+
+            /* Add padding for notches and dynamic toolbars */
+            .safe-top {
+                padding-top: env(safe-area-inset-top, 16px);
+            }
+
+            .safe-bottom {
+                padding-bottom: env(safe-area-inset-bottom, 16px);
             }
 
             #bottom-overlay.visible {
@@ -56,7 +66,7 @@
     @endpush
 
     <!-- Combined Back Button and Search Bar -->
-    <div class="fixed top-4 left-0 right-0 z-[1000] pointer-events-none">
+    <div class="fixed top-[env(safe-area-inset-top,0)] left-0 right-0 pt-4 z-[1000] pointer-events-none">
         <div class="w-full max-w-md mx-auto px-4 flex items-center gap-2 pointer-events-auto">
             <!-- Back Button (Circular) -->
             <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
@@ -88,7 +98,7 @@
         </div>
     </div>
 
-    <div id="map" style="height: 100vh;"></div>
+    <div id="map" style="height: 100dvh;"></div>
 
     <div class="fixed bottom-0 left-0 right-0 z-[1000] pointer-events-none">
         <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto p-4 pointer-events-auto">
