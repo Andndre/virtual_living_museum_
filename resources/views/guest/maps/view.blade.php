@@ -55,26 +55,35 @@
         </style>
     @endpush
 
-    <!-- Search Bar -->
+    <!-- Combined Back Button and Search Bar -->
     <div class="fixed top-4 left-0 right-0 z-[1000] pointer-events-none">
-        <div class="w-full max-w-md mx-auto px-4 pointer-events-auto">
-            <div class="bg-white rounded-full shadow-lg flex items-center p-2">
-                <div class="text-gray-400 mr-2 ml-2">
+        <div class="w-full max-w-md mx-auto px-4 flex items-center gap-2 pointer-events-auto">
+            <!-- Back Button (Circular) -->
+            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-700">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+            </a>
+            
+            <!-- Search Bar with same height -->
+            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[40px]">
+                <div class="text-gray-400 mx-3">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." class="w-full bg-transparent border-none focus:outline-none text-gray-700">
-                <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden">
+                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700">
+                <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <div class="relative w-full">
-                <div id="search-results" class="absolute top-2 left-0 right-0 max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg mt-1 hidden z-50">
-                    <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
-                </div>
+        </div>
+        <!-- Search Results -->
+        <div class="relative w-full max-w-md mx-auto px-4 pointer-events-auto">
+            <div id="search-results" class="absolute top-1 left-4 right-4 max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg mt-1 hidden z-50">
+                <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
             </div>
         </div>
     </div>
@@ -104,6 +113,34 @@
         L.control.zoom({
             position: 'bottomright'
         }).addTo(map);
+        
+        // Custom control for "Lihat Peninggalan" button
+        L.Control.PeninggalanButton = L.Control.extend({
+            onAdd: function() {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const link = L.DomUtil.create('a', '', container);
+                link.href = '{{ route("guest.maps.peninggalan") }}';
+                link.title = 'Lihat Daftar Peninggalan';
+                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
+                
+                L.DomEvent.on(link, 'click', function(e) {
+                    L.DomEvent.stopPropagation(e);
+                });
+                
+                return container;
+            },
+            
+            onRemove: function() {
+                // Nothing to do here
+            }
+        });
+        
+        L.control.peninggalanButton = function(opts) {
+            return new L.Control.PeninggalanButton(opts);
+        }
+        
+        // Add the custom control to bottom left
+        L.control.peninggalanButton({ position: 'bottomleft' }).addTo(map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -229,7 +266,6 @@
         // Search functionality
         searchInput.addEventListener('input', function(e) {
             const searchText = e.target.value.trim().toLowerCase();
-            console.log('Searching for:', searchText); // Debug log
             
             // Show/hide clear button
             if (searchText.length > 0) {

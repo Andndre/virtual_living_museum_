@@ -37,13 +37,13 @@
             {{-- Maps --}}
             <a href="{{ route('guest.maps.view') }}"
                 class="flex flex-col items-center justify-center bg-gray-50 rounded-2xl shadow-md hover:shadow-lg transition w-full py-8 mx-2">
-                <img src="{{ asset('images/icons/download-katalog.png') }}" alt="Maps" class="w-16 h-16 mb-4" />
+                <img src="{{ asset('images/icons/maps-view.png') }}" alt="Maps" class="w-16 h-16 mb-4" />
                 <span class="text-base font-medium text-gray-700 text-center block mt-2">Maps</span>
             </a>
             {{-- Peninggalan Kebudayaan Bali --}}
             <a href="{{ route('guest.maps.peninggalan') }}"
                 class="flex flex-col items-center justify-center bg-gray-50 rounded-2xl shadow-md hover:shadow-lg transition w-full py-8 mx-2">
-                <img src="{{ asset('images/icons/ar-marker.png') }}" alt="Peninggalan Kebudayaan Bali"
+                <img src="{{ asset('images/icons/peninggalan.png') }}" alt="Peninggalan Kebudayaan Bali"
                     class="w-16 h-16 mb-4" />
                 <span class="text-base font-medium text-gray-700 text-center block mt-2">Peninggalan Kebudayaan
                     Bali</span>

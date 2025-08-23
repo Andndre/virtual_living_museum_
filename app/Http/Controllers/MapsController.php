@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SitusPeninggalan;
 use App\Models\User;
+use App\Models\VirtualMuseumObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +38,28 @@ class MapsController extends Controller
 
     public function peninggalan(Request $request)
     {
-        return view('guest.maps.peninggalan');
+        try {
+            $userAuth = Auth::user();
+            $user = User::findOrFail($userAuth->id);
+            
+            $level = $user->level_sekarang;
+            
+            // Get all virtual museum objects with their related sites
+            $objects = VirtualMuseumObject::with('situsPeninggalan')->get();
+            
+            // Get all unique situs for filtering
+            $situs = SitusPeninggalan::all();
+            
+            // Get unlocked situs IDs
+            $unlockedSitusIds = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
+                $query->where('urutan', '<=', $level);
+            })->pluck('situs_id')->toArray();
+            
+            return view('guest.maps.peninggalan', compact('objects', 'situs', 'unlockedSitusIds'));
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            
+            return redirect()->back()->with('error', 'Gagal memuat halaman peninggalan.');
+        }
     }
 }
