@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LaporanKomentar extends Model
 {
     protected $table = 'laporan_komentar';
+
     protected $primaryKey = 'komentar_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'laporan_id',
         'user_id',
         'komentar',
-        'created_at'
+        'created_at',
     ];
 
     protected $casts = [

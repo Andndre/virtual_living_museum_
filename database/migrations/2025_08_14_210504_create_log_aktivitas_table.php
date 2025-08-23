@@ -19,7 +19,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
+
             // Indexes
             $table->index(['user_id', 'created_at']);
             $table->index('created_at');

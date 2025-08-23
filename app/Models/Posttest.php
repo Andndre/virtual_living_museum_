@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Posttest extends Model
 {
     protected $table = 'posttest';
+
     protected $primaryKey = 'posttest_id';
+
     public $timestamps = true;
-    
+
     protected $fillable = [
         'materi_id',
         'pertanyaan',
@@ -18,7 +20,7 @@ class Posttest extends Model
         'pilihan_b',
         'pilihan_c',
         'pilihan_d',
-        'jawaban_benar'
+        'jawaban_benar',
     ];
 
     protected $casts = [

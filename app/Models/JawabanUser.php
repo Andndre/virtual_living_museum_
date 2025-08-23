@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class JawabanUser extends Model
 {
     protected $table = 'jawaban_user';
+
     protected $primaryKey = 'jawaban_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'user_id',
         'materi_id',
@@ -19,7 +21,7 @@ class JawabanUser extends Model
         'jawaban_user',
         'benar',
         'poin',
-        'answered_at'
+        'answered_at',
     ];
 
     protected $casts = [

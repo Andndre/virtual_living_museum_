@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class KritikSaran extends Model
 {
     protected $table = 'kritik_saran';
+
     protected $primaryKey = 'ks_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'user_id',
         'pesan',
-        'created_at'
+        'created_at',
     ];
 
     protected $casts = [

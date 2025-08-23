@@ -25,7 +25,7 @@ class User extends Authenticatable
         'role',
         'profile_photo',
         'level_sekarang',
-        'progress_level_sekarang'
+        'progress_level_sekarang',
     ];
 
     /**
@@ -58,8 +58,11 @@ class User extends Authenticatable
 
     // mapping progress. contoh: 1 berarti pre test sudah selesai
     public const PRE_TEST = 1;
+
     public const EBOOK = 2;
+
     public const VIRTUAL_LIVING_MUSEUM = 3;
+
     public const POST_TEST = 4;
 
     public function incrementLevel(): void
@@ -68,7 +71,8 @@ class User extends Authenticatable
     }
 
     // Ini dijalankan ketika user menyelesaikan progress TERBARU, JIKA MEMBUKA YANG SEBELUMNYA TIDAK DIANGGAP
-    public function incrementProgressLevel(): void {
+    public function incrementProgressLevel(): void
+    {
         // jika sudah 4, maka reset menjadi 0, dan increment level
         $this->increment('progress_level_sekarang');
         if ($this->progress_level_sekarang >= 4) {

@@ -23,6 +23,7 @@ class IsAdmin
                 return redirect()->route('guest.home');
             }
         }
+
         return redirect()->route('login');
     }
 }

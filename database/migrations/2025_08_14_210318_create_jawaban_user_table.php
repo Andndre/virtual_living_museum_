@@ -25,7 +25,7 @@ return new class extends Migration
             // Foreign key constraints
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('materi_id')->references('materi_id')->on('materi')->onDelete('cascade');
-            
+
             // Indexes
             $table->index(['user_id', 'materi_id', 'jenis']);
             $table->index('answered_at');

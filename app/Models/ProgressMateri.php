@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProgressMateri extends Model
 {
     protected $table = 'progress_materi';
+
     protected $primaryKey = 'progress_id';
+
     public $timestamps = false; // We use last_updated instead
-    
+
     protected $fillable = [
         'user_id',
         'materi_id',
         'status',
-        'last_updated'
+        'last_updated',
     ];
 
     protected $casts = [
@@ -26,9 +28,13 @@ class ProgressMateri extends Model
 
     // Status constants
     const STATUS_BELUM_MULAI = 'belum_mulai';
+
     const STATUS_PRETEST_SELESAI = 'pretest_selesai';
+
     const STATUS_EBOOK_SELESAI = 'ebook_selesai';
+
     const STATUS_MUSEUM_SELESAI = 'museum_selesai';
+
     const STATUS_POSTTEST_SELESAI = 'posttest_selesai';
 
     // Relationships
@@ -54,7 +60,7 @@ class ProgressMateri extends Model
             self::STATUS_PRETEST_SELESAI,
             self::STATUS_EBOOK_SELESAI,
             self::STATUS_MUSEUM_SELESAI,
-            self::STATUS_POSTTEST_SELESAI
+            self::STATUS_POSTTEST_SELESAI,
         ]);
     }
 
@@ -63,7 +69,7 @@ class ProgressMateri extends Model
         return in_array($this->status, [
             self::STATUS_EBOOK_SELESAI,
             self::STATUS_MUSEUM_SELESAI,
-            self::STATUS_POSTTEST_SELESAI
+            self::STATUS_POSTTEST_SELESAI,
         ]);
     }
 
@@ -71,7 +77,7 @@ class ProgressMateri extends Model
     {
         return in_array($this->status, [
             self::STATUS_MUSEUM_SELESAI,
-            self::STATUS_POSTTEST_SELESAI
+            self::STATUS_POSTTEST_SELESAI,
         ]);
     }
 
@@ -94,7 +100,7 @@ class ProgressMateri extends Model
     {
         $this->update([
             'status' => $status,
-            'last_updated' => now()
+            'last_updated' => now(),
         ]);
     }
 

@@ -14,7 +14,7 @@ class LanguageController extends Controller
     public function changeLanguage(Request $request, $locale)
     {
         // Check if the locale is supported
-        if (!in_array($locale, ['id', 'en'])) {
+        if (! in_array($locale, ['id', 'en'])) {
             abort(400);
         }
 

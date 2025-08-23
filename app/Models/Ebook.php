@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ebook extends Model
 {
     protected $table = 'ebook';
+
     protected $primaryKey = 'ebook_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'materi_id',
         'judul',
-        'path_file'
+        'path_file',
     ];
 
     protected $casts = [

@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => App\Http\Middleware\IsAdmin::class,
             'user' => App\Http\Middleware\IsUser::class,
         ]);
-        
+
         // Add SetLocale middleware to web group
         $middleware->web(append: [
             App\Http\Middleware\SetLocale::class,

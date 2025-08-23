@@ -21,10 +21,10 @@ return new class extends Migration
             // Foreign key constraints
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('situs_id')->references('situs_id')->on('situs_peninggalan')->onDelete('cascade');
-            
+
             // Unique constraint untuk kombinasi user_id dan situs_id
             $table->unique(['user_id', 'situs_id']);
-            
+
             // Indexes
             $table->index(['user_id', 'status']);
             $table->index('unlocked_at');

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Materi;
 use App\Models\SitusPeninggalan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,10 +23,11 @@ class MapsController extends Controller
             $situs = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
                 $query->where('urutan', '<=', $level);
             })->get();
-            
+
             return view('guest.maps.view', compact('situs'));
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+
             return redirect()->back()->with('error', 'Gagal memuat halaman peta.');
         }
     }

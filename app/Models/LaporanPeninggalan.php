@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class LaporanPeninggalan extends Model
 {
     protected $table = 'laporan_peninggalan';
+
     protected $primaryKey = 'laporan_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'user_id',
         'nama_peninggalan',
@@ -19,7 +21,7 @@ class LaporanPeninggalan extends Model
         'lat',
         'lng',
         'deskripsi',
-        'created_at'
+        'created_at',
     ];
 
     protected $casts = [

@@ -23,7 +23,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('situs_id')->references('situs_id')->on('situs_peninggalan')->onDelete('cascade');
-            
+
             // Index
             $table->index('situs_id');
         });

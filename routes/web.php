@@ -1,12 +1,12 @@
 
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ArMarkerCameraController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MapsController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,24 +40,24 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     // Mark e-book as read (AJAX)
     Route::post('/elearning/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
-    
+
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');
-    
+
     // AR routes
     Route::get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    
+
     // Admin management routes
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/admin/users/{id}', [AdminController::class, 'showUser'])->name('admin.users.show');
     Route::get('/admin/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
     Route::put('/admin/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
-    
+
     Route::get('/admin/materi', [AdminController::class, 'materi'])->name('admin.materi');
     Route::get('/admin/materi/create', [AdminController::class, 'createMateri'])->name('admin.materi.create');
     Route::post('/admin/materi', [AdminController::class, 'storeMateri'])->name('admin.materi.store');
@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::put('/admin/materi/{id}', [AdminController::class, 'updateMateri'])->name('admin.materi.update');
     Route::delete('/admin/materi/{id}', [AdminController::class, 'destroyMateri'])->name('admin.materi.destroy');
     Route::post('/admin/materi/update-order', [AdminController::class, 'updateMateriOrder'])->name('admin.materi.update-order');
-    
+
     // Pretest routes
     Route::get('/admin/materi/{materi_id}/pretest', [AdminController::class, 'pretest'])->name('admin.pretest');
     Route::get('/admin/materi/{materi_id}/pretest/create', [AdminController::class, 'createPretest'])->name('admin.pretest.create');
@@ -75,7 +75,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/materi/{materi_id}/pretest/{pretest_id}/edit', [AdminController::class, 'editPretest'])->name('admin.pretest.edit');
     Route::put('/admin/materi/{materi_id}/pretest/{pretest_id}', [AdminController::class, 'updatePretest'])->name('admin.pretest.update');
     Route::delete('/admin/materi/{materi_id}/pretest/{pretest_id}', [AdminController::class, 'destroyPretest'])->name('admin.pretest.destroy');
-    
+
     // Posttest routes
     Route::get('/admin/materi/{materi_id}/posttest', [AdminController::class, 'posttest'])->name('admin.posttest');
     Route::get('/admin/materi/{materi_id}/posttest/create', [AdminController::class, 'createPosttest'])->name('admin.posttest.create');
@@ -84,7 +84,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/materi/{materi_id}/posttest/{posttest_id}/edit', [AdminController::class, 'editPosttest'])->name('admin.posttest.edit');
     Route::put('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'updatePosttest'])->name('admin.posttest.update');
     Route::delete('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'destroyPosttest'])->name('admin.posttest.destroy');
-    
+
     // Situs Peninggalan routes
     Route::get('/admin/situs', [AdminController::class, 'situs'])->name('admin.situs');
     Route::get('/admin/situs/create', [AdminController::class, 'createSitus'])->name('admin.situs.create');
@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/situs/{situs_id}/edit', [AdminController::class, 'editSitus'])->name('admin.situs.edit');
     Route::put('/admin/situs/{situs_id}', [AdminController::class, 'updateSitus'])->name('admin.situs.update');
     Route::delete('/admin/situs/{situs_id}', [AdminController::class, 'destroySitus'])->name('admin.situs.destroy');
-    
+
     // Virtual Museum routes
     Route::get('/admin/virtual-museum', [AdminController::class, 'virtualMuseum'])->name('admin.virtual-museum');
     Route::get('/admin/virtual-museum/create', [AdminController::class, 'createVirtualMuseum'])->name('admin.virtual-museum.create');
@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/virtual-museum/{museum_id}/edit', [AdminController::class, 'editVirtualMuseum'])->name('admin.virtual-museum.edit');
     Route::put('/admin/virtual-museum/{museum_id}', [AdminController::class, 'updateVirtualMuseum'])->name('admin.virtual-museum.update');
     Route::delete('/admin/virtual-museum/{museum_id}', [AdminController::class, 'destroyVirtualMuseum'])->name('admin.virtual-museum.destroy');
-    
+
     // Virtual Museum Object routes
     Route::get('/admin/virtual-museum/{museum_id}/objects/create', [AdminController::class, 'createVirtualMuseumObject'])->name('admin.virtual-museum-object.create');
     Route::post('/admin/virtual-museum/{museum_id}/objects', [AdminController::class, 'storeVirtualMuseumObject'])->name('admin.virtual-museum-object.store');
@@ -110,13 +110,13 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/virtual-museum-object/{object_id}/edit', [AdminController::class, 'editVirtualMuseumObject'])->name('admin.virtual-museum-object.edit');
     Route::put('/admin/virtual-museum-object/{object_id}', [AdminController::class, 'updateVirtualMuseumObject'])->name('admin.virtual-museum-object.update');
     Route::delete('/admin/virtual-museum-object/{object_id}', [AdminController::class, 'destroyVirtualMuseumObject'])->name('admin.virtual-museum-object.destroy');
-    
+
     Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
     Route::get('/admin/reports/{id}', [AdminController::class, 'showReport'])->name('admin.reports.show');
     Route::delete('/admin/reports/{id}', [AdminController::class, 'destroyReport'])->name('admin.reports.destroy');
     Route::get('/admin/feedback', [AdminController::class, 'feedback'])->name('admin.feedback');
     Route::delete('/admin/feedback/{id}', [AdminController::class, 'destroyFeedback'])->name('admin.feedback.destroy');
-    
+
     Route::get('/admin/ebook/{materi_id}', [AdminController::class, 'ebook'])->name('admin.ebook');
     Route::get('/admin/ebook/{materi_id}/create', [AdminController::class, 'createEbook'])->name('admin.ebook.create');
     Route::post('/admin/ebook/{materi_id}', [AdminController::class, 'storeEbook'])->name('admin.ebook.store');

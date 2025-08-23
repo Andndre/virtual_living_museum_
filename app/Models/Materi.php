@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Materi extends Model
 {
     protected $table = 'materi';
+
     protected $primaryKey = 'materi_id';
-    
+
     protected $fillable = [
         'judul',
         'deskripsi',
         'urutan',
-        'gambar_sampul'
+        'gambar_sampul',
     ];
 
     protected $casts = [
@@ -22,13 +23,14 @@ class Materi extends Model
     ];
 
     // cek ini level keberapa
-    public function getLevel(): Int {
+    public function getLevel(): int
+    {
         return $this->urutan;
     }
 
     public function shouldIncrementProgress(User $user, int $progress): bool
     {
-        return $this->urutan > $user->level_sekarang || 
+        return $this->urutan > $user->level_sekarang ||
                 ($this->urutan == $user->level_sekarang && $progress > $user->progress_level_sekarang);
     }
 

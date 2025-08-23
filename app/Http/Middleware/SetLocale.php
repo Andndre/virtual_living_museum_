@@ -19,15 +19,15 @@ class SetLocale
     {
         // Get locale from session, default to 'id' (Indonesian)
         $locale = Session::get('locale', config('app.locale', 'id'));
-        
+
         // Validate locale
-        if (!in_array($locale, ['id', 'en'])) {
+        if (! in_array($locale, ['id', 'en'])) {
             $locale = 'id';
         }
-        
+
         // Set application locale
         App::setLocale($locale);
-        
+
         return $next($request);
     }
 }

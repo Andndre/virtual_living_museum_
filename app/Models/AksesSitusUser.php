@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AksesSitusUser extends Model
 {
     protected $table = 'akses_situs_user';
+
     protected $primaryKey = 'akses_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'user_id',
         'situs_id',
         'status',
-        'unlocked_at'
+        'unlocked_at',
     ];
 
     protected $casts = [

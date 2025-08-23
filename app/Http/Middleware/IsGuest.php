@@ -23,6 +23,7 @@ class IsGuest
                 return redirect()->route('admin.dashboard');
             }
         }
+
         return redirect()->route('login');
     }
 }

@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class VirtualMuseum extends Model
 {
     protected $table = 'virtual_museum';
+
     protected $primaryKey = 'museum_id';
-    
+
     protected $fillable = [
         'situs_id',
         'nama',
-        'path_obj'
+        'path_obj',
     ];
 
     protected $casts = [

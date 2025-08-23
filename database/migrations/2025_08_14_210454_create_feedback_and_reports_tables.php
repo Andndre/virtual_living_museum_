@@ -20,7 +20,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
+
             // Index
             $table->index(['user_id', 'created_at']);
         });
@@ -38,7 +38,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
+
             // Indexes
             $table->index(['lat', 'lng']);
             $table->index(['user_id', 'created_at']);
@@ -52,7 +52,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('laporan_id')->references('laporan_id')->on('laporan_peninggalan')->onDelete('cascade');
-            
+
             // Index
             $table->index('laporan_id');
         });
@@ -68,7 +68,7 @@ return new class extends Migration
             // Foreign key constraints
             $table->foreign('laporan_id')->references('laporan_id')->on('laporan_peninggalan')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
+
             // Index
             $table->index(['laporan_id', 'created_at']);
             $table->index('user_id');
@@ -84,10 +84,10 @@ return new class extends Migration
             // Foreign key constraints
             $table->foreign('laporan_id')->references('laporan_id')->on('laporan_peninggalan')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            
+
             // Unique constraint untuk mencegah double like
             $table->unique(['laporan_id', 'user_id']);
-            
+
             // Index
             $table->index(['laporan_id', 'created_at']);
         });

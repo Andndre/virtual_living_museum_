@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\VirtualMuseumObject;
-use Illuminate\Http\Request;
 
 class ArMarkerCameraController extends Controller
 {
@@ -12,8 +11,9 @@ class ArMarkerCameraController extends Controller
      */
     public function index()
     {
-				// get all ar objects
-				$arObjects = VirtualMuseumObject::all();
+        // get all ar objects
+        $arObjects = VirtualMuseumObject::all();
+
         return view('guest.ar-camera', compact('arObjects'));
     }
 }

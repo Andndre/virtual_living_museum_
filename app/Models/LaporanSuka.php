@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LaporanSuka extends Model
 {
     protected $table = 'laporan_suka';
+
     protected $primaryKey = 'suka_id';
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'laporan_id',
         'user_id',
-        'created_at'
+        'created_at',
     ];
 
     protected $casts = [

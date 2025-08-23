@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->integer('urutan')->comment('untuk urutan materi');
             $table->timestamps();
-            
+
             // Index untuk urutan
             $table->index('urutan');
         });

@@ -24,7 +24,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('materi_id')->references('materi_id')->on('materi')->onDelete('cascade');
-            
+
             // Index
             $table->index('materi_id');
         });
@@ -42,7 +42,7 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('materi_id')->references('materi_id')->on('materi')->onDelete('cascade');
-            
+
             // Index
             $table->index('materi_id');
         });

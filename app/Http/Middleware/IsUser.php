@@ -23,6 +23,7 @@ class IsUser
                 return redirect()->route('admin.dashboard');
             }
         }
+
         return redirect()->route('login');
     }
 }

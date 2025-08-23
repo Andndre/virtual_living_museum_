@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Models\Materi;
 use App\Models\Ebook;
 use App\Models\JawabanUser;
 use App\Models\LogAktivitas;
+use App\Models\Materi;
+use App\Models\MuseumUserVisit;
 use App\Models\ProgressMateri;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Models\MuseumUserVisit;
 use App\Models\VirtualMuseum;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -22,7 +22,7 @@ class HomeController extends Controller
     private function getGreeting()
     {
         $hour = Carbon::now()->hour;
-        
+
         if ($hour >= 5 && $hour < 12) {
             return __('app.good_morning');
         } elseif ($hour >= 12 && $hour < 17) {
@@ -37,6 +37,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $greeting = $this->getGreeting();
+
         return view('guest.home', compact('greeting'));
     }
 
@@ -60,7 +61,8 @@ class HomeController extends Controller
         return view('guest.ar-marker');
     }
 
-    public function maps(Request $request) {
+    public function maps(Request $request)
+    {
         return view('guest.maps');
     }
 
@@ -70,7 +72,7 @@ class HomeController extends Controller
     public function elearning(Request $request)
     {
         $user = Auth::user();
-        
+
         // Get all materis ordered by urutan
         $materis = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
             ->orderBy('urutan')
@@ -89,6 +91,7 @@ class HomeController extends Controller
                 $materi->is_completed = false;
                 $materi->is_available = false;
             }
+
             return $materi;
         });
 
@@ -97,14 +100,14 @@ class HomeController extends Controller
         $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
 
         $nextMateri = $materis->first(function ($materi) {
-            return $materi->is_available && !$materi->is_completed;
+            return $materi->is_available && ! $materi->is_completed;
         });
 
         $riwayatAktivitas = LogAktivitas::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->take(50)
             ->get()
-            ->groupBy(function($item) {
+            ->groupBy(function ($item) {
                 return $item->created_at->format('Y-m-d');
             });
 
@@ -159,33 +162,33 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $materi = Materi::with('pretest')->findOrFail($materi_id);
-        
+
         // Check if pretest is already completed
         $isCompleted = $this->isPretestCompleted($user->id, $materi_id);
-        
+
         $questions = $materi->pretest;
         $totalQuestions = $questions->count();
-        
+
         // Get results if completed
         $score = 0;
         $correctAnswers = 0;
-        
+
         if ($isCompleted) {
             $userAnswers = JawabanUser::where('user_id', $user->id)
                 ->where('materi_id', $materi_id)
                 ->where('jenis', 'pretest')
                 ->get();
-            
+
             $correctAnswers = $userAnswers->where('benar', true)->count();
             $score = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 100) : 0;
         }
-        
+
         return view('guest.elearning.pretest', compact(
-            'materi', 
-            'questions', 
-            'totalQuestions', 
-            'isCompleted', 
-            'score', 
+            'materi',
+            'questions',
+            'totalQuestions',
+            'isCompleted',
+            'score',
             'correctAnswers'
         ));
     }
@@ -198,35 +201,35 @@ class HomeController extends Controller
         $userAuth = Auth::user();
         $user = User::findOrFail($userAuth->id);
         $materi = Materi::with('pretest')->findOrFail($materi_id);
-        
+
         // Validate the request
         $request->validate([
             'answers' => 'required|array',
-            'answers.*' => 'required|in:A,B,C,D'
+            'answers.*' => 'required|in:A,B,C,D',
         ], [
             'answers.required' => 'Mohon jawab semua pertanyaan.',
             'answers.*.required' => 'Setiap pertanyaan harus dijawab.',
-            'answers.*.in' => 'Jawaban harus berupa A, B, C, atau D.'
+            'answers.*.in' => 'Jawaban harus berupa A, B, C, atau D.',
         ]);
-        
+
         $answers = $request->input('answers', []);
         $correctCount = 0;
         $totalQuestions = $materi->pretest->count();
-        
+
         foreach ($materi->pretest as $question) {
             $userAnswer = $answers[$question->pretest_id] ?? null;
-            
+
             // Skip saving if no answer provided
             if ($userAnswer === null) {
                 continue;
             }
-            
+
             $isCorrect = $userAnswer === $question->jawaban_benar;
-            
+
             if ($isCorrect) {
                 $correctCount++;
             }
-            
+
             // Save answer
             JawabanUser::create([
                 'user_id' => $user->id,
@@ -236,10 +239,10 @@ class HomeController extends Controller
                 'jawaban_user' => $userAnswer,
                 'benar' => $isCorrect,
                 'poin' => $isCorrect ? 10 : 0,
-                'answered_at' => now()
+                'answered_at' => now(),
             ]);
         }
-        
+
         // Update progress materi
         // Seharusnya ini akan selalu True untuk sekarang
         // karena pretest tidak bisa diulang
@@ -247,7 +250,7 @@ class HomeController extends Controller
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul}");
         }
-        
+
         return redirect()->route('guest.elearning.pretest', $materi_id)
             ->with('success', 'Pretest berhasil diselesaikan!');
     }
@@ -259,13 +262,13 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $materi = Materi::with('posttest')->findOrFail($materi_id);
-        
+
         // Check if pretest is completed (requirement for posttest)
-        if (!$this->isPretestCompleted($user->id, $materi_id)) {
+        if (! $this->isPretestCompleted($user->id, $materi_id)) {
             return redirect()->route('guest.elearning.materi', $materi_id)
                 ->with('error', 'Selesaikan pretest terlebih dahulu.');
         }
-        
+
         // Check if posttest is already completed (hanya true jika sudah ada jawaban user di DB)
         $userAnswers = JawabanUser::where('user_id', $user->id)
             ->where('materi_id', $materi_id)
@@ -307,11 +310,11 @@ class HomeController extends Controller
         // Validate the request
         $request->validate([
             'answers' => 'required|array',
-            'answers.*' => 'required|in:A,B,C,D'
+            'answers.*' => 'required|in:A,B,C,D',
         ], [
             'answers.required' => 'Mohon jawab semua pertanyaan.',
             'answers.*.required' => 'Setiap pertanyaan harus dijawab.',
-            'answers.*.in' => 'Jawaban harus berupa A, B, C, atau D.'
+            'answers.*.in' => 'Jawaban harus berupa A, B, C, atau D.',
         ]);
 
         $answers = $request->input('answers', []);
@@ -341,7 +344,7 @@ class HomeController extends Controller
                 'jawaban_user' => $userAnswer,
                 'benar' => $isCorrect,
                 'poin' => $isCorrect ? 10 : 0,
-                'answered_at' => now()
+                'answered_at' => now(),
             ]);
         }
 
@@ -358,7 +361,7 @@ class HomeController extends Controller
             ->with([
                 'success' => 'Posttest berhasil diselesaikan!',
                 'score' => $score,
-                'correctAnswers' => $correctCount
+                'correctAnswers' => $correctCount,
             ]);
     }
 
@@ -369,6 +372,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $situs = \App\Models\SitusPeninggalan::with(['virtualMuseum', 'materi'])->findOrFail($situs_id);
+
         return view('guest.situs.detail', compact('situs'));
     }
 
@@ -384,15 +388,15 @@ class HomeController extends Controller
         }
 
         // Log AR activity
-        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: ' . $museum->nama . ' di ' . $situs->nama);
+        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: '.$museum->nama.' di '.$situs->nama);
 
         // --- Museum Visit Tracking Logic ---
         // 1. Catat kunjungan user ke museum ini (jika belum ada)
         MuseumUserVisit::firstOrCreate([
             'user_id' => $user->id,
-            'museum_id' => $museum->museum_id
+            'museum_id' => $museum->museum_id,
         ], [
-            'visited_at' => now()
+            'visited_at' => now(),
         ]);
 
         // 2. Jika materi terkait ada, cek apakah semua museum pada materi ini sudah dikunjungi user
@@ -411,12 +415,11 @@ class HomeController extends Controller
                 ->whereIn('museum_id', $allMuseumIds)
                 ->pluck('museum_id')->unique()->toArray();
 
-
             // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
                 if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->urutan) {
                     $user->incrementProgressLevel();
-                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Museum pada materi ID: ' . $materiId);
+                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Museum pada materi ID: '.$materiId);
                 }
             }
         }
@@ -431,15 +434,19 @@ class HomeController extends Controller
      */
     private function isMateriCompleted($user_id, $materi_id)
     {
-        if (!$materi_id) return true;
-        
+        if (! $materi_id) {
+            return true;
+        }
+
         $materi = Materi::with(['pretest', 'posttest'])->find($materi_id);
-        if (!$materi) return false;
-        
+        if (! $materi) {
+            return false;
+        }
+
         // Check if both pretest and posttest are completed
         $pretestCompleted = $this->isPretestCompleted($user_id, $materi_id);
         $posttestCompleted = $this->isPosttestCompleted($user_id, $materi_id);
-        
+
         return $pretestCompleted && $posttestCompleted;
     }
 
@@ -449,12 +456,18 @@ class HomeController extends Controller
     private function isPretestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (!$materi) return false;
+        if (! $materi) {
+            return false;
+        }
         $user = User::find($user_id);
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
 
         // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) return true;
+        if ($materi->urutan < $user->level_sekarang + 1) {
+            return true;
+        }
 
         // Jika progress user pada materi ini sudah mencapai atau melewati step pretest
         return $user->progress_level_sekarang >= User::PRE_TEST;
@@ -466,12 +479,18 @@ class HomeController extends Controller
     private function isPosttestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (!$materi) return false;
+        if (! $materi) {
+            return false;
+        }
         $user = User::find($user_id);
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
 
         // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) return true;
+        if ($materi->urutan < $user->level_sekarang + 1) {
+            return true;
+        }
 
         // Jika progress user pada materi ini sudah mencapai atau melewati step posttest
         return $user->progress_level_sekarang >= User::POST_TEST;
@@ -483,10 +502,10 @@ class HomeController extends Controller
     private function calculateMateriProgress($user_id, $materi_id)
     {
         $materi = Materi::with(['pretest', 'posttest', 'ebook'])->find($materi_id);
-        
+
         $totalSteps = 0;
         $completedSteps = 0;
-        
+
         // Count pretest
         if ($materi->pretest->count() > 0) {
             $totalSteps++;
@@ -494,7 +513,7 @@ class HomeController extends Controller
                 $completedSteps++;
             }
         }
-        
+
         // Count ebooks (assume read if pretest completed)
         if ($materi->ebook->count() > 0) {
             $totalSteps++;
@@ -502,7 +521,7 @@ class HomeController extends Controller
                 $completedSteps++;
             }
         }
-        
+
         // Count posttest
         if ($materi->posttest->count() > 0) {
             $totalSteps++;
@@ -510,17 +529,17 @@ class HomeController extends Controller
                 $completedSteps++;
             }
         }
-        
+
         $progressPercentage = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 100;
         $isCompleted = $this->isMateriCompleted($user_id, $materi_id);
         $isStarted = $this->isPretestCompleted($user_id, $materi_id) || $this->isPosttestCompleted($user_id, $materi_id);
-        
+
         return [
             'progress_percentage' => $progressPercentage,
             'completed_steps' => $completedSteps,
             'total_steps' => $totalSteps,
             'is_completed' => $isCompleted,
-            'is_started' => $isStarted
+            'is_started' => $isStarted,
         ];
     }
 
@@ -532,7 +551,7 @@ class HomeController extends Controller
         LogAktivitas::create([
             'user_id' => $user_id,
             'aktivitas' => $aktivitas,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
     }
 
@@ -546,19 +565,19 @@ class HomeController extends Controller
 
         // Check if user has completed pretest for this materi
         $pretestCompleted = $this->isPretestCompleted($user->id, $ebook->materi_id);
-        if (!$pretestCompleted) {
+        if (! $pretestCompleted) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'Anda harus menyelesaikan pre-test terlebih dahulu untuk mengakses e-book ini.');
         }
 
         // Check if file exists
-        if (!$ebook->path_file || !file_exists(storage_path('app/public/' . $ebook->path_file))) {
+        if (! $ebook->path_file || ! file_exists(storage_path('app/public/'.$ebook->path_file))) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'File e-book tidak ditemukan.');
         }
 
         // Log activity with ebook_id for tracking
-        $this->logActivity($user->id, 'Telah membaca E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
+        $this->logActivity($user->id, 'Telah membaca E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
 
         // Catatan: Progress level akan diupdate via AJAX saat user membaca halaman terakhir (lihat endpoint di bawah)
 
@@ -582,7 +601,7 @@ class HomeController extends Controller
         }
 
         // Log aktivitas jika perlu
-        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
+        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
 
         return response()->json(['success' => true]);
     }
@@ -595,16 +614,16 @@ class HomeController extends Controller
         $progress = ProgressMateri::where('user_id', $user_id)
             ->where('materi_id', $materi_id)
             ->first();
-            
-        if (!$progress) {
+
+        if (! $progress) {
             return false;
         }
-        
+
         // Check if ebook status is completed
         return in_array($progress->status, [
             ProgressMateri::STATUS_EBOOK_SELESAI,
             ProgressMateri::STATUS_MUSEUM_SELESAI,
-            ProgressMateri::STATUS_POSTTEST_SELESAI
+            ProgressMateri::STATUS_POSTTEST_SELESAI,
         ]);
     }
 
@@ -616,15 +635,15 @@ class HomeController extends Controller
         $progress = ProgressMateri::where('user_id', $user_id)
             ->where('materi_id', $materi_id)
             ->first();
-            
-        if (!$progress) {
+
+        if (! $progress) {
             return false;
         }
-        
+
         // Check if museum status is completed
         return in_array($progress->status, [
             ProgressMateri::STATUS_MUSEUM_SELESAI,
-            ProgressMateri::STATUS_POSTTEST_SELESAI
+            ProgressMateri::STATUS_POSTTEST_SELESAI,
         ]);
     }
 }

@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Materi;
-use App\Models\Pretest;
-use App\Models\Posttest;
+use App\Models\AksesSitusUser;
 use App\Models\Ebook;
+use App\Models\KritikSaran;
+use App\Models\LaporanPeninggalan;
+use App\Models\Materi;
+use App\Models\Posttest;
+use App\Models\Pretest;
 use App\Models\SitusPeninggalan;
+use App\Models\User;
 use App\Models\VirtualMuseum;
 use App\Models\VirtualMuseumObject;
-use App\Models\AksesSitusUser;
-use App\Models\LaporanPeninggalan;
-use App\Models\KritikSaran;
-use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -88,43 +87,44 @@ class AdminController extends Controller
     {
         $user = User::with(['logAktivitas', 'jawabanUser', 'aksesSitusUser', 'kritikSaran', 'laporanPeninggalan'])
             ->findOrFail($id);
-        
+
         return view('admin.users.show', compact('user'));
     }
 
     public function editUser($id)
     {
         $user = User::findOrFail($id);
+
         return view('admin.users.edit', compact('user'));
     }
 
     public function updateUser(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'role' => 'required|in:user,admin',
             'password' => 'nullable|string|min:8|confirmed',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->except(['profile_photo', '_token', '_method', 'password_confirmation']);
-        
+
         // Only update password if provided
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
         } else {
             unset($data['password']);
         }
-        
+
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if exists
-            if ($user->profile_photo && Storage::exists('public/' . $user->profile_photo)) {
-                Storage::delete('public/' . $user->profile_photo);
+            if ($user->profile_photo && Storage::exists('public/'.$user->profile_photo)) {
+                Storage::delete('public/'.$user->profile_photo);
             }
-            
+
             $photoPath = $request->file('profile_photo')->store('profile_photos', 'public');
             $data['profile_photo'] = $photoPath;
         }
@@ -138,7 +138,7 @@ class AdminController extends Controller
     public function destroyUser($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent admin from deleting themselves
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.users')
@@ -146,8 +146,8 @@ class AdminController extends Controller
         }
 
         // Delete profile photo if exists
-        if ($user->profile_photo && Storage::exists('public/' . $user->profile_photo)) {
-            Storage::delete('public/' . $user->profile_photo);
+        if ($user->profile_photo && Storage::exists('public/'.$user->profile_photo)) {
+            Storage::delete('public/'.$user->profile_photo);
         }
 
         $user->delete();
@@ -162,6 +162,7 @@ class AdminController extends Controller
     public function materi()
     {
         $materis = Materi::orderBy('urutan', 'asc')->paginate(20);
+
         return view('admin.materi.index', compact('materis'));
     }
 
@@ -174,7 +175,7 @@ class AdminController extends Controller
             ->orderBy('situs_id', 'desc')
             ->paginate(20);
 
-        // Calculate statistics  
+        // Calculate statistics
         $stats = [
             'total_situs' => SitusPeninggalan::count(),
             'total_virtual_objects' => VirtualMuseumObject::whereNotNull('situs_id')->count(),
@@ -301,7 +302,7 @@ class AdminController extends Controller
         $museums = VirtualMuseum::with(['situsPeninggalan', 'virtualMuseumObjects'])
             ->orderBy('created_at', 'desc')
             ->paginate(12);
-        
+
         $stats = [
             'total_museums' => VirtualMuseum::count(),
             'total_objects' => VirtualMuseumObject::whereNotNull('museum_id')->count(),
@@ -321,7 +322,7 @@ class AdminController extends Controller
 
         // Pre-select situs if provided in query parameter
         $selectedSitusId = $request->get('situs_id');
-        
+
         return view('admin.virtual-museum.create', compact('situsOptions', 'selectedSitusId'));
     }
 
@@ -333,7 +334,7 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'required|file|max:51200' // 50MB max, any file type
+            'obj_file' => 'required|file|max:51200', // 50MB max, any file type
         ]);
 
         $data = [
@@ -344,7 +345,7 @@ class AdminController extends Controller
         // Handle file upload
         if ($request->hasFile('obj_file')) {
             $file = $request->file('obj_file');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -361,10 +362,10 @@ class AdminController extends Controller
     public function showVirtualMuseum($museum_id)
     {
         $museum = VirtualMuseum::with([
-            'situsPeninggalan.materi', 
-            'virtualMuseumObjects'
+            'situsPeninggalan.materi',
+            'virtualMuseumObjects',
         ])->findOrFail($museum_id);
-        
+
         return view('admin.virtual-museum.show', compact('museum'));
     }
 
@@ -374,10 +375,10 @@ class AdminController extends Controller
     public function editVirtualMuseum($museum_id)
     {
         $museum = VirtualMuseum::with('situsPeninggalan')->findOrFail($museum_id);
-        
+
         // Get all situs - now supporting multiple museums per situs
         $situsOptions = SitusPeninggalan::orderBy('nama')->get();
-        
+
         return view('admin.virtual-museum.edit', compact('museum', 'situsOptions'));
     }
 
@@ -387,11 +388,11 @@ class AdminController extends Controller
     public function updateVirtualMuseum(Request $request, $museum_id)
     {
         $museum = VirtualMuseum::findOrFail($museum_id);
-        
+
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'nullable|file|max:51200' // 50MB max, optional for update, any file type
+            'obj_file' => 'nullable|file|max:51200', // 50MB max, optional for update, any file type
         ]);
 
         $data = [
@@ -407,7 +408,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('obj_file');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -437,7 +438,7 @@ class AdminController extends Controller
     public function createVirtualMuseumObject($museum_id)
     {
         $museum = VirtualMuseum::with('situsPeninggalan')->findOrFail($museum_id);
-        
+
         return view('admin.virtual-museum-object.create', compact('museum'));
     }
 
@@ -447,14 +448,14 @@ class AdminController extends Controller
     public function storeVirtualMuseumObject(Request $request, $museum_id)
     {
         $museum = VirtualMuseum::findOrFail($museum_id);
-        
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:51200', // 50MB
             'path_patt' => 'nullable|file|max:10240', // 10MB
-            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240' // 10MB
+            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
 
         $data = [
@@ -467,28 +468,28 @@ class AdminController extends Controller
         // Handle file uploads
         if ($request->hasFile('gambar_real')) {
             $file = $request->file('gambar_real');
-            $filename = time() . '_gambar_real_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_gambar_real_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/images', $filename, 'public');
             $data['gambar_real'] = $path;
         }
 
         if ($request->hasFile('path_obj')) {
             $file = $request->file('path_obj');
-            $filename = time() . '_obj_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
 
         if ($request->hasFile('path_patt')) {
             $file = $request->file('path_patt');
-            $filename = time() . '_patt_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_patt_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/patterns', $filename, 'public');
             $data['path_patt'] = $path;
         }
 
         if ($request->hasFile('path_gambar_marker')) {
             $file = $request->file('path_gambar_marker');
-            $filename = time() . '_marker_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_marker_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/markers', $filename, 'public');
             $data['path_gambar_marker'] = $path;
         }
@@ -505,7 +506,7 @@ class AdminController extends Controller
     public function showVirtualMuseumObject($object_id)
     {
         $object = VirtualMuseumObject::with(['situsPeninggalan', 'virtualMuseum.situsPeninggalan'])->findOrFail($object_id);
-        
+
         return view('admin.virtual-museum-object.show', compact('object'));
     }
 
@@ -515,7 +516,7 @@ class AdminController extends Controller
     public function editVirtualMuseumObject($object_id)
     {
         $object = VirtualMuseumObject::with(['situsPeninggalan', 'virtualMuseum.situsPeninggalan'])->findOrFail($object_id);
-        
+
         return view('admin.virtual-museum-object.edit', compact('object'));
     }
 
@@ -525,14 +526,14 @@ class AdminController extends Controller
     public function updateVirtualMuseumObject(Request $request, $object_id)
     {
         $object = VirtualMuseumObject::findOrFail($object_id);
-        
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:51200', // 50MB
             'path_patt' => 'nullable|file|max:10240', // 10MB
-            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240' // 10MB
+            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
 
         $data = [
@@ -548,7 +549,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('gambar_real');
-            $filename = time() . '_gambar_real_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_gambar_real_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/images', $filename, 'public');
             $data['gambar_real'] = $path;
         }
@@ -560,7 +561,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_obj');
-            $filename = time() . '_obj_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -572,7 +573,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_patt');
-            $filename = time() . '_patt_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_patt_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/patterns', $filename, 'public');
             $data['path_patt'] = $path;
         }
@@ -584,7 +585,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_gambar_marker');
-            $filename = time() . '_marker_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_marker_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/markers', $filename, 'public');
             $data['path_gambar_marker'] = $path;
         }
@@ -637,7 +638,7 @@ class AdminController extends Controller
     {
         $report = LaporanPeninggalan::with(['user', 'laporanGambar', 'laporanKomentar.user', 'laporanSuka.user'])
             ->findOrFail($id);
-        
+
         return view('admin.reports.show', compact('report'));
     }
 
@@ -688,12 +689,12 @@ class AdminController extends Controller
         try {
             $feedback = KritikSaran::findOrFail($id);
             $feedback->delete();
-            
+
             return redirect()->route('admin.feedback')
                 ->with('success', 'Feedback berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->route('admin.feedback')
-                ->with('error', 'Gagal menghapus feedback: ' . $e->getMessage());
+                ->with('error', 'Gagal menghapus feedback: '.$e->getMessage());
         }
     }
 
@@ -712,12 +713,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string'
+            'deskripsi' => 'required|string',
         ]);
 
         // Auto generate urutan (get next available order)
         $nextUrutan = Materi::max('urutan') + 1;
-        
+
         $data = $request->all();
         $data['urutan'] = $nextUrutan;
 
@@ -734,7 +735,7 @@ class AdminController extends Controller
     {
         $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
             ->findOrFail($id);
-            
+
         return view('admin.materi.show', compact('materi'));
     }
 
@@ -744,6 +745,7 @@ class AdminController extends Controller
     public function editMateri($id)
     {
         $materi = Materi::findOrFail($id);
+
         return view('admin.materi.edit', compact('materi'));
     }
 
@@ -753,10 +755,10 @@ class AdminController extends Controller
     public function updateMateri(Request $request, $id)
     {
         $materi = Materi::findOrFail($id);
-        
+
         $request->validate([
             'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string'
+            'deskripsi' => 'required|string',
         ]);
 
         $materi->update($request->only(['judul', 'deskripsi']));
@@ -773,7 +775,7 @@ class AdminController extends Controller
         $materi = Materi::findOrFail($id);
 
         // Check if materi has related data
-        if ($materi->pretest()->exists() || $materi->posttest()->exists() || 
+        if ($materi->pretest()->exists() || $materi->posttest()->exists() ||
             $materi->ebook()->exists() || $materi->situsPeninggalan()->exists()) {
             return redirect()->route('admin.materi')
                 ->with('error', 'Tidak dapat menghapus materi yang memiliki data terkait!');
@@ -793,7 +795,7 @@ class AdminController extends Controller
         $request->validate([
             'items' => 'required|array',
             'items.*.id' => 'required|integer|exists:materi,materi_id',
-            'items.*.position' => 'required|integer|min:1'
+            'items.*.position' => 'required|integer|min:1',
         ]);
 
         foreach ($request->items as $item) {
@@ -825,6 +827,7 @@ class AdminController extends Controller
     public function createPretest($materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
+
         return view('admin.pretest.create', compact('materi'));
     }
 
@@ -834,14 +837,14 @@ class AdminController extends Controller
     public function storePretest(Request $request, $materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        
+
         $request->validate([
             'pertanyaan' => 'required|string',
             'pilihan_a' => 'required|string|max:255',
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D'
+            'jawaban_benar' => 'required|in:A,B,C,D',
         ]);
 
         $data = $request->all();
@@ -860,18 +863,18 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $pretest = Pretest::where('materi_id', $materi_id)->findOrFail($pretest_id);
-        
+
         // Get previous and next pretest questions
         $previousPretest = Pretest::where('materi_id', $materi_id)
-                                 ->where('pretest_id', '<', $pretest_id)
-                                 ->orderBy('pretest_id', 'desc')
-                                 ->first();
-        
+            ->where('pretest_id', '<', $pretest_id)
+            ->orderBy('pretest_id', 'desc')
+            ->first();
+
         $nextPretest = Pretest::where('materi_id', $materi_id)
-                             ->where('pretest_id', '>', $pretest_id)
-                             ->orderBy('pretest_id', 'asc')
-                             ->first();
-        
+            ->where('pretest_id', '>', $pretest_id)
+            ->orderBy('pretest_id', 'asc')
+            ->first();
+
         return view('admin.pretest.show', compact('materi', 'pretest', 'previousPretest', 'nextPretest'));
     }
 
@@ -882,7 +885,7 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $pretest = Pretest::where('materi_id', $materi_id)->findOrFail($pretest_id);
-        
+
         return view('admin.pretest.edit', compact('materi', 'pretest'));
     }
 
@@ -893,14 +896,14 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $pretest = Pretest::where('materi_id', $materi_id)->findOrFail($pretest_id);
-        
+
         $request->validate([
             'pertanyaan' => 'required|string',
             'pilihan_a' => 'required|string|max:255',
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D'
+            'jawaban_benar' => 'required|in:A,B,C,D',
         ]);
 
         $pretest->update($request->all());
@@ -944,6 +947,7 @@ class AdminController extends Controller
     public function createPosttest($materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
+
         return view('admin.posttest.create', compact('materi'));
     }
 
@@ -953,14 +957,14 @@ class AdminController extends Controller
     public function storePosttest(Request $request, $materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        
+
         $request->validate([
             'pertanyaan' => 'required|string',
             'pilihan_a' => 'required|string|max:255',
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D'
+            'jawaban_benar' => 'required|in:A,B,C,D',
         ]);
 
         $data = $request->all();
@@ -979,18 +983,18 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $posttest = Posttest::where('materi_id', $materi_id)->findOrFail($posttest_id);
-        
+
         // Get previous and next posttest questions
         $previousPosttest = Posttest::where('materi_id', $materi_id)
-                                   ->where('posttest_id', '<', $posttest_id)
-                                   ->orderBy('posttest_id', 'desc')
-                                   ->first();
-        
+            ->where('posttest_id', '<', $posttest_id)
+            ->orderBy('posttest_id', 'desc')
+            ->first();
+
         $nextPosttest = Posttest::where('materi_id', $materi_id)
-                               ->where('posttest_id', '>', $posttest_id)
-                               ->orderBy('posttest_id', 'asc')
-                               ->first();
-        
+            ->where('posttest_id', '>', $posttest_id)
+            ->orderBy('posttest_id', 'asc')
+            ->first();
+
         return view('admin.posttest.show', compact('materi', 'posttest', 'previousPosttest', 'nextPosttest'));
     }
 
@@ -1001,7 +1005,7 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $posttest = Posttest::where('materi_id', $materi_id)->findOrFail($posttest_id);
-        
+
         return view('admin.posttest.edit', compact('materi', 'posttest'));
     }
 
@@ -1012,14 +1016,14 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $posttest = Posttest::where('materi_id', $materi_id)->findOrFail($posttest_id);
-        
+
         $request->validate([
             'pertanyaan' => 'required|string',
             'pilihan_a' => 'required|string|max:255',
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D'
+            'jawaban_benar' => 'required|in:A,B,C,D',
         ]);
 
         $posttest->update($request->all());
@@ -1049,7 +1053,7 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $ebooks = Ebook::where('materi_id', $materi_id)->paginate(10);
-        
+
         return view('admin.ebook.index', compact('materi', 'ebooks'));
     }
 
@@ -1059,6 +1063,7 @@ class AdminController extends Controller
     public function createEbook($materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
+
         return view('admin.ebook.create', compact('materi'));
     }
 
@@ -1068,10 +1073,10 @@ class AdminController extends Controller
     public function storeEbook(Request $request, $materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        
+
         $request->validate([
             'judul' => 'required|string|max:255',
-            'path_file' => 'required|file|mimes:pdf|max:51200' // 50MB max for PDF
+            'path_file' => 'required|file|mimes:pdf|max:51200', // 50MB max for PDF
         ]);
 
         $data = [
@@ -1082,7 +1087,7 @@ class AdminController extends Controller
         // Handle file upload
         if ($request->hasFile('path_file')) {
             $file = $request->file('path_file');
-            $filename = time() . '_ebook_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_ebook_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('ebooks', $filename, 'public');
             $data['path_file'] = $path;
         }
@@ -1100,7 +1105,7 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $ebook = Ebook::where('materi_id', $materi_id)->where('ebook_id', $ebook_id)->firstOrFail();
-        
+
         return view('admin.ebook.edit', compact('materi', 'ebook'));
     }
 
@@ -1111,10 +1116,10 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $ebook = Ebook::where('materi_id', $materi_id)->where('ebook_id', $ebook_id)->firstOrFail();
-        
+
         $request->validate([
             'judul' => 'required|string|max:255',
-            'path_file' => 'nullable|file|mimes:pdf|max:51200' // 50MB max for PDF
+            'path_file' => 'nullable|file|mimes:pdf|max:51200', // 50MB max for PDF
         ]);
 
         $data = [
@@ -1129,7 +1134,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_file');
-            $filename = time() . '_ebook_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_ebook_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('ebooks', $filename, 'public');
             $data['path_file'] = $path;
         }

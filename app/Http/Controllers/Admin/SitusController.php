@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SitusPeninggalan;
 use App\Models\Materi;
+use App\Models\SitusPeninggalan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +47,7 @@ class SitusController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'masa' => 'required|string|max:100',
             'materi_id' => 'required|exists:materi,materi_id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
         ]);
 
         try {
@@ -62,7 +62,7 @@ class SitusController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error creating situs: ' . $e->getMessage());
+            Log::error('Error creating situs: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -91,7 +91,7 @@ class SitusController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'masa' => 'required|string|max:100',
             'materi_id' => 'required|exists:materi,materi_id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
         ]);
 
         try {
@@ -106,7 +106,7 @@ class SitusController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error updating situs: ' . $e->getMessage());
+            Log::error('Error updating situs: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -120,7 +120,7 @@ class SitusController extends Controller
             DB::beginTransaction();
 
             $situs = SitusPeninggalan::findOrFail($id);
-            
+
             // Check if situs has virtual museum objects
             if ($situs->virtualMuseumObject()->count() > 0) {
                 return redirect()->back()
@@ -136,7 +136,7 @@ class SitusController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error deleting situs: ' . $e->getMessage());
+            Log::error('Error deleting situs: '.$e->getMessage());
 
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan saat menghapus situs peninggalan.');

@@ -8,7 +8,7 @@ return [
     'features' => 'Fitur',
     'developers' => 'Pengembang',
     'ar_marker' => 'AR Marker',
-    
+
     // Developer page
     'developer_page' => 'Halaman Pengembang',
     'developer_desc' => 'Tim pengembang Virtual Living Museum',
@@ -16,7 +16,7 @@ return [
     'app_developer' => 'Pengembang Aplikasi',
     'back_to_home' => 'Kembali ke Beranda',
     'contact_info' => 'Informasi Kontak',
-    
+
     // Admin Dashboard
     'admin_dashboard' => 'Dashboard Admin',
     'admin_dashboard_desc' => 'Panel kontrol dan statistik sistem Virtual Living Museum',
@@ -35,7 +35,7 @@ return [
     'no_users_yet' => 'Belum ada pengguna terdaftar',
     'no_reports_yet' => 'Belum ada laporan',
     'by' => 'oleh',
-    
+
     // User Management
     'manage_users_desc' => 'Kelola semua pengguna yang terdaftar di sistem',
     'back_to_dashboard' => 'Kembali ke Dashboard',
@@ -55,7 +55,7 @@ return [
     'user_updated_successfully' => 'Pengguna berhasil diperbarui',
     'user_deleted_successfully' => 'Pengguna berhasil dihapus',
     'cannot_delete_yourself' => 'Anda tidak dapat menghapus akun sendiri',
-    
+
     // User Details
     'user_details' => 'Detail Pengguna',
     'viewing_user' => 'Melihat pengguna',
@@ -75,7 +75,7 @@ return [
     'recent_activity' => 'Aktivitas Terbaru',
     'no_activity_recorded' => 'Tidak ada aktivitas tercatat',
     'pending' => 'Menunggu',
-    
+
     // Edit User
     'editing_user' => 'Mengedit pengguna',
     'profile_photo' => 'Foto Profil',

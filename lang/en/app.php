@@ -8,7 +8,7 @@ return [
     'features' => 'Features',
     'developers' => 'Developers',
     'ar_marker' => 'AR Marker',
-    
+
     // Developer page
     'developer_page' => 'Developer Page',
     'developer_desc' => 'Virtual Living Museum development team',
@@ -16,7 +16,7 @@ return [
     'app_developer' => 'App Developer',
     'back_to_home' => 'Back to Home',
     'contact_info' => 'Contact Information',
-    
+
     // Admin Dashboard
     'admin_dashboard' => 'Admin Dashboard',
     'admin_dashboard_desc' => 'Virtual Living Museum system control panel and statistics',
@@ -35,7 +35,7 @@ return [
     'no_users_yet' => 'No users registered yet',
     'no_reports_yet' => 'No reports yet',
     'by' => 'by',
-    
+
     // User Management
     'manage_users_desc' => 'Manage all registered users in the system',
     'back_to_dashboard' => 'Back to Dashboard',
@@ -55,7 +55,7 @@ return [
     'user_updated_successfully' => 'User updated successfully',
     'user_deleted_successfully' => 'User deleted successfully',
     'cannot_delete_yourself' => 'You cannot delete your own account',
-    
+
     // User Details
     'user_details' => 'User Details',
     'viewing_user' => 'Viewing user',
@@ -75,7 +75,7 @@ return [
     'recent_activity' => 'Recent Activity',
     'no_activity_recorded' => 'No activity recorded',
     'pending' => 'Pending',
-    
+
     // Edit User
     'editing_user' => 'Editing user',
     'profile_photo' => 'Profile Photo',
