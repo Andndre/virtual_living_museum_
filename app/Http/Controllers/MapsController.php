@@ -19,12 +19,15 @@ class MapsController extends Controller
             $progress = $user->progress_level_sekarang;
             $level = $user->level_sekarang;
 
-            // mendapatkan semua situs yang dimana user sudah menyelesaikannya
-            $situs = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
+            // Mendapatkan semua situs
+            $allSitus = SitusPeninggalan::all();
+            
+            // Mengidentifikasi situs yang telah dibuka oleh user
+            $unlockedSitusIds = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
                 $query->where('urutan', '<=', $level);
-            })->get();
+            })->pluck('situs_id')->toArray();
 
-            return view('guest.maps.view', compact('situs'));
+            return view('guest.maps.view', compact('allSitus', 'unlockedSitusIds'));
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
