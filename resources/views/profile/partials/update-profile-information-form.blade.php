@@ -46,6 +46,57 @@
                 </div>
             @endif
         </div>
+        
+        <div>
+            <x-input-label for="phone_number" :value="__('Nomor Telepon')" />
+            <x-text-input 
+                id="phone_number" 
+                name="phone_number" 
+                type="text" 
+                class="mt-1 block w-full {{ !auth()->user()->phone_number ? 'border-yellow-300 bg-yellow-50' : '' }}" 
+                :value="old('phone_number', $user->phone_number)" 
+                placeholder="Masukkan nomor telepon Anda"
+                autocomplete="tel" 
+            />
+            @if(!auth()->user()->phone_number)
+                <p class="mt-1 text-xs text-yellow-600">Mohon lengkapi nomor telepon Anda</p>
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
+        </div>
+
+        <div>
+            <x-input-label for="address" :value="__('Alamat')" />
+            <x-text-input 
+                id="address" 
+                name="address" 
+                type="text" 
+                class="mt-1 block w-full {{ !auth()->user()->address ? 'border-yellow-300 bg-yellow-50' : '' }}" 
+                :value="old('address', $user->address)" 
+                placeholder="Masukkan alamat lengkap Anda"
+                autocomplete="street-address" 
+            />
+            @if(!auth()->user()->address)
+                <p class="mt-1 text-xs text-yellow-600">Mohon lengkapi alamat Anda</p>
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+        </div>
+
+        <div>
+            <x-input-label for="date_of_birth" :value="__('Tanggal Lahir')" />
+            <x-text-input 
+                id="date_of_birth" 
+                name="date_of_birth" 
+                type="date" 
+                class="mt-1 block w-full {{ !auth()->user()->date_of_birth ? 'border-yellow-300 bg-yellow-50' : '' }}" 
+                :value="old('date_of_birth', $user->date_of_birth ? $user->date_of_birth->format('Y-m-d') : '')" 
+                autocomplete="bday"
+                placeholder="YYYY-MM-DD" 
+            />
+            @if(!auth()->user()->date_of_birth)
+                <p class="mt-1 text-xs text-yellow-600">Mohon lengkapi tanggal lahir Anda</p>
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
+        </div>
 
         <div class="flex items-center gap-4">
             <x-primary-button class="w-full flex justify-center">{{ __('app.save') }}</x-primary-button>

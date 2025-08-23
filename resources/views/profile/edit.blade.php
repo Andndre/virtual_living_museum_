@@ -49,6 +49,32 @@
 				</div>
 			</div>
 
+			{{-- Logout --}}
+			<div class="bg-white rounded-2xl p-6 shadow-sm">
+				<div class="max-w-xl">
+					<header>
+						<h2 class="text-lg font-medium text-gray-900">
+							{{ __('Keluar Akun') }}
+						</h2>
+						<p class="mt-1 text-sm text-gray-600">
+							{{ __('Keluar dari akun aplikasi ini.') }}
+						</p>
+					</header>
+
+					<div class="mt-6">
+						<form method="POST" action="{{ route('logout') }}">
+							@csrf
+							<div class="flex items-center gap-4">
+								<button type="submit" class="flex items-center justify-center gap-2 rounded-lg bg-red-50 px-4 py-3 text-red-600 shadow-sm hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+									<i class="fas fa-sign-out-alt"></i>
+									<span>{{ __('Keluar dari Akun') }}</span>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			{{-- Delete Account --}}
 			<div class="bg-white rounded-2xl p-6 shadow-sm">
 				<div class="max-w-xl">
@@ -77,6 +103,9 @@
 				formData.append('profile_photo', file);
 				formData.append('name', '{{ auth()->user()->name }}');
 				formData.append('email', '{{ auth()->user()->email }}');
+				formData.append('phone_number', '{{ auth()->user()->phone_number }}');
+				formData.append('address', '{{ auth()->user()->address }}');
+				formData.append('date_of_birth', '{{ auth()->user()->date_of_birth ? auth()->user()->date_of_birth->format("Y-m-d") : "" }}');
 				formData.append('_token', '{{ csrf_token() }}');
 				formData.append('_method', 'PATCH');
 				

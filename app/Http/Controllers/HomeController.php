@@ -37,8 +37,12 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $greeting = $this->getGreeting();
+        $user = Auth::user();
+        
+        // Check if profile is complete
+        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
 
-        return view('guest.home', compact('greeting'));
+        return view('guest.home', compact('greeting', 'profileComplete'));
     }
 
     public function panduan(Request $request)

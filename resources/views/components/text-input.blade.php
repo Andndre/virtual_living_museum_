@@ -1,14 +1,20 @@
 @props(['disabled' => false])
 
 @php
-$isPassword = $attributes->get('type') === 'password';
+$type = $attributes->get('type');
+$isPassword = $type === 'password';
+$isDate = $type === 'date';
 $paddingClass = $isPassword ? 'pr-10' : '';
 @endphp
 
 <div class="relative" x-data="{ show: {{ $attributes->get('type') === 'password' ? 'false' : 'true' }} }">
     <input 
         @disabled($disabled) 
+        @if($isPassword)
         :type="show ? 'text' : 'password'"
+        @else
+        type="{{ $type }}"
+        @endif
         {{ $attributes->merge([
             'class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm w-full py-3 ' . $paddingClass
             ]) 

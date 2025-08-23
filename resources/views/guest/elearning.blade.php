@@ -170,9 +170,6 @@
         </div>
     </div>
 
-    {{-- Bottom Navigation --}}
-    <x-bottom-nav />
-
     {{-- JavaScript for Tabs --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,29 @@
+/* Custom styles for date inputs */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 2px;
+    opacity: 0.6;
+    filter: invert(0.5);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Improve date input appearance in Firefox */
+input[type="date"] {
+    appearance: none;
+    -moz-appearance: none;
+    position: relative;
+}
+
+/* Placeholder support for date inputs (which don't normally support placeholders) */
+input[type="date"]:not(:focus):invalid {
+    color: #9CA3AF;
+}
+
+input[type="date"]:focus {
+    color: #374151;
+    outline: none;
+}
