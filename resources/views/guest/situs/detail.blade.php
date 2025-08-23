@@ -3,15 +3,9 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                @if($situs->materi)
-                    <a href="{{ route('guest.elearning.materi', $situs->materi->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </a>
-                @else
-                    <a href="{{ route('guest.elearning') }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </a>
-                @endif
+                <button type="button" onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
                 <div class="flex-1">
                     <h1 class="text-lg font-bold">Virtual Living Museum</h1>
                     <p class="text-sm opacity-90">{{ $situs->nama }}</p>

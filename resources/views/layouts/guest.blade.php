@@ -13,6 +13,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @stack('head')
     </head>
     <body class="font-sans bg-black text-gray-900 antialiased">
         <div class="w-full lg:max-w-xl mx-auto bg-white min-h-[100dvh]">

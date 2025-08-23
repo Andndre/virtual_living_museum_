@@ -5,8 +5,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\ArMarkerCameraController;
+use App\Http\Controllers\MapsController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', function () {
     return redirect()->route('guest.home');
@@ -21,8 +22,13 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/pengaturan', [HomeController::class, 'pengaturan'])->name('guest.pengaturan');
     Route::get('/pengembang', [HomeController::class, 'pengembang'])->name('guest.pengembang');
     Route::get('/ar-marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
-    Route::get('/ar-marker/camera', [\App\Http\Controllers\ArMarkerCameraController::class, 'index'])->name('ar-marker.camera');
-    
+    Route::get('/ar-marker/camera', [ArMarkerCameraController::class, 'index'])->name('ar-marker.camera');
+
+    // Maps routes
+    Route::get('/maps', [HomeController::class, 'maps'])->name('guest.maps');
+    Route::get('/maps/view', [MapsController::class, 'view'])->name('guest.maps.view');
+    Route::get('/maps/peninggalan', [MapsController::class, 'peninggalan'])->name('guest.maps.peninggalan');
+
     // E-Learning routes
     Route::get('/elearning', [HomeController::class, 'elearning'])->name('guest.elearning');
     Route::get('/elearning/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
@@ -31,6 +37,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'elearningPosttest'])->name('guest.elearning.posttest');
     Route::post('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'submitPosttest'])->name('guest.elearning.posttest.submit');
     Route::get('/elearning/ebook/{ebook_id}', [HomeController::class, 'elearningEbook'])->name('guest.elearning.ebook');
+
     // Mark e-book as read (AJAX)
     Route::post('/elearning/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
     

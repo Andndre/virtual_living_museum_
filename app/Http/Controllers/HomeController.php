@@ -60,6 +60,10 @@ class HomeController extends Controller
         return view('guest.ar-marker');
     }
 
+    public function maps(Request $request) {
+        return view('guest.maps');
+    }
+
     /**
      * E-Learning Index Page
      */
