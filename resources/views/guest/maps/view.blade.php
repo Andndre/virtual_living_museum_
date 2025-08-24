@@ -8,8 +8,8 @@
             #bottom-overlay {
                 transition: transform 0.3s ease-in-out;
                 transform: translateY(100%);
-                background-image: linear-gradient(to top, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%);
                 padding-bottom: env(safe-area-inset-bottom, 0);
+                max-height: 80vh;
             }
 
             /* Add padding for notches and dynamic toolbars */
@@ -62,12 +62,43 @@
                 from { transform: rotate(0deg); }
                 to { transform: rotate(360deg); }
             }
+            
+            /* Ensure map controls are positioned properly on mobile */
+            .leaflet-bottom.leaflet-left,
+            .leaflet-bottom.leaflet-right {
+                bottom: 30px;
+            }
+            
+            /* Larger control buttons for better touch targets on mobile */
+            .leaflet-touch .leaflet-control-zoom a {
+                width: 36px;
+                height: 36px;
+                line-height: 36px;
+                font-size: 18px;
+            }
+            
+            /* Improve marker readability */
+            .leaflet-marker-icon {
+                filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
+            }
+            
+            /* Fix iOS search input */
+            #search-input {
+                -webkit-appearance: none;
+                border-radius: 0;
+                height: 100%;
+            }
+            
+            /* Ensure overlay sits on top of map controls */
+            #bottom-overlay.visible {
+                z-index: 1001;
+            }
         </style>
     @endpush
 
     <!-- Combined Back Button and Search Bar -->
-    <div class="fixed top-[env(safe-area-inset-top,0)] left-0 right-0 pt-4 z-[1000] pointer-events-none">
-        <div class="w-full max-w-md mx-auto px-4 flex items-center gap-2 pointer-events-auto">
+    <div class="fixed top-0 left-0 right-0 z-[1000] pointer-events-none safe-top">
+        <div class="w-full max-w-md mx-auto px-4 flex items-center gap-2 pointer-events-auto mt-4 md:mt-2">
             <!-- Back Button (Circular) -->
             <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-700">
@@ -98,11 +129,11 @@
         </div>
     </div>
 
-    <div id="map" style="height: 100dvh;"></div>
+    <div id="map" style="height: 100dvh; width: 100vw; position: fixed; top: 0; left: 0;"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-[1000] pointer-events-none">
-        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto p-4 pointer-events-auto">
-            <div class="p-4">
+    <div class="fixed bottom-0 left-0 right-0 z-[1000] pointer-events-none safe-bottom">
+        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto pointer-events-auto">
+            <div class="p-4 bg-white rounded-t-xl shadow-lg">
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
                 <p id="overlay-address" class="text-gray-600 text-sm"></p>
                 <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
@@ -114,14 +145,20 @@
     </div>
 
     <script>
+        // Check if device is mobile
+        const isMobileDevice = window.innerWidth < 768;
+        
         var map = L.map('map', {
-            zoomControl: false // Disable default zoom control
-        }).setView([-8.409518, 115.188919], 10);
+            zoomControl: false, // Disable default zoom control
+            tap: true // Enable tap for mobile
+        }).setView([-8.409518, 115.188919], isMobileDevice ? 8 : 10);
         var activeMarker = null;
         
-        // Add zoom control to bottom right
+        // Add zoom control to bottom right with larger buttons for mobile
         L.control.zoom({
-            position: 'bottomright'
+            position: 'bottomright',
+            zoomInTitle: 'Perbesar',
+            zoomOutTitle: 'Perkecil'
         }).addTo(map);
         
         // Custom control for "Lihat Peninggalan" button
@@ -131,7 +168,7 @@
                 const link = L.DomUtil.create('a', '', container);
                 link.href = '{{ route("guest.maps.peninggalan") }}';
                 link.title = 'Lihat Daftar Peninggalan';
-                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
+                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
                 
                 L.DomEvent.on(link, 'click', function(e) {
                     L.DomEvent.stopPropagation(e);
@@ -225,6 +262,11 @@
             }
             overlayLink.style.display = 'none';
             lockedMessage.style.display = 'none';
+            
+            // On mobile, reset the map position slightly to ensure controls are visible
+            if (window.innerWidth < 768) {
+                map.invalidateSize();
+            }
         }
 
         closeOverlayBtn.addEventListener('click', hideOverlay);
@@ -252,8 +294,24 @@
             marker.setIcon(selectedIcon);
             activeMarker = marker;
             
-            // Zoom to marker
-            map.setView([marker._latlng.lat, marker._latlng.lng], 14);
+            // Zoom to marker - adjust for mobile to leave space for overlay
+            const isMobile = window.innerWidth < 768;
+            const targetZoom = 14;
+            
+            if (isMobile) {
+                // For mobile devices, pan the map so the marker is in the upper part of the screen
+                const point = map.latLngToContainerPoint(marker._latlng);
+                const targetPoint = L.point(point.x, window.innerHeight * 0.4);
+                const targetLatLng = map.containerPointToLatLng(targetPoint);
+                map.setView(marker._latlng, targetZoom);
+                
+                // Slight delay to ensure the map has updated before showing overlay
+                setTimeout(() => {
+                    map.panBy([0, -window.innerHeight * 0.2]);
+                }, 100);
+            } else {
+                map.setView([marker._latlng.lat, marker._latlng.lng], targetZoom);
+            }
             
             // Update overlay content
             overlayTitle.textContent = marker.situsInfo.nama;
