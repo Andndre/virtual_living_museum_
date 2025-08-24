@@ -56,12 +56,12 @@
 				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.report_heritage') }}</span>
 			</div>
 
-			{{-- Peninggalan Terdekat --}}
+			{{-- Video Peninggalan --}}
 			<div class="flex flex-col items-center">
 				<a href="#" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
-					<img src="{{ asset('images/icons/peninggalan-terdekat.png') }}" alt="Peninggalan Terdekat" class="w-12 h-12" />
+					<img src="{{ asset('images/icons/video-peninggalan.png') }}" alt="Video Peninggalan" class="w-12 h-12" />
 				</a>
-				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.nearby_heritage') }}</span>
+				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.heritage_video') }}</span>
 			</div>
 
 			{{-- Kritik & Saran --}}
@@ -83,15 +83,15 @@
 				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.ask_ai') }}</span>
 			</div>
 
-			{{-- Video Peninggalan --}}
+			{{-- Peninggalan Terdekat --}}
 			<div class="flex flex-col items-center">
 				<a href="#" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
-					<img src="{{ asset('images/icons/video-peninggalan.png') }}" alt="Video Peninggalan" class="w-12 h-12" />
+					<img src="{{ asset('images/icons/peninggalan-terdekat.png') }}" alt="Peninggalan Terdekat" class="w-12 h-12" />
 					<div class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
 						<i class="fas fa-lock text-gray-800 text-xs"></i>
 					</div>
 				</a>
-				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.heritage_video') }}</span>
+				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.nearby_heritage') }}</span>
 			</div>
 
 			{{-- Game --}}
