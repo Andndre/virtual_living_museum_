@@ -22,10 +22,6 @@
                 padding-bottom: env(safe-area-inset-bottom, 16px);
             }
 
-            #bottom-overlay.visible {
-                transform: translateY(0);
-            }
-
             .selected-marker-icon .spinning-circle-wrapper {
                 position: absolute;
                 width: 100%;
@@ -92,13 +88,11 @@
             
             /* New search container styling */
             #search-container {
-                position: absolute;
+                position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 z-index: 3000;
-                padding-top: env(safe-area-inset-top, 16px);
-                margin-top: 50px;
             }
             
             /* Ensure search results appear properly */
@@ -110,7 +104,6 @@
             
             /* Ensure overlay sits on top of map controls */
             #bottom-overlay.visible {
-                z-index: 2000;
                 transform: translateY(0);
                 box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
             }
@@ -118,7 +111,7 @@
     @endpush
 
     <!-- Combined Back Button and Search Bar -->
-    <div id="search-container" class="absolute top-0 left-0 right-0 z-[3000] p-4 pt-[calc(env(safe-area-inset-top,0px)+70px)]">
+    <div id="search-container" class="fixed top-0 left-0 right-0 z-[3000] p-4 pt-[calc(env(safe-area-inset-top,0px)+16px)]">
         <div class="w-full max-w-md mx-auto flex items-center gap-2">
             <!-- Back Button (Circular) -->
             <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
@@ -150,9 +143,9 @@
         </div>
     </div>
 
-    <div id="map" style="height: 100dvh; width: 100vw; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+    <div id="map" style="height: 100dvh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 1;"></div>
 
-    <div class="absolute bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+    <div class="fixed bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom, 0);">
         <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto">
             <div class="p-4 bg-white rounded-t-xl shadow-lg border-t-4 border-blue-600">
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
