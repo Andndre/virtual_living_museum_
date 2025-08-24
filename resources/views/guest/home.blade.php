@@ -50,7 +50,7 @@
 
 			{{-- Lapor Peninggalan --}}
 			<div class="flex flex-col items-center">
-				<a href="#" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+				<a href="{{ route('guest.laporan-peninggalan') }}" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
 					<img src="{{ asset('images/icons/lapor-peninggalan.png') }}" alt="Lapor Peninggalan" class="w-12 h-12" />
 				</a>
 				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.report_heritage') }}</span>

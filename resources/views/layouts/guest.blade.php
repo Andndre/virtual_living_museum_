@@ -10,7 +10,11 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
+        <!-- Styles -->
+        @stack('styles')
+        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -20,5 +24,8 @@
         <div class="w-full lg:max-w-xl mx-auto bg-white min-h-[100dvh]">
             {{ $slot }}
         </div>
+        
+        <!-- Scripts -->
+        @stack('scripts')
     </body>
 </html>

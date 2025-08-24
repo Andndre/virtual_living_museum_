@@ -6,6 +6,7 @@ use App\Http\Controllers\ArMarkerCameraController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\LaporanPeninggalanController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,14 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     // Kritik dan Saran routes
     Route::get('/kritik-saran', [KritikSaranController::class, 'index'])->name('guest.kritik-saran');
     Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('guest.kritik-saran.store');
+    
+    // Laporan Peninggalan routes
+    Route::get('/laporan-peninggalan', [LaporanPeninggalanController::class, 'index'])->name('guest.laporan-peninggalan');
+    Route::get('/laporan-peninggalan/create', [LaporanPeninggalanController::class, 'create'])->name('guest.laporan-peninggalan.create');
+    Route::post('/laporan-peninggalan', [LaporanPeninggalanController::class, 'store'])->name('guest.laporan-peninggalan.store');
+    Route::get('/laporan-peninggalan/{id}', [LaporanPeninggalanController::class, 'show'])->name('guest.laporan-peninggalan.show');
+    Route::post('/laporan-peninggalan/{id}/like', [LaporanPeninggalanController::class, 'toggleLike'])->name('guest.laporan-peninggalan.like');
+    Route::post('/laporan-peninggalan/{id}/comment', [LaporanPeninggalanController::class, 'storeComment'])->name('guest.laporan-peninggalan.comment');
 
     // AR routes
     Route::get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
