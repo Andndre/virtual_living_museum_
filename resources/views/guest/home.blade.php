@@ -66,7 +66,7 @@
 
 			{{-- Kritik & Saran --}}
 			<div class="flex flex-col items-center">
-				<a href="#" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+				<a href="{{ route('guest.kritik-saran') }}" class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
 					<img src="{{ asset('images/icons/kritik-dan-saran.png') }}" alt="Kritik & Saran" class="w-12 h-12" />
 				</a>
 				<span class="text-xs font-medium text-gray-700 text-center">{{ __('app.feedback_suggestion') }}</span>

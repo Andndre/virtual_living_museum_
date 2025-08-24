@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ArMarkerCameraController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ProfileController;
@@ -47,6 +48,10 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');
+
+    // Kritik dan Saran routes
+    Route::get('/kritik-saran', [KritikSaranController::class, 'index'])->name('guest.kritik-saran');
+    Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('guest.kritik-saran.store');
 
     // AR routes
     Route::get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
