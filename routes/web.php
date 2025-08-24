@@ -18,6 +18,7 @@ Route::get('/language/{locale}', [LanguageController::class, 'changeLanguage'])-
 
 Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('guest.home');
+    Route::get('/statistik', [HomeController::class, 'statistik'])->name('guest.statistik');
     Route::get('/panduan', [HomeController::class, 'panduan'])->name('guest.panduan');
     Route::get('/pengaturan', [HomeController::class, 'pengaturan'])->name('guest.pengaturan');
     Route::get('/pengembang', [HomeController::class, 'pengembang'])->name('guest.pengembang');

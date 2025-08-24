@@ -49,6 +49,39 @@ class HomeController extends Controller
     {
         return view('guest.panduan');
     }
+    
+    /**
+     * Display leaderboard of users based on posttest scores
+     */
+    public function statistik()
+    {
+        // Get current user for highlighting
+        $currentUser = Auth::user();
+        
+        // Get all users with their posttest scores
+        $users = User::where('role', 'user')
+            ->withCount(['jawabanUser as total_score' => function ($query) {
+                $query->where('jenis', 'posttest')
+                      ->where('benar', true);
+            }])
+            ->orderByDesc('total_score')
+            ->get();
+        
+        // Add ranking to each user
+        $rank = 1;
+        foreach ($users as $user) {
+            $user->rank = $rank++;
+        }
+        
+        // Find current user's position
+        $currentUserRank = $users->where('id', $currentUser->id)->first()->rank ?? 0;
+        $userScore = $users->where('id', $currentUser->id)->first()->total_score ?? 0;
+        
+        // Get top 10 users
+        $topUsers = $users->take(10);
+        
+        return view('guest.statistik', compact('topUsers', 'currentUser', 'currentUserRank', 'userScore'));
+    }
 
     public function pengaturan(Request $request)
     {
