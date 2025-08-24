@@ -84,8 +84,10 @@ class SceneManager {
         this.model = null;
         this.planeFound = false;
         this.placed = false;
+        this.skybox = null;
 
         const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        light.position.set(0.5, 1, 0.25);
         light.position.set(0.5, 1, 0.25);
         this.scene.add(light);
 
@@ -105,6 +107,39 @@ class SceneManager {
         console.log("Resized");
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
+    }
+    
+    createSkybox() {
+        // Create a skybox using a spherical environment
+        const textureLoader = new THREE.TextureLoader();
+        
+        // Load sky texture - we'll use a simple equirectangular texture
+        // This can be replaced with a more suitable texture for the museum context
+        const texture = textureLoader.load('/images/hdri/langit.jpg', () => {
+            console.log("Skybox texture loaded");
+            showToaster("Skybox texture loaded");
+        });
+        
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        texture.colorSpace = THREE.SRGBColorSpace;
+        
+        // Create a large sphere for the skybox
+        const skyGeometry = new THREE.SphereGeometry(500, 60, 40);
+        // Flip the geometry inside out
+        skyGeometry.scale(-1, 1, 1);
+        
+        const skyMaterial = new THREE.MeshBasicMaterial({
+            map: texture
+        });
+        
+        this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+        this.skybox.visible = false; // Initially hidden
+        this.scene.add(this.skybox);
+        
+        // Set the scene's environment map for reflections on the model
+        this.scene.environment = texture;
+        
+        return this.skybox;
     }
 }
 
@@ -202,6 +237,13 @@ class RendererManager {
                     referenceSpace,
                     sceneManager
                 );
+            }
+            
+            // Update skybox position to follow the camera if it exists and is visible
+            if (sceneManager.skybox && sceneManager.skybox.visible && sceneManager.placed) {
+                const cameraPosition = new THREE.Vector3();
+                sceneManager.camera.getWorldPosition(cameraPosition);
+                sceneManager.skybox.position.copy(cameraPosition);
             }
         }
 
@@ -318,6 +360,11 @@ async function main() {
     sceneManager.scene.add(model);
     model.updateMatrixWorld(true);
     sceneManager.model = model;
+    
+    // Create the skybox
+    showToaster("Preparing environment");
+    const skybox = sceneManager.createSkybox();
+    
     sceneManager.setOnSelect((matrix) => {
         if (model.visible) return;
         document.getElementById("instructions").style.display = "none";
@@ -335,6 +382,14 @@ async function main() {
         direction.y = 0;
         model.lookAt(direction.add(model.position));
         model.visible = true;
+        
+        // Position the skybox at the model position to ensure proper alignment
+        if (skybox) {
+            skybox.position.copy(model.position);
+            skybox.visible = true;
+            showToaster("Environment loaded");
+        }
+        
         sceneManager.reticle.visible = false;
         sceneManager.placed = true;
 
