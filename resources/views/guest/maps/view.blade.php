@@ -5,12 +5,16 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <style>
+            /* Bottom overlay transition - these can't be easily done with Tailwind */
             #bottom-overlay {
                 transition: transform 0.3s ease-in-out;
                 transform: translateY(100%);
-                padding-bottom: env(safe-area-inset-bottom, 0);
-                max-height: 80vh;
-                z-index: 2000;
+                visibility: hidden;
+            }
+
+            #bottom-overlay.visible {
+                transform: translateY(0);
+                visibility: visible;
             }
 
             /* Add padding for notches and dynamic toolbars */
@@ -83,53 +87,30 @@
             #search-input {
                 -webkit-appearance: none;
                 border-radius: 0;
-                height: 100%;
-            }
-            
-            /* New search container styling */
-            #search-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 3000;
-            }
-            
-            /* Ensure search results appear properly */
-            #search-results {
-                margin-top: 5px;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            }
-            
-            /* Ensure overlay sits on top of map controls */
-            #bottom-overlay.visible {
-                transform: translateY(0);
-                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
             }
         </style>
     @endpush
 
     <!-- Combined Back Button and Search Bar -->
-    <div id="search-container" class="fixed top-0 left-0 right-0 z-[3000] p-4 pt-[calc(env(safe-area-inset-top,0px)+16px)]">
-        <div class="w-full max-w-md mx-auto flex items-center gap-2">
+    <div id="search-container" class="fixed top-0 left-0 right-0 z-[3000] p-4" style="padding-top: calc(env(safe-area-inset-top) + 60px);">
+        <div class="w-full max-w-md mx-auto flex items-center gap-3">
             <!-- Back Button (Circular) -->
-            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-700">
+            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[48px] h-[48px] flex-shrink-0 md:min-w-[40px] md:h-[40px]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-700 md:w-5 md:h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </a>
             
             <!-- Search Bar with same height -->
-            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[40px]">
+            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[48px] md:h-[40px]">
                 <div class="text-gray-400 mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-5 md:h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700">
+                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 text-base">
                 <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-5 md:h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -137,7 +118,7 @@
         </div>
         <!-- Search Results -->
         <div class="w-full max-w-md mx-auto px-4 mt-1">
-            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-50">
+            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-[3100]">
                 <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
             </div>
         </div>
@@ -145,9 +126,9 @@
 
     <div id="map" style="height: 100dvh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 1;"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom, 0);">
-        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto">
-            <div class="p-4 bg-white rounded-t-xl shadow-lg border-t-4 border-blue-600">
+    <div class="fixed bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom);">
+        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto bg-white rounded-t-xl shadow-lg max-h-[80vh] z-[2000]">
+            <div class="p-4 rounded-t-xl border-t-4 border-blue-600 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-1px_rgba(0,0,0,0.06)]">
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
                 <p id="overlay-address" class="text-gray-600 text-sm"></p>
                 <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
@@ -270,6 +251,10 @@
 
         function hideOverlay() {
             overlay.classList.remove('visible');
+            
+            // Log visibility state for debugging
+            console.log('Hiding overlay, visible class removed:', !overlay.classList.contains('visible'));
+            
             if (activeMarker) {
                 activeMarker.setIcon(situsIcon);
                 activeMarker = null;
@@ -343,6 +328,7 @@
             }
             
             overlay.classList.add('visible');
+            console.log('Showing overlay, visible class added:', overlay.classList.contains('visible'));
         }
 
         // Search functionality
