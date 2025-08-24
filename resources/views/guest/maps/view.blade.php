@@ -5,27 +5,48 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <style>
-            /* Bottom overlay transition - these can't be easily done with Tailwind */
-            #bottom-overlay {
-                transition: transform 0.3s ease-in-out;
-                transform: translateY(100%);
-                visibility: hidden;
+            body {
+                overflow: hidden;
             }
-
-            #bottom-overlay.visible {
+            
+            #map-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }
+            
+            #search-bar {
+                position: fixed;
+                top: env(safe-area-inset-top, 0);
+                left: 0;
+                right: 0;
+                padding: 10px;
+                padding-top: calc(env(safe-area-inset-top, 0) + 10px);
+                z-index: 1000;
+            }
+            
+            #bottom-sheet {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+                visibility: hidden;
+                padding-bottom: env(safe-area-inset-bottom, 0);
+            }
+            
+            #bottom-sheet.visible {
                 transform: translateY(0);
                 visibility: visible;
             }
-
-            /* Add padding for notches and dynamic toolbars */
-            .safe-top {
-                padding-top: env(safe-area-inset-top, 16px);
-            }
-
-            .safe-bottom {
-                padding-bottom: env(safe-area-inset-bottom, 16px);
-            }
-
+            
             .selected-marker-icon .spinning-circle-wrapper {
                 position: absolute;
                 width: 100%;
@@ -46,7 +67,7 @@
 
             .marker-title {
                 position: absolute;
-                bottom: -25px; /* Position below the icon */
+                bottom: -25px;
                 left: 50%;
                 transform: translateX(-50%);
                 white-space: nowrap;
@@ -64,13 +85,11 @@
                 to { transform: rotate(360deg); }
             }
             
-            /* Ensure map controls are positioned properly on mobile */
             .leaflet-bottom.leaflet-left,
             .leaflet-bottom.leaflet-right {
                 bottom: 30px;
             }
             
-            /* Larger control buttons for better touch targets on mobile */
             .leaflet-touch .leaflet-control-zoom a {
                 width: 36px;
                 height: 36px;
@@ -78,57 +97,57 @@
                 font-size: 18px;
             }
             
-            /* Improve marker readability */
             .leaflet-marker-icon {
                 filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
-            }
-            
-            /* Fix iOS search input */
-            #search-input {
-                -webkit-appearance: none;
-                border-radius: 0;
             }
         </style>
     @endpush
 
-    <!-- Combined Back Button and Search Bar -->
-    <div id="search-container" class="fixed top-0 left-0 right-0 z-[3000] p-4" style="padding-top: calc(env(safe-area-inset-top) + 60px);">
-        <div class="w-full max-w-md mx-auto flex items-center gap-3">
-            <!-- Back Button (Circular) -->
-            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[48px] h-[48px] flex-shrink-0 md:min-w-[40px] md:h-[40px]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-700 md:w-5 md:h-5">
+    <!-- Map Container -->
+    <div id="map-container">
+        <div id="map" style="height: 100%; width: 100%;"></div>
+    </div>
+
+    <!-- Search Bar -->
+    <div id="search-bar">
+        <div class="flex items-center gap-2 max-w-md mx-auto">
+            <!-- Back Button -->
+            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center w-[48px] h-[48px] flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-700">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </a>
             
-            <!-- Search Bar with same height -->
-            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[48px] md:h-[40px]">
+            <!-- Search Input -->
+            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[48px]">
                 <div class="text-gray-400 mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-5 md:h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 text-base">
+                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." 
+                    class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700"
+                    style="-webkit-appearance: none; border-radius: 0;">
                 <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-5 md:h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
-        <!-- Search Results -->
-        <div class="w-full max-w-md mx-auto px-4 mt-1">
-            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-[3100]">
+        
+        <!-- Search Results Dropdown -->
+        <div class="max-w-md mx-auto px-4 mt-1">
+            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-50">
                 <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
             </div>
         </div>
     </div>
 
-    <div id="map" style="height: 100dvh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 1;"></div>
-
-    <div class="fixed bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom);">
-        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto bg-white rounded-t-xl shadow-lg max-h-[80vh] z-[2000]">
-            <div class="p-4 rounded-t-xl border-t-4 border-blue-600 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-1px_rgba(0,0,0,0.06)]">
+    <!-- Bottom Sheet -->
+    <div id="bottom-sheet">
+        <div class="w-full lg:max-w-xl mx-auto bg-white rounded-t-xl shadow-lg max-h-[80vh] overflow-y-auto">
+            <div class="p-4 border-t-4 border-blue-600">
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
                 <p id="overlay-address" class="text-gray-600 text-sm"></p>
                 <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
@@ -143,13 +162,15 @@
         // Check if device is mobile
         const isMobileDevice = window.innerWidth < 768;
         
+        // Initialize map
         var map = L.map('map', {
-            zoomControl: false, // Disable default zoom control
-            tap: true // Enable tap for mobile
+            zoomControl: false,
+            tap: true
         }).setView([-8.409518, 115.188919], isMobileDevice ? 8 : 10);
+        
         var activeMarker = null;
         
-        // Add zoom control to bottom right with larger buttons for mobile
+        // Add zoom control
         L.control.zoom({
             position: 'bottomright',
             zoomInTitle: 'Perbesar',
@@ -171,25 +192,22 @@
                 
                 return container;
             },
-            
-            onRemove: function() {
-                // Nothing to do here
-            }
+            onRemove: function() {}
         });
         
         L.control.peninggalanButton = function(opts) {
             return new L.Control.PeninggalanButton(opts);
         }
         
-        // Add the custom control to bottom left
         L.control.peninggalanButton({ position: 'bottomleft' }).addTo(map);
 
+        // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // UI Elements
-        const overlay = document.getElementById('bottom-overlay');
+        // Get UI elements
+        const bottomSheet = document.getElementById('bottom-sheet');
         const closeOverlayBtn = document.getElementById('close-overlay');
         const overlayTitle = document.getElementById('overlay-title');
         const overlayAddress = document.getElementById('overlay-address');
@@ -212,21 +230,21 @@
             });
         }
 
-        // Situs Peninggalan Markers
+        // Situs markers
         var situsIcon = L.icon({
             iconUrl: '{{ asset('images/icons/location.png') }}',
             iconSize: [30, 30],
             iconAnchor: [15, 30]
         });
 
-        // Store all markers for search functionality
+        // Store all markers
         var allMarkers = [];
         var situsNames = [];
 
         @foreach ($allSitus as $s)
             var marker = L.marker([{{ $s->lat }}, {{ $s->lng }}], {icon: situsIcon}).addTo(map);
             
-            // Store marker information for search
+            // Store marker info
             marker.situsInfo = {
                 id: {{ $s->situs_id }},
                 nama: '{{ $s->nama }}',
@@ -239,46 +257,41 @@
             allMarkers.push(marker);
             situsNames.push('{{ strtolower($s->nama) }}');
             
-            // Debug log - first marker only
-            @if ($loop->first)
-            console.log('Marker added:', marker.situsInfo);
-            @endif
             marker.on('click', function(e) {
                 L.DomEvent.stopPropagation(e);
                 focusOnMarker(this);
             });
         @endforeach
 
-        function hideOverlay() {
-            overlay.classList.remove('visible');
-            
-            // Log visibility state for debugging
-            console.log('Hiding overlay, visible class removed:', !overlay.classList.contains('visible'));
+        // Hide bottom sheet
+        function hideBottomSheet() {
+            bottomSheet.classList.remove('visible');
             
             if (activeMarker) {
                 activeMarker.setIcon(situsIcon);
                 activeMarker = null;
             }
+            
             overlayLink.style.display = 'none';
             lockedMessage.style.display = 'none';
             
-            // On mobile, reset the map position slightly to ensure controls are visible
-            if (window.innerWidth < 768) {
+            // Reset map position
+            if (isMobileDevice) {
                 map.invalidateSize();
             }
         }
 
-        closeOverlayBtn.addEventListener('click', hideOverlay);
-        map.on('click', hideOverlay);
+        closeOverlayBtn.addEventListener('click', hideBottomSheet);
+        map.on('click', hideBottomSheet);
 
-        // Function to focus and zoom to a marker
+        // Focus on marker
         function focusOnMarker(marker) {
-            // Hide any previously active marker
+            // Reset previous active marker
             if (activeMarker) {
                 activeMarker.setIcon(situsIcon);
             }
             
-            // Set the clicked marker as active
+            // Set new active marker
             var selectedIcon = L.divIcon({
                 className: 'selected-marker-icon',
                 html: `
@@ -293,31 +306,25 @@
             marker.setIcon(selectedIcon);
             activeMarker = marker;
             
-            // Zoom to marker - adjust for mobile to leave space for overlay
-            const isMobile = window.innerWidth < 768;
+            // Position map
             const targetZoom = 14;
             
-            if (isMobile) {
-                // For mobile devices, pan the map so the marker is in the upper part of the screen
-                const point = map.latLngToContainerPoint(marker._latlng);
-                const targetPoint = L.point(point.x, window.innerHeight * 0.4);
-                const targetLatLng = map.containerPointToLatLng(targetPoint);
+            if (isMobileDevice) {
                 map.setView(marker._latlng, targetZoom);
                 
-                // Slight delay to ensure the map has updated before showing overlay
                 setTimeout(() => {
                     map.panBy([0, -window.innerHeight * 0.2]);
                 }, 100);
             } else {
-                map.setView([marker._latlng.lat, marker._latlng.lng], targetZoom);
+                map.setView(marker._latlng, targetZoom);
             }
             
-            // Update overlay content
+            // Update bottom sheet content
             overlayTitle.textContent = marker.situsInfo.nama;
             overlayAddress.textContent = marker.situsInfo.alamat;
             overlayDescription.textContent = marker.situsInfo.deskripsi;
             
-            // Check if this site is unlocked
+            // Check if unlocked
             if (marker.situsInfo.unlocked) {
                 overlayLink.href = marker.situsInfo.url;
                 overlayLink.style.display = 'block';
@@ -327,8 +334,8 @@
                 lockedMessage.style.display = 'block';
             }
             
-            overlay.classList.add('visible');
-            console.log('Showing overlay, visible class added:', overlay.classList.contains('visible'));
+            // Show bottom sheet
+            bottomSheet.classList.add('visible');
         }
 
         // Search functionality
@@ -342,8 +349,7 @@
                 searchClear.classList.add('hidden');
             }
             
-            // Filter markers based on search
-            let visibleCount = 0;
+            // Filter markers
             let matchingMarkers = [];
             
             allMarkers.forEach(function(marker) {
@@ -357,9 +363,8 @@
                     if (!map.hasLayer(marker)) {
                         map.addLayer(marker);
                     }
-                    visibleCount++;
                     
-                    // Add to matching markers for the dropdown
+                    // Add to matching markers
                     if (searchText.length > 0) {
                         matchingMarkers.push(marker);
                     }
@@ -367,18 +372,17 @@
                     // Hide this marker
                     if (map.hasLayer(marker)) {
                         map.removeLayer(marker);
-                        // If this was the active marker, hide the overlay
                         if (marker === activeMarker) {
-                            hideOverlay();
+                            hideBottomSheet();
                         }
                     }
                 }
             });
             
-            // Update search results count
+            // Update search results
             if (searchText.length > 0) {
-                // Show dropdown list of results
                 searchResultsList.innerHTML = '';
+                
                 if (matchingMarkers.length > 0) {
                     matchingMarkers.forEach(function(marker) {
                         const li = document.createElement('li');
@@ -403,6 +407,7 @@
                         
                         searchResultsList.appendChild(li);
                     });
+                    
                     searchResults.classList.remove('hidden');
                 } else {
                     searchResults.classList.add('hidden');
