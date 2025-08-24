@@ -13,6 +13,7 @@ use App\Models\VirtualMuseum;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -422,6 +423,13 @@ class HomeController extends Controller
         // Verify that this museum belongs to the situs
         if ($museum->situs_id != $situs_id) {
             abort(404, 'Museum tidak ditemukan di situs ini.');
+        }
+        
+        // Get model file size if it exists
+        if ($museum->path_obj && Storage::disk('public')->exists($museum->path_obj)) {
+            $museum->file_size = Storage::disk('public')->size($museum->path_obj);
+        } else {
+            $museum->file_size = 0;
         }
 
         // Log AR activity

@@ -297,9 +297,9 @@ async function main() {
     const model = await ModelLoader.loadModel(
         '/storage/' + museum.path_obj,
         (event) => {
-            const fileSize = event.total || 43445936;
+            const fileSize = event.total || museum.file_size || 43445936; // Use server-provided size as fallback
             let progress = (event.loaded / fileSize) * 100;
-            console.log(event.loaded, event.total || fileSize, progress);
+            console.log(event.loaded, fileSize, progress);
             progress = Math.min(progress, 100); // Ensure progress does not exceed 100%
             document.getElementById("loading-container").style.display =
                 "block";

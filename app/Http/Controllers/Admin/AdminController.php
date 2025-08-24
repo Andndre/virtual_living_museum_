@@ -334,7 +334,7 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'required|file|max:51200', // 50MB max, any file type
+            'obj_file' => 'required|file|max:153600', // 150MB max, any file type
         ]);
 
         $data = [
@@ -392,7 +392,7 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'nullable|file|max:51200', // 50MB max, optional for update, any file type
+            'obj_file' => 'nullable|file|max:153600', // 150MB max, optional for update, any file type
         ]);
 
         $data = [

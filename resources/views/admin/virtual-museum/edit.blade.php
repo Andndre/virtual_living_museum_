@@ -143,7 +143,7 @@
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">GLB up to 50MB (Kosongkan jika tidak ingin mengubah)</p>
+                            <p class="text-xs text-gray-500">GLB up to 150MB (Kosongkan jika tidak ingin mengubah)</p>
                         </div>
                     </div>
                     <div id="file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
@@ -261,8 +261,8 @@ function updateFileName(input) {
         }
         
         // Validate file size
-        if (file.size > 50 * 1024 * 1024) {
-            alert('File terlalu besar! Maksimal 50MB.');
+        if (file.size > 150 * 1024 * 1024) {
+            alert('File terlalu besar! Maksimal 150MB.');
             input.value = '';
             return;
         }
@@ -333,11 +333,11 @@ function handleDrop(e) {
     if (files.length > 0) {
         const file = files[0];
         if (file.name.toLowerCase().endsWith('.glb')) {
-            if (file.size <= 50 * 1024 * 1024) { // 50MB check
+            if (file.size <= 150 * 1024 * 1024) { // 150MB check
                 fileInput.files = files;
                 updateFileName(fileInput);
             } else {
-                alert('File terlalu besar! Maksimal 50MB.');
+                alert('File terlalu besar! Maksimal 150MB.');
             }
         } else {
             alert('Hanya file GLB yang diizinkan!');
