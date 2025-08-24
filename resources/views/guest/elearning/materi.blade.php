@@ -328,6 +328,112 @@
                                         <i class="fas fa-eye mr-2"></i>
                                         Lihat Hasil
                                     </a>
+                                    
+                                    <!-- Rekap Section -->
+                                    <div class="mt-8">
+                                        <h3 class="text-lg font-bold text-gray-900 mb-4">Rekap</h3>
+                                        
+                                        <div class="grid grid-cols-2 gap-4 mb-6">
+                                            <!-- Pre-test Score -->
+                                            <div class="bg-gray-100 rounded-lg p-4">
+                                                <div class="text-sm text-gray-600 mb-1">Nilai Pre test</div>
+                                                <div class="text-2xl font-bold">
+                                                    @php
+                                                        $pretestAnswers = \App\Models\JawabanUser::where('user_id', auth()->id())
+                                                            ->where('materi_id', $materi->materi_id)
+                                                            ->where('jenis', 'pretest')
+                                                            ->get();
+                                                            
+                                                        $totalPretest = $pretestAnswers->count();
+                                                        $correctPretest = $pretestAnswers->where('benar', true)->count();
+                                                        
+                                                        $pretestScore = $totalPretest > 0 ? 
+                                                            number_format(($correctPretest / $totalPretest) * 100, 1) : 
+                                                            0;
+                                                    @endphp
+                                                    {{ $pretestScore }}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Post-test Score -->
+                                            <div class="bg-gray-100 rounded-lg p-4">
+                                                <div class="text-sm text-gray-600 mb-1">Nilai Post test</div>
+                                                <div class="text-2xl font-bold flex items-center justify-center">
+                                                    @php
+                                                        $posttestAnswers = \App\Models\JawabanUser::where('user_id', auth()->id())
+                                                            ->where('materi_id', $materi->materi_id)
+                                                            ->where('jenis', 'posttest')
+                                                            ->get();
+                                                            
+                                                        $totalPosttest = $posttestAnswers->count();
+                                                        $correctPosttest = $posttestAnswers->where('benar', true)->count();
+                                                        
+                                                        $posttestScore = $totalPosttest > 0 ? 
+                                                            number_format(($correctPosttest / $totalPosttest) * 100, 1) : 
+                                                            0;
+                                                    @endphp
+                                                    {{ $posttestScore }}
+                                                    @if($pretestScore < $posttestScore)
+                                                        <i class="fas fa-chart-line ml-2 text-green-500"></i>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Tugas Section -->
+                                        @if($materi->tugas->count() > 0)
+                                            <div class="mb-6">
+                                                <h4 class="font-medium text-center mb-2">Tugas</h4>
+                                                <div class="bg-gray-100 rounded-lg p-4">
+                                                    <p class="mb-3">Berikut adalah beberapa tugas yang harus Anda selesaikan.</p>
+                                                    <div class="text-center">
+                                                        <a href="{{ route('guest.elearning.tugas', $materi->materi_id) }}" 
+                                                           class="inline-flex items-center px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                                            Lihat
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
+                                        <!-- Progress Chart -->
+                                        <div class="mb-6">
+                                            <h4 class="font-medium text-center mb-2">Perkembangan Anda</h4>
+                                            <div class="bg-gray-100 rounded-lg p-4 h-24 flex items-center justify-center">
+                                                <div class="w-full relative">
+                                                    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-black rounded-full"></div>
+                                                    <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-black rounded-full"></div>
+                                                    <div class="h-px bg-black w-full absolute top-1/2 transform -translate-y-1/2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Next Material -->
+                                        @if($materi->urutan < \App\Models\Materi::max('urutan'))
+                                            @php
+                                                $nextMateri = \App\Models\Materi::where('urutan', $materi->urutan + 1)->first();
+                                            @endphp
+                                            @if($nextMateri)
+                                                <div>
+                                                    <h4 class="font-medium text-center mb-2">Siap Ke-Materi Berikutnya?</h4>
+                                                    <a href="{{ route('guest.elearning.materi', $nextMateri->materi_id) }}" class="block bg-gray-100 rounded-lg overflow-hidden">
+                                                        <div class="flex items-center">
+                                                            <div class="w-16 h-16 bg-gray-200 flex items-center justify-center">
+                                                                @if($nextMateri->gambar_sampul)
+                                                                    <img src="{{ asset('storage/' . $nextMateri->gambar_sampul) }}" alt="{{ $nextMateri->judul }}" class="w-full h-full object-cover">
+                                                                @else
+                                                                    <i class="fas fa-book text-gray-400"></i>
+                                                                @endif
+                                                            </div>
+                                                            <div class="p-3">
+                                                                <div class="font-medium">{{ $nextMateri->judul }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
                                 @else
                                     <a href="{{ route('guest.elearning.posttest', $materi->materi_id) }}" 
                                        class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">

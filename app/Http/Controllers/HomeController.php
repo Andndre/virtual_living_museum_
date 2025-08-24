@@ -632,6 +632,17 @@ class HomeController extends Controller
     }
 
     /**
+     * E-Learning Tugas Page
+     */
+    public function elearningTugas(Request $request, $materi_id)
+    {
+        $user = Auth::user();
+        $materi = Materi::with(['tugas'])->findOrFail($materi_id);
+        
+        return view('guest.elearning.tugas', compact('materi'));
+    }
+
+    /**
      * Check if all virtual museums in a materi have been visited by user
      */
     private function areAllMuseumsVisited($user_id, $materi_id)

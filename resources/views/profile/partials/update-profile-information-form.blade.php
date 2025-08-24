@@ -98,6 +98,22 @@
             <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
         </div>
 
+        <div>
+            <x-input-label for="pekerjaan" :value="__('Pekerjaan')" />
+            <x-text-input 
+                id="pekerjaan" 
+                name="pekerjaan" 
+                type="text" 
+                class="mt-1 block w-full {{ !auth()->user()->pekerjaan ? 'border-yellow-300 bg-yellow-50' : '' }}" 
+                :value="old('pekerjaan', $user->pekerjaan)" 
+                placeholder="Masukkan pekerjaan Anda"
+            />
+            @if(!auth()->user()->pekerjaan)
+                <p class="mt-1 text-xs text-yellow-600">Mohon lengkapi pekerjaan Anda</p>
+            @endif
+            <x-input-error class="mt-2" :messages="$errors->get('pekerjaan')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button class="w-full flex justify-center">{{ __('app.save') }}</x-primary-button>
 

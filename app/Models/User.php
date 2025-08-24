@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone_number',
         'address',
         'date_of_birth',
+        'pekerjaan',
         'role',
         'profile_photo',
         'level_sekarang',

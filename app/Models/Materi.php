@@ -64,4 +64,9 @@ class Materi extends Model
     {
         return $this->hasMany(ProgressMateri::class, 'materi_id', 'materi_id');
     }
+
+    public function tugas(): HasMany
+    {
+        return $this->hasMany(Tugas::class, 'materi_id', 'materi_id');
+    }
 }

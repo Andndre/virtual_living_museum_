@@ -40,6 +40,9 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     // Mark e-book as read (AJAX)
     Route::post('/elearning/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
+    
+    // Tugas routes
+    Route::get('/elearning/materi/{materi_id}/tugas', [HomeController::class, 'elearningTugas'])->name('guest.elearning.tugas');
 
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');

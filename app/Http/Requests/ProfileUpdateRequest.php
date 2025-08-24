@@ -28,6 +28,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone_number' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:255'],
             'date_of_birth' => ['nullable', 'date'],
+            'pekerjaan' => ['nullable', 'string', 'max:100'],
             'profile_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,gif', 'max:2048'],
         ];
     }

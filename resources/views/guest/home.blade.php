@@ -157,6 +157,9 @@
 									@if(!auth()->user()->date_of_birth)
 										<li>Tanggal lahir</li>
 									@endif
+									@if(!auth()->user()->pekerjaan)
+										<li>Pekerjaan</li>
+									@endif
 								</ul>
 							</div>
 						</div>

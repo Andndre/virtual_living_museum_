@@ -106,6 +106,7 @@
 				formData.append('phone_number', '{{ auth()->user()->phone_number }}');
 				formData.append('address', '{{ auth()->user()->address }}');
 				formData.append('date_of_birth', '{{ auth()->user()->date_of_birth ? auth()->user()->date_of_birth->format("Y-m-d") : "" }}');
+				formData.append('pekerjaan', '{{ auth()->user()->pekerjaan }}');
 				formData.append('_token', '{{ csrf_token() }}');
 				formData.append('_method', 'PATCH');
 				
