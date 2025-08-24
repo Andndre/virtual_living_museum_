@@ -86,10 +86,25 @@ class SceneManager {
         this.placed = false;
         this.skybox = null;
 
-        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-        light.position.set(0.5, 1, 0.25);
-        light.position.set(0.5, 1, 0.25);
-        this.scene.add(light);
+        // Add hemisphere light (ambient light from sky and ground)
+        const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.6);
+        hemisphereLight.position.set(0.5, 1, 0.25);
+        this.scene.add(hemisphereLight);
+        
+        // Add directional light (sunlight)
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        sunLight.position.set(5, 10, 7.5);
+        sunLight.castShadow = true;
+        
+        // Configure shadow properties for better quality
+        sunLight.shadow.mapSize.width = 1024;
+        sunLight.shadow.mapSize.height = 1024;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 50;
+        sunLight.shadow.bias = -0.001;
+        
+        this.scene.add(sunLight);
+        this.sunLight = sunLight;
 
         this.controller = renderer.xr.getController(0);
         this.scene.add(this.controller);
@@ -177,6 +192,11 @@ class RendererManager {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.xr.enabled = true;
+        
+        // Enable shadows
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
         document.body.appendChild(this.renderer.domElement);
 
         this.hitTestSource = null;
@@ -314,6 +334,15 @@ class ModelLoader {
         );
         this.loader.setDRACOLoader(this.dracoLoader);
         const model = await this.loader.loadAsync(name, onProgress);
+        
+        // Enable shadows on the model
+        model.scenes[0].traverse((object) => {
+            if (object.isMesh) {
+                object.castShadow = true;
+                object.receiveShadow = true;
+            }
+        });
+        
         return model.scenes[0];
     }
 }
@@ -388,6 +417,21 @@ async function main() {
             skybox.position.copy(model.position);
             skybox.visible = true;
             showToaster("Environment loaded");
+        }
+        
+        // Update the sun light to cast shadows from the correct angle
+        if (sceneManager.sunLight) {
+            // Position the sun light relative to the model
+            const lightOffset = new THREE.Vector3(15, 20, 10);
+            sceneManager.sunLight.position.copy(model.position).add(lightOffset);
+            sceneManager.sunLight.target = model;
+            
+            // Make sure the target is part of the scene for the directional light to work properly
+            if (!sceneManager.scene.children.includes(sceneManager.sunLight.target)) {
+                sceneManager.scene.add(sceneManager.sunLight.target);
+            }
+            
+            showToaster("Sunlight positioned");
         }
         
         sceneManager.reticle.visible = false;
