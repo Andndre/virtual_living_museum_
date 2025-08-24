@@ -10,6 +10,7 @@
                 transform: translateY(100%);
                 padding-bottom: env(safe-area-inset-bottom, 0);
                 max-height: 80vh;
+                z-index: 2000;
             }
 
             /* Add padding for notches and dynamic toolbars */
@@ -89,16 +90,36 @@
                 height: 100%;
             }
             
+            /* New search container styling */
+            #search-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 3000;
+                padding-top: env(safe-area-inset-top, 16px);
+                margin-top: 50px;
+            }
+            
+            /* Ensure search results appear properly */
+            #search-results {
+                margin-top: 5px;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            }
+            
             /* Ensure overlay sits on top of map controls */
             #bottom-overlay.visible {
-                z-index: 1001;
+                z-index: 2000;
+                transform: translateY(0);
+                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
             }
         </style>
     @endpush
 
     <!-- Combined Back Button and Search Bar -->
-    <div class="fixed top-0 left-0 right-0 z-[1000] pointer-events-none safe-top">
-        <div class="w-full max-w-md mx-auto px-4 flex items-center gap-2 pointer-events-auto mt-4 md:mt-2">
+    <div id="search-container" class="absolute top-0 left-0 right-0 z-[3000] p-4 pt-[calc(env(safe-area-inset-top,0px)+70px)]">
+        <div class="w-full max-w-md mx-auto flex items-center gap-2">
             <!-- Back Button (Circular) -->
             <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center min-w-[40px] h-[40px] flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-700">
@@ -122,18 +143,18 @@
             </div>
         </div>
         <!-- Search Results -->
-        <div class="relative w-full max-w-md mx-auto px-4 pointer-events-auto">
-            <div id="search-results" class="absolute top-1 left-4 right-4 max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg mt-1 hidden z-50">
+        <div class="w-full max-w-md mx-auto px-4 mt-1">
+            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-50">
                 <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
             </div>
         </div>
     </div>
 
-    <div id="map" style="height: 100dvh; width: 100vw; position: fixed; top: 0; left: 0;"></div>
+    <div id="map" style="height: 100dvh; width: 100vw; position: absolute; top: 0; left: 0; z-index: 1;"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-[1000] pointer-events-none safe-bottom">
-        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto pointer-events-auto">
-            <div class="p-4 bg-white rounded-t-xl shadow-lg">
+    <div class="absolute bottom-0 left-0 right-0 z-[2000]" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+        <div id="bottom-overlay" class="w-full lg:max-w-xl mx-auto">
+            <div class="p-4 bg-white rounded-t-xl shadow-lg border-t-4 border-blue-600">
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
                 <p id="overlay-address" class="text-gray-600 text-sm"></p>
                 <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
