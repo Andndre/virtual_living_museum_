@@ -1163,4 +1163,126 @@ class AdminController extends Controller
         return redirect()->route('admin.ebook', $materi_id)
             ->with('success', 'E-book berhasil dihapus!');
     }
+    
+    // ========== TUGAS MANAGEMENT ==========
+
+    /**
+     * Display tugas index page
+     */
+    public function tugas($materi_id)
+    {
+        $materi = Materi::findOrFail($materi_id);
+        $tugas = $materi->tugas()->orderBy('created_at', 'desc')->paginate(20);
+        
+        return view('admin.tugas.index', compact('materi', 'tugas'));
+    }
+
+    /**
+     * Show form to create new tugas
+     */
+    public function createTugas($materi_id)
+    {
+        $materi = Materi::findOrFail($materi_id);
+        
+        return view('admin.tugas.create', compact('materi'));
+    }
+
+    /**
+     * Store new tugas
+     */
+    public function storeTugas(Request $request, $materi_id)
+    {
+        $materi = Materi::findOrFail($materi_id);
+        
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $tugasData = [
+            'materi_id' => $materi_id,
+            'judul' => $validated['judul'],
+            'deskripsi' => $validated['deskripsi'],
+        ];
+        
+        // Handle image upload if provided
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('tugas-images', 'public');
+            $tugasData['gambar'] = $path;
+        }
+        
+        $tugas = \App\Models\Tugas::create($tugasData);
+        
+        return redirect()->route('admin.tugas', $materi_id)
+            ->with('success', 'Tugas berhasil ditambahkan');
+    }
+
+    /**
+     * Show form to edit tugas
+     */
+    public function editTugas($materi_id, $tugas_id)
+    {
+        $materi = Materi::findOrFail($materi_id);
+        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+            ->where('tugas_id', $tugas_id)
+            ->firstOrFail();
+            
+        return view('admin.tugas.edit', compact('materi', 'tugas'));
+    }
+
+    /**
+     * Update tugas
+     */
+    public function updateTugas(Request $request, $materi_id, $tugas_id)
+    {
+        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+            ->where('tugas_id', $tugas_id)
+            ->firstOrFail();
+            
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $tugas->judul = $validated['judul'];
+        $tugas->deskripsi = $validated['deskripsi'];
+        
+        // Handle image upload if provided
+        if ($request->hasFile('gambar')) {
+            // Delete previous image if exists
+            if ($tugas->gambar) {
+                Storage::disk('public')->delete($tugas->gambar);
+            }
+            
+            $path = $request->file('gambar')->store('tugas-images', 'public');
+            $tugas->gambar = $path;
+        }
+        
+        $tugas->save();
+        
+        return redirect()->route('admin.tugas', $materi_id)
+            ->with('success', 'Tugas berhasil diperbarui');
+    }
+
+    /**
+     * Delete tugas
+     */
+    public function destroyTugas($materi_id, $tugas_id)
+    {
+        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+            ->where('tugas_id', $tugas_id)
+            ->firstOrFail();
+            
+        // Delete image if exists
+        if ($tugas->gambar) {
+            Storage::disk('public')->delete($tugas->gambar);
+        }
+        
+        $tugas->delete();
+        
+        return redirect()->route('admin.tugas', $materi_id)
+            ->with('success', 'Tugas berhasil dihapus');
+    }
 }

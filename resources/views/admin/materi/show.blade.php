@@ -234,6 +234,10 @@
                                     <i class="fas fa-book mr-2"></i>
                                     Kelola Ebook ({{ $materi->ebook()->count() }})
                                 </a>
+                                <a href="{{ route('admin.tugas', $materi->materi_id) }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-orange-300 shadow-sm text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100">
+                                    <i class="fas fa-clipboard-check mr-2"></i>
+                                    Kelola Tugas
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -87,6 +87,14 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/materi/{materi_id}/posttest/{posttest_id}/edit', [AdminController::class, 'editPosttest'])->name('admin.posttest.edit');
     Route::put('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'updatePosttest'])->name('admin.posttest.update');
     Route::delete('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'destroyPosttest'])->name('admin.posttest.destroy');
+    
+    // Tugas routes
+    Route::get('/admin/materi/{materi_id}/tugas', [AdminController::class, 'tugas'])->name('admin.tugas');
+    Route::get('/admin/materi/{materi_id}/tugas/create', [AdminController::class, 'createTugas'])->name('admin.tugas.create');
+    Route::post('/admin/materi/{materi_id}/tugas', [AdminController::class, 'storeTugas'])->name('admin.tugas.store');
+    Route::get('/admin/materi/{materi_id}/tugas/{tugas_id}/edit', [AdminController::class, 'editTugas'])->name('admin.tugas.edit');
+    Route::put('/admin/materi/{materi_id}/tugas/{tugas_id}', [AdminController::class, 'updateTugas'])->name('admin.tugas.update');
+    Route::delete('/admin/materi/{materi_id}/tugas/{tugas_id}', [AdminController::class, 'destroyTugas'])->name('admin.tugas.destroy');
 
     // Situs Peninggalan routes
     Route::get('/admin/situs', [AdminController::class, 'situs'])->name('admin.situs');
