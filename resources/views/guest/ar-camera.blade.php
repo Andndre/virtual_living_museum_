@@ -56,7 +56,7 @@
         id="scene">
         <a-assets>
             @foreach($arObjects as $object)
-                <a-asset-item id="{{ $object->slug }}-model" src="/storage/{{ $object->path_obj }}"></a-asset-item>
+                <a-asset-item id="{{ $object->object_id }}-model" src="/storage/{{ $object->path_obj }}"></a-asset-item>
             @endforeach
         </a-assets>
 
@@ -68,8 +68,8 @@
                   id="marker{{ $object->object_id }}"
                   data-object-name="{{ $object->nama }}"
                   data-object-description="{{ $object->deskripsi }}">
-            <a-entity id="{{ $object->slug }}-entity" 
-                      gltf-model="#{{ $object->slug }}-model" 
+            <a-entity id="{{ $object->object_id }}-entity" 
+                      gltf-model="#{{ $object->object_id }}-model" 
                       position="0 0 0" 
                       scale="{{ $object->scale_string }}"
                       class="clickable" gesture-handler>
