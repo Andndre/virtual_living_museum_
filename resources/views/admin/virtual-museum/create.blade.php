@@ -121,7 +121,7 @@
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">GLB up to 150MB</p>
+                            <p class="text-xs text-gray-500">GLB up to 300MB</p>
                         </div>
                     </div>
                     <div id="file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
@@ -146,7 +146,7 @@
                             <li>Virtual Museum merupakan representasi 3D dari keseluruhan museum untuk situs peninggalan</li>
                             <li>Setiap situs peninggalan hanya dapat memiliki satu Virtual Museum</li>
                             <li>Virtual Museum dapat memiliki banyak Virtual Museum Object di dalamnya</li>
-                            <li>File GLB harus berukuran maksimal 150MB untuk performa optimal</li>
+                            <li>File GLB harus berukuran maksimal 300MB untuk performa optimal</li>
                             <li>Format GLB mendukung tekstur, animasi, dan material yang kompleks</li>
                         </ul>
                     </div>
@@ -184,8 +184,8 @@ function updateFileName(input) {
         }
         
         // Validate file size
-        if (file.size > 150 * 1024 * 1024) {
-            alert('File terlalu besar! Maksimal 150MB.');
+        if (file.size > 300 * 1024 * 1024) {
+            alert('File terlalu besar! Maksimal 300MB.');
             input.value = '';
             return;
         }
@@ -256,11 +256,11 @@ function handleDrop(e) {
     if (files.length > 0) {
         const file = files[0];
         if (file.name.toLowerCase().endsWith('.glb')) {
-            if (file.size <= 150 * 1024 * 1024) { // 150MB check
+            if (file.size <= 300 * 1024 * 1024) { // 300MB check
                 fileInput.files = files;
                 updateFileName(fileInput);
             } else {
-                alert('File terlalu besar! Maksimal 150MB.');
+                alert('File terlalu besar! Maksimal 300MB.');
             }
         } else {
             alert('Hanya file GLB yang diizinkan!');

@@ -334,7 +334,7 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'required|file|max:153600', // 150MB max, any file type
+            'obj_file' => 'required|file|max:307200', // 300MB max, any file type
         ]);
 
         $data = [
@@ -392,7 +392,7 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'nullable|file|max:153600', // 150MB max, optional for update, any file type
+            'obj_file' => 'nullable|file|max:307200', // 300MB max, optional for update, any file type
         ]);
 
         $data = [
@@ -453,7 +453,7 @@ class AdminController extends Controller
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
-            'path_obj' => 'nullable|file|max:51200', // 50MB
+            'path_obj' => 'nullable|file|max:307200', // 300MB
             'path_patt' => 'nullable|file|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
@@ -531,7 +531,7 @@ class AdminController extends Controller
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
-            'path_obj' => 'nullable|file|max:51200', // 50MB
+            'path_obj' => 'nullable|file|max:307200', // 300MB
             'path_patt' => 'nullable|file|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
