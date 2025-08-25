@@ -33,19 +33,19 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/maps/peninggalan', [MapsController::class, 'peninggalan'])->name('guest.maps.peninggalan');
 
     // E-Learning routes
-    Route::get('/elearning', [HomeController::class, 'elearning'])->name('guest.elearning');
-    Route::get('/elearning/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
-    Route::get('/elearning/materi/{materi_id}/pretest', [HomeController::class, 'elearningPretest'])->name('guest.elearning.pretest');
-    Route::post('/elearning/materi/{materi_id}/pretest', [HomeController::class, 'submitPretest'])->name('guest.elearning.pretest.submit');
-    Route::get('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'elearningPosttest'])->name('guest.elearning.posttest');
-    Route::post('/elearning/materi/{materi_id}/posttest', [HomeController::class, 'submitPosttest'])->name('guest.elearning.posttest.submit');
-    Route::get('/elearning/ebook/{ebook_id}', [HomeController::class, 'elearningEbook'])->name('guest.elearning.ebook');
+    Route::get('/kunjungi-peninggalan', [HomeController::class, 'elearning'])->name('guest.elearning');
+    Route::get('/kunjungi-peninggalan/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
+    Route::get('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'elearningPretest'])->name('guest.elearning.pretest');
+    Route::post('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'submitPretest'])->name('guest.elearning.pretest.submit');
+    Route::get('/kunjungi-peninggalan/materi/{materi_id}/posttest', [HomeController::class, 'elearningPosttest'])->name('guest.elearning.posttest');
+    Route::post('/kunjungi-peninggalan/materi/{materi_id}/posttest', [HomeController::class, 'submitPosttest'])->name('guest.elearning.posttest.submit');
+    Route::get('/kunjungi-peninggalan/ebook/{ebook_id}', [HomeController::class, 'elearningEbook'])->name('guest.elearning.ebook');
 
     // Mark e-book as read (AJAX)
-    Route::post('/elearning/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
+    Route::post('/kunjungi-peninggalan/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
     
     // Tugas routes
-    Route::get('/elearning/materi/{materi_id}/tugas', [HomeController::class, 'elearningTugas'])->name('guest.elearning.tugas');
+    Route::get('/kunjungi-peninggalan/materi/{materi_id}/tugas', [HomeController::class, 'elearningTugas'])->name('guest.elearning.tugas');
 
     // Situs detail route
     Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');

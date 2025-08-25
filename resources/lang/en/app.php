@@ -23,7 +23,7 @@ return [
 
     // Home
     'virtual_museum' => 'Virtual Living Museum',
-    'elearning' => 'E-Learning',
+    'elearning' => 'Visit Heritage',
     'maps' => 'Maps',
     'statistics' => 'Statistics',
     'report_heritage' => 'Report Heritage',

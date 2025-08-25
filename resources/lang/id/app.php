@@ -23,7 +23,7 @@ return [
 
     // Home
     'virtual_museum' => 'Virtual Living Museum',
-    'elearning' => 'E-Learning',
+    'elearning' => 'Kunjungi Peninggalan',
     'maps' => 'Maps',
     'statistics' => 'Statistik',
     'report_heritage' => 'Lapor Peninggalan',

@@ -14,7 +14,7 @@
             </a>
         </div>
 
-        <h1 class="text-2xl font-bold mb-8">E-Learning</h1>
+        <h1 class="text-2xl font-bold mb-8">{{ __('app.elearning') }}</h1>
 
         {{-- Continuing Card --}}
         @if($nextMateri)

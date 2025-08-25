@@ -202,7 +202,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
                         document.msExitFullscreen();
                     }
                 }
-                fetch(`/elearning/ebook/${ebookId}/read`, {
+                fetch(`/kunjungi-peninggalan/ebook/${ebookId}/read`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
