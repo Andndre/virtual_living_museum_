@@ -8,6 +8,7 @@ use App\Models\LogAktivitas;
 use App\Models\Materi;
 use App\Models\MuseumUserVisit;
 use App\Models\ProgressMateri;
+use App\Models\SitusPeninggalan;
 use App\Models\User;
 use App\Models\VirtualMuseum;
 use Carbon\Carbon;
@@ -410,7 +411,7 @@ class HomeController extends Controller
     public function situsDetail(Request $request, $situs_id)
     {
         $user = Auth::user();
-        $situs = \App\Models\SitusPeninggalan::with(['virtualMuseum', 'materi'])->findOrFail($situs_id);
+        $situs = SitusPeninggalan::with(['virtualMuseum', 'materi'])->findOrFail($situs_id);
 
         return view('guest.situs.detail', compact('situs'));
     }
@@ -419,7 +420,7 @@ class HomeController extends Controller
     {
         $userAuth = Auth::user();
         $user = User::findOrFail($userAuth->id);
-        $situs = \App\Models\SitusPeninggalan::findOrFail($situs_id);
+        $situs = SitusPeninggalan::findOrFail($situs_id);
         $museum = VirtualMuseum::with('virtualMuseumObjects')->findOrFail($museum_id);
         // Verify that this museum belongs to the situs
         if ($museum->situs_id != $situs_id) {
@@ -451,7 +452,7 @@ class HomeController extends Controller
             $materi = Materi::findOrFail($materiId);
             // Ambil semua museum_id pada materi ini
             $allMuseumIds = VirtualMuseum::whereIn('situs_id',
-                \App\Models\SitusPeninggalan::where('materi_id', $materiId)->pluck('situs_id')
+                SitusPeninggalan::where('materi_id', $materiId)->pluck('situs_id')
             )->pluck('museum_id')->toArray();
 
             // dd($allMuseumIds);
@@ -641,7 +642,7 @@ class HomeController extends Controller
 
         // Cek apakah user sudah pada step EBOOK dan materi yang benar
         $materi = $ebook->materi;
-        if ($materi && $materi->urutan == $user->level_sekarang + 1 && $user->progress_level_sekarang == \App\Models\User::PRE_TEST) {
+        if ($materi && $materi->urutan == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
             // Increment progress ke EBOOK
             $user->incrementProgressLevel();
         }
