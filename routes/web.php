@@ -33,7 +33,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/maps/peninggalan', [MapsController::class, 'peninggalan'])->name('guest.maps.peninggalan');
 
     // E-Learning routes
-    Route::get('/kunjungi-peninggalan', [HomeController::class, 'elearning'])->name('guest.elearning');
+    Route::get('/kunjungi-peninggalan', [HomeController::class, 'kunjungiPeninggalan'])->name('guest.elearning');
     Route::get('/kunjungi-peninggalan/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
     Route::get('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'elearningPretest'])->name('guest.elearning.pretest');
     Route::post('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'submitPretest'])->name('guest.elearning.pretest.submit');
@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     // Mark e-book as read (AJAX)
     Route::post('/kunjungi-peninggalan/ebook/{ebook_id}/read', [HomeController::class, 'markEbookRead'])->name('guest.elearning.ebook.read');
-    
+
     // Tugas routes
     Route::get('/kunjungi-peninggalan/materi/{materi_id}/tugas', [HomeController::class, 'elearningTugas'])->name('guest.elearning.tugas');
 
@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     // Kritik dan Saran routes
     Route::get('/kritik-saran', [KritikSaranController::class, 'index'])->name('guest.kritik-saran');
     Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('guest.kritik-saran.store');
-    
+
     // Laporan Peninggalan routes
     Route::get('/laporan-peninggalan', [LaporanPeninggalanController::class, 'index'])->name('guest.laporan-peninggalan');
     Route::get('/laporan-peninggalan/create', [LaporanPeninggalanController::class, 'create'])->name('guest.laporan-peninggalan.create');
@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/materi/{materi_id}/posttest/{posttest_id}/edit', [AdminController::class, 'editPosttest'])->name('admin.posttest.edit');
     Route::put('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'updatePosttest'])->name('admin.posttest.update');
     Route::delete('/admin/materi/{materi_id}/posttest/{posttest_id}', [AdminController::class, 'destroyPosttest'])->name('admin.posttest.destroy');
-    
+
     // Tugas routes
     Route::get('/admin/materi/{materi_id}/tugas', [AdminController::class, 'tugas'])->name('admin.tugas');
     Route::get('/admin/materi/{materi_id}/tugas/create', [AdminController::class, 'createTugas'])->name('admin.tugas.create');

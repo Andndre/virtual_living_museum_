@@ -39,7 +39,7 @@ class HomeController extends Controller
     {
         $greeting = $this->getGreeting();
         $user = Auth::user();
-        
+
         // Check if profile is complete
         $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
 
@@ -50,7 +50,7 @@ class HomeController extends Controller
     {
         return view('guest.panduan');
     }
-    
+
     /**
      * Display leaderboard of users based on posttest scores
      */
@@ -58,7 +58,7 @@ class HomeController extends Controller
     {
         // Get current user for highlighting
         $currentUser = Auth::user();
-        
+
         // Get all users with their posttest scores
         $users = User::where('role', 'user')
             ->withCount(['jawabanUser as total_score' => function ($query) {
@@ -67,20 +67,20 @@ class HomeController extends Controller
             }])
             ->orderByDesc('total_score')
             ->get();
-        
+
         // Add ranking to each user
         $rank = 1;
         foreach ($users as $user) {
             $user->rank = $rank++;
         }
-        
+
         // Find current user's position
         $currentUserRank = $users->where('id', $currentUser->id)->first()->rank ?? 0;
         $userScore = $users->where('id', $currentUser->id)->first()->total_score ?? 0;
-        
+
         // Get top 10 users
         $topUsers = $users->take(10);
-        
+
         return view('guest.statistik', compact('topUsers', 'currentUser', 'currentUserRank', 'userScore'));
     }
 
@@ -107,7 +107,7 @@ class HomeController extends Controller
     /**
      * E-Learning Index Page
      */
-    public function elearning(Request $request)
+    public function kunjungiPeninggalan(Request $request)
     {
         $user = Auth::user();
 
@@ -162,7 +162,8 @@ class HomeController extends Controller
      */
     public function elearningMateri(Request $request, $materi_id)
     {
-        $user = Auth::user();
+        $userAuth = Auth::user();
+        $user = User::findOrFail($userAuth->id);
         $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])->findOrFail($materi_id);
 
         // Cek status progress user pada materi ini
@@ -424,7 +425,7 @@ class HomeController extends Controller
         if ($museum->situs_id != $situs_id) {
             abort(404, 'Museum tidak ditemukan di situs ini.');
         }
-        
+
         // Get model file size if it exists
         if ($museum->path_obj && Storage::disk('public')->exists($museum->path_obj)) {
             $museum->file_size = Storage::disk('public')->size($museum->path_obj);
@@ -652,54 +653,13 @@ class HomeController extends Controller
     }
 
     /**
-     * Check if all e-books in a materi have been read by user
-     */
-    private function areAllEbooksRead($user_id, $materi_id)
-    {
-        $progress = ProgressMateri::where('user_id', $user_id)
-            ->where('materi_id', $materi_id)
-            ->first();
-
-        if (! $progress) {
-            return false;
-        }
-
-        // Check if ebook status is completed
-        return in_array($progress->status, [
-            ProgressMateri::STATUS_EBOOK_SELESAI,
-            ProgressMateri::STATUS_MUSEUM_SELESAI,
-            ProgressMateri::STATUS_POSTTEST_SELESAI,
-        ]);
-    }
-
-    /**
      * E-Learning Tugas Page
      */
     public function elearningTugas(Request $request, $materi_id)
     {
         $user = Auth::user();
         $materi = Materi::with(['tugas'])->findOrFail($materi_id);
-        
+
         return view('guest.elearning.tugas', compact('materi'));
-    }
-
-    /**
-     * Check if all virtual museums in a materi have been visited by user
-     */
-    private function areAllMuseumsVisited($user_id, $materi_id)
-    {
-        $progress = ProgressMateri::where('user_id', $user_id)
-            ->where('materi_id', $materi_id)
-            ->first();
-
-        if (! $progress) {
-            return false;
-        }
-
-        // Check if museum status is completed
-        return in_array($progress->status, [
-            ProgressMateri::STATUS_MUSEUM_SELESAI,
-            ProgressMateri::STATUS_POSTTEST_SELESAI,
-        ]);
     }
 }
