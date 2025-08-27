@@ -91,7 +91,8 @@ class HomeController extends Controller
 
     public function pengembang(Request $request)
     {
-        return view('guest.pengembang');
+        $riwayatPengembang = \App\Models\RiwayatPengembang::orderBy('tahun', 'desc')->get();
+        return view('guest.pengembang', compact('riwayatPengembang'));
     }
 
     public function arMarker(Request $request)

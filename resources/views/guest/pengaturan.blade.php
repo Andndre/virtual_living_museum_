@@ -64,7 +64,7 @@
 						</div>
 						<i class="fas fa-chevron-right text-gray-400 text-sm"></i>
 					</a>
-					<a href="#" class="flex items-center justify-between py-3 border-b border-gray-100">
+					<a href="{{ route('guest.kritik-saran') }}" class="flex items-center justify-between py-3 border-b border-gray-100">
 						<div class="flex items-center space-x-3">
 							<i class="fas fa-comment-alt text-gray-400 w-5"></i>
 							<span class="text-gray-700">{{ __('app.feedback') }}</span>

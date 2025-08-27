@@ -56,6 +56,26 @@
 					</div>
 				</div>
 			</div>
+
+			{{-- Developer History --}}
+			@if($riwayatPengembang->count() > 0)
+			<div class="bg-white rounded-2xl p-6 shadow-sm">
+				<h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.development_history') }}</h3>
+				<div class="space-y-4">
+					@foreach($riwayatPengembang as $riwayat)
+					<div class="border-l-4 border-primary pl-4 py-1">
+						<h4 class="font-medium text-gray-800">{{ $riwayat->judul }}</h4>
+						<p class="text-sm text-gray-600">
+							{{ \Carbon\Carbon::parse($riwayat->tahun)->format('Y') }}
+							@if($riwayat->tahun_selesai)
+								- {{ \Carbon\Carbon::parse($riwayat->tahun_selesai)->format('Y') }}
+							@endif
+						</p>
+					</div>
+					@endforeach
+				</div>
+			</div>
+			@endif
 		</div>
 	</div>
 

@@ -18,17 +18,16 @@
 
         {{-- Form Section --}}
         <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Kirim Kritik & Saran</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.send_feedback') }}</h2>
 
             <form action="{{ route('guest.kritik-saran.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
-                    <label for="pesan" class="block text-sm font-medium text-gray-700 mb-1">Pesan</label>
+                    <label for="pesan" class="block text-sm font-medium text-gray-700 mb-1">{{ __('app.message') }}</label>
                     <textarea id="pesan" name="pesan" rows="4"
                         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-primary focus:border-primary
                         {{ $errors->has('pesan') ? 'border-red-500' : 'border-gray-300' }}"
-                        placeholder="Tuliskan kritik dan saran Anda di sini...">{{ old('pesan') }}</textarea>
-
+                        placeholder="{{ __('app.write_feedback_placeholder') }}">{{ old('pesan') }}</textarea>
                     @error('pesan')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -36,7 +35,7 @@
 
                 <div class="flex justify-end">
                     <button type="submit" class="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-md transition-colors">
-                        Kirim
+                        {{ __('app.send') }}
                     </button>
                 </div>
             </form>
@@ -44,7 +43,7 @@
 
         {{-- History Section --}}
         <div class="bg-white rounded-lg shadow-sm p-5">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Riwayat Kritik & Saran</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.feedback_history') }}</h2>
 
             @if ($kritikSaran->count() > 0)
                 <div class="space-y-4">
@@ -59,7 +58,7 @@
                 </div>
             @else
                 <div class="bg-gray-50 rounded-lg p-6 text-center">
-                    <p class="text-gray-500">Anda belum memiliki riwayat kritik dan saran.</p>
+                    <p class="text-gray-500">{{ __('app.no_feedback_history') }}</p>
                 </div>
             @endif
         </div>

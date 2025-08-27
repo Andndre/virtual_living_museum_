@@ -18,9 +18,9 @@
 		<div class="pt-8 pb-4 flex items-center">
 			<img src="{{ asset('images/mascot.png') }}" alt="Mascot" class="w-32 h-32 md:w-40 md:h-40 object-contain mr-4 drop-shadow-xl" />
 			<div>
-				<h2 class="text-lg md:text-xl font-bold mb-2">Hai sobat sejarah....</h2>
+				<h2 class="text-lg md:text-xl font-bold mb-2">{{ __('app.ar_greeting') }}</h2>
 				<p class="text-white/90 text-sm md:text-base leading-relaxed">
-					AR Marker dapat digunakan dengan scan marker yang sudah disediakan untuk menampilkan visual objek sejarah.
+					{{ __('app.ar_description') }}
 				</p>
 			</div>
 		</div>
@@ -28,17 +28,17 @@
 
 	{{-- Card Menu Section --}}
 	<div class="px-6 py-8 bg-white rounded-t-3xl -mt-6 relative min-h-[60vh] flex flex-col items-center">
-		<h3 class="text-lg font-bold text-gray-900 mb-6">Pilih Menu</h3>
+		<h3 class="text-lg font-bold text-gray-900 mb-6">{{ __('app.ar_choose_menu') }}</h3>
 		<div class="grid grid-cols-2 gap-8 w-full max-w-lg">
 			{{-- Download Katalog --}}
 			<a href="#" class="flex flex-col items-center justify-center bg-gray-50 rounded-2xl shadow-md hover:shadow-lg transition w-full py-8">
-				<img src="{{ asset('images/icons/download-katalog.png') }}" alt="Download Katalog" class="w-16 h-16 mb-4" />
-				<span class="text-base font-medium text-gray-700">Download Katalog</span>
+				<img src="{{ asset('images/icons/download-katalog.png') }}" alt="{{ __('app.ar_download_catalog') }}" class="w-16 h-16 mb-4" />
+				<span class="text-base font-medium text-gray-700">{{ __('app.ar_download_catalog') }}</span>
 			</a>
 			{{-- Buka AR --}}
 			<a href="{{ route('ar-marker.camera') }}" class="flex flex-col items-center justify-center bg-gray-50 rounded-2xl shadow-md hover:shadow-lg transition w-full py-8">
-				<img src="{{ asset('images/icons/ar-marker.png') }}" alt="Buka AR" class="w-16 h-16 mb-4" />
-				<span class="text-base font-medium text-gray-700">Buka AR</span>
+				<img src="{{ asset('images/icons/ar-marker.png') }}" alt="{{ __('app.ar_open_ar') }}" class="w-16 h-16 mb-4" />
+				<span class="text-base font-medium text-gray-700">{{ __('app.ar_open_ar') }}</span>
 			</a>
 		</div>
 	</div>
