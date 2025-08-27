@@ -3,9 +3,9 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                     <i class="fas fa-arrow-left text-xl"></i>
-                </a>
+                </button>
                 <div class="flex-1">
                     <h1 class="text-lg font-bold">Pre-test</h1>
                     <p class="text-sm opacity-90">{{ $materi->judul }}</p>
@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="text-center mt-8">
-                    <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" 
+                    <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}"
                        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-arrow-right mr-2"></i>
                         Lanjut ke Materi
@@ -121,7 +121,7 @@
                         </ul>
                     </div>
                 @endif
-                
+
                 <h3 class="text-xl font-bold text-gray-900 mb-4">Instruksi Pre-test</h3>
                 <div class="space-y-3 text-gray-700">
                     <div class="flex items-start space-x-3">
@@ -143,7 +143,7 @@
                         <p>Setelah selesai, Anda dapat melanjutkan ke materi pembelajaran</p>
                     </div>
                 </div>
-                
+
                 <div class="mt-6 pt-6 border-t border-gray-200">
                     <button onclick="startQuiz()" class="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-play mr-2"></i>
@@ -156,7 +156,7 @@
             <div id="quiz-container" class="hidden">
                 <form id="quiz-form" method="POST" action="{{ route('guest.elearning.pretest.submit', $materi->materi_id) }}">
                     @csrf
-                    
+
                     {{-- Progress Bar --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
                         <div class="flex items-center justify-between mb-2">
@@ -180,7 +180,7 @@
                                 </div>
                                 <p class="text-gray-800 leading-relaxed">{{ $question->pertanyaan }}</p>
                             </div>
-                            
+
                             <div class="space-y-3">
                                 @foreach(['A' => $question->pilihan_a, 'B' => $question->pilihan_b, 'C' => $question->pilihan_c, 'D' => $question->pilihan_d] as $key => $option)
                                     <label class="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-300 answer-option" data-answer="{{ $key }}" data-correct="{{ $question->jawaban_benar }}">
@@ -207,7 +207,7 @@
                                 <i class="fas fa-arrow-left mr-2"></i>
                                 Sebelumnya
                             </button>
-                            
+
                             <div class="flex space-x-3">
                                 @if($totalQuestions > 1)
                                     <button type="button" id="next-btn" onclick="nextQuestion()" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">

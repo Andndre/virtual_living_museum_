@@ -3,9 +3,9 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                     <i class="fas fa-arrow-left text-xl"></i>
-                </a>
+                </button>
                 <div class="flex-1">
                     <h1 class="text-lg font-bold">Post-test</h1>
                     <p class="text-sm opacity-90">{{ $materi->judul }}</p>
@@ -97,12 +97,12 @@
                     </div>
                 </div>
                 <div class="text-center mt-8">
-                    <a href="{{ route('guest.elearning') }}" 
+                    <a href="{{ route('guest.elearning') }}"
                        class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-list mr-2"></i>
                         Kembali ke Daftar Materi
                     </a>
-                    <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" 
+                    <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}"
                        class="inline-flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors ml-2">
                         <i class="fas fa-eye mr-2"></i>
                         Lihat Materi

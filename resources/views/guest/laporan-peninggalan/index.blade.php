@@ -2,9 +2,9 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <a href="{{ route('guest.home') }}" class="mr-4">
+                <button class="back-button mr-4">
                     <i class="fas fa-arrow-left text-xl"></i>
-                </a>
+                </button>
                 <h1 class="text-xl font-bold">Laporan Peninggalan</h1>
             </div>
             <a href="{{ route('guest.laporan-peninggalan.create') }}" class="bg-white text-primary px-4 py-2 rounded-lg font-medium text-sm flex items-center">
@@ -44,7 +44,7 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -124,14 +124,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Handle like functionality with AJAX
             const likeForms = document.querySelectorAll('.like-form');
-            
+
             likeForms.forEach(form => {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const reportId = this.dataset.id;
                     const likeIcon = this.querySelector('.like-icon');
                     const likeCount = this.querySelector('.like-count');
-                    
+
                     fetch(this.action, {
                         method: 'POST',
                         headers: {
@@ -152,7 +152,7 @@
                             likeIcon.classList.remove('fas');
                             likeIcon.classList.add('far');
                         }
-                        
+
                         // Update like count
                         likeCount.textContent = data.like_count;
                     })

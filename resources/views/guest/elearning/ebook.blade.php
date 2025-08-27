@@ -2,9 +2,9 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
-            <a href="{{ route('guest.elearning.materi', $ebook->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                 <i class="fas fa-arrow-left text-xl"></i>
-            </a>
+            </button>
             <div class="flex-1 text-center mx-4">
                 <h1 class="text-lg font-bold">{{ $ebook->judul }}</h1>
                 <p class="text-sm opacity-90">{{ $ebook->materi->judul }}</p>
@@ -65,14 +65,14 @@
                     <span class="hidden sm:inline">Sebelumnya</span>
                     <span class="sm:hidden">Prev</span>
                 </button>
-                
+
                 <div class="flex items-center space-x-1 md:space-x-2">
                     <span class="text-xs md:text-sm text-gray-600">Hal.</span>
                     <span id="current-page" class="font-semibold text-sm md:text-base">1</span>
                     <span class="text-xs md:text-sm text-gray-600">dari</span>
                     <span id="total-pages" class="font-semibold text-sm md:text-base">-</span>
                 </div>
-                
+
                 <button id="next-page" class="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm md:text-base">
                     <span class="hidden sm:inline">Selanjutnya</span>
                     <span class="sm:hidden">Next</span>

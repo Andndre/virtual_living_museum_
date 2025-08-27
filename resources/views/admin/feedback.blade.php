@@ -116,7 +116,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Desktop View -->
                     <div class="hidden md:block">
                         <div class="divide-y divide-gray-200">
@@ -134,7 +134,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        
+
                                         <!-- Content -->
                                         <div class="flex-1 min-w-0">
                                             <!-- Header -->
@@ -153,7 +153,7 @@
                                                     <div class="text-xs text-gray-400">{{ $item->created_at->diffForHumans() }}</div>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Email -->
                                             @if($item->user)
                                             <div class="mb-3">
@@ -163,7 +163,7 @@
                                                 </span>
                                             </div>
                                             @endif
-                                            
+
                                             <!-- Feedback Content -->
                                             <div class="bg-gray-50 rounded-lg p-4 mb-4">
                                                 <div class="flex items-start">
@@ -171,7 +171,7 @@
                                                     <p class="text-gray-800 text-sm leading-relaxed whitespace-pre-line">{{ $item->pesan }}</p>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Actions -->
                                             <div class="flex items-center justify-between">
                                                 <div class="flex space-x-3">
@@ -197,7 +197,7 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Details Panel (Hidden by default) -->
                                             <div id="details-{{ $item->ks_id }}" class="hidden mt-4 pt-4 border-t border-gray-200">
                                                 <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -239,7 +239,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- Content -->
                                     <div class="flex-1 min-w-0">
                                         <!-- Header -->
@@ -256,7 +256,7 @@
                                             <p class="text-xs text-gray-500 mt-1">{{ $item->user->email }}</p>
                                             @endif
                                         </div>
-                                        
+
                                         <!-- Feedback Content -->
                                         <div class="bg-gray-50 rounded-lg p-3 mb-3">
                                             <p class="text-sm text-gray-800 leading-relaxed">{{ Str::limit($item->pesan, 120) }}</p>
@@ -266,7 +266,7 @@
                                                 </button>
                                             @endif
                                         </div>
-                                        
+
                                         <!-- Date -->
                                         <div class="mb-3">
                                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
@@ -274,11 +274,11 @@
                                             </span>
                                             <span class="text-xs text-gray-500 ml-2">{{ $item->created_at->diffForHumans() }}</span>
                                         </div>
-                                        
+
                                         <!-- Mobile Actions -->
                                         <div class="flex space-x-2">
                                             @if($item->user)
-                                            <a href="mailto:{{ $item->user->email }}?subject=Re: Feedback Anda" 
+                                            <a href="mailto:{{ $item->user->email }}?subject=Re: Feedback Anda"
                                                class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-green-300 shadow-sm text-xs font-medium rounded text-green-700 bg-green-50 hover:bg-green-100 transition-colors">
                                                 <i class="fas fa-reply mr-1"></i>
                                                 Balas
@@ -287,7 +287,7 @@
                                             <form action="{{ route('admin.feedback.destroy', $item->ks_id) }}" method="POST" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
+                                                <button type="submit"
                                                         class="w-full inline-flex items-center justify-center px-3 py-2 border border-red-300 shadow-sm text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
                                                     <i class="fas fa-trash mr-1"></i>
                                                     Hapus

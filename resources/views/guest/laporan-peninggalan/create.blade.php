@@ -1,9 +1,9 @@
 <x-guest-layout>
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex items-center">
-            <a href="{{ route('guest.laporan-peninggalan') }}" class="mr-4">
+            <button class="back-button mr-4">
                 <i class="fas fa-arrow-left text-xl"></i>
-            </a>
+            </button>
             <h1 class="text-xl font-bold">Tambah Laporan</h1>
         </div>
     </div>
@@ -126,16 +126,16 @@
 
             // Handle marker placement
             let marker;
-            
+
             map.on('click', function(e) {
                 // Remove any existing marker
                 if (marker) {
                     map.removeLayer(marker);
                 }
-                
+
                 // Add a new marker
                 marker = L.marker(e.latlng).addTo(map);
-                
+
                 // Update form fields
                 document.getElementById('lat').value = e.latlng.lat.toFixed(8);
                 document.getElementById('lng').value = e.latlng.lng.toFixed(8);
@@ -151,29 +151,29 @@
             // Handle image previews
             const inputElement = document.getElementById('gambar');
             const previewContainer = document.getElementById('image-previews');
-            
+
             inputElement.addEventListener('change', function() {
                 previewContainer.innerHTML = '';
-                
+
                 if (this.files) {
                     for (let i = 0; i < this.files.length; i++) {
                         if (i >= 5) break; // Limit to 5 images
-                        
+
                         const file = this.files[i];
                         const reader = new FileReader();
-                        
+
                         reader.onload = function(e) {
                             const div = document.createElement('div');
                             div.className = 'relative';
-                            
+
                             const img = document.createElement('img');
                             img.src = e.target.result;
                             img.className = 'h-16 w-16 object-cover rounded-md';
                             div.appendChild(img);
-                            
+
                             previewContainer.appendChild(div);
                         }
-                        
+
                         reader.readAsDataURL(file);
                     }
                 }

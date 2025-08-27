@@ -8,7 +8,7 @@
             body {
                 overflow: hidden;
             }
-            
+
             #map-container {
                 position: absolute;
                 top: 0;
@@ -19,7 +19,7 @@
                 height: 100%;
                 z-index: 1;
             }
-            
+
             #search-bar {
                 position: fixed;
                 top: env(safe-area-inset-top, 0);
@@ -29,7 +29,7 @@
                 padding-top: calc(env(safe-area-inset-top, 0) + 10px);
                 z-index: 1000;
             }
-            
+
             #bottom-sheet {
                 position: fixed;
                 bottom: 0;
@@ -41,12 +41,12 @@
                 visibility: hidden;
                 padding-bottom: env(safe-area-inset-bottom, 0);
             }
-            
+
             #bottom-sheet.visible {
                 transform: translateY(0);
                 visibility: visible;
             }
-            
+
             .selected-marker-icon .spinning-circle-wrapper {
                 position: absolute;
                 width: 100%;
@@ -84,19 +84,19 @@
                 from { transform: rotate(0deg); }
                 to { transform: rotate(360deg); }
             }
-            
+
             .leaflet-bottom.leaflet-left,
             .leaflet-bottom.leaflet-right {
                 bottom: 30px;
             }
-            
+
             .leaflet-touch .leaflet-control-zoom a {
                 width: 36px;
                 height: 36px;
                 line-height: 36px;
                 font-size: 18px;
             }
-            
+
             .leaflet-marker-icon {
                 filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
             }
@@ -112,12 +112,12 @@
     <div id="search-bar">
         <div class="flex items-center gap-2 max-w-md mx-auto">
             <!-- Back Button -->
-            <a href="{{ route('guest.maps') }}" class="bg-white rounded-full shadow-lg flex items-center justify-center w-[48px] h-[48px] flex-shrink-0">
+            <a href="{{ url()->previous() }}" class="bg-white rounded-full shadow-lg flex items-center justify-center w-[48px] h-[48px] flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-700">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </a>
-            
+
             <!-- Search Input -->
             <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[48px]">
                 <div class="text-gray-400 mx-3">
@@ -125,7 +125,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="Cari situs peninggalan..." 
+                <input id="search-input" type="text" placeholder="Cari situs peninggalan..."
                     class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700"
                     style="-webkit-appearance: none; border-radius: 0;">
                 <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
@@ -135,7 +135,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Search Results Dropdown -->
         <div class="max-w-md mx-auto px-4 mt-1">
             <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-50">
@@ -161,22 +161,22 @@
     <script>
         // Check if device is mobile
         const isMobileDevice = window.innerWidth < 768;
-        
+
         // Initialize map
         var map = L.map('map', {
             zoomControl: false,
             tap: true
         }).setView([-8.409518, 115.188919], isMobileDevice ? 8 : 10);
-        
+
         var activeMarker = null;
-        
+
         // Add zoom control
         L.control.zoom({
             position: 'bottomright',
             zoomInTitle: 'Perbesar',
             zoomOutTitle: 'Perkecil'
         }).addTo(map);
-        
+
         // Custom control for "Lihat Peninggalan" button
         L.Control.PeninggalanButton = L.Control.extend({
             onAdd: function() {
@@ -185,20 +185,20 @@
                 link.href = '{{ route("guest.maps.peninggalan") }}';
                 link.title = 'Lihat Daftar Peninggalan';
                 link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
-                
+
                 L.DomEvent.on(link, 'click', function(e) {
                     L.DomEvent.stopPropagation(e);
                 });
-                
+
                 return container;
             },
             onRemove: function() {}
         });
-        
+
         L.control.peninggalanButton = function(opts) {
             return new L.Control.PeninggalanButton(opts);
         }
-        
+
         L.control.peninggalanButton({ position: 'bottomleft' }).addTo(map);
 
         // Add tile layer
@@ -243,7 +243,7 @@
 
         @foreach ($allSitus as $s)
             var marker = L.marker([{{ $s->lat }}, {{ $s->lng }}], {icon: situsIcon}).addTo(map);
-            
+
             // Store marker info
             marker.situsInfo = {
                 id: {{ $s->situs_id }},
@@ -253,10 +253,10 @@
                 unlocked: {{ in_array($s->situs_id, $unlockedSitusIds) ? 'true' : 'false' }},
                 url: '{{ route("guest.situs.detail", ["situs_id" => $s->situs_id]) }}'
             };
-            
+
             allMarkers.push(marker);
             situsNames.push('{{ strtolower($s->nama) }}');
-            
+
             marker.on('click', function(e) {
                 L.DomEvent.stopPropagation(e);
                 focusOnMarker(this);
@@ -266,15 +266,15 @@
         // Hide bottom sheet
         function hideBottomSheet() {
             bottomSheet.classList.remove('visible');
-            
+
             if (activeMarker) {
                 activeMarker.setIcon(situsIcon);
                 activeMarker = null;
             }
-            
+
             overlayLink.style.display = 'none';
             lockedMessage.style.display = 'none';
-            
+
             // Reset map position
             if (isMobileDevice) {
                 map.invalidateSize();
@@ -290,7 +290,7 @@
             if (activeMarker) {
                 activeMarker.setIcon(situsIcon);
             }
-            
+
             // Set new active marker
             var selectedIcon = L.divIcon({
                 className: 'selected-marker-icon',
@@ -302,28 +302,28 @@
                 iconSize: [50, 50],
                 iconAnchor: [25, 40]
             });
-            
+
             marker.setIcon(selectedIcon);
             activeMarker = marker;
-            
+
             // Position map
             const targetZoom = 14;
-            
+
             if (isMobileDevice) {
                 map.setView(marker._latlng, targetZoom);
-                
+
                 setTimeout(() => {
                     map.panBy([0, -window.innerHeight * 0.2]);
                 }, 100);
             } else {
                 map.setView(marker._latlng, targetZoom);
             }
-            
+
             // Update bottom sheet content
             overlayTitle.textContent = marker.situsInfo.nama;
             overlayAddress.textContent = marker.situsInfo.alamat;
             overlayDescription.textContent = marker.situsInfo.deskripsi;
-            
+
             // Check if unlocked
             if (marker.situsInfo.unlocked) {
                 overlayLink.href = marker.situsInfo.url;
@@ -333,7 +333,7 @@
                 overlayLink.style.display = 'none';
                 lockedMessage.style.display = 'block';
             }
-            
+
             // Show bottom sheet
             bottomSheet.classList.add('visible');
         }
@@ -341,29 +341,29 @@
         // Search functionality
         searchInput.addEventListener('input', function(e) {
             const searchText = e.target.value.trim().toLowerCase();
-            
+
             // Show/hide clear button
             if (searchText.length > 0) {
                 searchClear.classList.remove('hidden');
             } else {
                 searchClear.classList.add('hidden');
             }
-            
+
             // Filter markers
             let matchingMarkers = [];
-            
+
             allMarkers.forEach(function(marker) {
                 const situsName = marker.situsInfo.nama.toLowerCase();
                 const situsAddress = marker.situsInfo.alamat.toLowerCase();
-                
-                if (searchText.length === 0 || 
-                    situsName.includes(searchText) || 
+
+                if (searchText.length === 0 ||
+                    situsName.includes(searchText) ||
                     situsAddress.includes(searchText)) {
                     // Show this marker
                     if (!map.hasLayer(marker)) {
                         map.addLayer(marker);
                     }
-                    
+
                     // Add to matching markers
                     if (searchText.length > 0) {
                         matchingMarkers.push(marker);
@@ -378,36 +378,36 @@
                     }
                 }
             });
-            
+
             // Update search results
             if (searchText.length > 0) {
                 searchResultsList.innerHTML = '';
-                
+
                 if (matchingMarkers.length > 0) {
                     matchingMarkers.forEach(function(marker) {
                         const li = document.createElement('li');
                         li.className = 'px-4 py-3 hover:bg-gray-50 cursor-pointer';
-                        
+
                         const nameSpan = document.createElement('div');
                         nameSpan.className = 'font-medium text-gray-900';
                         nameSpan.textContent = marker.situsInfo.nama;
-                        
+
                         const addressSpan = document.createElement('div');
                         addressSpan.className = 'text-sm text-gray-500';
                         addressSpan.textContent = marker.situsInfo.alamat;
-                        
+
                         li.appendChild(nameSpan);
                         li.appendChild(addressSpan);
-                        
+
                         li.addEventListener('click', function() {
                             focusOnMarker(marker);
                             searchInput.value = marker.situsInfo.nama;
                             searchResults.classList.add('hidden');
                         });
-                        
+
                         searchResultsList.appendChild(li);
                     });
-                    
+
                     searchResults.classList.remove('hidden');
                 } else {
                     searchResults.classList.add('hidden');
@@ -422,7 +422,7 @@
             searchInput.value = '';
             searchClear.classList.add('hidden');
             searchResults.classList.add('hidden');
-            
+
             // Show all markers
             allMarkers.forEach(function(marker) {
                 if (!map.hasLayer(marker)) {
@@ -430,7 +430,7 @@
                 }
             });
         });
-        
+
         // Close search results when clicking outside
         document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {

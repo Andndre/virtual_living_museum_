@@ -1,9 +1,9 @@
 <x-guest-layout>
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex items-center">
-            <a href="{{ route('guest.laporan-peninggalan') }}" class="mr-4">
+            <button class="back-button mr-4">
                 <i class="fas fa-arrow-left text-xl"></i>
-            </a>
+            </button>
             <h1 class="text-xl font-bold">Detail Peninggalan</h1>
         </div>
     </div>
@@ -35,7 +35,7 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <div class="flex-1">
                     <h2 class="text-xl font-bold text-gray-900">{{ $laporan->nama_peninggalan }}</h2>
                     <p class="text-gray-600">Dilaporkan oleh {{ $laporan->user->name }}</p>
@@ -50,13 +50,13 @@
                         <div class="gallery-container flex transition-transform duration-300 ease-in-out h-64">
                             @foreach($laporan->laporanGambar as $index => $image)
                                 <div class="gallery-item min-w-full h-full">
-                                    <img src="{{ asset('storage/' . $image->path_gambar) }}" 
-                                        alt="Peninggalan {{ $index + 1 }}" 
+                                    <img src="{{ asset('storage/' . $image->path_gambar) }}"
+                                        alt="Peninggalan {{ $index + 1 }}"
                                         class="w-full h-full object-contain bg-gray-100">
                                 </div>
                             @endforeach
                         </div>
-                        
+
                         @if($laporan->laporanGambar->count() > 1)
                             <button class="gallery-prev absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center">
                                 <i class="fas fa-chevron-left"></i>
@@ -115,7 +115,7 @@
         {{-- Comments Section --}}
         <div id="comments" class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Komentar</h3>
-            
+
             {{-- Comment Form --}}
             <form action="{{ route('guest.laporan-peninggalan.comment', $laporan->laporan_id) }}" method="POST" class="mb-6">
                 @csrf
@@ -130,7 +130,7 @@
                         @endif
                     </div>
                     <div class="flex-1">
-                        <textarea id="komentar" name="komentar" rows="2" 
+                        <textarea id="komentar" name="komentar" rows="2"
                             class="w-full px-3 py-2 border {{ $errors->has('komentar') ? 'border-red-500' : 'border-gray-300' }} rounded-md focus:outline-none focus:ring-primary focus:border-primary"
                             placeholder="Tulis komentar Anda..."></textarea>
                         @error('komentar')
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </form>
-            
+
             {{-- Comment List --}}
             <div class="space-y-4">
                 @forelse($laporan->laporanKomentar->sortByDesc('created_at') as $comment)
@@ -202,37 +202,37 @@
             const galleryPrev = document.querySelector('.gallery-prev');
             const galleryNext = document.querySelector('.gallery-next');
             const galleryDots = document.querySelectorAll('.gallery-dot');
-            
+
             if (galleryContainer) {
                 const itemCount = document.querySelectorAll('.gallery-item').length;
                 let currentIndex = 0;
-                
+
                 function goToSlide(index) {
                     if (index < 0) index = itemCount - 1;
                     if (index >= itemCount) index = 0;
                     currentIndex = index;
-                    
+
                     galleryContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-                    
+
                     // Update dots
                     galleryDots.forEach((dot, i) => {
                         dot.classList.toggle('bg-white', i === currentIndex);
                         dot.classList.toggle('bg-white/50', i !== currentIndex);
                     });
                 }
-                
+
                 if (galleryPrev) {
                     galleryPrev.addEventListener('click', () => {
                         goToSlide(currentIndex - 1);
                     });
                 }
-                
+
                 if (galleryNext) {
                     galleryNext.addEventListener('click', () => {
                         goToSlide(currentIndex + 1);
                     });
                 }
-                
+
                 galleryDots.forEach((dot, i) => {
                     dot.addEventListener('click', () => {
                         goToSlide(i);
@@ -244,11 +244,11 @@
             const likeForm = document.getElementById('like-form');
             const likeIcon = document.getElementById('like-icon');
             const likeCount = document.getElementById('like-count');
-            
+
             if (likeForm) {
                 likeForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     fetch(this.action, {
                         method: 'POST',
                         headers: {
@@ -269,7 +269,7 @@
                             likeIcon.classList.remove('fas');
                             likeIcon.classList.add('far');
                         }
-                        
+
                         // Update like count
                         likeCount.textContent = data.like_count;
                     })

@@ -2,9 +2,9 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center mb-6">
-            <a href="{{ route('guest.home') }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <button type="button" class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                 <i class="fas fa-arrow-left text-xl"></i>
-            </a>
+            </button>
             <a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
                 @if(auth()->user()->profile_photo)
                     <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
@@ -53,7 +53,7 @@
                     <div class="w-8 text-center font-bold {{ $user->rank <= 3 ? 'text-blue-600' : 'text-gray-700' }}">
                         {{ $user->rank }}
                     </div>
-                    
+
                     <!-- User photo -->
                     <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-200 ml-2">
                         @if($user->profile_photo)
@@ -62,12 +62,12 @@
                             <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
                         @endif
                     </div>
-                    
+
                     <!-- User name -->
                     <div class="flex-1 ml-3">
                         <p class="font-medium text-gray-900">{{ $user->name }}</p>
                     </div>
-                    
+
                     <!-- Score -->
                     <div class="text-right font-bold text-gray-900">
                         {{ $user->total_score }}pts

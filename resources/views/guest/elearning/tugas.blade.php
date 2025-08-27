@@ -2,9 +2,9 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center mb-6">
-            <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                 <i class="fas fa-arrow-left text-xl"></i>
-            </a>
+            </button>
             <a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
                 @if(auth()->user()->profile_photo)
                     <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
@@ -37,7 +37,7 @@
                                 <div class="prose prose-sm max-w-none">
                                     {{ $tugas->deskripsi }}
                                 </div>
-                                
+
                                 @if($tugas->gambar)
                                     <div class="mt-4">
                                         <img src="{{ $tugas->gambarUrl }}" alt="{{ $tugas->judul }}" class="w-full h-auto rounded-lg">
@@ -58,7 +58,7 @@
             @endif
 
             <div class="mt-8 text-center">
-                <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" 
+                <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}"
                    class="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary-dark transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Kembali ke Materi

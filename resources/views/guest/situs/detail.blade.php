@@ -3,7 +3,7 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <button type="button" onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
                     <i class="fas fa-arrow-left text-xl"></i>
                 </button>
                 <div class="flex-1">

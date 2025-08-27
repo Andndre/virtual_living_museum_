@@ -2,10 +2,9 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
-            <a href="{{ route('guest.home') }}"
-                class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <button type="button" class="back-button w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                 <i class="fas fa-arrow-left text-white"></i>
-            </a>
+            </button>
             <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
                 @if (auth()->user()->profile_photo)
                     <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture"
