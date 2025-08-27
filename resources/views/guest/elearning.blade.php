@@ -188,8 +188,6 @@
                                 </div>
                             @endforeach
                         </div>
-
-
                     @empty
                         <div class="bg-white rounded-2xl shadow p-10 text-center border border-gray-100">
                             <div class="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 shadow-sm">
