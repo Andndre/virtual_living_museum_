@@ -466,7 +466,7 @@ class HomeController extends Controller
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
                 if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->urutan) {
                     $user->incrementProgressLevel();
-                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Museum pada materi ID: '.$materiId);
+                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: '.$materiId);
                 }
             }
         }

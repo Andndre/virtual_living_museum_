@@ -7,7 +7,7 @@
                     <nav class="flex mb-2" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             <li class="inline-flex items-center">
-                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Museum</a>
+                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
                             </li>
                             <li>
                                 <div class="flex items-center">
@@ -19,8 +19,8 @@
                             </li>
                         </ol>
                     </nav>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Tambah Virtual Museum</h1>
-                    <p class="mt-2 text-sm sm:text-base text-gray-600">Buat Virtual Museum baru untuk situs peninggalan</p>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Tambah Virtual Living Museum</h1>
+                    <p class="mt-2 text-sm sm:text-base text-gray-600">Buat Virtual Living Museum baru untuk situs peninggalan</p>
                 </div>
                 <div class="mt-4 sm:mt-0">
                     <a href="{{ route('admin.virtual-museum') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
@@ -35,7 +35,7 @@
     </x-slot>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
+
     @if($errors->any())
         <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
             <div class="flex">
@@ -60,11 +60,11 @@
         <!-- Main Information Card -->
         <div class="bg-white shadow-sm rounded-lg border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">Informasi Virtual Museum</h3>
-                <p class="mt-1 text-sm text-gray-500">Masukkan detail dasar untuk Virtual Museum</p>
+                <h3 class="text-lg font-medium text-gray-900">Informasi Virtual Living Museum</h3>
+                <p class="mt-1 text-sm text-gray-500">Masukkan detail dasar untuk Virtual Living Museum</p>
             </div>
             <div class="px-6 py-6 space-y-6">
-                
+
                 <!-- Situs Peninggalan Selection -->
                 <div>
                     <label for="situs_id" class="block text-sm font-medium text-gray-700 mb-2">
@@ -74,7 +74,7 @@
                         <select id="situs_id" name="situs_id" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md" required>
                             <option value="">Pilih Situs Peninggalan</option>
                             @foreach($situsOptions as $situs)
-                                <option value="{{ $situs->situs_id }}" 
+                                <option value="{{ $situs->situs_id }}"
                                     {{ (old('situs_id') == $situs->situs_id || (isset($selectedSitusId) && $selectedSitusId == $situs->situs_id)) ? 'selected' : '' }}>
                                     {{ $situs->nama }} - {{ $situs->alamat }}
                                 </option>
@@ -86,22 +86,22 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Pilih situs peninggalan yang akan memiliki Virtual Museum ini. Satu situs dapat memiliki beberapa Virtual Museum.</p>
+                    <p class="mt-1 text-xs text-gray-500">Pilih situs peninggalan yang akan memiliki Virtual Living Museum ini. Satu situs dapat memiliki beberapa Virtual Living Museum.</p>
                 </div>
 
-                <!-- Nama Virtual Museum -->
+                <!-- Nama Virtual Living Museum -->
                 <div>
                     <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Virtual Museum <span class="text-red-500">*</span>
+                        Nama Virtual Living Museum <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" 
-                           id="nama" 
-                           name="nama" 
-                           value="{{ old('nama') }}" 
+                    <input type="text"
+                           id="nama"
+                           name="nama"
+                           value="{{ old('nama') }}"
                            class="block w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                            placeholder="Contoh: Museum Virtual Candi Borobudur"
                            required>
-                    <p class="mt-1 text-xs text-gray-500">Nama yang akan ditampilkan untuk Virtual Museum</p>
+                    <p class="mt-1 text-xs text-gray-500">Nama yang akan ditampilkan untuk Virtual Living Museum</p>
                 </div>
 
                 <!-- File GLB Upload -->
@@ -143,9 +143,9 @@
                     <h3 class="text-sm font-medium text-blue-800">Informasi</h3>
                     <div class="mt-2 text-sm text-blue-700">
                         <ul class="list-disc pl-5 space-y-1">
-                            <li>Virtual Museum merupakan representasi 3D dari keseluruhan museum untuk situs peninggalan</li>
-                            <li>Setiap situs peninggalan hanya dapat memiliki satu Virtual Museum</li>
-                            <li>Virtual Museum dapat memiliki banyak Virtual Museum Object di dalamnya</li>
+                            <li>Virtual Living Museum merupakan representasi 3D dari keseluruhan museum untuk situs peninggalan</li>
+                            <li>Setiap situs peninggalan hanya dapat memiliki satu Virtual Living Museum</li>
+                            <li>Virtual Living Museum dapat memiliki banyak Virtual Living Museum Object di dalamnya</li>
                             <li>File GLB harus berukuran maksimal 300MB untuk performa optimal</li>
                             <li>Format GLB mendukung tekstur, animasi, dan material yang kompleks</li>
                         </ul>
@@ -163,7 +163,7 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                Simpan Virtual Museum
+                Simpan Virtual Living Museum
             </button>
         </div>
 
@@ -175,21 +175,21 @@ function updateFileName(input) {
     const fileNameDiv = document.getElementById('file-name');
     if (input.files && input.files[0]) {
         const file = input.files[0];
-        
+
         // Validate file type
         if (!file.name.toLowerCase().endsWith('.glb')) {
             alert('Hanya file GLB yang diizinkan!');
             input.value = '';
             return;
         }
-        
+
         // Validate file size
         if (file.size > 300 * 1024 * 1024) {
             alert('File terlalu besar! Maksimal 300MB.');
             input.value = '';
             return;
         }
-        
+
         const fileName = file.name;
         const fileSize = (file.size / 1024 / 1024).toFixed(2);
         fileNameDiv.innerHTML = `
@@ -252,7 +252,7 @@ function unhighlight(e) {
 function handleDrop(e) {
     const dt = e.dataTransfer;
     const files = dt.files;
-    
+
     if (files.length > 0) {
         const file = files[0];
         if (file.name.toLowerCase().endsWith('.glb')) {

@@ -32,7 +32,7 @@
                             Kelola Situs
                         </x-nav-link>
                         <x-nav-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
-                            Virtual Museum
+                            Virtual Living Museum
                         </x-nav-link>
                         <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
                             Kelola Laporan
@@ -123,7 +123,7 @@
                     Kelola Situs
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
-                    Virtual Museum
+                    Virtual Living Museum
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
                     Kelola Laporan

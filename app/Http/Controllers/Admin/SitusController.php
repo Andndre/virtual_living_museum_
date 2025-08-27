@@ -111,7 +111,7 @@ class SitusController extends Controller
                 if ($situs->thumbnail) {
                     \Illuminate\Support\Facades\Storage::disk('public')->delete($situs->thumbnail);
                 }
-                
+
                 $thumbnailPath = $request->file('thumbnail')->store('situs-thumbnails', 'public');
                 $validated['thumbnail'] = $thumbnailPath;
             }
@@ -140,10 +140,10 @@ class SitusController extends Controller
 
             $situs = SitusPeninggalan::findOrFail($id);
 
-            // Check if situs has virtual museum objects
+            // Check if situs has virtual living museum objects
             if ($situs->virtualMuseumObject()->count() > 0) {
                 return redirect()->back()
-                    ->with('error', 'Tidak dapat menghapus situs yang masih memiliki objek virtual museum.');
+                    ->with('error', 'Tidak dapat menghapus situs yang masih memiliki objek virtual living museum.');
             }
 
             // Delete thumbnail if exists

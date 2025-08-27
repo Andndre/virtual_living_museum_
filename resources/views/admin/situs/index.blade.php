@@ -121,7 +121,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Desktop Table View -->
                     <div class="hidden lg:block overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
@@ -137,7 +137,7 @@
                                         Materi
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Virtual Museum
+                                        Virtual Living Museum
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Objek Virtual
@@ -157,8 +157,8 @@
                                         <div class="flex items-center">
                                             @if($site->thumbnail)
                                                 <div class="flex-shrink-0 h-10 w-10 mr-3">
-                                                    <img class="h-10 w-10 rounded-lg object-cover" 
-                                                         src="{{ asset('storage/' . $site->thumbnail) }}" 
+                                                    <img class="h-10 w-10 rounded-lg object-cover"
+                                                         src="{{ asset('storage/' . $site->thumbnail) }}"
                                                          alt="{{ $site->nama }}">
                                                 </div>
                                             @else
@@ -256,8 +256,8 @@
                                     <div class="flex-shrink-0">
                                         @if($site->thumbnail)
                                             <div class="h-12 w-12 rounded-lg overflow-hidden">
-                                                <img class="h-12 w-12 object-cover" 
-                                                     src="{{ asset('storage/' . $site->thumbnail) }}" 
+                                                <img class="h-12 w-12 object-cover"
+                                                     src="{{ asset('storage/' . $site->thumbnail) }}"
                                                      alt="{{ $site->nama }}">
                                             </div>
                                         @else
@@ -266,7 +266,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- Content -->
                                     <div class="flex-1 min-w-0">
                                         <!-- Name and Description -->
@@ -274,7 +274,7 @@
                                             <h4 class="text-sm font-medium text-gray-900">{{ $site->nama }}</h4>
                                             <p class="text-xs text-gray-500 mt-1">{{ Str::limit($site->deskripsi, 80) }}</p>
                                         </div>
-                                        
+
                                         <!-- Location -->
                                         <div class="mb-2">
                                             <p class="text-xs text-gray-600">
@@ -282,7 +282,7 @@
                                                 {{ Str::limit($site->alamat, 50) }}
                                             </p>
                                         </div>
-                                        
+
                                         <!-- Status Info -->
                                         <div class="flex flex-wrap gap-2 mb-3">
                                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
@@ -310,7 +310,7 @@
                                                 {{ $site->virtualMuseumObject->count() }} objek
                                             </span>
                                         </div>
-                                        
+
                                         <!-- Meta Info -->
                                         <div class="space-y-1 text-xs text-gray-500 mb-3">
                                             <div class="flex items-center">
@@ -322,15 +322,15 @@
                                                 Ditambahkan oleh: {{ $site->user->name ?? 'Tidak ada' }}
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Mobile Actions -->
                                         <div class="flex space-x-2">
-                                            <a href="{{ route('admin.situs.show', $site->situs_id) }}" 
+                                            <a href="{{ route('admin.situs.show', $site->situs_id) }}"
                                                class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                                                 <i class="fas fa-eye mr-1"></i>
                                                 Detail
                                             </a>
-                                            <a href="{{ route('admin.situs.edit', $site->situs_id) }}" 
+                                            <a href="{{ route('admin.situs.edit', $site->situs_id) }}"
                                                class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-blue-300 shadow-sm text-xs font-medium rounded text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
                                                 <i class="fas fa-edit mr-1"></i>
                                                 Edit
@@ -338,7 +338,7 @@
                                             <form action="{{ route('admin.situs.destroy', $site->situs_id) }}" method="POST" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus situs ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
+                                                <button type="submit"
                                                         class="w-full inline-flex items-center justify-center px-3 py-2 border border-red-300 shadow-sm text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
                                                     <i class="fas fa-trash mr-1"></i>
                                                     Hapus
@@ -368,7 +368,7 @@
                         </div>
                         <h3 class="mt-4 text-lg font-medium text-gray-900">Belum Ada Situs Peninggalan</h3>
                         <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto px-4">
-                            Mulai menambahkan situs peninggalan untuk memperkaya konten virtual museum.
+                            Mulai menambahkan situs peninggalan untuk memperkaya konten virtual living museum.
                         </p>
                         <div class="mt-6">
                             <a href="{{ route('admin.situs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">

@@ -24,12 +24,12 @@
                         </li>
                     </ol>
                 </nav>
-                
+
                 <div class="mb-4">
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Detail Situs Peninggalan</h1>
                     <p class="mt-2 text-sm sm:text-base text-gray-600">Informasi lengkap situs: <strong>{{ $situs->nama }}</strong></p>
                 </div>
-                
+
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-3">
                     <a href="{{ route('admin.situs.edit', $situs->situs_id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 transition-colors">
@@ -67,14 +67,14 @@
                     <div class="bg-white shadow-lg rounded-lg border border-gray-200">
                         <div class="px-4 py-5 sm:p-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Dasar</h3>
-                            
+
                             <!-- Thumbnail Image -->
                             <div class="mb-5">
-                                <img src="{{ $situs->thumbnailUrl }}" 
-                                     alt="{{ $situs->nama }}" 
+                                <img src="{{ $situs->thumbnailUrl }}"
+                                     alt="{{ $situs->nama }}"
                                      class="h-48 w-full object-cover rounded-lg border border-gray-200 shadow-md">
                             </div>
-                            
+
                             <dl class="grid grid-cols-1 gap-4">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Nama Situs</dt>
@@ -129,14 +129,14 @@
                                 <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
                                 Lokasi pada Peta
                             </h3>
-                            
+
                             <!-- Interactive Map -->
                             <div class="mb-4">
                                 <div class="border border-gray-300 rounded-md overflow-hidden">
                                     <div id="map" style="height: 350px; width: 100%;"></div>
                                 </div>
                             </div>
-                            
+
                             <!-- Coordinate Details -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 border-b border-gray-200">
@@ -148,7 +148,7 @@
                                     <span class="text-sm font-medium text-gray-900">{{ $situs->lng }}</span>
                                 </div>
                             </div>
-                            
+
                             <!-- Map Controls -->
                             <div class="flex flex-wrap gap-2">
                                 <button type="button" onclick="copyCoordinates()" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -163,13 +163,13 @@
                         </div>
                     </div>
 
-                    <!-- Virtual Museum Card -->
+                    <!-- Virtual Living Museum Card -->
                     <div class="bg-white shadow-lg rounded-lg border border-gray-200">
                         <div class="px-4 py-5 sm:p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-medium text-gray-900">
                                     <i class="fas fa-building text-blue-600 mr-2"></i>
-                                    Virtual Museum
+                                    Virtual Living Museum
                                 </h3>
                                 <div class="flex items-center space-x-3">
                                     <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full {{ $situs->virtualMuseum->count() > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' }}">
@@ -181,7 +181,7 @@
                                     </a>
                                 </div>
                             </div>
-                            
+
                             @if($situs->virtualMuseum->count() > 0)
                                 <div class="space-y-4">
                                     @foreach($situs->virtualMuseum as $museum)
@@ -195,7 +195,7 @@
                                                         </span>
                                                     </div>
                                                     <p class="text-sm text-gray-600 mb-3">Museum virtual untuk situs {{ $situs->nama }}</p>
-                                                    
+
                                                     <!-- File Info -->
                                                     <div class="flex items-center space-x-3 text-sm text-gray-600 mb-4">
                                                         <div class="flex items-center">
@@ -203,7 +203,7 @@
                                                             <span class="font-mono text-xs">{{ Str::limit($museum->path_obj, 50) }}</span>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <!-- Museum Stats -->
                                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                                         <div class="text-center p-3 bg-white rounded border">
@@ -215,7 +215,7 @@
                                                             <div class="text-xs text-gray-500">Dibuat</div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <!-- Actions -->
                                                     <div class="flex flex-wrap gap-2">
                                                         <a href="{{ route('admin.virtual-museum.show', $museum->museum_id) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
@@ -247,11 +247,11 @@
                                     <div class="mx-auto h-16 w-16 text-gray-400 mb-4">
                                         <i class="fas fa-building text-5xl"></i>
                                     </div>
-                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada Virtual Museum</h3>
-                                    <p class="text-sm text-gray-500 mb-4">Situs ini belum memiliki Virtual Museum. Buat museum virtual untuk memberikan pengalaman 3D yang immersive.</p>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada Virtual Living Museum</h3>
+                                    <p class="text-sm text-gray-500 mb-4">Situs ini belum memiliki Virtual Living Museum. Buat museum virtual untuk memberikan pengalaman 3D yang immersive.</p>
                                     <a href="{{ route('admin.virtual-museum.create') }}?situs_id={{ $situs->situs_id }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                                         <i class="fas fa-plus mr-2"></i>
-                                        Buat Virtual Museum
+                                        Buat Virtual Living Museum
                                     </a>
                                 </div>
                             @endif
@@ -332,16 +332,16 @@
                                             </div>
                                             <div class="ml-3">
                                                 <p class="text-xs text-yellow-800">
-                                                    Situs tidak dapat dihapus karena memiliki 
+                                                    Situs tidak dapat dihapus karena memiliki
                                                     @if($situs->virtualMuseum->count() > 0)
-                                                        {{ $situs->virtualMuseum->count() }} virtual museum
+                                                        {{ $situs->virtualMuseum->count() }} virtual living museum
                                                         @if($situs->virtualMuseumObject->count() > 0)
-                                                            dan {{ $situs->virtualMuseumObject->count() }} objek virtual museum.
+                                                            dan {{ $situs->virtualMuseumObject->count() }} objek virtual living museum.
                                                         @else
                                                             .
                                                         @endif
                                                     @else
-                                                        {{ $situs->virtualMuseumObject->count() }} objek virtual museum.
+                                                        {{ $situs->virtualMuseumObject->count() }} objek virtual living museum.
                                                     @endif
                                                 </p>
                                             </div>
@@ -355,28 +355,28 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Leaflet CSS and JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Situs coordinates
             const situsLat = {{ $situs->lat }};
             const situsLng = {{ $situs->lng }};
             const situsName = "{{ $situs->nama }}";
-            
+
             // Initialize map
             const map = L.map('map').setView([situsLat, situsLng], 15);
-            
+
             // Add tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-            
+
             // Add marker with custom popup
             const marker = L.marker([situsLat, situsLng]).addTo(map);
             marker.bindPopup(`
@@ -389,11 +389,11 @@
                     </p>
                 </div>
             `).openPopup();
-            
+
             // Disable zoom on double click to prevent accidental zooming
             map.doubleClickZoom.disable();
         });
-        
+
         // Function to copy coordinates to clipboard
         function copyCoordinates() {
             const coordinates = "{{ $situs->lat }}, {{ $situs->lng }}";
@@ -404,7 +404,7 @@
                     const originalText = button.innerHTML;
                     button.innerHTML = '<i class="fas fa-check mr-2"></i>Tersalin!';
                     button.classList.add('text-green-700', 'border-green-300', 'bg-green-50');
-                    
+
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         button.classList.remove('text-green-700', 'border-green-300', 'bg-green-50');
@@ -417,7 +417,7 @@
                 fallbackCopyTextToClipboard(coordinates);
             }
         }
-        
+
         // Fallback copy function for older browsers
         function fallbackCopyTextToClipboard(text) {
             const textArea = document.createElement("textarea");
@@ -425,7 +425,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
+
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
@@ -435,7 +435,7 @@
                 console.error('Fallback: Oops, unable to copy', err);
                 alert('Gagal menyalin koordinat. Silakan salin secara manual: ' + text);
             }
-            
+
             document.body.removeChild(textArea);
         }
     </script>

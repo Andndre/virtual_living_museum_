@@ -7,7 +7,7 @@
                 <nav class="flex mb-2" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Museum</a>
+                            <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
                         </li>
                         <li>
                             <div class="flex items-center">
@@ -27,7 +27,7 @@
                         </li>
                     </ol>
                 </nav>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Virtual Museum</h1>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Virtual Living Museum</h1>
                 <p class="mt-2 text-sm sm:text-base text-gray-600">Mengedit museum: <strong>{{ $museum->nama }}</strong></p>
             </div>
             <div class="mt-4 sm:mt-0">
@@ -42,7 +42,7 @@
     </x-slot>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
+
     @if($errors->any())
         <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
             <div class="flex">
@@ -68,11 +68,11 @@
         <!-- Main Information Card -->
         <div class="bg-white shadow-sm rounded-lg border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">Informasi Virtual Museum</h3>
-                <p class="mt-1 text-sm text-gray-500">Edit detail Virtual Museum</p>
+                <h3 class="text-lg font-medium text-gray-900">Informasi Virtual Living Museum</h3>
+                <p class="mt-1 text-sm text-gray-500">Edit detail Virtual Living Museum</p>
             </div>
             <div class="px-6 py-6 space-y-6">
-                
+
                 <!-- Situs Peninggalan Selection -->
                 <div>
                     <label for="situs_id" class="block text-sm font-medium text-gray-700 mb-2">
@@ -92,22 +92,22 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Pilih situs peninggalan yang akan memiliki Virtual Museum ini</p>
+                    <p class="mt-1 text-xs text-gray-500">Pilih situs peninggalan yang akan memiliki Virtual Living Museum ini</p>
                 </div>
 
-                <!-- Nama Virtual Museum -->
+                <!-- Nama Virtual Living Museum -->
                 <div>
                     <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Virtual Museum <span class="text-red-500">*</span>
+                        Nama Virtual Living Museum <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" 
-                           id="nama" 
-                           name="nama" 
-                           value="{{ old('nama', $museum->nama) }}" 
+                    <input type="text"
+                           id="nama"
+                           name="nama"
+                           value="{{ old('nama', $museum->nama) }}"
                            class="block w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                            placeholder="Contoh: Museum Virtual Candi Borobudur"
                            required>
-                    <p class="mt-1 text-xs text-gray-500">Nama yang akan ditampilkan untuk Virtual Museum</p>
+                    <p class="mt-1 text-xs text-gray-500">Nama yang akan ditampilkan untuk Virtual Living Museum</p>
                 </div>
 
                 <!-- Current File Display -->
@@ -192,7 +192,7 @@
                     <h3 class="text-sm font-medium text-amber-800">Perhatian</h3>
                     <div class="mt-2 text-sm text-amber-700">
                         <ul class="list-disc pl-5 space-y-1">
-                            <li>Mengubah situs akan mempengaruhi hubungan dengan Virtual Museum Objects yang ada</li>
+                            <li>Mengubah situs akan mempengaruhi hubungan dengan Virtual Living Museum Objects yang ada</li>
                             <li>Pastikan path file OBJ masih dapat diakses setelah perubahan</li>
                             <li>Perubahan akan disimpan secara permanen</li>
                         </ul>
@@ -226,19 +226,19 @@
                     </svg>
                 </div>
                 <div class="ml-3 flex-1">
-                    <h3 class="text-sm font-medium text-red-800">Hapus Virtual Museum</h3>
+                    <h3 class="text-sm font-medium text-red-800">Hapus Virtual Living Museum</h3>
                     <p class="mt-2 text-sm text-red-700">
-                        Menghapus Virtual Museum akan menghapus semua data museum dan hubungannya dengan objects. 
+                        Menghapus Virtual Living Museum akan menghapus semua data museum dan hubungannya dengan objects.
                         Tindakan ini tidak dapat dibatalkan.
                     </p>
-                    <form action="{{ route('admin.virtual-museum.destroy', $museum->museum_id) }}" method="POST" class="mt-4" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Virtual Museum &quot;{{ $museum->nama }}&quot;? Semua objects terkait juga akan terpengaruh. Tindakan ini tidak dapat dibatalkan.')">
+                    <form action="{{ route('admin.virtual-museum.destroy', $museum->museum_id) }}" method="POST" class="mt-4" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Virtual Living Museum &quot;{{ $museum->nama }}&quot;? Semua objects terkait juga akan terpengaruh. Tindakan ini tidak dapat dibatalkan.')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
-                            Hapus Virtual Museum
+                            Hapus Virtual Living Museum
                         </button>
                     </form>
                 </div>
@@ -252,21 +252,21 @@ function updateFileName(input) {
     const fileNameDiv = document.getElementById('file-name');
     if (input.files && input.files[0]) {
         const file = input.files[0];
-        
+
         // Validate file type
         if (!file.name.toLowerCase().endsWith('.glb')) {
             alert('Hanya file GLB yang diizinkan!');
             input.value = '';
             return;
         }
-        
+
         // Validate file size
         if (file.size > 300 * 1024 * 1024) {
             alert('File terlalu besar! Maksimal 300MB.');
             input.value = '';
             return;
         }
-        
+
         const fileName = file.name;
         const fileSize = (file.size / 1024 / 1024).toFixed(2);
         fileNameDiv.innerHTML = `
@@ -329,7 +329,7 @@ function unhighlight(e) {
 function handleDrop(e) {
     const dt = e.dataTransfer;
     const files = dt.files;
-    
+
     if (files.length > 0) {
         const file = files[0];
         if (file.name.toLowerCase().endsWith('.glb')) {

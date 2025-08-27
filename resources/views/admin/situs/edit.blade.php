@@ -30,12 +30,12 @@
                         </li>
                     </ol>
                 </nav>
-                
+
                 <div class="mb-4">
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Situs Peninggalan</h1>
                     <p class="mt-2 text-sm sm:text-base text-gray-600">Mengedit situs: <strong>{{ $situs->nama }}</strong></p>
                 </div>
-                
+
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-3">
                     <a href="{{ route('admin.situs.show', $situs->situs_id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
@@ -77,11 +77,11 @@
                             <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">
                                 Nama Situs <span class="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="text" 
-                                name="nama" 
-                                id="nama" 
-                                value="{{ old('nama', $situs->nama) }}" 
+                            <input
+                                type="text"
+                                name="nama"
+                                id="nama"
+                                value="{{ old('nama', $situs->nama) }}"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('nama') border-red-500 @enderror"
                                 placeholder="Contoh: Candi Borobudur"
                                 required
@@ -96,10 +96,10 @@
                             <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">
                                 Alamat <span class="text-red-500">*</span>
                             </label>
-                            <textarea 
-                                name="alamat" 
-                                id="alamat" 
-                                rows="3" 
+                            <textarea
+                                name="alamat"
+                                id="alamat"
+                                rows="3"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('alamat') border-red-500 @enderror"
                                 placeholder="Contoh: Jl. Badrawati, Borobudur, Magelang, Jawa Tengah"
                                 required
@@ -117,24 +117,24 @@
                                 </label>
                                 <p class="text-sm text-gray-600 mb-3">Klik pada peta atau masukkan koordinat secara manual</p>
                             </div>
-                            
+
                             <!-- Interactive Map -->
                             <div class="border border-gray-300 rounded-md overflow-hidden">
                                 <div id="map" style="height: 400px; width: 100%;"></div>
                             </div>
-                            
+
                             <!-- Coordinate Inputs -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="lat" class="block text-sm font-medium text-gray-700 mb-1">
                                         Latitude <span class="text-red-500">*</span>
                                     </label>
-                                    <input 
-                                        type="number" 
-                                        name="lat" 
-                                        id="lat" 
+                                    <input
+                                        type="number"
+                                        name="lat"
+                                        id="lat"
                                         step="any"
-                                        value="{{ old('lat', $situs->lat) }}" 
+                                        value="{{ old('lat', $situs->lat) }}"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('lat') border-red-500 @enderror"
                                         placeholder="Contoh: -7.608543"
                                         required
@@ -147,12 +147,12 @@
                                     <label for="lng" class="block text-sm font-medium text-gray-700 mb-1">
                                         Longitude <span class="text-red-500">*</span>
                                     </label>
-                                    <input 
-                                        type="number" 
-                                        name="lng" 
-                                        id="lng" 
+                                    <input
+                                        type="number"
+                                        name="lng"
+                                        id="lng"
                                         step="any"
-                                        value="{{ old('lng', $situs->lng) }}" 
+                                        value="{{ old('lng', $situs->lng) }}"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('lng') border-red-500 @enderror"
                                         placeholder="Contoh: 110.203751"
                                         required
@@ -162,7 +162,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <!-- Map Controls -->
                             <div class="flex flex-wrap gap-2">
                                 <button type="button" id="getCurrentLocation" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -181,9 +181,9 @@
                             <label for="materi_id" class="block text-sm font-medium text-gray-700 mb-1">
                                 Materi Terkait <span class="text-red-500">*</span>
                             </label>
-                            <select 
-                                name="materi_id" 
-                                id="materi_id" 
+                            <select
+                                name="materi_id"
+                                id="materi_id"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('materi_id') border-red-500 @enderror"
                                 required
                             >
@@ -204,10 +204,10 @@
                             <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-1">
                                 Deskripsi <span class="text-red-500">*</span>
                             </label>
-                            <textarea 
-                                name="deskripsi" 
-                                id="deskripsi" 
-                                rows="6" 
+                            <textarea
+                                name="deskripsi"
+                                id="deskripsi"
+                                rows="6"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('deskripsi') border-red-500 @enderror"
                                 placeholder="Jelaskan tentang situs peninggalan ini, sejarah, fungsi, dan hal menarik lainnya..."
                                 required
@@ -224,8 +224,8 @@
                             </label>
                             <div class="mt-1 flex items-center">
                                 <div id="thumbnail-preview" class="{{ $situs->thumbnail ? '' : 'hidden' }} mb-3">
-                                    <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}" 
-                                         alt="Thumbnail Preview" 
+                                    <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}"
+                                         alt="Thumbnail Preview"
                                          class="h-32 w-auto object-cover rounded-lg border border-gray-300">
                                     <button type="button" id="remove-thumbnail" class="mt-1 text-xs text-red-600 hover:text-red-800">
                                         <i class="fas fa-times mr-1"></i> Hapus
@@ -256,9 +256,9 @@
                                         <i class="fas fa-info-circle text-blue-400"></i>
                                     </div>
                                     <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-blue-800">Objek Virtual Museum Terkait</h3>
+                                        <h3 class="text-sm font-medium text-blue-800">Objek Virtual Living Museum Terkait</h3>
                                         <div class="mt-2 text-sm text-blue-700">
-                                            <p>Situs ini memiliki {{ $situs->virtualMuseumObject->count() }} objek virtual museum:</p>
+                                            <p>Situs ini memiliki {{ $situs->virtualMuseumObject->count() }} objek virtual living museum:</p>
                                             <ul class="list-disc list-inside mt-1">
                                                 @foreach($situs->virtualMuseumObject as $object)
                                                     <li>{{ $object->nama }}</li>
@@ -286,70 +286,70 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Leaflet CSS and JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get current coordinates from the form
             const currentLat = {{ old('lat', $situs->lat) }};
             const currentLng = {{ old('lng', $situs->lng) }};
-            
+
             // Initialize map with current location
             const map = L.map('map').setView([currentLat, currentLng], 15);
-            
+
             // Add tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-            
+
             // Initialize marker with current location
             let marker = L.marker([currentLat, currentLng], {
                 draggable: true
             }).addTo(map);
-            
+
             // Update inputs when marker is moved
             function updateInputs(lat, lng) {
                 document.getElementById('lat').value = lat.toFixed(8);
                 document.getElementById('lng').value = lng.toFixed(8);
             }
-            
+
             // Update marker when inputs change
             function updateMarker() {
                 const lat = parseFloat(document.getElementById('lat').value);
                 const lng = parseFloat(document.getElementById('lng').value);
-                
+
                 if (!isNaN(lat) && !isNaN(lng)) {
                     marker.setLatLng([lat, lng]);
                     map.setView([lat, lng], map.getZoom());
                 }
             }
-            
+
             // Event listeners
             marker.on('dragend', function() {
                 const position = marker.getLatLng();
                 updateInputs(position.lat, position.lng);
             });
-            
+
             map.on('click', function(e) {
                 marker.setLatLng(e.latlng);
                 updateInputs(e.latlng.lat, e.latlng.lng);
             });
-            
+
             document.getElementById('lat').addEventListener('input', updateMarker);
             document.getElementById('lng').addEventListener('input', updateMarker);
-            
+
             // Get current location button
             document.getElementById('getCurrentLocation').addEventListener('click', function() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        
+
                         marker.setLatLng([lat, lng]);
                         map.setView([lat, lng], 15);
                         updateInputs(lat, lng);
@@ -360,7 +360,7 @@
                     alert('Geolocation tidak didukung oleh browser ini.');
                 }
             });
-            
+
             // Search location button
             document.getElementById('searchLocation').addEventListener('click', function() {
                 const query = prompt('Masukkan nama lokasi yang ingin dicari:');
@@ -372,7 +372,7 @@
                             if (data.length > 0) {
                                 const lat = parseFloat(data[0].lat);
                                 const lng = parseFloat(data[0].lon);
-                                
+
                                 marker.setLatLng([lat, lng]);
                                 map.setView([lat, lng], 15);
                                 updateInputs(lat, lng);
@@ -393,17 +393,17 @@
             const preview = document.getElementById('thumbnail-preview');
             const img = preview.querySelector('img');
             const removeBtn = document.getElementById('remove-thumbnail');
-            
+
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     preview.classList.remove('hidden');
                 }
-                
+
                 reader.readAsDataURL(input.files[0]);
-                
+
                 // Add remove button functionality
                 removeBtn.addEventListener('click', function() {
                     input.value = '';

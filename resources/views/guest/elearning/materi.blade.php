@@ -61,7 +61,7 @@
                         <i class="fas fa-map-marker-alt text-white"></i>
                     @endif
                 </div>
-                <span class="text-xs text-center text-white">Virtual Museum</span>
+                <span class="text-xs text-center text-white">Virtual Living Museum</span>
             </button>
 
             {{-- Post-test Tab --}}
@@ -88,7 +88,7 @@
                 @if($materi->pretest->count() > 0)
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
                         <h2 class="text-xl font-bold text-center text-gray-900 mb-6">Pre Test</h2>
-                        
+
                         <div class="bg-gray-50 rounded-2xl p-6 mb-6">
                             <p class="text-center text-gray-700 leading-relaxed">
                                 Anda akan mengerjakan Pre Test materi <strong>{{ $materi->judul }}</strong>. Siap mulai?
@@ -97,13 +97,13 @@
 
                         <div class="text-center">
                             @if($pretest_completed)
-                                <a href="{{ route('guest.elearning.pretest', $materi->materi_id) }}" 
+                                <a href="{{ route('guest.elearning.pretest', $materi->materi_id) }}"
                                    class="inline-flex items-center px-8 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors">
                                     <i class="fas fa-eye mr-2"></i>
                                     Lihat Hasil
                                 </a>
                             @else
-                                <a href="{{ route('guest.elearning.pretest', $materi->materi_id) }}" 
+                                <a href="{{ route('guest.elearning.pretest', $materi->materi_id) }}"
                                    class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
                                     Mulai
                                 </a>
@@ -115,7 +115,7 @@
                     @if(!$pretest_completed)
                         <div class="mb-8">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">Panduan Mengisi Pre Test</h3>
-                            
+
                             <div class="bg-yellow-50 rounded-2xl p-4 sm:p-6 border border-yellow-200">
                                 {{-- Mobile Layout (Vertical Stack) --}}
                                 <div class="sm:hidden">
@@ -128,14 +128,14 @@
                                     {{-- Content Section --}}
                                     <div class="space-y-3">
                                         <p class="text-gray-700 leading-relaxed text-sm">
-                                            <span class="font-medium">Sebelum memulai</span> pembelajaran, Anda diminta untuk mengerjakan pretest sebagai evaluasi awal. 
-                                            Pretest berisi <span class="font-medium">pertanyaan pilihan ganda</span>. Silakan pilih jawaban yang 
+                                            <span class="font-medium">Sebelum memulai</span> pembelajaran, Anda diminta untuk mengerjakan pretest sebagai evaluasi awal.
+                                            Pretest berisi <span class="font-medium">pertanyaan pilihan ganda</span>. Silakan pilih jawaban yang
                                             <span class="font-medium">paling sesuai</span> pada setiap pertanyaan.
                                         </p>
                                         <p class="text-gray-700 leading-relaxed text-sm">
-                                            Waktu pengerjaan <span class="font-medium">tidak dibatasi</span>, jadi pastikan Anda 
-                                            membaca soal dengan teliti sebelum menjawab. Hasil pretest 
-                                            <span class="font-medium">tidak mempengaruhi nilai akhir</span>, namun digunakan 
+                                            Waktu pengerjaan <span class="font-medium">tidak dibatasi</span>, jadi pastikan Anda
+                                            membaca soal dengan teliti sebelum menjawab. Hasil pretest
+                                            <span class="font-medium">tidak mempengaruhi nilai akhir</span>, namun digunakan
                                             untuk mengetahui pengertian awal Anda.
                                         </p>
                                     </div>
@@ -150,15 +150,15 @@
                                     </div>
                                     <div class="flex-1">
                                         <p class="text-gray-700 leading-relaxed text-sm">
-                                            <span class="font-medium">Sebelum memulai</span> pembelajaran, Anda diminta untuk mengerjakan pretest sebagai evaluasi awal. 
-                                            Pretest berisi <span class="font-medium">pertanyaan pilihan ganda</span>. Silakan pilih jawaban yang 
+                                            <span class="font-medium">Sebelum memulai</span> pembelajaran, Anda diminta untuk mengerjakan pretest sebagai evaluasi awal.
+                                            Pretest berisi <span class="font-medium">pertanyaan pilihan ganda</span>. Silakan pilih jawaban yang
                                             <span class="font-medium">paling sesuai</span> pada setiap pertanyaan.
                                         </p>
                                         <br>
                                         <p class="text-gray-700 leading-relaxed text-sm">
-                                            Waktu pengerjaan <span class="font-medium">tidak dibatasi</span>, jadi pastikan Anda 
-                                            membaca soal dengan teliti sebelum menjawab. Hasil pretest 
-                                            <span class="font-medium">tidak mempengaruhi nilai akhir</span>, namun digunakan 
+                                            Waktu pengerjaan <span class="font-medium">tidak dibatasi</span>, jadi pastikan Anda
+                                            membaca soal dengan teliti sebelum menjawab. Hasil pretest
+                                            <span class="font-medium">tidak mempengaruhi nilai akhir</span>, namun digunakan
                                             untuk mengetahui pengertian awal Anda.
                                         </p>
                                     </div>
@@ -217,11 +217,11 @@
                                             </div>
                                         @endif
                                     </div>
-                                    
+
                                     {{-- E-book Actions --}}
                                     <div class="p-4">
                                         @if($ebook->path_file && file_exists(storage_path('app/public/' . $ebook->path_file)))
-                                            <a href="{{ route('guest.elearning.ebook', $ebook->ebook_id) }}" 
+                                            <a href="{{ route('guest.elearning.ebook', $ebook->ebook_id) }}"
                                                class="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
                                                 <i class="fas fa-book-open mr-2"></i>
                                                 Baca E-Book
@@ -252,14 +252,14 @@
             <div id="museum-content" class="tab-content hidden">
                 @if($materi->situsPeninggalan->count() > 0)
                     <h2 class="text-xl font-bold text-center text-gray-900 mb-6">Virtual Living Museum</h2>
-                    
+
                     @if(!$museum_available)
                         <div class="bg-gray-100 rounded-2xl p-8 text-center">
                             <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
                                 <i class="fas fa-lock text-gray-400 text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Virtual Museum Terkunci</h3>
-                            <p class="text-gray-600">Baca semua e-book terlebih dahulu untuk mengakses virtual museum</p>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Virtual Living Museum Terkunci</h3>
+                            <p class="text-gray-600">Baca semua e-book terlebih dahulu untuk mengakses virtual living museum</p>
                         </div>
                     @else
                         <div class="space-y-4">
@@ -268,16 +268,16 @@
                                     <div class="flex">
                                         {{-- Situs Image --}}
                                         <div class="w-24 h-24 flex-shrink-0">
-                                            <img src="{{ $situs->thumbnailUrl }}" 
-                                                 alt="{{ $situs->nama }}" 
+                                            <img src="{{ $situs->thumbnailUrl }}"
+                                                 alt="{{ $situs->nama }}"
                                                  class="w-full h-full object-cover">
                                         </div>
-                                        
+
                                         {{-- Situs Content --}}
                                         <div class="flex-1 p-4">
                                             <h3 class="font-semibold text-gray-900 mb-1">{{ $situs->nama }}</h3>
                                             <p class="text-sm text-gray-600 mb-3">{{ $situs->alamat }}</p>
-                                            
+
                                             <a href="{{ route('guest.situs.detail', $situs->situs_id) }}"
                                                class="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white text-xs font-medium rounded-lg hover:bg-orange-700 transition-colors">
                                                 <i class="fas fa-eye mr-1"></i>
@@ -294,8 +294,8 @@
                         <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
                             <i class="fas fa-map-marker-alt text-gray-400 text-2xl"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Virtual Museum Tidak Tersedia</h3>
-                        <p class="text-gray-600">Materi ini tidak memiliki virtual museum</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Virtual Living Museum Tidak Tersedia</h3>
+                        <p class="text-gray-600">Materi ini tidak memiliki virtual living museum</p>
                     </div>
                 @endif
             </div>
@@ -304,14 +304,14 @@
             <div id="posttest-content" class="tab-content hidden">
                 @if($materi->posttest->count() > 0)
                     <h2 class="text-xl font-bold text-center text-gray-900 mb-6">Post Test</h2>
-                    
+
                     @if(!$posttest_available)
                         <div class="bg-gray-100 rounded-2xl p-8 text-center">
                             <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
                                 <i class="fas fa-lock text-gray-400 text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">Post Test Terkunci</h3>
-                            <p class="text-gray-600">Kunjungi semua virtual museum terlebih dahulu untuk mengakses post-test</p>
+                            <p class="text-gray-600">Kunjungi semua virtual living museum terlebih dahulu untuk mengakses post-test</p>
                         </div>
                     @else
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -323,16 +323,16 @@
 
                             <div class="text-center">
                                 @if($posttest_completed)
-                                    <a href="{{ route('guest.elearning.posttest', $materi->materi_id) }}" 
+                                    <a href="{{ route('guest.elearning.posttest', $materi->materi_id) }}"
                                        class="inline-flex items-center px-8 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors">
                                         <i class="fas fa-eye mr-2"></i>
                                         Lihat Hasil
                                     </a>
-                                    
+
                                     <!-- Rekap Section -->
                                     <div class="mt-8">
                                         <h3 class="text-lg font-bold text-gray-900 mb-4">Rekap</h3>
-                                        
+
                                         <div class="grid grid-cols-2 gap-4 mb-6">
                                             <!-- Pre-test Score -->
                                             <div class="bg-gray-100 rounded-lg p-4">
@@ -343,18 +343,18 @@
                                                             ->where('materi_id', $materi->materi_id)
                                                             ->where('jenis', 'pretest')
                                                             ->get();
-                                                            
+
                                                         $totalPretest = $pretestAnswers->count();
                                                         $correctPretest = $pretestAnswers->where('benar', true)->count();
-                                                        
-                                                        $pretestScore = $totalPretest > 0 ? 
-                                                            number_format(($correctPretest / $totalPretest) * 100, 1) : 
+
+                                                        $pretestScore = $totalPretest > 0 ?
+                                                            number_format(($correctPretest / $totalPretest) * 100, 1) :
                                                             0;
                                                     @endphp
                                                     {{ $pretestScore }}
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Post-test Score -->
                                             <div class="bg-gray-100 rounded-lg p-4">
                                                 <div class="text-sm text-gray-600 mb-1">Nilai Post test</div>
@@ -364,12 +364,12 @@
                                                             ->where('materi_id', $materi->materi_id)
                                                             ->where('jenis', 'posttest')
                                                             ->get();
-                                                            
+
                                                         $totalPosttest = $posttestAnswers->count();
                                                         $correctPosttest = $posttestAnswers->where('benar', true)->count();
-                                                        
-                                                        $posttestScore = $totalPosttest > 0 ? 
-                                                            number_format(($correctPosttest / $totalPosttest) * 100, 1) : 
+
+                                                        $posttestScore = $totalPosttest > 0 ?
+                                                            number_format(($correctPosttest / $totalPosttest) * 100, 1) :
                                                             0;
                                                     @endphp
                                                     {{ $posttestScore }}
@@ -379,7 +379,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Tugas Section -->
                                         @if($materi->tugas->count() > 0)
                                             <div class="mb-6">
@@ -387,7 +387,7 @@
                                                 <div class="bg-gray-100 rounded-lg p-4">
                                                     <p class="mb-3">Berikut adalah beberapa tugas yang harus Anda selesaikan.</p>
                                                     <div class="text-center">
-                                                        <a href="{{ route('guest.elearning.tugas', $materi->materi_id) }}" 
+                                                        <a href="{{ route('guest.elearning.tugas', $materi->materi_id) }}"
                                                            class="inline-flex items-center px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
                                                             Lihat
                                                         </a>
@@ -395,7 +395,7 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        
+
                                         <!-- Progress Chart -->
                                         <div class="mb-6">
                                             <h4 class="font-medium text-center mb-2">Perkembangan Anda</h4>
@@ -407,7 +407,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Next Material -->
                                         @if($materi->urutan < \App\Models\Materi::max('urutan'))
                                             @php
@@ -435,7 +435,7 @@
                                         @endif
                                     </div>
                                 @else
-                                    <a href="{{ route('guest.elearning.posttest', $materi->materi_id) }}" 
+                                    <a href="{{ route('guest.elearning.posttest', $materi->materi_id) }}"
                                        class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
                                         Mulai
                                     </a>
@@ -479,7 +479,7 @@
 
             // Show selected tab content
             document.getElementById(tabName + '-content').classList.remove('hidden');
-            
+
             // Add active class to selected tab button
             document.getElementById(tabName + '-tab').classList.add('bg-white/20');
         }

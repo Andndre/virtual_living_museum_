@@ -112,7 +112,7 @@
             <i class="fas fa-arrow-left text-xl"></i>
         </a>
         <div class="flex-1">
-            <h1 class="text-lg font-bold">Virtual Museum AR</h1>
+            <h1 class="text-lg font-bold">Virtual Living Museum AR</h1>
             <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
         </div>
     </div>

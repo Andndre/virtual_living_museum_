@@ -7,7 +7,7 @@
                 <nav class="flex mb-2" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Museum</a>
+                            <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
                         </li>
                         <li>
                             <div class="flex items-center">
@@ -20,7 +20,7 @@
                     </ol>
                 </nav>
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $museum->nama }}</h1>
-                <p class="mt-2 text-sm sm:text-base text-gray-600">Virtual Museum untuk {{ $museum->situsPeninggalan->nama }}</p>
+                <p class="mt-2 text-sm sm:text-base text-gray-600">Virtual Living Museum untuk {{ $museum->situsPeninggalan->nama }}</p>
             </div>
             <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-2">
                 <a href="{{ route('admin.virtual-museum.edit', $museum->museum_id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
@@ -40,7 +40,7 @@
     </x-slot>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
+
     @if(session('success'))
         <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
             <div class="flex items-center">
@@ -53,10 +53,10 @@
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
-            
+
             <!-- Museum Information Card -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -64,10 +64,10 @@
                 </div>
                 <div class="px-6 py-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        
+
                         <!-- Nama Museum -->
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Nama Virtual Museum</dt>
+                            <dt class="text-sm font-medium text-gray-500">Nama Virtual Living Museum</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $museum->nama }}</dd>
                         </div>
 
@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <!-- Virtual Museum Objects -->
+            <!-- Virtual Living Museum Objects -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
@@ -156,7 +156,7 @@
                                                     </svg>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Object Details -->
                                             <div class="min-w-0 flex-1">
                                                 <h4 class="text-sm font-medium text-gray-900">{{ $object->nama }}</h4>
@@ -227,7 +227,7 @@
                                 </svg>
                             </div>
                             <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada Objek</h3>
-                            <p class="mt-1 text-sm text-gray-500">Virtual Museum ini belum memiliki objek apapun.</p>
+                            <p class="mt-1 text-sm text-gray-500">Virtual Living Museum ini belum memiliki objek apapun.</p>
                         </div>
                     @endif
                 </div>
@@ -237,7 +237,7 @@
 
         <!-- Sidebar -->
         <div class="space-y-6">
-            
+
             <!-- Quick Stats -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -273,7 +273,7 @@
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Koordinat</dt>
                             <dd class="mt-1 text-sm text-gray-900">
-                                {{ number_format($museum->situsPeninggalan->lat, 6) }}, 
+                                {{ number_format($museum->situsPeninggalan->lat, 6) }},
                                 {{ number_format($museum->situsPeninggalan->lng, 6) }}
                             </dd>
                         </div>
@@ -293,7 +293,7 @@
                         </svg>
                         Edit Museum
                     </a>
-                    <form action="{{ route('admin.virtual-museum.destroy', $museum->museum_id) }}" method="POST" class="w-full" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Virtual Museum ini? Tindakan ini tidak dapat dibatalkan.')">
+                    <form action="{{ route('admin.virtual-museum.destroy', $museum->museum_id) }}" method="POST" class="w-full" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Virtual Living Museum ini? Tindakan ini tidak dapat dibatalkan.')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="w-full inline-flex items-center justify-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 transition-colors">

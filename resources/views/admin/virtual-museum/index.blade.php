@@ -4,23 +4,23 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 leading-tight">
-                        {{ __('Virtual Museum Management') }}
+                        {{ __('Virtual Living Museum Management') }}
                     </h2>
-                    <p class="mt-2 text-sm text-gray-600">Kelola Virtual Museum untuk Situs Peninggalan</p>
+                    <p class="mt-2 text-sm text-gray-600">Kelola Virtual Living Museum untuk Situs Peninggalan</p>
                 </div>
                 <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-2">
                     <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        Tambah Virtual Museum
+                        Tambah Virtual Living Museum
                     </a>
                 </div>
             </div>
         </div>
     </x-slot>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
+
     @if(session('success'))
         <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
             <div class="flex items-center">
@@ -109,7 +109,7 @@
         </div>
     </div>
 
-    <!-- Virtual Museums Grid -->
+    <!-- Virtual Living Museums Grid -->
     @if($museums->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             @foreach($museums as $museum)
@@ -185,16 +185,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                 </div>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada Virtual Museum</h3>
+                <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada Virtual Living Museum</h3>
                 <p class="mt-2 text-sm text-gray-500">
-                    Mulai membuat Virtual Museum pertama untuk situs peninggalan Anda.
+                    Mulai membuat Virtual Living Museum pertama untuk situs peninggalan Anda.
                 </p>
                 <div class="mt-6">
                     <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        Tambah Virtual Museum
+                        Tambah Virtual Living Museum
                     </a>
                 </div>
             </div>

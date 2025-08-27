@@ -28,7 +28,7 @@
                     @php
                         $stepLabel = 'Pre-test';
                         if(auth()->user()->progress_level_sekarang == 1) $stepLabel = 'E-Book';
-                        elseif(auth()->user()->progress_level_sekarang == 2) $stepLabel = 'Virtual Museum';
+                        elseif(auth()->user()->progress_level_sekarang == 2) $stepLabel = 'Virtual Living Museum';
                         elseif(auth()->user()->progress_level_sekarang == 3) $stepLabel = 'Post-test';
                     @endphp
                     <h3 class="text-white font-semibold">{{ $stepLabel }}</h3>
@@ -80,15 +80,15 @@
                                         </div>
                                     @endif
                                 </div>
-                                
+
                                 {{-- Content --}}
                                 <div class="flex-1 p-4">
                                     <h3 class="font-semibold text-gray-900 mb-1">{{ $materi->judul }}</h3>
                                     <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ $materi->deskripsi }}</p>
-                                    
+
                                     {{-- Action Button --}}
                                     @if($materi->is_available)
-                                        <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}" 
+                                        <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}"
                                            class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
                                             @if($materi->is_completed)
                                                 <i class="fas fa-redo mr-1"></i>
@@ -179,22 +179,22 @@
             tabButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const tabId = this.id.replace('tab-', '');
-                    
+
                     // Remove active class from all buttons
                     tabButtons.forEach(btn => {
                         btn.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm');
                         btn.classList.add('text-gray-500');
                     });
-                    
+
                     // Add active class to clicked button
                     this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
                     this.classList.remove('text-gray-500');
-                    
+
                     // Hide all tab contents
                     tabContents.forEach(content => {
                         content.classList.add('hidden');
                     });
-                    
+
                     // Show selected tab content
                     const targetContent = document.getElementById(`content-${tabId}`);
                     if (targetContent) {
@@ -216,11 +216,11 @@
         .tab-button {
             transition: all 0.2s ease-in-out;
         }
-        
+
         .tab-button:not(.active) {
             color: #6B7280;
         }
-        
+
         .tab-button.active {
             background-color: white;
             color: #111827;

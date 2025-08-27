@@ -7,7 +7,7 @@
                     <nav class="flex mb-2" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             <li class="inline-flex items-center">
-                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Museum</a>
+                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
                             </li>
                             <li>
                                 <div class="flex items-center">
@@ -66,24 +66,24 @@
         <div class="bg-white shadow-sm rounded-lg border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-lg font-medium text-gray-900">Informasi Object</h2>
-                <p class="mt-1 text-sm text-gray-600">Edit data object virtual museum.</p>
+                <p class="mt-1 text-sm text-gray-600">Edit data object virtual living museum.</p>
             </div>
 
             <div class="px-6 py-6 space-y-6">
-                
+
                 <!-- Nama Object -->
                 <div>
                     <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">
                         Nama Object <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" 
-                           id="nama" 
-                           name="nama" 
-                           value="{{ old('nama', $object->nama) }}" 
+                    <input type="text"
+                           id="nama"
+                           name="nama"
+                           value="{{ old('nama', $object->nama) }}"
                            class="block w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                            placeholder="Contoh: Arca Buddha Amitabha"
                            required>
-                    <p class="mt-1 text-xs text-gray-500">Nama object yang akan ditampilkan dalam Virtual Museum</p>
+                    <p class="mt-1 text-xs text-gray-500">Nama object yang akan ditampilkan dalam Virtual Living Museum</p>
                 </div>
 
                 <!-- Deskripsi -->
@@ -91,8 +91,8 @@
                     <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">
                         Deskripsi Object
                     </label>
-                    <textarea id="deskripsi" 
-                              name="deskripsi" 
+                    <textarea id="deskripsi"
+                              name="deskripsi"
                               rows="4"
                               class="block w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               placeholder="Deskripsi detail tentang object ini...">{{ old('deskripsi', $object->deskripsi) }}</textarea>
@@ -110,11 +110,11 @@
                 <p class="mt-1 text-sm text-gray-600">File yang sudah diupload untuk object ini.</p>
             </div>
             <div class="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                
+
                 @if($object->gambar_real)
                 <div class="border border-gray-200 rounded-lg p-3">
                     <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Real Object</h4>
-                    <img src="{{ asset('storage/' . $object->gambar_real) }}" 
+                    <img src="{{ asset('storage/' . $object->gambar_real) }}"
                          alt="Current Gambar Real"
                          class="w-full h-24 object-cover rounded">
                     <p class="mt-1 text-xs text-gray-500">{{ basename($object->gambar_real) }}</p>
@@ -148,7 +148,7 @@
                 @if($object->path_gambar_marker)
                 <div class="border border-gray-200 rounded-lg p-3">
                     <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Marker AR</h4>
-                    <img src="{{ asset('storage/' . $object->path_gambar_marker) }}" 
+                    <img src="{{ asset('storage/' . $object->path_gambar_marker) }}"
                          alt="Current AR Marker"
                          class="w-full h-24 object-cover rounded">
                     <p class="mt-1 text-xs text-gray-500">{{ basename($object->path_gambar_marker) }}</p>
@@ -167,7 +167,7 @@
             </div>
 
             <div class="px-6 py-6 space-y-6">
-                
+
                 <!-- Gambar Real Object -->
                 <div>
                     <label for="gambar_real" class="block text-sm font-medium text-gray-700 mb-2">
@@ -211,7 +211,7 @@
                             <p class="text-xs text-gray-500">OBJ, GLB, GLTF up to 50MB</p>
                         </div>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Model 3D object untuk ditampilkan dalam Virtual Museum</p>
+                    <p class="mt-1 text-xs text-gray-500">Model 3D object untuk ditampilkan dalam Virtual Living Museum</p>
                 </div>
 
                 <!-- AR Pattern File -->
@@ -265,14 +265,14 @@
 
         <!-- Action Buttons -->
         <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end">
-            <a href="{{ route('admin.virtual-museum-object.show', $object->object_id) }}" 
+            <a href="{{ route('admin.virtual-museum-object.show', $object->object_id) }}"
                class="w-full sm:w-auto order-2 sm:order-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
                 Batal
             </a>
-            <button type="submit" 
+            <button type="submit"
                     class="w-full sm:w-auto order-1 sm:order-2 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -289,12 +289,12 @@
         const input = document.getElementById(inputId);
         const textElement = document.getElementById(inputId + '_text');
         const dropzoneElement = document.getElementById(inputId + '_dropzone');
-        
+
         if (input.files && input.files.length > 0) {
             const file = input.files[0];
             const fileName = file.name;
             const fileSize = (file.size / 1024 / 1024).toFixed(2); // Size in MB
-            
+
             textElement.textContent = `${fileName} (${fileSize} MB)`;
             dropzoneElement.classList.remove('border-gray-300');
             dropzoneElement.classList.add('border-green-400', 'bg-green-50');
@@ -303,14 +303,14 @@
             resetFileInput(inputId);
         }
     }
-    
+
     function resetFileInput(inputId) {
         const textElement = document.getElementById(inputId + '_text');
         const dropzoneElement = document.getElementById(inputId + '_dropzone');
-        
+
         dropzoneElement.classList.remove('border-green-400', 'bg-green-50');
         dropzoneElement.classList.add('border-gray-300');
-        
+
         switch(inputId) {
             case 'gambar_real':
                 textElement.textContent = 'Upload gambar';
@@ -326,33 +326,33 @@
                 break;
         }
     }
-    
+
     // Drag and drop functionality
     function setupDragAndDrop(inputId) {
         const dropzoneElement = document.getElementById(inputId + '_dropzone');
         const inputElement = document.getElementById(inputId);
-        
+
         dropzoneElement.addEventListener('click', function() {
             inputElement.click();
         });
-        
+
         dropzoneElement.addEventListener('dragover', function(e) {
             e.preventDefault();
             e.stopPropagation();
             dropzoneElement.classList.add('border-blue-400', 'bg-blue-50');
         });
-        
+
         dropzoneElement.addEventListener('dragleave', function(e) {
             e.preventDefault();
             e.stopPropagation();
             dropzoneElement.classList.remove('border-blue-400', 'bg-blue-50');
         });
-        
+
         dropzoneElement.addEventListener('drop', function(e) {
             e.preventDefault();
             e.stopPropagation();
             dropzoneElement.classList.remove('border-blue-400', 'bg-blue-50');
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 inputElement.files = files;
@@ -360,7 +360,7 @@
             }
         });
     }
-    
+
     // Initialize drag and drop for all file inputs
     document.addEventListener('DOMContentLoaded', function() {
         setupDragAndDrop('gambar_real');
@@ -368,18 +368,18 @@
         setupDragAndDrop('path_patt');
         setupDragAndDrop('path_gambar_marker');
     });
-    
+
     // Form validation
     document.querySelector('form').addEventListener('submit', function(e) {
         const namaInput = document.getElementById('nama');
-        
+
         if (!namaInput.value.trim()) {
             e.preventDefault();
             alert('Nama object harus diisi!');
             namaInput.focus();
             return false;
         }
-        
+
         // Show loading state
         const submitButton = document.querySelector('button[type="submit"]');
         const originalText = submitButton.innerHTML;
@@ -391,7 +391,7 @@
             </svg>
             Menyimpan...
         `;
-        
+
         // Reset button after 30 seconds (failsafe)
         setTimeout(function() {
             submitButton.disabled = false;

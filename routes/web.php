@@ -120,16 +120,16 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::put('/admin/situs/{situs_id}', [AdminController::class, 'updateSitus'])->name('admin.situs.update');
     Route::delete('/admin/situs/{situs_id}', [AdminController::class, 'destroySitus'])->name('admin.situs.destroy');
 
-    // Virtual Museum routes
-    Route::get('/admin/virtual-museum', [AdminController::class, 'virtualMuseum'])->name('admin.virtual-museum');
-    Route::get('/admin/virtual-museum/create', [AdminController::class, 'createVirtualMuseum'])->name('admin.virtual-museum.create');
-    Route::post('/admin/virtual-museum', [AdminController::class, 'storeVirtualMuseum'])->name('admin.virtual-museum.store');
-    Route::get('/admin/virtual-museum/{museum_id}', [AdminController::class, 'showVirtualMuseum'])->name('admin.virtual-museum.show');
-    Route::get('/admin/virtual-museum/{museum_id}/edit', [AdminController::class, 'editVirtualMuseum'])->name('admin.virtual-museum.edit');
-    Route::put('/admin/virtual-museum/{museum_id}', [AdminController::class, 'updateVirtualMuseum'])->name('admin.virtual-museum.update');
-    Route::delete('/admin/virtual-museum/{museum_id}', [AdminController::class, 'destroyVirtualMuseum'])->name('admin.virtual-museum.destroy');
+    // Virtual Living Museum routes
+    Route::get('/admin/virtual-living-museum', [AdminController::class, 'virtualMuseum'])->name('admin.virtual-museum');
+    Route::get('/admin/virtual-living-museum/create', [AdminController::class, 'createVirtualMuseum'])->name('admin.virtual-museum.create');
+    Route::post('/admin/virtual-living-museum', [AdminController::class, 'storeVirtualMuseum'])->name('admin.virtual-museum.store');
+    Route::get('/admin/virtual-living-museum/{museum_id}', [AdminController::class, 'showVirtualMuseum'])->name('admin.virtual-museum.show');
+    Route::get('/admin/virtual-living-museum/{museum_id}/edit', [AdminController::class, 'editVirtualMuseum'])->name('admin.virtual-museum.edit');
+    Route::put('/admin/virtual-living-museum/{museum_id}', [AdminController::class, 'updateVirtualMuseum'])->name('admin.virtual-museum.update');
+    Route::delete('/admin/virtual-living-museum/{museum_id}', [AdminController::class, 'destroyVirtualMuseum'])->name('admin.virtual-museum.destroy');
 
-    // Virtual Museum Object routes
+    // Virtual Living Museum Object routes
     Route::get('/admin/virtual-museum/{museum_id}/objects/create', [AdminController::class, 'createVirtualMuseumObject'])->name('admin.virtual-museum-object.create');
     Route::post('/admin/virtual-museum/{museum_id}/objects', [AdminController::class, 'storeVirtualMuseumObject'])->name('admin.virtual-museum-object.store');
     Route::get('/admin/virtual-museum-object/{object_id}', [AdminController::class, 'showVirtualMuseumObject'])->name('admin.virtual-museum-object.show');

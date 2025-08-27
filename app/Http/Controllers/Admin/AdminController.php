@@ -296,7 +296,7 @@ class AdminController extends Controller
     // =======================
 
     /**
-     * Display virtual museum management
+     * Display virtual living museum management
      */
     public function virtualMuseum()
     {
@@ -315,7 +315,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for creating a new virtual museum
+     * Show the form for creating a new virtual living museum
      */
     public function createVirtualMuseum(Request $request)
     {
@@ -328,7 +328,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Store a newly created virtual museum
+     * Store a newly created virtual living museum
      */
     public function storeVirtualMuseum(Request $request)
     {
@@ -354,11 +354,11 @@ class AdminController extends Controller
         VirtualMuseum::create($data);
 
         return redirect()->route('admin.virtual-museum')
-            ->with('success', 'Virtual Museum berhasil ditambahkan!');
+            ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
     }
 
     /**
-     * Display the specified virtual museum
+     * Display the specified virtual living museum
      */
     public function showVirtualMuseum($museum_id)
     {
@@ -371,7 +371,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for editing virtual museum
+     * Show the form for editing virtual living museum
      */
     public function editVirtualMuseum($museum_id)
     {
@@ -384,7 +384,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Update the specified virtual museum
+     * Update the specified virtual living museum
      */
     public function updateVirtualMuseum(Request $request, $museum_id)
     {
@@ -417,11 +417,11 @@ class AdminController extends Controller
         $museum->update($data);
 
         return redirect()->route('admin.virtual-museum.show', $museum_id)
-            ->with('success', 'Virtual Museum berhasil diperbarui!');
+            ->with('success', 'Virtual Living Museum berhasil diperbarui!');
     }
 
     /**
-     * Remove the specified virtual museum
+     * Remove the specified virtual living museum
      */
     public function destroyVirtualMuseum($museum_id)
     {
@@ -430,11 +430,11 @@ class AdminController extends Controller
         $museum->delete();
 
         return redirect()->route('admin.virtual-museum')
-            ->with('success', "Virtual Museum '{$nama}' berhasil dihapus.");
+            ->with('success', "Virtual Living Museum '{$nama}' berhasil dihapus.");
     }
 
     /**
-     * Show the form for creating a new virtual museum object
+     * Show the form for creating a new virtual living museum object
      */
     public function createVirtualMuseumObject($museum_id)
     {
@@ -444,7 +444,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Store a newly created virtual museum object
+     * Store a newly created virtual living museum object
      */
     public function storeVirtualMuseumObject(Request $request, $museum_id)
     {
@@ -498,11 +498,11 @@ class AdminController extends Controller
         VirtualMuseumObject::create($data);
 
         return redirect()->route('admin.virtual-museum.show', $museum_id)
-            ->with('success', 'Object Virtual Museum berhasil ditambahkan!');
+            ->with('success', 'Object Virtual Living Museum berhasil ditambahkan!');
     }
 
     /**
-     * Display the specified virtual museum object
+     * Display the specified virtual living museum object
      */
     public function showVirtualMuseumObject($object_id)
     {
@@ -512,7 +512,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for editing the specified virtual museum object
+     * Show the form for editing the specified virtual living museum object
      */
     public function editVirtualMuseumObject($object_id)
     {
@@ -522,7 +522,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Update the specified virtual museum object
+     * Update the specified virtual living museum object
      */
     public function updateVirtualMuseumObject(Request $request, $object_id)
     {
@@ -594,11 +594,11 @@ class AdminController extends Controller
         $object->update($data);
 
         return redirect()->route('admin.virtual-museum-object.show', $object_id)
-            ->with('success', 'Object Virtual Museum berhasil diperbarui!');
+            ->with('success', 'Object Virtual Living Museum berhasil diperbarui!');
     }
 
     /**
-     * Remove the specified virtual museum object
+     * Remove the specified virtual living museum object
      */
     public function destroyVirtualMuseumObject($object_id)
     {
@@ -617,7 +617,7 @@ class AdminController extends Controller
         $object->delete();
 
         return redirect()->route('admin.virtual-museum.show', $museum_id)
-            ->with('success', "Object Virtual Museum '{$nama}' berhasil dihapus.");
+            ->with('success', "Object Virtual Living Museum '{$nama}' berhasil dihapus.");
     }
 
     /**

@@ -7,7 +7,7 @@
                     <nav class="flex mb-2" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             <li class="inline-flex items-center">
-                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Museum</a>
+                                <a href="{{ route('admin.virtual-museum') }}" class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
                             </li>
                             <li>
                                 <div class="flex items-center">
@@ -62,10 +62,10 @@
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
-            
+
             <!-- Basic Information -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="px-6 py-6">
                     <dl class="grid grid-cols-1 gap-6">
-                        
+
                         <!-- Nama Object -->
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Nama Object</dt>
@@ -88,9 +88,9 @@
                         </div>
                         @endif
 
-                        <!-- Virtual Museum -->
+                        <!-- Virtual Living Museum -->
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Virtual Museum</dt>
+                            <dt class="text-sm font-medium text-gray-500">Virtual Living Museum</dt>
                             <dd class="mt-1 text-sm text-gray-900">
                                 <a href="{{ route('admin.virtual-museum.show', $object->virtualMuseum->museum_id) }}" class="text-blue-600 hover:text-blue-800">
                                     {{ $object->virtualMuseum->nama }}
@@ -118,13 +118,13 @@
                     <h2 class="text-lg font-medium text-gray-900">File dan Asset</h2>
                 </div>
                 <div class="px-6 py-6 space-y-6">
-                    
+
                     <!-- Gambar Real -->
                     @if($object->gambar_real)
                     <div>
                         <h3 class="text-sm font-medium text-gray-700 mb-2">Gambar Real Object</h3>
                         <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                            <img src="{{ asset('storage/' . $object->gambar_real) }}" 
+                            <img src="{{ asset('storage/' . $object->gambar_real) }}"
                                  alt="Gambar Real {{ $object->nama }}"
                                  class="max-w-full h-auto rounded-lg shadow-sm max-h-64 object-cover">
                             <p class="mt-2 text-xs text-gray-500">{{ basename($object->gambar_real) }}</p>
@@ -189,7 +189,7 @@
 
         <!-- Sidebar -->
         <div class="space-y-6">
-            
+
             <!-- Quick Actions -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -202,7 +202,7 @@
                         </svg>
                         Edit Object
                     </a>
-                    
+
                     <form method="POST" action="{{ route('admin.virtual-museum-object.destroy', $object->object_id) }}" onsubmit="return confirm('Yakin ingin menghapus object ini? Semua file terkait akan ikut terhapus.')">
                         @csrf
                         @method('DELETE')
@@ -244,7 +244,7 @@
             </div>
 
         </div>
-        
+
     </div>
 </div>
 </x-app-layout>
