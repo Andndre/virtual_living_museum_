@@ -10,6 +10,7 @@ use App\Models\LaporanPeninggalan;
 use App\Models\Materi;
 use App\Models\Posttest;
 use App\Models\Pretest;
+use App\Models\RiwayatPengembang;
 use App\Models\SitusPeninggalan;
 use App\Models\User;
 use App\Models\VirtualMuseum;
@@ -1163,7 +1164,7 @@ class AdminController extends Controller
         return redirect()->route('admin.ebook', $materi_id)
             ->with('success', 'E-book berhasil dihapus!');
     }
-    
+
     // ========== TUGAS MANAGEMENT ==========
 
     /**
@@ -1173,7 +1174,7 @@ class AdminController extends Controller
     {
         $materi = Materi::findOrFail($materi_id);
         $tugas = $materi->tugas()->orderBy('created_at', 'desc')->paginate(20);
-        
+
         return view('admin.tugas.index', compact('materi', 'tugas'));
     }
 
@@ -1183,7 +1184,7 @@ class AdminController extends Controller
     public function createTugas($materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        
+
         return view('admin.tugas.create', compact('materi'));
     }
 
@@ -1193,27 +1194,27 @@ class AdminController extends Controller
     public function storeTugas(Request $request, $materi_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
+
         $tugasData = [
             'materi_id' => $materi_id,
             'judul' => $validated['judul'],
             'deskripsi' => $validated['deskripsi'],
         ];
-        
+
         // Handle image upload if provided
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('tugas-images', 'public');
             $tugasData['gambar'] = $path;
         }
-        
+
         $tugas = \App\Models\Tugas::create($tugasData);
-        
+
         return redirect()->route('admin.tugas', $materi_id)
             ->with('success', 'Tugas berhasil ditambahkan');
     }
@@ -1227,7 +1228,7 @@ class AdminController extends Controller
         $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
-            
+
         return view('admin.tugas.edit', compact('materi', 'tugas'));
     }
 
@@ -1239,29 +1240,29 @@ class AdminController extends Controller
         $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
-            
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
+
         $tugas->judul = $validated['judul'];
         $tugas->deskripsi = $validated['deskripsi'];
-        
+
         // Handle image upload if provided
         if ($request->hasFile('gambar')) {
             // Delete previous image if exists
             if ($tugas->gambar) {
                 Storage::disk('public')->delete($tugas->gambar);
             }
-            
+
             $path = $request->file('gambar')->store('tugas-images', 'public');
             $tugas->gambar = $path;
         }
-        
+
         $tugas->save();
-        
+
         return redirect()->route('admin.tugas', $materi_id)
             ->with('success', 'Tugas berhasil diperbarui');
     }
@@ -1274,15 +1275,68 @@ class AdminController extends Controller
         $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
-            
+
         // Delete image if exists
         if ($tugas->gambar) {
             Storage::disk('public')->delete($tugas->gambar);
         }
-        
+
         $tugas->delete();
-        
+
         return redirect()->route('admin.tugas', $materi_id)
             ->with('success', 'Tugas berhasil dihapus');
+    }
+
+    public function riwayatPengembang()
+    {
+        $riwayatPengembang = RiwayatPengembang::orderBy('tahun', 'desc')->paginate(10);
+        return view('admin.riwayat-pengembang.index', compact('riwayatPengembang'));
+    }
+
+    public function createRiwayatPengembang()
+    {
+        return view('admin.riwayat-pengembang.create');
+    }
+
+    public function storeRiwayatPengembang()
+    {
+        $validated = request()->validate([
+            'judul' => 'required|string|max:255',
+            'tahun' => 'required|date',
+            'tahun_selesai' => 'nullable|date|after_or_equal:tahun'
+        ]);
+
+        RiwayatPengembang::create($validated);
+
+        return redirect()->route('admin.riwayat-pengembang')
+            ->with('success', 'Riwayat pengembang berhasil ditambahkan');
+    }
+
+    public function editRiwayatPengembang(string $id)
+    {
+        $riwayatPengembang = RiwayatPengembang::findOrFail($id);
+        return view('admin.riwayat-pengembang.edit', compact('riwayatPengembang'));
+    }
+
+    public function updateRiwayatPengembang(string $id)
+    {
+        $validated = request()->validate([
+            'judul' => 'required|string|max:255',
+            'tahun' => 'required|date',
+            'tahun_selesai' => 'nullable|date|after_or_equal:tahun'
+        ]);
+
+        RiwayatPengembang::findOrFail($id)->update($validated);
+
+        return redirect()->route('admin.riwayat-pengembang')
+            ->with('success', 'Riwayat pengembang berhasil diperbarui');
+    }
+
+    public function destroyRiwayatPengembang(string $id)
+    {
+        RiwayatPengembang::findOrFail($id)->delete();
+
+        return redirect()->route('admin.riwayat-pengembang')
+            ->with('success', 'Riwayat pengembang berhasil dihapus');
     }
 }

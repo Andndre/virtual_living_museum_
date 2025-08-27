@@ -40,6 +40,9 @@
                         <x-nav-link :href="route('admin.feedback')" :active="request()->routeIs('admin.feedback*')">
                             Kritik & Saran
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.riwayat-pengembang')" :active="request()->routeIs('admin.riwayat-pengembang*')">
+                            Riwayat Pengembang
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('guest.home')" :active="request()->routeIs('guest.home')">
                             {{ __('Home') }}

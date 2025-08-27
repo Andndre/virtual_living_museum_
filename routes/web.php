@@ -149,6 +149,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/ebook/{materi_id}/{ebook_id}/edit', [AdminController::class, 'editEbook'])->name('admin.ebook.edit');
     Route::put('/admin/ebook/{materi_id}/{ebook_id}', [AdminController::class, 'updateEbook'])->name('admin.ebook.update');
     Route::delete('/admin/ebook/{ebook_id}', [AdminController::class, 'destroyEbook'])->name('admin.ebook.destroy');
+    Route::get('/admin/riwayat-pengembang', [AdminController::class, 'riwayatPengembang'])->name('admin.riwayat-pengembang');
+    Route::get('/admin/riwayat-pengembang/create', [AdminController::class, 'createRiwayatPengembang'])->name('admin.riwayat-pengembang.create');
+    Route::post('/admin/riwayat-pengembang', [AdminController::class, 'storeRiwayatPengembang'])->name('admin.riwayat-pengembang.store');
+    Route::get('/admin/riwayat-pengembang/{id}/edit', [AdminController::class, 'editRiwayatPengembang'])->name('admin.riwayat-pengembang.edit');
+    Route::put('/admin/riwayat-pengembang/{id}', [AdminController::class, 'updateRiwayatPengembang'])->name('admin.riwayat-pengembang.update');
+    Route::delete('/admin/riwayat-pengembang/{id}', [AdminController::class, 'destroyRiwayatPengembang'])->name('admin.riwayat-pengembang.destroy');
 });
 
 Route::middleware('auth')->group(function () {
