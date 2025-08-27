@@ -124,45 +124,79 @@
 
             {{-- Riwayat Tab Content --}}
             <div id="content-riwayat" class="tab-content hidden">
-                <div class="space-y-4">
+                <div class="space-y-10">
                     @forelse($riwayatAktivitas as $tanggal => $aktivitas)
                         {{-- Date Header --}}
-                        <div class="text-center">
-                            <div class="inline-block bg-blue-600 text-white px-4 py-2 rounded-2xl">
-                                <div class="text-xs opacity-80">{{ strtoupper(date('M', strtotime($tanggal))) }}</div>
-                                <div class="text-lg font-bold">{{ date('d', strtotime($tanggal)) }}</div>
+                        <div class="relative">
+                            <div class="absolute left-0 right-0 h-px bg-gray-200 top-1/2 -translate-y-1/2"></div>
+                            <div class="relative z-10 w-28 mx-auto">
+                                <div class="bg-white px-4 py-2 rounded-full border border-gray-200 shadow-md text-center">
+                                    <div class="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
+                                        {{ strtoupper(date('M', strtotime($tanggal))) }} {{ date('Y', strtotime($tanggal)) }}
+                                    </div>
+                                    <div class="text-xl font-bold text-gray-900 leading-none">
+                                        {{ date('d', strtotime($tanggal)) }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- Activities for this date --}}
-                        @foreach($aktivitas as $item)
-                            <div class="flex items-start space-x-4">
-                                {{-- Time line --}}
-                                <div class="flex flex-col items-center">
-                                    <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                        {{-- Activities --}}
+                        <div class="space-y-6">
+                            @foreach($aktivitas as $item)
+                                <div class="flex items-start relative">
+                                    {{-- Time --}}
+                                    <div class="w-16 flex-shrink-0 text-right pr-4 pt-1">
+                                        <div class="text-sm font-semibold text-gray-500">
+                                            {{ date('H:i', strtotime($item->created_at)) }}
+                                        </div>
+                                    </div>
+
+                                    {{-- Timeline Column --}}
+                                    <div class="w-4 flex justify-center">
+                                        {{-- Dot --}}
+                                        <div class="w-3 h-3 bg-blue-500 border-2 border-white shadow rounded-full mt-1 z-10"></div>
+                                    </div>
+
+                                    {{-- Activity Content --}}
+                                    <div class="ml-3 flex-1 bg-white border border-gray-100 rounded-xl p-4 shadow hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <div class="flex items-start">
+                                            {{-- Icon --}}
+                                            <div class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mr-3 shadow-sm">
+                                                @if(str_contains(strtolower($item->aktivitas), 'materi'))
+                                                    <i class="fas fa-book text-sm"></i>
+                                                @elseif(str_contains(strtolower($item->aktivitas), 'selesai') || str_contains(strtolower($item->aktivitas), 'telah') || str_contains(strtolower($item->aktivitas), 'menuntaskan'))
+                                                    <i class="fas fa-check-circle text-sm text-green-600"></i>
+                                                @elseif(str_contains(strtolower($item->aktivitas), 'mulai'))
+                                                    <i class="fas fa-play-circle text-sm text-indigo-600"></i>
+                                                @else
+                                                    <i class="fas fa-history text-sm text-gray-500"></i>
+                                                @endif
+                                            </div>
+
+                                            {{-- Text --}}
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-900">{{ $item->aktivitas }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Vertical Line --}}
                                     @if(!$loop->last)
-                                        <div class="w-0.5 h-16 bg-gray-200 mt-2"></div>
+                                        <div class="absolute left-[4.5rem] top-5 bottom-0 w-px bg-gray-300"></div>
                                     @endif
                                 </div>
+                            @endforeach
+                        </div>
 
-                                {{-- Activity Content --}}
-                                <div class="flex-1 bg-gray-100 rounded-2xl p-4 -mt-1">
-                                    <div class="text-xs text-gray-500 mb-1">
-                                        Pada {{ date('H:i', strtotime($item->created_at)) }} WITA
-                                    </div>
-                                    <div class="font-medium text-gray-900">
-                                        {{ $item->aktivitas }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+
                     @empty
-                        <div class="bg-white rounded-2xl shadow-sm p-12 text-center">
-                            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-history text-gray-400 text-2xl"></i>
+                        <div class="bg-white rounded-2xl shadow p-10 text-center border border-gray-100">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 shadow-sm">
+                                <i class="fas fa-history text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Riwayat</h3>
-                            <p class="text-gray-600">Aktivitas pembelajaran Anda akan muncul di sini.</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">Belum Ada Riwayat</h3>
+                            <p class="text-gray-500 text-sm">Aktivitas pembelajaran Anda akan muncul di sini.</p>
                         </div>
                     @endforelse
                 </div>
