@@ -44,16 +44,22 @@ class MapsController extends Controller
 
             $level = $user->level_sekarang;
 
-            // Get all virtual living museum objects with their related sites
-            $objects = VirtualMuseumObject::with('situsPeninggalan')->get();
-
-            // Get all unique situs for filtering
-            $situs = SitusPeninggalan::all();
-
             // Get unlocked situs IDs
             $unlockedSitusIds = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
                 $query->where('urutan', '<=', $level);
             })->pluck('situs_id')->toArray();
+
+            // Get all virtual living museum objects with their related sites
+            $objects = VirtualMuseumObject::with('situsPeninggalan')
+                ->get()
+                ->map(function ($object) use ($unlockedSitusIds) {
+                    // Add is_unlocked property based on whether the situs is in unlockedSitusIds
+                    $object->is_unlocked = in_array($object->situs_id, $unlockedSitusIds);
+                    return $object;
+                });
+
+            // Get all unique situs for filtering
+            $situs = SitusPeninggalan::all();
 
             return view('guest.maps.peninggalan', compact('objects', 'situs', 'unlockedSitusIds'));
         } catch (\Exception $e) {
