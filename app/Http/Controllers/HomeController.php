@@ -7,7 +7,6 @@ use App\Models\JawabanUser;
 use App\Models\LogAktivitas;
 use App\Models\Materi;
 use App\Models\MuseumUserVisit;
-use App\Models\ProgressMateri;
 use App\Models\SitusPeninggalan;
 use App\Models\User;
 use App\Models\VirtualMuseum;
@@ -42,7 +41,7 @@ class HomeController extends Controller
         $user = Auth::user();
 
         // Check if profile is complete
-        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
+        $profileComplete = ! empty($user->phone_number) && ! empty($user->address) && ! empty($user->date_of_birth);
 
         return view('guest.home', compact('greeting', 'profileComplete'));
     }
@@ -64,7 +63,7 @@ class HomeController extends Controller
         $users = User::where('role', 'user')
             ->withCount(['jawabanUser as total_score' => function ($query) {
                 $query->where('jenis', 'posttest')
-                      ->where('benar', true);
+                    ->where('benar', true);
             }])
             ->orderByDesc('total_score')
             ->get();

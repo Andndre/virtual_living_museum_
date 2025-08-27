@@ -18,14 +18,14 @@ class LaporanPeninggalanController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        
+
         $laporan = LaporanPeninggalan::with([
-                'user', 
-                'laporanGambar', 
-                'laporanSuka' => function($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                }
-            ])
+            'user',
+            'laporanGambar',
+            'laporanSuka' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            },
+        ])
             ->withCount('laporanSuka as like_count')
             ->withCount('laporanKomentar as comment_count')
             ->orderBy('created_at', 'desc')
@@ -71,7 +71,7 @@ class LaporanPeninggalanController extends Controller
         if ($request->hasFile('gambar')) {
             foreach ($request->file('gambar') as $image) {
                 $path = $image->store('laporan_peninggalan', 'public');
-                
+
                 LaporanGambar::create([
                     'laporan_id' => $laporan->laporan_id,
                     'path_gambar' => $path,
@@ -106,7 +106,7 @@ class LaporanPeninggalanController extends Controller
     public function toggleLike($id)
     {
         $laporan = LaporanPeninggalan::findOrFail($id);
-        
+
         $existingLike = LaporanSuka::where('laporan_id', $id)
             ->where('user_id', Auth::id())
             ->first();
@@ -127,6 +127,7 @@ class LaporanPeninggalanController extends Controller
 
         if (request()->ajax()) {
             $likeCount = LaporanSuka::where('laporan_id', $id)->count();
+
             return response()->json([
                 'action' => $action,
                 'like_count' => $likeCount,

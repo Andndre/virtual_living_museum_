@@ -23,11 +23,11 @@ class Tugas extends Model
      */
     public function getGambarUrlAttribute(): ?string
     {
-        if (!$this->gambar) {
+        if (! $this->gambar) {
             return null;
         }
-        
-        return asset('storage/' . $this->gambar);
+
+        return asset('storage/'.$this->gambar);
     }
 
     /**

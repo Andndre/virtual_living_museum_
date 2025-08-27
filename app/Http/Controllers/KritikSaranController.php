@@ -17,7 +17,7 @@ class KritikSaranController extends Controller
         $kritikSaran = KritikSaran::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         return view('guest.kritik-saran.index', compact('kritikSaran'));
     }
 

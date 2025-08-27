@@ -279,38 +279,38 @@ class AdminController extends Controller
             \Log::info('Menghapus thumbnail yang ada');
             // Delete old thumbnail if exists
             if ($situs->thumbnail) {
-                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                $oldThumbnailPath = 'public/'.$situs->thumbnail;
                 if (Storage::exists($oldThumbnailPath)) {
                     Storage::delete($oldThumbnailPath);
                     \Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
                 }
                 $data['thumbnail'] = null;
             }
-        } 
+        }
         // Handle new thumbnail upload
         elseif ($request->hasFile('thumbnail')) {
             \Log::info('Mengunggah thumbnail baru');
             // Delete old thumbnail if exists
             if ($situs->thumbnail) {
-                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                $oldThumbnailPath = 'public/'.$situs->thumbnail;
                 if (Storage::exists($oldThumbnailPath)) {
                     Storage::delete($oldThumbnailPath);
                     \Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
                 }
             }
-            
+
             // Simpan file baru
             $file = $request->file('thumbnail');
-            $filename = 'situs-' . $situs_id . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'situs-'.$situs_id.'-'.time().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('situs-thumbnails', $filename, 'public');
-            
+
             \Log::info('Thumbnail baru disimpan', [
                 'original_name' => $file->getClientOriginalName(),
                 'path' => $path,
                 'size' => $file->getSize(),
-                'mime' => $file->getMimeType()
+                'mime' => $file->getMimeType(),
             ]);
-            
+
             $data['thumbnail'] = $path;
         }
 
@@ -328,12 +328,12 @@ class AdminController extends Controller
     {
         $situs = SitusPeninggalan::findOrFail($situs_id);
         $nama = $situs->nama;
-        
+
         // Delete thumbnail if exists
-        if ($situs->thumbnail && Storage::exists('public/' . $situs->thumbnail)) {
-            Storage::delete('public/' . $situs->thumbnail);
+        if ($situs->thumbnail && Storage::exists('public/'.$situs->thumbnail)) {
+            Storage::delete('public/'.$situs->thumbnail);
         }
-        
+
         $situs->delete();
 
         return redirect()->route('admin.situs')
@@ -1339,6 +1339,7 @@ class AdminController extends Controller
     public function riwayatPengembang()
     {
         $riwayatPengembang = RiwayatPengembang::orderBy('tahun', 'desc')->paginate(10);
+
         return view('admin.riwayat-pengembang.index', compact('riwayatPengembang'));
     }
 
@@ -1352,7 +1353,7 @@ class AdminController extends Controller
         $validated = request()->validate([
             'judul' => 'required|string|max:255',
             'tahun' => 'required|date',
-            'tahun_selesai' => 'nullable|date|after_or_equal:tahun'
+            'tahun_selesai' => 'nullable|date|after_or_equal:tahun',
         ]);
 
         RiwayatPengembang::create($validated);
@@ -1364,6 +1365,7 @@ class AdminController extends Controller
     public function editRiwayatPengembang(string $id)
     {
         $riwayatPengembang = RiwayatPengembang::findOrFail($id);
+
         return view('admin.riwayat-pengembang.edit', compact('riwayatPengembang'));
     }
 
@@ -1372,7 +1374,7 @@ class AdminController extends Controller
         $validated = request()->validate([
             'judul' => 'required|string|max:255',
             'tahun' => 'required|date',
-            'tahun_selesai' => 'nullable|date|after_or_equal:tahun'
+            'tahun_selesai' => 'nullable|date|after_or_equal:tahun',
         ]);
 
         RiwayatPengembang::findOrFail($id)->update($validated);

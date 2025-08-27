@@ -11,10 +11,12 @@ class Materi extends Model
      * @var mixed|true
      */
     public mixed $is_completed;
+
     /**
      * @var mixed|true
      */
     public mixed $is_available;
+
     protected $table = 'materi';
 
     protected $primaryKey = 'materi_id';

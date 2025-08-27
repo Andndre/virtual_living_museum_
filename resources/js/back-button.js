@@ -10,23 +10,23 @@ export function initBackButton(buttonSelector) {
             // Hapus semua event listener yang ada untuk mencegah duplikasi
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
-            
-            newButton.addEventListener('click', function(e) {
+
+            newButton.addEventListener('click', function (e) {
                 // Cegah default action dan stop propagation
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 // Cegah multiple clicks
                 if (isNavigating) return;
                 isNavigating = true;
-                
+
                 // Nonaktifkan tombol sementara
                 this.disabled = true;
-                
+
                 try {
                     // Coba kembali ke halaman sebelumnya
                     window.history.go(-1);
-                    
+
                     // Reset flag setelah timeout
                     setTimeout(() => {
                         isNavigating = false;
