@@ -127,13 +127,13 @@
                 <div class="space-y-10">
                     @forelse($riwayatAktivitas as $tanggal => $aktivitas)
                         {{-- Date Header --}}
-                        <div class="relative">
+                        <div class="relative my-4">
                             <div class="absolute left-0 right-0 h-px bg-gray-200 top-1/2 -translate-y-1/2"></div>
                             <div class="relative z-10 w-28 mx-auto">
-                                <div class="bg-white px-4 py-2 rounded-full border border-gray-200 shadow-md text-center">
-                                    <div class="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
-                                        {{ strtoupper(date('M', strtotime($tanggal))) }} {{ date('Y', strtotime($tanggal)) }}
-                                    </div>
+                                <div class="text-[11px] font-medium text-center tracking-wide text-gray-500 uppercase">
+                                    {{ strtoupper(date('M', strtotime($tanggal))) }} {{ date('Y', strtotime($tanggal)) }}
+                                </div>
+                                <div class="bg-white px-6 py-3 rounded-full border border-gray-200 shadow-md text-center">
                                     <div class="text-xl font-bold text-gray-900 leading-none">
                                         {{ date('d', strtotime($tanggal)) }}
                                     </div>
