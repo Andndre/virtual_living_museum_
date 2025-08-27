@@ -20,7 +20,7 @@
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
             <div class="aspect-[16/9] bg-gradient-to-br from-orange-400 to-orange-600 relative">
                 {{-- Tampilkan thumbnail menggunakan accessor --}}
-                <img src="{{ $situs->thumbnailUrl }}"
+                <img src="{{ $situs->getThumbnailUrlAttribute() }}"
                      alt="{{ $situs->nama }}"
                      class="w-full h-full object-cover">
 

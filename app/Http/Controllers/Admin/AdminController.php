@@ -208,19 +208,22 @@ class AdminController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'deskripsi' => 'required|string',
             'materi_id' => 'required|exists:materi,materi_id',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        SitusPeninggalan::create([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'lat' => $request->lat,
-            'lng' => $request->lng,
-            'deskripsi' => $request->deskripsi,
-            'materi_id' => $request->materi_id,
-            'user_id' => Auth::id(), // Auto-set current user
-        ]);
+        $data = $request->except(['_token', 'thumbnail']);
+        $data['user_id'] = Auth::id(); // Auto-set current user
 
-        return redirect()->route('admin.situs')->with('success', 'Situs peninggalan berhasil ditambahkan.');
+        // Handle thumbnail upload
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('situs-thumbnails', 'public');
+            $data['thumbnail'] = $thumbnailPath;
+        }
+
+        SitusPeninggalan::create($data);
+
+        return redirect()->route('admin.situs')
+            ->with('success', 'Situs peninggalan berhasil ditambahkan.');
     }
 
     /**
@@ -255,6 +258,7 @@ class AdminController extends Controller
      */
     public function updateSitus(Request $request, $situs_id)
     {
+        \Log::info('Mulai proses update situs', ['situs_id' => $situs_id]);
         $situs = SitusPeninggalan::findOrFail($situs_id);
 
         $request->validate([
@@ -264,19 +268,57 @@ class AdminController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'deskripsi' => 'required|string',
             'materi_id' => 'required|exists:materi,materi_id',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $situs->update([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'lat' => $request->lat,
-            'lng' => $request->lng,
-            'deskripsi' => $request->deskripsi,
-            'materi_id' => $request->materi_id,
-            // user_id tetap tidak berubah saat edit
-        ]);
+        $data = $request->except(['_token', '_method', 'remove_thumbnail']);
+        \Log::info('Data yang akan diupdate', $data);
 
-        return redirect()->route('admin.situs.show', $situs_id)->with('success', 'Situs peninggalan berhasil diperbarui.');
+        // Handle thumbnail removal
+        if ($request->has('remove_thumbnail') && $request->remove_thumbnail == '1') {
+            \Log::info('Menghapus thumbnail yang ada');
+            // Delete old thumbnail if exists
+            if ($situs->thumbnail) {
+                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                if (Storage::exists($oldThumbnailPath)) {
+                    Storage::delete($oldThumbnailPath);
+                    \Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
+                }
+                $data['thumbnail'] = null;
+            }
+        } 
+        // Handle new thumbnail upload
+        elseif ($request->hasFile('thumbnail')) {
+            \Log::info('Mengunggah thumbnail baru');
+            // Delete old thumbnail if exists
+            if ($situs->thumbnail) {
+                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                if (Storage::exists($oldThumbnailPath)) {
+                    Storage::delete($oldThumbnailPath);
+                    \Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
+                }
+            }
+            
+            // Simpan file baru
+            $file = $request->file('thumbnail');
+            $filename = 'situs-' . $situs_id . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('situs-thumbnails', $filename, 'public');
+            
+            \Log::info('Thumbnail baru disimpan', [
+                'original_name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
+            ]);
+            
+            $data['thumbnail'] = $path;
+        }
+
+        $situs->update($data);
+        \Log::info('Data situs berhasil diupdate', ['situs_id' => $situs_id]);
+
+        return redirect()->route('admin.situs.show', $situs_id)
+            ->with('success', 'Situs peninggalan berhasil diperbarui.');
     }
 
     /**
@@ -286,9 +328,16 @@ class AdminController extends Controller
     {
         $situs = SitusPeninggalan::findOrFail($situs_id);
         $nama = $situs->nama;
+        
+        // Delete thumbnail if exists
+        if ($situs->thumbnail && Storage::exists('public/' . $situs->thumbnail)) {
+            Storage::delete('public/' . $situs->thumbnail);
+        }
+        
         $situs->delete();
 
-        return redirect()->route('admin.situs')->with('success', "Situs peninggalan '{$nama}' berhasil dihapus.");
+        return redirect()->route('admin.situs')
+            ->with('success', "Situs peninggalan '{$nama}' berhasil dihapus.");
     }
 
     // =======================

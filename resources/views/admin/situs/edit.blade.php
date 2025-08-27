@@ -68,9 +68,10 @@
 
             <!-- Form -->
             <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                <form action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
+                <form id="situsForm" action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="_method" value="PUT">
                     <div class="px-4 py-5 sm:p-6 space-y-6">
                         <!-- Nama Situs -->
                         <div>
@@ -222,31 +223,113 @@
                             <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-1">
                                 Gambar Thumbnail
                             </label>
-                            <div class="mt-1 flex items-center">
-                                <div id="thumbnail-preview" class="{{ $situs->thumbnail ? '' : 'hidden' }} mb-3">
-                                    <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}"
-                                         alt="Thumbnail Preview"
-                                         class="h-32 w-auto object-cover rounded-lg border border-gray-300">
-                                    <button type="button" id="remove-thumbnail" class="mt-1 text-xs text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times mr-1"></i> Hapus
-                                    </button>
+                            <div class="mt-1">
+                                <!-- Hidden input to track thumbnail removal -->
+                                <input type="hidden" name="remove_thumbnail" id="remove_thumbnail" value="0">
+                                
+                                <!-- Thumbnail Preview -->
+                                <div id="thumbnail-preview" class="{{ $situs->thumbnail ? 'block' : 'hidden' }} mb-3">
+                                    <div class="relative inline-block">
+                                        <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}"
+                                             alt="Thumbnail Preview"
+                                             class="h-32 w-auto object-cover rounded-lg border border-gray-300">
+                                        <button type="button" id="remove-thumbnail" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors">
+                                            <i class="fas fa-times text-xs"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="mt-1 w-full">
-                                    <label class="block w-full px-3 py-2 border border-gray-300 border-dashed rounded-md cursor-pointer hover:bg-gray-50">
-                                        <div class="flex items-center justify-center">
-                                            <i class="fas fa-cloud-upload-alt text-gray-400 mr-2"></i>
-                                            <span class="text-sm text-gray-500">{{ $situs->thumbnail ? 'Ganti gambar' : 'Klik untuk unggah gambar' }}</span>
+                                
+                                <!-- Upload Area -->
+                                <div id="upload-area" class="{{ $situs->thumbnail ? 'hidden' : 'block' }}">
+                                    <label class="block w-full px-3 py-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-center">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                                            <span class="text-sm text-gray-500">Klik untuk mengunggah gambar</span>
+                                            <span class="text-xs text-gray-400 mt-1">Format: JPG, PNG, GIF (Maks. 2MB)</span>
                                         </div>
-                                        <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="sr-only"
-                                            onchange="previewThumbnail(this)">
+                                        <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="sr-only">
                                     </label>
                                 </div>
+                                
+                                @error('thumbnail')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG, GIF. Ukuran maks: 2MB.</p>
-                            @error('thumbnail')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
                         </div>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const form = document.getElementById('situsForm');
+                                const thumbnailInput = document.getElementById('thumbnail');
+                                const removeThumbnailBtn = document.getElementById('remove-thumbnail');
+                                const removeThumbnailInput = document.getElementById('remove_thumbnail');
+                                const thumbnailPreview = document.getElementById('thumbnail-preview');
+                                const uploadArea = document.getElementById('upload-area');
+                                
+                                // Handle file selection
+                                if (thumbnailInput) {
+                                    thumbnailInput.addEventListener('change', function(e) {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            // Validate file type
+                                            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                                            if (!validTypes.includes(file.type)) {
+                                                alert('Format file tidak didukung. Harap unggah file JPG, PNG, atau GIF.');
+                                                this.value = '';
+                                                return;
+                                            }
+                                            
+                                            // Validate file size (2MB)
+                                            if (file.size > 2 * 1024 * 1024) {
+                                                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                                                this.value = '';
+                                                return;
+                                            }
+                                            
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                                const img = thumbnailPreview.querySelector('img');
+                                                img.src = e.target.result;
+                                                thumbnailPreview.classList.remove('hidden');
+                                                uploadArea.classList.add('hidden');
+                                                removeThumbnailInput.value = '0'; // Reset remove flag
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    });
+                                }
+                                
+                                // Handle remove thumbnail
+                                if (removeThumbnailBtn) {
+                                    removeThumbnailBtn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        thumbnailInput.value = ''; // Clear file input
+                                        removeThumbnailInput.value = '1'; // Set remove flag
+                                        thumbnailPreview.classList.add('hidden');
+                                        uploadArea.classList.remove('hidden');
+                                    });
+                                }
+                                
+                                // Initialize preview if thumbnail exists
+                                @if($situs->thumbnail)
+                                    thumbnailPreview.classList.remove('hidden');
+                                    uploadArea.classList.add('hidden');
+                                @endif
+                                
+                                // Form submission handler
+                                if (form) {
+                                    form.addEventListener('submit', function(e) {
+                                        // No need to prevent default, let the form submit normally
+                                        // Just show loading state if needed
+                                        const submitBtn = form.querySelector('button[type="submit"]');
+                                        if (submitBtn) {
+                                            submitBtn.disabled = true;
+                                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+                                        }
+                                    });
+                                }
+                            });
+                        </script>
 
                         <!-- Virtual Objects Info -->
                         @if($situs->virtualMuseumObject->count() > 0)

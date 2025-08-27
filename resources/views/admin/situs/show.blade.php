@@ -70,7 +70,7 @@
 
                             <!-- Thumbnail Image -->
                             <div class="mb-5">
-                                <img src="{{ $situs->thumbnail }}"
+                                <img src="{{ $situs->getThumbnailUrlAttribute() }}"
                                      alt="{{ $situs->nama }}"
                                      class="h-48 w-full object-cover rounded-lg border border-gray-200 shadow-md">
                             </div>
