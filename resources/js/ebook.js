@@ -46,9 +46,9 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
     if (overlay) {
         overlay.addEventListener('click', function() {
             overlay.style.display = 'none';
-            openFullscreen(flipbookContainer, function() {
-                setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
-            });
+            // openFullscreen(flipbookContainer, function() {
+            //     setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
+            // });
             initializePDFViewer();
         });
     } else {
@@ -79,8 +79,6 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             dialog.remove();
         };
     }
-
-    // ...existing code for initializePDFViewer, renderMultiplePages, renderPageToCanvas, initializePageFlip, updatePageInfo, updateNavigationButtons, hideLoading, showError, event listeners, etc...
 
     // Main initialization function
     function initializePDFViewer() {
@@ -193,7 +191,9 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
                 // Jika sedang fullscreen, keluar dari fullscreen
                 if (isFullscreen()) {
                     if (document.exitFullscreen) {
-                        document.exitFullscreen();
+                        document.exitFullscreen().then(r => {
+                            console.log('Fullscreen exit success');
+                        });
                     } else if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
                     } else if (document.mozCancelFullScreen) {
@@ -275,7 +275,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             pageFlip.flipNext();
         }
     });
-    
+
     function hideLoading() {
         const loadingContainer = document.querySelector('.loading-container');
         if (loadingContainer && loadingContainer.style) {
@@ -317,7 +317,7 @@ window.initEbookPageFlip = function({ pdfUrl, totalPages, materiUrl, ebookId, cs
             pageFlip.flipNext();
         }
     });
-    
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft') {
             if (flipbookInitialized && pageFlip) {
