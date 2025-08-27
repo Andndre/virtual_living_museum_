@@ -22,27 +22,52 @@
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
-                            Kelola Pengguna
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.materi')" :active="request()->routeIs('admin.materi*')">
-                            Kelola Materi
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.situs')" :active="request()->routeIs('admin.situs*')">
-                            Kelola Situs
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
-                            Virtual Living Museum
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
-                            Kelola Laporan
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.feedback')" :active="request()->routeIs('admin.feedback*')">
-                            Kritik & Saran
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.riwayat-pengembang')" :active="request()->routeIs('admin.riwayat-pengembang*')">
-                            Riwayat Pengembang
-                        </x-nav-link>
+                        <!-- Kelola Dropdown -->
+                        <div class="relative h-full flex items-center" x-data="{ open: false }" style="overflow: visible">
+                            <button @click="open = !open"
+                                :class="{'text-gray-900 border-b-2 border-blue-500': open || ['admin.users*', 'admin.materi*', 'admin.situs*', 'admin.virtual-museum*', 'admin.reports*', 'admin.feedback*', 'admin.riwayat-pengembang*'].some(route => request().routeIs(route))}"
+                                class="inline-flex items-center px-1 pt-1 h-full text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                                <span>Kelola</span>
+                                <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path :class="{'rotate-180': open, 'rotate-0': !open}" class="transition-transform duration-200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div x-show="open"
+                                 @click.away="open = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute left-0 mt-80 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                                 style="min-width: 14rem">
+                                <div class="py-1">
+                                    <x-dropdown-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
+                                        <i class="fas fa-users mr-2 w-5 text-center"></i> Kelola Pengguna
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.materi')" :active="request()->routeIs('admin.materi*')">
+                                        <i class="fas fa-book mr-2 w-5 text-center"></i> Kelola Materi
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.situs')" :active="request()->routeIs('admin.situs*')">
+                                        <i class="fas fa-landmark mr-2 w-5 text-center"></i> Kelola Situs
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.virtual-museum')" :active="request()->routeIs('admin.virtual-museum*')">
+                                        <i class="fas fa-university mr-2 w-5 text-center"></i> Virtual Living Museum
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
+                                        <i class="fas fa-file-alt mr-2 w-5 text-center"></i> Kelola Laporan
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.feedback')" :active="request()->routeIs('admin.feedback*')">
+                                        <i class="fas fa-comment-alt mr-2 w-5 text-center"></i> Kritik & Saran
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.riwayat-pengembang')" :active="request()->routeIs('admin.riwayat-pengembang*')">
+                                        <i class="fas fa-history mr-2 w-5 text-center"></i> Riwayat Pengembang
+                                    </x-dropdown-link>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <x-nav-link :href="route('guest.home')" :active="request()->routeIs('guest.home')">
                             {{ __('Home') }}

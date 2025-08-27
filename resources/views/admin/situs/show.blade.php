@@ -70,7 +70,7 @@
 
                             <!-- Thumbnail Image -->
                             <div class="mb-5">
-                                <img src="{{ $situs->thumbnailUrl }}"
+                                <img src="{{ $situs->thumbnail }}"
                                      alt="{{ $situs->nama }}"
                                      class="h-48 w-full object-cover rounded-lg border border-gray-200 shadow-md">
                             </div>
@@ -83,7 +83,7 @@
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Masa</dt>
                                     <dd class="mt-1">
-                                        @if($situs->materi && $situs->materi)
+                                        @if($situs->materi)
                                             <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-800">
                                                 {{ $situs->materi->judul }}
                                             </span>
