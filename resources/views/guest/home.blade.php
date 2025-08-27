@@ -22,7 +22,7 @@
 	</div>
 
 	{{-- Menu Grid Section --}}
-	<div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
+	<div class="px-6 py-8 pb-36 bg-gray-50 rounded-t-3xl -mt-6 relative">
 		<div class="grid grid-cols-3 gap-6">
 			{{-- E-Learning --}}
 			<div class="flex flex-col items-center">
@@ -114,7 +114,7 @@
 	@if(!auth()->user()->phone_number || !auth()->user()->address || !auth()->user()->date_of_birth)
 	<div id="profile-reminder" x-data="{ show: !localStorage.getItem('profile_reminder_dismissed') || localStorage.getItem('profile_reminder_dismissed') !== '{{ date('Y-m-d') }}' }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 		<div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-			<div x-show="show" 
+			<div x-show="show"
 				x-transition:enter="ease-out duration-300"
 				x-transition:enter-start="opacity-0"
 				x-transition:enter-end="opacity-100"
@@ -125,8 +125,8 @@
 			</div>
 
 			<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-			
-			<div x-show="show" 
+
+			<div x-show="show"
 				x-transition:enter="ease-out duration-300"
 				x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 				x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
