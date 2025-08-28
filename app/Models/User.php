@@ -94,6 +94,13 @@ class User extends Authenticatable
         return $this->hasMany(JawabanUser::class, 'user_id', 'id');
     }
 
+    public function materi()
+    {
+        return $this->belongsToMany(Materi::class, 'jawaban_user', 'user_id', 'materi_id')
+            ->withPivot(['jenis', 'benar', 'poin'])
+            ->withTimestamps();
+    }
+
     public function situsPeninggalan(): HasMany
     {
         return $this->hasMany(SitusPeninggalan::class, 'user_id', 'id');

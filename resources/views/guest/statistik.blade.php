@@ -21,19 +21,53 @@
         <!-- User's ranking showcase -->
         <div class="flex justify-center mb-8">
             <div class="relative">
-                <!-- User Photo -->
-                <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white/50 mx-auto">
-                    @if(auth()->user()->profile_photo)
-                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
-                    @else
-                        <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
-                    @endif
+                <!-- Profile Picture with Circular Progress -->
+                <div class="relative w-32 h-32 mx-auto mt-8">
+                    <!-- Circular Progress Background -->
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <!-- Background Circle -->
+                        <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#e6e6e6" stroke-width="3"></circle>
+                        <!-- Progress Circle -->
+                        <circle 
+                            class="text-green-500"
+                            cx="18" 
+                            cy="18" 
+                            r="15.9155" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            stroke-width="3"
+                            stroke-dasharray="{{ $userScore }}, 100"
+                            stroke-linecap="round"
+                        ></circle>
+                    </svg>
+                    
+                    <!-- Profile Picture -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
+                            @if(auth()->user()->profile_photo)
+                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
+                            @else
+                                <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <!-- Score Badge -->
+                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white px-4 py-1 rounded-full shadow-md border border-gray-200 whitespace-nowrap">
+                        <span class="font-bold text-gray-800 text-sm">{{ $userScore }}</span>
+                        <span class="text-xs text-gray-500">/100</span>
+                    </div>
                 </div>
 
                 <!-- Rank -->
                 <div class="text-center mt-4">
-                    <h2 class="text-4xl font-bold">{{ $currentUserRank > 0 ? $currentUserRank : '-' }}{{ $currentUserRank === 1 ? 'st' : ($currentUserRank === 2 ? 'nd' : ($currentUserRank === 3 ? 'rd' : 'th')) }}</h2>
-                    <p class="text-sm opacity-80">{{ $userScore }}pts</p>
+                    <h2 class="text-4xl font-bold text-white">
+                        {{ $currentUserRank > 0 ? $currentUserRank : '-' }}{{ $currentUserRank === 1 ? 'st' : ($currentUserRank === 2 ? 'nd' : ($currentUserRank === 3 ? 'rd' : 'th')) }}
+                    </h2>
+                    <p class="text-white/80 mb-4">Peringkat Kamu</p>
+                    <a href="{{ route('guest.statistik.rapor') }}" class="inline-flex items-center justify-center px-4 py-2 bg-white text-primary rounded-full text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i> Lihat Rapor
+                    </a>
                 </div>
             </div>
         </div>
@@ -48,29 +82,33 @@
         <!-- Leaderboard -->
         <div class="space-y-4">
             @foreach($topUsers as $user)
-                <div class="flex items-center p-3 rounded-lg {{ $user->id === $currentUser->id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
+                <div class="flex items-center p-3 rounded-lg {{ $user['id'] === $currentUser->id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
                     <!-- Rank -->
-                    <div class="w-8 text-center font-bold {{ $user->rank <= 3 ? 'text-blue-600' : 'text-gray-700' }}">
-                        {{ $user->rank }}
+                    <div class="w-8 text-center font-bold {{ $user['rank'] <= 3 ? 'text-blue-600' : 'text-gray-700' }}">
+                        {{ $user['rank'] }}
                     </div>
 
                     <!-- User photo -->
                     <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-200 ml-2">
-                        @if($user->profile_photo)
-                            <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
+                        @if($user['profile_photo'])
+                            <img src="{{ asset('storage/' . $user['profile_photo']) }}" alt="{{ $user['name'] }}" class="w-full h-full object-cover" />
                         @else
-                            <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
+                            <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="{{ $user['name'] }}" class="w-full h-full object-cover" />
                         @endif
                     </div>
 
                     <!-- User name -->
                     <div class="flex-1 ml-3">
-                        <p class="font-medium text-gray-900">{{ $user->name }}</p>
+                        <p class="font-medium text-gray-900">{{ $user['name'] }}</p>
                     </div>
 
                     <!-- Score -->
-                    <div class="text-right font-bold text-gray-900">
-                        {{ $user->total_score }}pts
+                    <div class="text-right">
+                        <div class="font-bold text-gray-900">{{ $user['total_score'] ?? 0 }}</div>
+                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                            <div class="bg-green-500 h-1.5 rounded-full" style="width: {{ $user['total_score'] ?? 0 }}%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">/100</div>
                     </div>
                 </div>
             @endforeach

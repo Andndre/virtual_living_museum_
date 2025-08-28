@@ -59,24 +59,57 @@ class HomeController extends Controller
         // Get current user for highlighting
         $currentUser = Auth::user();
 
-        // Get all users with their posttest scores
+        // Get all users with their posttest scores (0-100 scale per material)
         $users = User::where('role', 'user')
-            ->withCount(['jawabanUser as total_score' => function ($query) {
-                $query->where('jenis', 'posttest')
-                    ->where('benar', true);
+            ->with(['jawabanUser' => function($query) {
+                $query->where('jenis', 'posttest');
             }])
-            ->orderByDesc('total_score')
-            ->get();
+            ->get()
+            ->map(function($user) {
+                // Group posttest answers by materi_id
+                $scoresByMateri = $user->jawabanUser->groupBy('materi_id');
+                
+                // Calculate average score (0-100) across all materials
+                $totalScore = 0;
+                $materiCount = $scoresByMateri->count();
+                
+                foreach ($scoresByMateri as $materiId => $answers) {
+                    $totalQuestions = $answers->count();
+                    $correctAnswers = $answers->where('benar', true)->count();
+                    $materiScore = $totalQuestions > 0 ? ($correctAnswers / $totalQuestions) * 100 : 0;
+                    $totalScore += $materiScore;
+                }
+                
+                // Calculate average score (0-100) for the user
+                $averageScore = $materiCount > 0 ? $totalScore / $materiCount : 0;
+                
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'profile_photo' => $user->profile_photo,
+                    'total_score' => round($averageScore),
+                    'materi_count' => $materiCount
+                ];
+            })
+            ->sortByDesc('total_score')
+            ->values();
 
         // Add ranking to each user
-        $rank = 1;
-        foreach ($users as $user) {
-            $user->rank = $rank++;
-        }
+        $users = $users->map(function ($user, $index) {
+            $user['rank'] = $index + 1;
+            return $user;
+        });
 
         // Find current user's position
-        $currentUserRank = $users->where('id', $currentUser->id)->first()->rank ?? 0;
-        $userScore = $users->where('id', $currentUser->id)->first()->total_score ?? 0;
+        $currentUserData = $users->firstWhere('id', $currentUser->id) ?? [
+            'id' => $currentUser->id,
+            'name' => $currentUser->name,
+            'profile_photo' => $currentUser->profile_photo,
+            'total_score' => 0,
+            'rank' => 0
+        ];
+        $currentUserRank = $currentUserData['rank'];
+        $userScore = $currentUserData['total_score'];
 
         // Get top 10 users
         $topUsers = $users->take(10);
@@ -98,6 +131,72 @@ class HomeController extends Controller
     public function arMarker(Request $request)
     {
         return view('guest.ar-marker');
+    }
+
+    /**
+     * Display user's test results report
+     */
+    public function rapor()
+    {
+        $user = auth()->user();
+        
+        // Get all materials with user's test results
+        $materials = Materi::with(['pretest', 'posttest'])
+            ->orderBy('urutan')
+            ->get()
+            ->map(function($materi) use ($user) {
+                // Get pretest results
+                $pretest = JawabanUser::where('user_id', $user->id)
+                    ->where('materi_id', $materi->materi_id)
+                    ->where('jenis', 'pretest')
+                    ->get();
+                
+                // Get posttest results
+                $posttest = JawabanUser::where('user_id', $user->id)
+                    ->where('materi_id', $materi->materi_id)
+                    ->where('jenis', 'posttest')
+                    ->get();
+                
+                // Calculate scores on 0-100 scale
+                $pretestCorrect = $pretest->where('benar', true)->count();
+                $pretestTotal = $materi->pretest->count();
+                $posttestCorrect = $posttest->where('benar', true)->count();
+                $posttestTotal = $materi->posttest->count();
+                
+                // Calculate percentage scores (0-100)
+                $pretestScore = $pretestTotal > 0 ? round(($pretestCorrect / $pretestTotal) * 100) : 0;
+                $posttestScore = $posttestTotal > 0 ? round(($posttestCorrect / $posttestTotal) * 100) : 0;
+                
+                return [
+                    'id' => $materi->materi_id,
+                    'judul' => $materi->judul,
+                    'pretest' => [
+                        'total' => $pretestTotal,
+                        'correct' => $pretestCorrect,
+                        'score' => $pretestScore,
+                        'max_score' => 100, // Always 100 for percentage
+                    ],
+                    'posttest' => [
+                        'total' => $posttestTotal,
+                        'correct' => $posttestCorrect,
+                        'score' => $posttestScore,
+                        'max_score' => 100, // Always 100 for percentage
+                    ],
+                    'completion' => $posttestScore, // Completion is same as posttest percentage
+                ];
+            });
+        
+        // Total score is the sum of all posttest scores (0-300 for 3 materials)
+        $totalScore = $materials->sum('posttest.score');
+        $maxTotalScore = 100 * $materials->count(); // 100 per material
+        $overallPercentage = $totalScore / $materials->count(); // Average percentage
+        
+        return view('guest.statistik.rapor', [
+            'materials' => $materials,
+            'totalScore' => $totalScore,
+            'maxTotalScore' => $maxTotalScore,
+            'overallPercentage' => $overallPercentage,
+        ]);
     }
 
     public function maps(Request $request)
