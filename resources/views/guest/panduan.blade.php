@@ -1,78 +1,113 @@
 <x-guest-layout>
-	{{-- Header Section --}}
-	<div class="px-6 py-6 bg-primary text-white">
-		<div class="flex justify-between items-center">
-			<x-application-logo class="w-12 h-12" />
-			<a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
-				@if(auth()->user()->profile_photo)
-					<img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
-				@else
-					<img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
-				@endif
-			</a>
-		</div>
+    {{-- Header Section --}}
+    <div class="px-6 py-6 bg-primary text-white">
+        <div class="flex justify-between items-center">
+            <x-application-logo class="w-12 h-12" />
+            <a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
+                @if(auth()->user()->profile_photo)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
+                @else
+                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
+                @endif
+            </a>
+        </div>
 
-		<div class="pt-8 pb-8">
-			<h1 class="text-xl font-bold">{{ __('app.app_guide') }}</h1>
-			<p class="text-sm opacity-90">{{ __('app.learn_how_to_use') }}</p>
-		</div>
-	</div>
+        <div class="pt-8 pb-8">
+            <h1 class="text-xl font-bold">{{ __('app.app_guide') }}</h1>
+            <p class="text-sm opacity-90">{{ __('app.learn_how_to_use') }}</p>
+        </div>
+    </div>
 
-	{{-- Content Section --}}
-	<div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
-		<div class="space-y-4">
-			{{-- Guide Item 1 --}}
-			<div class="bg-white rounded-2xl p-4 shadow-sm flex items-center">
-				<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-					<i class="fas fa-sign-in-alt text-white text-lg"></i>
-				</div>
-				<div class="flex-1">
-					<h3 class="text-base font-semibold text-gray-800">{{ __('app.guide_step_1') }}</h3>
-				</div>
-			</div>
+    {{-- Content Section --}}
+    <div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
+        @php
+            $guides = [
+                [
+                    'id' => 'virtualLivingMuseum',
+                    'icon' => 'fa-vr-cardboard',
+                    'title' => 'Virtual Living Museum',
+                    'description' => 'Panduan penggunaan fitur AR Virtual Living Museum',
+                    'steps' => [
+                        [
+                            'title' => 'Buka Menu Virtual Living Museum',
+                            'description' => 'Pilih menu Virtual Living Museum dari halaman utama aplikasi'
+                        ],
+                        [
+                            'title' => 'Izinkan Akses Kamera',
+                            'description' => 'Izinkan aplikasi untuk mengakses kamera perangkat Anda'
+                        ],
+                        [
+                            'title' => 'Arahkan Kamera',
+                            'description' => 'Arahkan kamera ke area lapang sampai muncul lingkaran putih'
+                        ],
+                        [
+                            'title' => 'Lihat Konten AR',
+                            'description' => 'Tekan layar untuk meletakkan objek AR. Anda bisa berkeliling untuk melihat objek AR dari sudut yang berbeda'
+                        ],
+                        [
+                            'title' => 'Lihat Informasi Peninggalan',
+                            'description' => 'Gunakan tombol info untuk melihat daftar informasi peninggalan pada objek AR'
+                        ]
+                    ]
+                ],
+                // Tambahkan panduan lain di sini
+            ];
+        @endphp
 
-			{{-- Guide Item 2 --}}
-			<div class="bg-white rounded-2xl p-4 shadow-sm flex items-center">
-				<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-					<i class="fas fa-users text-white text-lg"></i>
-				</div>
-				<div class="flex-1">
-					<h3 class="text-base font-semibold text-gray-800">{{ __('app.guide_step_2') }}</h3>
-				</div>
-			</div>
+        <div class="space-y-4" x-data="{ activeGuide: '{{ $guides[0]['id'] }}' }">
+            @foreach($guides as $guide)
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <button
+                        @click="activeGuide = (activeGuide === '{{ $guide['id'] }}' ? null : '{{ $guide['id'] }}')"
+                        class="w-full p-4 flex items-center justify-between focus:outline-none"
+                        :aria-expanded="activeGuide === '{{ $guide['id'] }}'">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary rounded-full flex-shrink-0 flex items-center justify-center mr-4">
+                                <i class="fas {{ $guide['icon'] }} text-white text-lg"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-base font-semibold text-gray-800">{{ $guide['title'] }}</h3>
+                                <p class="text-xs text-gray-500">{{ $guide['description'] }}</p>
+                            </div>
+                        </div>
+                        <svg
+                            class="w-5 h-5 text-gray-500 transition-transform duration-200 transform"
+                            :class="{ 'rotate-180': activeGuide === '{{ $guide['id'] }}' }"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
 
-			{{-- Guide Item 3 --}}
-			<div class="bg-white rounded-2xl p-4 shadow-sm flex items-center">
-				<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
-					<i class="fas fa-bars text-white text-lg"></i>
-				</div>
-				<div class="flex-1">
-					<h3 class="text-base font-semibold text-gray-800">{{ __('app.guide_step_3') }}</h3>
-				</div>
-			</div>
+                    <div
+                        x-show="activeGuide === '{{ $guide['id'] }}'"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                        class="px-4 pb-4 -mt-2 text-gray-600 text-sm">
+                        <div class="pl-16 pr-2 space-y-5">
+                            @foreach($guide['steps'] as $index => $step)
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center mr-4 mt-0.5 text-base">
+                                        {{ $index + 1 }}
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-800 text-base">{{ $step['title'] }}</p>
+                                        <p class="text-gray-600 text-sm mt-1">{{ $step['description'] }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 
-			{{-- Guide Item 4 --}}
-			<div class="bg-white rounded-2xl p-4 shadow-sm flex items-start">
-				<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4 mt-1">
-					<i class="fas fa-search text-white text-lg"></i>
-				</div>
-				<div class="flex-1">
-					<h3 class="text-base font-semibold text-gray-800 mb-1">{{ __('app.guide_step_4') }}</h3>
-				</div>
-			</div>
-
-			{{-- Guide Item 5 --}}
-			<div class="bg-white rounded-2xl p-4 shadow-sm flex items-start">
-				<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4 mt-1">
-					<i class="fas fa-camera text-white text-lg"></i>
-				</div>
-				<div class="flex-1">
-					<h3 class="text-base font-semibold text-gray-800 mb-1">{{ __('app.guide_step_5') }}</h3>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	{{-- Bottom Navigation --}}
-	<x-bottom-nav />
+    {{-- Bottom Navigation --}}
+    <x-bottom-nav />
 </x-guest-layout>
