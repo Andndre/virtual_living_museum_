@@ -43,22 +43,6 @@ async function generateLaunchCode() {
     console.log("Launch Code Generated");
 }
 
-const planes = [
-    "lukisan-1",
-    "lukisan-2",
-    "lukisan-3",
-    "lukisan-4",
-    "lukisan-5",
-];
-
-const lukisanFrames = [
-    "lukisan-1-frame",
-    "lukisan-2-frame",
-    "lukisan-3-frame",
-    "lukisan-4-frame",
-    "lukisan-5-frame",
-];
-
 class SceneManager {
     constructor(renderer) {
         this.scene = new THREE.Scene();
@@ -87,22 +71,22 @@ class SceneManager {
         this.skybox = null;
 
         // Add hemisphere light (ambient light from sky and ground)
-        const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.6);
+        const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
         hemisphereLight.position.set(0.5, 1, 0.25);
         this.scene.add(hemisphereLight);
-        
+
         // Add directional light (sunlight)
         const sunLight = new THREE.DirectionalLight(0xffffff, 1);
         sunLight.position.set(5, 10, 7.5);
         sunLight.castShadow = true;
-        
+
         // Configure shadow properties for better quality
         sunLight.shadow.mapSize.width = 1024;
         sunLight.shadow.mapSize.height = 1024;
         sunLight.shadow.camera.near = 0.5;
         sunLight.shadow.camera.far = 50;
         sunLight.shadow.bias = -0.001;
-        
+
         this.scene.add(sunLight);
         this.sunLight = sunLight;
 
@@ -123,37 +107,37 @@ class SceneManager {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
     }
-    
+
     createSkybox() {
         // Create a skybox using a spherical environment
         const textureLoader = new THREE.TextureLoader();
-        
+
         // Load sky texture - we'll use a simple equirectangular texture
         // This can be replaced with a more suitable texture for the museum context
         const texture = textureLoader.load('/images/hdri/langit.jpg', () => {
             console.log("Skybox texture loaded");
             showToaster("Skybox texture loaded");
         });
-        
+
         texture.mapping = THREE.EquirectangularReflectionMapping;
         texture.colorSpace = THREE.SRGBColorSpace;
-        
+
         // Create a large sphere for the skybox
         const skyGeometry = new THREE.SphereGeometry(500, 60, 40);
         // Flip the geometry inside out
         skyGeometry.scale(-1, 1, 1);
-        
+
         const skyMaterial = new THREE.MeshBasicMaterial({
             map: texture
         });
-        
+
         this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
         this.skybox.visible = false; // Initially hidden
         this.scene.add(this.skybox);
-        
+
         // Set the scene's environment map for reflections on the model
         this.scene.environment = texture;
-        
+
         return this.skybox;
     }
 }
@@ -192,11 +176,11 @@ class RendererManager {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.xr.enabled = true;
-        
+
         // Enable shadows
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
+
         document.body.appendChild(this.renderer.domElement);
 
         this.hitTestSource = null;
@@ -258,7 +242,7 @@ class RendererManager {
                     sceneManager
                 );
             }
-            
+
             // Update skybox position to follow the camera if it exists and is visible
             if (sceneManager.skybox && sceneManager.skybox.visible && sceneManager.placed) {
                 const cameraPosition = new THREE.Vector3();
@@ -334,7 +318,7 @@ class ModelLoader {
         );
         this.loader.setDRACOLoader(this.dracoLoader);
         const model = await this.loader.loadAsync(name, onProgress);
-        
+
         // Enable shadows on the model
         model.scenes[0].traverse((object) => {
             if (object.isMesh) {
@@ -342,7 +326,7 @@ class ModelLoader {
                 object.receiveShadow = true;
             }
         });
-        
+
         return model.scenes[0];
     }
 }
@@ -389,11 +373,11 @@ async function main() {
     sceneManager.scene.add(model);
     model.updateMatrixWorld(true);
     sceneManager.model = model;
-    
+
     // Create the skybox
     showToaster("Preparing environment");
     const skybox = sceneManager.createSkybox();
-    
+
     sceneManager.setOnSelect((matrix) => {
         if (model.visible) return;
         document.getElementById("instructions").style.display = "none";
@@ -411,29 +395,29 @@ async function main() {
         direction.y = 0;
         model.lookAt(direction.add(model.position));
         model.visible = true;
-        
+
         // Position the skybox at the model position to ensure proper alignment
         if (skybox) {
             skybox.position.copy(model.position);
             skybox.visible = true;
             showToaster("Environment loaded");
         }
-        
+
         // Update the sun light to cast shadows from the correct angle
         if (sceneManager.sunLight) {
             // Position the sun light relative to the model
             const lightOffset = new THREE.Vector3(15, 20, 10);
             sceneManager.sunLight.position.copy(model.position).add(lightOffset);
             sceneManager.sunLight.target = model;
-            
+
             // Make sure the target is part of the scene for the directional light to work properly
             if (!sceneManager.scene.children.includes(sceneManager.sunLight.target)) {
                 sceneManager.scene.add(sceneManager.sunLight.target);
             }
-            
+
             showToaster("Sunlight positioned");
         }
-        
+
         sceneManager.reticle.visible = false;
         sceneManager.placed = true;
 

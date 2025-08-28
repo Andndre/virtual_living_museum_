@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class MuseumUserVisit extends Model
 {
-    use HasFactory;
-
     protected $table = 'museum_user_visits';
 
     protected $fillable = [

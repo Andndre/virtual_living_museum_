@@ -32,12 +32,6 @@ class Materi extends Model
         'urutan' => 'integer',
     ];
 
-    // cek ini level keberapa
-    public function getLevel(): int
-    {
-        return $this->urutan;
-    }
-
     public function shouldIncrementProgress(User $user, int $progress): bool
     {
         return $this->urutan > $user->level_sekarang ||
@@ -68,11 +62,6 @@ class Materi extends Model
     public function situsPeninggalan(): HasMany
     {
         return $this->hasMany(SitusPeninggalan::class, 'materi_id', 'materi_id');
-    }
-
-    public function progressMateri(): HasMany
-    {
-        return $this->hasMany(ProgressMateri::class, 'materi_id', 'materi_id');
     }
 
     public function tugas(): HasMany
