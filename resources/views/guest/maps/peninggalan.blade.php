@@ -6,25 +6,27 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </button>
-            <h1 class="text-xl font-bold">Peninggalan Sejarah</h1>
+            <h1 class="text-xl font-bold">Virtual Living Museum</h1>
         </div>
 
         <!-- Search Bar -->
-        <div class="relative">
+        <form id="search-form" action="{{ route('guest.maps.peninggalan') }}" method="GET" class="relative">
             <div class="bg-white/20 rounded-full flex items-center p-2">
                 <div class="text-white mr-2 ml-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="Cari peninggalan sejarah..." class="w-full bg-transparent border-none focus:outline-none text-white placeholder-white/70">
-                <button id="search-clear" class="text-white/70 hover:text-white hidden">
+                <input id="search-input" name="q" type="text" value="{{ $searchQuery ?? '' }}" placeholder="Cari peninggalan, museum, atau objek..." class="w-full bg-transparent border-none focus:outline-none text-white placeholder-white/70">
+                @if(isset($searchQuery) && !empty($searchQuery))
+                <a href="{{ route('guest.maps.peninggalan') }}" class="text-white/70 hover:text-white mr-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
-                </button>
+                </a>
+                @endif
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Filter Tabs -->
@@ -41,46 +43,132 @@
         </div>
     </div>
 
-    <!-- Object Grid -->
-    <div id="objects-container" class="p-4 grid grid-cols-2 gap-4 pb-24">
-        @foreach($objects as $object)
-            <div 
-                class="object-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100"
-                data-situs-id="{{ $object->situs_id }}"
-                data-name="{{ $object->nama }}"
-                data-description="{{ $object->deskripsi }}">
-                <div class="relative aspect-[4/3] overflow-hidden">
-                    <img
-                        src="{{ asset('storage/' . $object->gambar_real) }}" 
-                        alt="{{ $object->nama }}" 
-                        class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-                    
-                    @if($object->is_unlocked)
-                        <div class="absolute top-2 right-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                                Terbuka
-                            </span>
-                        </div>
-                    @else
-                        <div class="absolute top-2 right-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                                </svg>
-                                Terkunci
-                            </span>
-                        </div>
-                    @endif
-                </div>
-                <div class="p-3">
-                    <h3 class="font-medium text-sm text-gray-800 truncate">{{ $object->nama }}</h3>
-                    <p class="text-xs text-gray-500 truncate">{{ $object->situsPeninggalan->nama }}</p>
-                </div>
+    <!-- Search Results -->
+    <div id="search-results" class="p-4 pb-24">
+        @if(isset($searchQuery) && !empty($searchQuery))
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Hasil pencarian untuk "{{ $searchQuery }}"</h2>
+                <p class="text-sm text-gray-500">{{ $objects->count() }} hasil ditemukan</p>
             </div>
+        @endif
+
+        @php
+            $groupedResults = $objects->groupBy('type');
+            $sections = [
+                'situs' => ['title' => 'Situs Sejarah', 'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z', 'color' => 'blue'],
+                'museum' => ['title' => 'Virtual Museum', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple'],
+                'object' => ['title' => 'Objek Peninggalan', 'icon' => 'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z', 'color' => 'green']
+            ];
+        @endphp
+
+        @foreach($sections as $type => $section)
+            @if(isset($groupedResults[$type]) && $groupedResults[$type]->isNotEmpty())
+                <div class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="p-2 rounded-lg bg-{{ $section['color'] }}-100 text-{{ $section['color'] }}-700 mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $section['icon'] }}" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">{{ $section['title'] }}</h3>
+                        <span class="ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {{ $groupedResults[$type]->count() }} item
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($groupedResults[$type] as $item)
+                            @if($type === 'situs')
+                                <!-- Situs Card -->
+                                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                                    <a href="{{ route('guest.situs.detail', $item->situs_id) }}" class="block">
+                                        <div class="relative aspect-[4/3] overflow-hidden">
+                                            <img src="{{ $item->thumbnail_url }}" 
+                                                alt="{{ $item->nama }}" 
+                                                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                            <div class="absolute bottom-0 left-0 p-4 text-white">
+                                                <h3 class="font-bold text-lg">{{ $item->nama }}</h3>
+                                                <p class="text-sm text-white/90 line-clamp-2">{{ $item->deskripsi }}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @elseif($type === 'museum')
+                                <!-- Museum Card -->
+                                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                                    <a href="#" class="block">
+                                        <div class="relative aspect-[4/3] overflow-hidden">
+                                            <div class="w-full h-full bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                            </div>
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                            <div class="absolute bottom-0 left-0 p-4 text-white">
+                                                <h3 class="font-bold text-lg">{{ $item->nama }}</h3>
+                                                <p class="text-sm text-white/90">{{ $item->situsPeninggalan->nama }}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @else
+                                <!-- Object Card -->
+                                <div class="object-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+                                    data-situs-id="{{ $item->situs_id }}"
+                                    data-name="{{ $item->nama }}"
+                                    data-description="{{ $item->deskripsi }}">
+                                    <div class="relative aspect-[4/3] overflow-hidden">
+                                        <img src="{{ asset('storage/' . $item->gambar_real) }}"
+                                            alt="{{ $item->nama }}"
+                                            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+
+                                        @if($item->is_unlocked)
+                                            <div class="absolute top-2 right-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Terbuka
+                                                </span>
+                                            </div>
+                                        @else
+                                            <div class="absolute top-2 right-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Terkunci
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="p-3">
+                                        <h3 class="font-medium text-sm text-gray-800 truncate">{{ $item->nama }}</h3>
+                                        <p class="text-xs text-gray-500 truncate">{{ $item->situsPeninggalan->nama }}</p>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         @endforeach
+
+        @if($objects->isEmpty() && isset($searchQuery))
+            <div class="col-span-2 text-center py-12">
+                <div class="text-gray-400 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto w-16 h-16">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900">Tidak ada hasil yang ditemukan</h3>
+                <p class="text-gray-500 mt-2">Coba dengan kata kunci lain atau periksa ejaan Anda</p>
+                <a href="{{ route('guest.maps.peninggalan') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Tampilkan Semua
+                </a>
+            </div>
+        @endif
     </div>
 
     <!-- No Results Message -->
@@ -111,7 +199,7 @@
                         </svg>
                     </button>
                 </div>
-                
+
                 <!-- Content Section (Scrollable) -->
                 <div class="flex-1 overflow-y-auto">
                     <div class="p-6">
@@ -135,7 +223,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Action Button (Fixed at bottom) -->
                 <div class="border-t border-gray-100 p-4 bg-gray-50 flex-shrink-0">
                     <a id="modal-link" href="#" class="block w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium py-3 px-4 rounded-xl hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
@@ -147,6 +235,7 @@
                     <div id="locked-message" class="hidden mt-2 text-center text-sm text-gray-600">
                         Selesaikan materi <span id="situs-name" class="font-medium"></span> untuk membuka peninggalan ini
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -260,7 +349,7 @@
                 const statusBadge = document.getElementById('status-badge');
                 const lockedMessage = document.getElementById('locked-message');
                 const situsNameElement = document.getElementById('situs-name');
-                
+
                 if (isUnlocked) {
                     statusBadge.textContent = 'Terbuka';
                     statusBadge.className = 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
@@ -278,7 +367,7 @@
                 // Show modal
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                
+
                 // Trigger animation
                 setTimeout(() => {
                     const modalContent = document.getElementById('modal-content');
@@ -342,17 +431,17 @@
                     width: 6px;
                     height: 6px;
                 }
-                
+
                 ::-webkit-scrollbar-track {
                     background: #f1f1f1;
                     border-radius: 10px;
                 }
-                
+
                 ::-webkit-scrollbar-thumb {
                     background: #c7d2fe;
                     border-radius: 10px;
                 }
-                
+
                 ::-webkit-scrollbar-thumb:hover {
                     background: #a5b4fc;
                 }
