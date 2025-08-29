@@ -1,7 +1,7 @@
-
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\KatalogController;
 use App\Http\Controllers\ArMarkerCameraController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KritikSaranController;
@@ -156,6 +156,10 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/riwayat-pengembang/{id}/edit', [AdminController::class, 'editRiwayatPengembang'])->name('admin.riwayat-pengembang.edit');
     Route::put('/admin/riwayat-pengembang/{id}', [AdminController::class, 'updateRiwayatPengembang'])->name('admin.riwayat-pengembang.update');
     Route::delete('/admin/riwayat-pengembang/{id}', [AdminController::class, 'destroyRiwayatPengembang'])->name('admin.riwayat-pengembang.destroy');
+
+    // Katalog
+    Route::get('admin/katalog', [KatalogController::class, 'edit'])->name('admin.katalog.edit');
+    Route::put('admin/katalog', [KatalogController::class, 'update'])->name('admin.katalog.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -164,4 +168,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
