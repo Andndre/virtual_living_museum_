@@ -1,3 +1,4 @@
+@php use Carbon\Carbon; @endphp
 <x-guest-layout>
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
@@ -61,9 +62,9 @@
                             <div class="border-l-4 border-primary pl-4 py-1">
                                 <h4 class="font-medium text-gray-800">{{ $riwayat->judul }}</h4>
                                 <p class="text-sm text-gray-600">
-                                    {{ \Carbon\Carbon::parse($riwayat->tahun)->format('Y') }}
+                                    {{ Carbon::parse($riwayat->tahun)->format('Y') }}
                                     @if($riwayat->tahun_selesai)
-                                        - {{ \Carbon\Carbon::parse($riwayat->tahun_selesai)->format('Y') }}
+                                        - {{ Carbon::parse($riwayat->tahun_selesai)->format('Y') }}
                                     @endif
                                 </p>
                             </div>
