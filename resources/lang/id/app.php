@@ -191,4 +191,7 @@ return [
     'decrease' => 'turun',
     'score' => 'nilai',
     'final_score' => 'Nilai Akhir',
+    'view_report' => 'Lihat Rapor',
+    'your_rank' => 'Peringkat Kamu',
+    'leaderboard' => 'Papan Peringkat',
 ];

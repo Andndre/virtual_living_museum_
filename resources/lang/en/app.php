@@ -191,4 +191,7 @@ return [
     'decrease' => 'decrease',
     'score' => 'score',
     'final_score' => 'Final Score',
+    'view_report' => 'View Report',
+    'your_rank' => 'Your Rank',
+    'leaderboard' => 'Leaderboard',
 ];
