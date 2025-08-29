@@ -5,11 +5,12 @@
                 <button class="back-button mr-4">
                     <i class="fas fa-arrow-left text-xl"></i>
                 </button>
-                <h1 class="text-xl font-bold">Laporan Peninggalan</h1>
+                <h1 class="text-xl font-bold">{{ __('app.report_heritage') }}</h1>
             </div>
-            <a href="{{ route('guest.laporan-peninggalan.create') }}" class="bg-white text-primary px-4 py-2 rounded-lg font-medium text-sm flex items-center">
+            <a href="{{ route('guest.laporan-peninggalan.create') }}"
+               class="bg-white text-primary px-4 py-2 rounded-lg font-medium text-sm flex items-center">
                 <i class="fas fa-plus mr-2"></i>
-                Lapor
+                {{ __('app.report') }}
             </a>
         </div>
     </div>
@@ -37,7 +38,8 @@
                         {{-- User Profile Photo --}}
                         <div class="flex-shrink-0 mr-3">
                             @if($item->user->profile_photo)
-                                <img src="{{ asset('storage/' . $item->user->profile_photo) }}" alt="User" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                <img src="{{ asset('storage/' . $item->user->profile_photo) }}" alt="User"
+                                     class="w-10 h-10 rounded-full object-cover border border-gray-200">
                             @else
                                 <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                                     <i class="fas fa-user text-gray-500"></i>
@@ -64,7 +66,8 @@
                     <p class="text-sm text-gray-700 mb-3">
                         {{ \Illuminate\Support\Str::limit($item->deskripsi, 150) }}
                         @if(strlen($item->deskripsi) > 150)
-                            <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}" class="text-primary hover:underline">baca selengkapnya</a>
+                            <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}"
+                               class="text-primary hover:underline">{{ __('app.read_more') }}</a>
                         @endif
                     </p>
 
@@ -72,8 +75,10 @@
                     @if($item->laporanGambar->count() > 0)
                         <div class="mb-3 flex space-x-2 overflow-x-auto pb-2">
                             @foreach($item->laporanGambar as $image)
-                                <a href="{{ asset('storage/' . $image->path_gambar) }}" target="_blank" class="flex-shrink-0">
-                                    <img src="{{ asset('storage/' . $image->path_gambar) }}" alt="Peninggalan" class="h-24 w-32 object-cover rounded-lg">
+                                <a href="{{ asset('storage/' . $image->path_gambar) }}" target="_blank"
+                                   class="flex-shrink-0">
+                                    <img src="{{ asset('storage/' . $image->path_gambar) }}" alt="Peninggalan"
+                                         class="h-24 w-32 object-cover rounded-lg">
                                 </a>
                             @endforeach
                         </div>
@@ -82,29 +87,35 @@
                     {{-- Actions --}}
                     <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                         <div class="flex space-x-6">
-                            <form class="like-form" data-id="{{ $item->laporan_id }}" action="{{ route('guest.laporan-peninggalan.like', $item->laporan_id) }}" method="POST">
+                            <form class="like-form" data-id="{{ $item->laporan_id }}"
+                                  action="{{ route('guest.laporan-peninggalan.like', $item->laporan_id) }}"
+                                  method="POST">
                                 @csrf
-                                <button type="submit" class="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors">
+                                <button type="submit"
+                                        class="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors">
                                     <i class="like-icon {{ $item->laporanSuka->where('user_id', auth()->id())->count() > 0 ? 'fas' : 'far' }} fa-thumbs-up"></i>
                                     <span class="like-count text-xs">{{ $item->like_count }}</span>
                                 </button>
                             </form>
-                            <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}#comments" class="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors">
+                            <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}#comments"
+                               class="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors">
                                 <i class="far fa-comment mr-1"></i>
                                 <span class="text-xs">{{ $item->comment_count }}</span>
                             </a>
                         </div>
-                        <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 rounded-md transition-colors">
-                            Lihat Detail
+                        <a href="{{ route('guest.laporan-peninggalan.show', $item->laporan_id) }}"
+                           class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 rounded-md transition-colors">
+                            {{ __('app.show_detail') }}
                         </a>
                     </div>
                 </div>
             @empty
                 <div class="bg-white p-8 rounded-lg shadow-sm text-center">
                     <i class="fas fa-info-circle text-2xl text-gray-400 mb-2"></i>
-                    <p class="text-gray-600">Belum ada laporan peninggalan.</p>
-                    <a href="{{ route('guest.laporan-peninggalan.create') }}" class="mt-4 inline-block px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
-                        Jadilah yang pertama melaporkan
+                    <p class="text-gray-600">{{ __('app.no_heritage_yet') }}.</p>
+                    <a href="{{ route('guest.laporan-peninggalan.create') }}"
+                       class="mt-4 inline-block px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
+                        {{ __('app.be_the_first_to_report') }}
                     </a>
                 </div>
             @endforelse
@@ -117,49 +128,49 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav />
+    <x-bottom-nav/>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Handle like functionality with AJAX
-            const likeForms = document.querySelectorAll('.like-form');
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Handle like functionality with AJAX
+                const likeForms = document.querySelectorAll('.like-form');
 
-            likeForms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const reportId = this.dataset.id;
-                    const likeIcon = this.querySelector('.like-icon');
-                    const likeCount = this.querySelector('.like-count');
+                likeForms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const reportId = this.dataset.id;
+                        const likeIcon = this.querySelector('.like-icon');
+                        const likeCount = this.querySelector('.like-count');
 
-                    fetch(this.action, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify({})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Toggle like icon
-                        if (data.action === 'liked') {
-                            likeIcon.classList.remove('far');
-                            likeIcon.classList.add('fas');
-                        } else {
-                            likeIcon.classList.remove('fas');
-                            likeIcon.classList.add('far');
-                        }
+                        fetch(this.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({})
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Toggle like icon
+                                if (data.action === 'liked') {
+                                    likeIcon.classList.remove('far');
+                                    likeIcon.classList.add('fas');
+                                } else {
+                                    likeIcon.classList.remove('fas');
+                                    likeIcon.classList.add('far');
+                                }
 
-                        // Update like count
-                        likeCount.textContent = data.like_count;
-                    })
-                    .catch(error => console.error('Error:', error));
+                                // Update like count
+                                likeCount.textContent = data.like_count;
+                            })
+                            .catch(error => console.error('Error:', error));
+                    });
                 });
             });
-        });
-    </script>
+        </script>
     @endpush
 </x-guest-layout>
