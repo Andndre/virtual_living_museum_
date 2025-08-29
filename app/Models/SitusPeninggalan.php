@@ -13,8 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SitusPeninggalan extends Model
 {
     public $timestamps = false;
+
     protected $table = 'situs_peninggalan';
+
     protected $primaryKey = 'situs_id';
+
     protected $fillable = [
         'nama',
         'alamat',

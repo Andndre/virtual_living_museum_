@@ -102,17 +102,17 @@ return [
     // Date Picker
     'date_picker' => [
         'weekdays' => [
-            'shorthand' => ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-            'longhand' => ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+            'shorthand' => ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+            'longhand' => ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
         ],
         'months' => [
-            'shorthand' => ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
-            'longhand' => ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+            'shorthand' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+            'longhand' => ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
         ],
-        'range_separator' => " s/d ",
-        'week_abbreviation' => "Mgg",
-        'scroll_title' => "Scroll untuk mempercepat",
-        'toggle_title' => "Klik untuk mengubah"
+        'range_separator' => ' s/d ',
+        'week_abbreviation' => 'Mgg',
+        'scroll_title' => 'Scroll untuk mempercepat',
+        'toggle_title' => 'Klik untuk mengubah',
     ],
 
     // Delete Account

@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
+    public function index(Request $request)
+    {
+        $greeting = $this->getGreeting();
+        $user = Auth::user();
+
+        // Check if profile is complete
+        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
+
+        return view('guest.home', compact('greeting', 'profileComplete'));
+    }
+
     /**
      * Get dynamic greeting based on current time
      */
@@ -34,17 +45,6 @@ class HomeController extends Controller
         } else {
             return __('app.good_night');
         }
-    }
-
-    public function index(Request $request)
-    {
-        $greeting = $this->getGreeting();
-        $user = Auth::user();
-
-        // Check if profile is complete
-        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
-
-        return view('guest.home', compact('greeting', 'profileComplete'));
     }
 
     public function panduan(Request $request)
@@ -89,7 +89,7 @@ class HomeController extends Controller
                     'name' => $user->name,
                     'profile_photo' => $user->profile_photo,
                     'total_score' => round($averageScore),
-                    'materi_count' => $materiCount
+                    'materi_count' => $materiCount,
                 ];
             })
             ->sortByDesc('total_score')
@@ -98,6 +98,7 @@ class HomeController extends Controller
         // Add ranking to each user
         $users = $users->map(function ($user, $index) {
             $user['rank'] = $index + 1;
+
             return $user;
         });
 
@@ -107,7 +108,7 @@ class HomeController extends Controller
             'name' => $currentUser->name,
             'profile_photo' => $currentUser->profile_photo,
             'total_score' => 0,
-            'rank' => 0
+            'rank' => 0,
         ];
         $currentUserRank = $currentUserData['rank'];
         $userScore = $currentUserData['total_score'];
@@ -126,6 +127,7 @@ class HomeController extends Controller
     public function pengembang(Request $request)
     {
         $riwayatPengembang = \App\Models\RiwayatPengembang::orderBy('tahun', 'desc')->get();
+
         return view('guest.pengembang', compact('riwayatPengembang'));
     }
 
@@ -334,6 +336,29 @@ class HomeController extends Controller
     }
 
     /**
+     * Check if pretest is completed
+     */
+    private function isPretestCompleted($user_id, $materi_id)
+    {
+        $materi = Materi::find($materi_id);
+        if (!$materi) {
+            return false;
+        }
+        $user = User::find($user_id);
+        if (!$user) {
+            return false;
+        }
+
+        // Jika materi sudah lewat level user, pasti sudah selesai
+        if ($materi->urutan < $user->level_sekarang + 1) {
+            return true;
+        }
+
+        // Jika progress user pada materi ini sudah mencapai atau melewati step pretest
+        return $user->progress_level_sekarang >= User::PRE_TEST;
+    }
+
+    /**
      * Submit Pretest Answers
      */
     public function submitPretest(Request $request, $materi_id)
@@ -393,6 +418,18 @@ class HomeController extends Controller
 
         return redirect()->route('guest.elearning.pretest', $materi_id)
             ->with('success', 'Pretest berhasil diselesaikan!');
+    }
+
+    /**
+     * Log user activity
+     */
+    private function logActivity($user_id, $aktivitas)
+    {
+        LogAktivitas::create([
+            'user_id' => $user_id,
+            'aktivitas' => $aktivitas,
+            'created_at' => now(),
+        ]);
     }
 
     /**
@@ -579,138 +616,13 @@ class HomeController extends Controller
     public function arMarkerKatalog()
     {
         $katalog = Katalog::first();
-//      download katalog
+        //      download katalog
         if ($katalog->path_pdf && Storage::disk('public')->exists($katalog->path_pdf)) {
             return response()->download(storage_path('app/public/' . $katalog->path_pdf));
         }
-//      not found
+
+        //      not found
         return redirect()->back()->with('error', 'Katalog tidak ditemukan');
-    }
-
-    /**
-     * Check if materi is completed
-     */
-    private function isMateriCompleted($user_id, $materi_id)
-    {
-        if (!$materi_id) {
-            return true;
-        }
-
-        $materi = Materi::with(['pretest', 'posttest'])->find($materi_id);
-        if (!$materi) {
-            return false;
-        }
-
-        // Check if both pretest and posttest are completed
-        $pretestCompleted = $this->isPretestCompleted($user_id, $materi_id);
-        $posttestCompleted = $this->isPosttestCompleted($user_id, $materi_id);
-
-        return $pretestCompleted && $posttestCompleted;
-    }
-
-    /**
-     * Check if pretest is completed
-     */
-    private function isPretestCompleted($user_id, $materi_id)
-    {
-        $materi = Materi::find($materi_id);
-        if (!$materi) {
-            return false;
-        }
-        $user = User::find($user_id);
-        if (!$user) {
-            return false;
-        }
-
-        // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) {
-            return true;
-        }
-
-        // Jika progress user pada materi ini sudah mencapai atau melewati step pretest
-        return $user->progress_level_sekarang >= User::PRE_TEST;
-    }
-
-    /**
-     * Check if posttest is completed
-     */
-    private function isPosttestCompleted($user_id, $materi_id)
-    {
-        $materi = Materi::find($materi_id);
-        if (!$materi) {
-            return false;
-        }
-        $user = User::find($user_id);
-        if (!$user) {
-            return false;
-        }
-
-        // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) {
-            return true;
-        }
-
-        // Jika progress user pada materi ini sudah mencapai atau melewati step posttest
-        return $user->progress_level_sekarang >= User::POST_TEST;
-    }
-
-    /**
-     * Calculate materi progress
-     */
-    private function calculateMateriProgress($user_id, $materi_id)
-    {
-        $materi = Materi::with(['pretest', 'posttest', 'ebook'])->find($materi_id);
-
-        $totalSteps = 0;
-        $completedSteps = 0;
-
-        // Count pretest
-        if ($materi->pretest->count() > 0) {
-            $totalSteps++;
-            if ($this->isPretestCompleted($user_id, $materi_id)) {
-                $completedSteps++;
-            }
-        }
-
-        // Count ebooks (assume read if pretest completed)
-        if ($materi->ebook->count() > 0) {
-            $totalSteps++;
-            if ($this->isPretestCompleted($user_id, $materi_id)) {
-                $completedSteps++;
-            }
-        }
-
-        // Count posttest
-        if ($materi->posttest->count() > 0) {
-            $totalSteps++;
-            if ($this->isPosttestCompleted($user_id, $materi_id)) {
-                $completedSteps++;
-            }
-        }
-
-        $progressPercentage = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 100;
-        $isCompleted = $this->isMateriCompleted($user_id, $materi_id);
-        $isStarted = $this->isPretestCompleted($user_id, $materi_id) || $this->isPosttestCompleted($user_id, $materi_id);
-
-        return [
-            'progress_percentage' => $progressPercentage,
-            'completed_steps' => $completedSteps,
-            'total_steps' => $totalSteps,
-            'is_completed' => $isCompleted,
-            'is_started' => $isStarted,
-        ];
-    }
-
-    /**
-     * Log user activity
-     */
-    private function logActivity($user_id, $aktivitas)
-    {
-        LogAktivitas::create([
-            'user_id' => $user_id,
-            'aktivitas' => $aktivitas,
-            'created_at' => now(),
-        ]);
     }
 
     /**
@@ -773,5 +685,96 @@ class HomeController extends Controller
         $materi = Materi::with(['tugas'])->findOrFail($materi_id);
 
         return view('guest.elearning.tugas', compact('materi'));
+    }
+
+    /**
+     * Calculate materi progress
+     */
+    private function calculateMateriProgress($user_id, $materi_id)
+    {
+        $materi = Materi::with(['pretest', 'posttest', 'ebook'])->find($materi_id);
+
+        $totalSteps = 0;
+        $completedSteps = 0;
+
+        // Count pretest
+        if ($materi->pretest->count() > 0) {
+            $totalSteps++;
+            if ($this->isPretestCompleted($user_id, $materi_id)) {
+                $completedSteps++;
+            }
+        }
+
+        // Count ebooks (assume read if pretest completed)
+        if ($materi->ebook->count() > 0) {
+            $totalSteps++;
+            if ($this->isPretestCompleted($user_id, $materi_id)) {
+                $completedSteps++;
+            }
+        }
+
+        // Count posttest
+        if ($materi->posttest->count() > 0) {
+            $totalSteps++;
+            if ($this->isPosttestCompleted($user_id, $materi_id)) {
+                $completedSteps++;
+            }
+        }
+
+        $progressPercentage = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 100;
+        $isCompleted = $this->isMateriCompleted($user_id, $materi_id);
+        $isStarted = $this->isPretestCompleted($user_id, $materi_id) || $this->isPosttestCompleted($user_id, $materi_id);
+
+        return [
+            'progress_percentage' => $progressPercentage,
+            'completed_steps' => $completedSteps,
+            'total_steps' => $totalSteps,
+            'is_completed' => $isCompleted,
+            'is_started' => $isStarted,
+        ];
+    }
+
+    /**
+     * Check if posttest is completed
+     */
+    private function isPosttestCompleted($user_id, $materi_id)
+    {
+        $materi = Materi::find($materi_id);
+        if (!$materi) {
+            return false;
+        }
+        $user = User::find($user_id);
+        if (!$user) {
+            return false;
+        }
+
+        // Jika materi sudah lewat level user, pasti sudah selesai
+        if ($materi->urutan < $user->level_sekarang + 1) {
+            return true;
+        }
+
+        // Jika progress user pada materi ini sudah mencapai atau melewati step posttest
+        return $user->progress_level_sekarang >= User::POST_TEST;
+    }
+
+    /**
+     * Check if materi is completed
+     */
+    private function isMateriCompleted($user_id, $materi_id)
+    {
+        if (!$materi_id) {
+            return true;
+        }
+
+        $materi = Materi::with(['pretest', 'posttest'])->find($materi_id);
+        if (!$materi) {
+            return false;
+        }
+
+        // Check if both pretest and posttest are completed
+        $pretestCompleted = $this->isPretestCompleted($user_id, $materi_id);
+        $posttestCompleted = $this->isPosttestCompleted($user_id, $materi_id);
+
+        return $pretestCompleted && $posttestCompleted;
     }
 }

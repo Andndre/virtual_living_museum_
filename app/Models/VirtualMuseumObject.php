@@ -12,8 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class VirtualMuseumObject extends Model
 {
     public $timestamps = false;
+
     protected $table = 'virtual_museum_object';
+
     protected $primaryKey = 'object_id';
+
     protected $fillable = [
         'situs_id',
         'museum_id',

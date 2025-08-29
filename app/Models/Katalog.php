@@ -25,6 +25,7 @@ class Katalog extends Model
         if ($this->path_pdf && Storage::disk('public')->exists($this->path_pdf)) {
             return round(Storage::disk('public')->size($this->path_pdf) / 1024 / 1024, 2) . ' MB';
         }
+
         return null;
     }
 }

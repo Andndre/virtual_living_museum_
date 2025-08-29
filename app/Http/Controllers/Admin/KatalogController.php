@@ -12,6 +12,7 @@ class KatalogController extends Controller
     public function edit()
     {
         $katalog = Katalog::first();
+
         return view('admin.katalog.edit', compact('katalog'));
     }
 
@@ -21,7 +22,7 @@ class KatalogController extends Controller
         \Log::info('File upload request:', [
             'hasFile' => $request->hasFile('path_pdf'),
             'allFiles' => $request->allFiles(),
-            'allInput' => $request->all()
+            'allInput' => $request->all(),
         ]);
 
         $katalog = Katalog::firstOrNew(['id' => 1]);

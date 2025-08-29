@@ -102,17 +102,17 @@ return [
     // Date Picker
     'date_picker' => [
         'weekdays' => [
-            'shorthand' => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-            'longhand' => ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            'shorthand' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'longhand' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         ],
         'months' => [
-            'shorthand' => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            'longhand' => ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+            'shorthand' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'longhand' => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         ],
-        'range_separator' => " to ",
-        'week_abbreviation' => "Wk",
-        'scroll_title' => "Scroll to increment",
-        'toggle_title' => "Click to toggle"
+        'range_separator' => ' to ',
+        'week_abbreviation' => 'Wk',
+        'scroll_title' => 'Scroll to increment',
+        'toggle_title' => 'Click to toggle',
     ],
 
     // Delete Account

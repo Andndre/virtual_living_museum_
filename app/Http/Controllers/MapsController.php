@@ -60,6 +60,7 @@ class MapsController extends Controller
                 ->map(function ($object) use ($unlockedSitusIds) {
                     $object->is_unlocked = in_array($object->situs_id, $unlockedSitusIds);
                     $object->type = 'object';
+
                     return $object;
                 });
 
@@ -72,6 +73,7 @@ class MapsController extends Controller
                 ->map(function ($museum) use ($unlockedSitusIds) {
                     $museum->is_unlocked = in_array($museum->situs_id, $unlockedSitusIds);
                     $museum->type = 'museum';
+
                     return $museum;
                 });
 
@@ -84,6 +86,7 @@ class MapsController extends Controller
                 ->map(function ($situs) use ($unlockedSitusIds) {
                     $situs->is_unlocked = in_array($situs->situs_id, $unlockedSitusIds);
                     $situs->type = 'situs';
+
                     return $situs;
                 });
 
@@ -112,7 +115,7 @@ class MapsController extends Controller
                 'objects' => $allResults,
                 'situs' => $situs,
                 'unlockedSitusIds' => $unlockedSitusIds,
-                'searchQuery' => $searchQuery
+                'searchQuery' => $searchQuery,
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
