@@ -99,6 +99,22 @@ return [
     'new_password' => 'Kata Sandi Baru',
     'confirm_password' => 'Konfirmasi Kata Sandi',
 
+    // Date Picker
+    'date_picker' => [
+        'weekdays' => [
+            'shorthand' => ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+            'longhand' => ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+        ],
+        'months' => [
+            'shorthand' => ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
+            'longhand' => ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+        ],
+        'range_separator' => " s/d ",
+        'week_abbreviation' => "Mgg",
+        'scroll_title' => "Scroll untuk mempercepat",
+        'toggle_title' => "Klik untuk mengubah"
+    ],
+
     // Delete Account
     'delete_account' => 'Hapus Akun',
     'delete_account_desc' => 'Setelah akun Anda dihapus, semua sumber daya dan data akan dihapus secara permanen. Sebelum menghapus akun, harap unduh data atau informasi apa pun yang ingin Anda pertahankan.',

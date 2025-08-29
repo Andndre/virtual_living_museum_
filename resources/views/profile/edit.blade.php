@@ -105,17 +105,17 @@
                     locale: {
                         firstDayOfWeek: 1,
                         weekdays: {
-                            shorthand: ["Ming", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-                            longhand: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                            shorthand: @json(__('app.date_picker.weekdays.shorthand')),
+                            longhand: @json(__('app.date_picker.weekdays.longhand'))
                         },
                         months: {
-                            shorthand: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
-                            longhand: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+                            shorthand: @json(__('app.date_picker.months.shorthand')),
+                            longhand: @json(__('app.date_picker.months.longhand'))
                         },
-                        rangeSeparator: " s/d ",
-                        weekAbbreviation: "Mgg",
-                        scrollTitle: "Scroll untuk mempercepat",
-                        toggleTitle: "Klik untuk mengubah",
+                        rangeSeparator: @json(__('app.date_picker.range_separator')),
+                        weekAbbreviation: @json(__('app.date_picker.week_abbreviation')),
+                        scrollTitle: @json(__('app.date_picker.scroll_title')),
+                        toggleTitle: @json(__('app.date_picker.toggle_title'))
                     }
                 });
             });
