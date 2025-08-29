@@ -2,14 +2,8 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
-            <x-application-logo class="w-12 h-12" />
-            <a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
-                @if(auth()->user()->profile_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
-                @else
-                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
-                @endif
-            </a>
+            <x-application-logo class="w-12 h-12"/>
+            <x-user-profile-navbar/>
         </div>
 
         <div class="pt-8 pb-8">
@@ -62,7 +56,8 @@
                         class="w-full p-4 flex items-center justify-between focus:outline-none"
                         :aria-expanded="activeGuide === '{{ $guide['id'] }}'">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 bg-primary rounded-full flex-shrink-0 flex items-center justify-center mr-4">
+                            <div
+                                class="w-12 h-12 bg-primary rounded-full flex-shrink-0 flex items-center justify-center mr-4">
                                 <i class="fas {{ $guide['icon'] }} text-white text-lg"></i>
                             </div>
                             <div class="text-left">
@@ -76,7 +71,7 @@
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
 
@@ -92,7 +87,8 @@
                         <div class="pl-16 pr-2 space-y-5">
                             @foreach($guide['steps'] as $index => $step)
                                 <div class="flex items-start">
-                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center mr-4 mt-0.5 text-base">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center mr-4 mt-0.5 text-base">
                                         {{ $index + 1 }}
                                     </div>
                                     <div>
@@ -109,5 +105,5 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav />
+    <x-bottom-nav/>
 </x-guest-layout>

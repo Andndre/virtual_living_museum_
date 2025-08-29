@@ -2,10 +2,10 @@
     {{-- Header Section --}}
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
-            <a href="{{ route('guest.pengaturan') }}"
-               class="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+            <button
+                class="back-button w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
                 <i class="fas fa-arrow-left text-white text-lg"></i>
-            </a>
+            </button>
         </div>
 
         <div class="flex flex-col items-center">
