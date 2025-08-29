@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property bool|mixed $is_unlocked
+ * @property mixed|string $type
+ */
 class VirtualMuseum extends Model
 {
     protected $table = 'virtual_museum';

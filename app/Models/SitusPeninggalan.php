@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property bool|mixed $is_unlocked
+ * @property mixed|string $type
+ */
 class SitusPeninggalan extends Model
 {
-    protected $table = 'situs_peninggalan';
-
-    protected $primaryKey = 'situs_id';
-
     public $timestamps = false;
-
+    protected $table = 'situs_peninggalan';
+    protected $primaryKey = 'situs_id';
     protected $fillable = [
         'nama',
         'alamat',
@@ -64,7 +65,7 @@ class SitusPeninggalan extends Model
     public function getThumbnailUrlAttribute(): string
     {
         if ($this->thumbnail) {
-            return asset('storage/'.$this->thumbnail);
+            return asset('storage/' . $this->thumbnail);
         }
 
         return asset('images/placeholder/default-situs.png');

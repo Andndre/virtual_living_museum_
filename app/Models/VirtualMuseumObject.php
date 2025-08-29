@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property bool|mixed $is_unlocked
+ * @property mixed|string $type
+ */
 class VirtualMuseumObject extends Model
 {
-    protected $table = 'virtual_museum_object';
-
-    protected $primaryKey = 'object_id';
-
     public $timestamps = false;
-
+    protected $table = 'virtual_museum_object';
+    protected $primaryKey = 'object_id';
     protected $fillable = [
         'situs_id',
         'museum_id',

@@ -130,7 +130,8 @@
         @endif
     </audio> --}}
     <div id="tracking-prompt" class="absolute left-1/2 bottom-[44] hidden animate-pulse">
-        <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;" alt=""/>
+        <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;"
+             alt=""/>
     </div>
     <div id="toaster-container" class="fixed bottom-0 right-0 m-4 z-[99999]"></div>
     <div id="bottom-sheet"
@@ -196,7 +197,7 @@
         </div>
         <div id="loading-container" class="w-4/5 bg-gray-300 h-2 rounded-full max-w-xl mx-auto my-8">
             <div id="loading-bar" class="h-full bg-orange-400 rounded-full transition-all duration-200"
-                 style="width:0%"></div>
+                 style="width:0"></div>
         </div>
     </div>
     <div id="ar-button-container"></div>

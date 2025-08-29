@@ -51,10 +51,10 @@ class MapsController extends Controller
             })->pluck('situs_id')->toArray();
 
             // Get all virtual living museum objects with their related sites
-            $objects = VirtualMuseumObject::with('situsPeninggalan', 'virtualMuseum')
-                ->when($searchQuery, function($query) use ($searchQuery) {
+            $objects = VirtualMuseumObject::with('situsPeninggalan')
+                ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('nama', 'like', "%{$searchQuery}%")
-                          ->orWhere('deskripsi', 'like', "%{$searchQuery}%");
+                        ->orWhere('deskripsi', 'like', "%{$searchQuery}%");
                 })
                 ->get()
                 ->map(function ($object) use ($unlockedSitusIds) {
@@ -65,7 +65,7 @@ class MapsController extends Controller
 
             // Get all virtual museums with their related sites
             $museums = \App\Models\VirtualMuseum::with('situsPeninggalan')
-                ->when($searchQuery, function($query) use ($searchQuery) {
+                ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('nama', 'like', "%{$searchQuery}%");
                 })
                 ->get()
@@ -76,10 +76,10 @@ class MapsController extends Controller
                 });
 
             // Get all situs peninggalan
-            $situsList = SitusPeninggalan::when($searchQuery, function($query) use ($searchQuery) {
-                    $query->where('nama', 'like', "%{$searchQuery}%")
-                          ->orWhere('deskripsi', 'like', "%{$searchQuery}%");
-                })
+            $situsList = SitusPeninggalan::when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('nama', 'like', "%{$searchQuery}%")
+                    ->orWhere('deskripsi', 'like', "%{$searchQuery}%");
+            })
                 ->get()
                 ->map(function ($situs) use ($unlockedSitusIds) {
                     $situs->is_unlocked = in_array($situs->situs_id, $unlockedSitusIds);
@@ -95,13 +95,13 @@ class MapsController extends Controller
 
             // If there's a search query, filter the results
             if ($searchQuery) {
-                $allResults = $allResults->filter(function($item) use ($searchQuery) {
+                $allResults = $allResults->filter(function ($item) use ($searchQuery) {
                     $searchLower = strtolower($searchQuery);
                     $name = strtolower($item->nama);
                     $description = isset($item->deskripsi) ? strtolower($item->deskripsi) : '';
-                    
-                    return str_contains($name, $searchLower) || 
-                           str_contains($description, $searchLower);
+
+                    return str_contains($name, $searchLower) ||
+                        str_contains($description, $searchLower);
                 });
             }
 

@@ -13,7 +13,8 @@
                         <li>
                             <div class="flex items-center">
                                 <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
-                                <a href="{{ route('admin.pretest', $pretest->materi_id) }}" class="text-gray-400 hover:text-gray-500">Pretest {{ $pretest->materi->judul }}</a>
+                                <a href="{{ route('admin.pretest', $pretest->materi_id) }}"
+                                   class="text-gray-400 hover:text-gray-500">Pretest {{ $pretest->materi->judul }}</a>
                             </div>
                         </li>
                         <li>
@@ -24,33 +25,34 @@
                         </li>
                     </ol>
                 </nav>
-                
+
                 <div class="mb-4">
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Soal Pretest</h1>
-                    <p class="mt-2 text-sm sm:text-base text-gray-600">Mengedit soal pretest untuk materi: <strong>{{ $pretest->materi->judul }}</strong></p>
+                    <p class="mt-2 text-sm sm:text-base text-gray-600">Mengedit soal pretest untuk materi:
+                        <strong>{{ $pretest->materi->judul }}</strong></p>
                 </div>
-                
+
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-3">
-                    <a href="{{ route('admin.pretest.show', [$pretest->materi_id, $pretest->pretest_id]) }}" class="inline-flex items-center justify-center px-4 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
+                    <a href="{{ route('admin.pretest.show', [$pretest->materi_id, $pretest->pretest_id]) }}"
+                       class="inline-flex items-center justify-center px-4 py-2 border border-blue-300 rounded-md shadow-sm text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
                         <i class="fas fa-eye mr-2"></i>
                         <span class="hidden sm:inline">Lihat Detail</span>
                         <span class="sm:hidden">Detail</span>
                     </a>
-                    <a href="{{ route('admin.pretest', $pretest->materi_id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <a href="{{ route('admin.pretest', $pretest->materi_id) }}"
+                       class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>
                         <span class="hidden sm:inline">Kembali ke Pretest</span>
                         <span class="sm:hidden">Kembali</span>
                     </a>
                 </div>
-                        </a>
-                    </div>
-                </div>
             </div>
 
             <!-- Form -->
             <div class="bg-white shadow sm:rounded-lg">
-                <form action="{{ route('admin.pretest.update', [$pretest->materi_id, $pretest->pretest_id]) }}" method="POST">
+                <form action="{{ route('admin.pretest.update', [$pretest->materi_id, $pretest->pretest_id]) }}"
+                      method="POST">
                     @csrf
                     @method('PUT')
                     <div class="px-4 py-5 sm:p-6 space-y-6">
@@ -59,16 +61,16 @@
                             <label for="pertanyaan" class="block text-sm font-medium text-gray-700 mb-1">
                                 Pertanyaan <span class="text-red-500">*</span>
                             </label>
-                            <textarea 
-                                name="pertanyaan" 
-                                id="pertanyaan" 
-                                rows="4" 
+                            <textarea
+                                name="pertanyaan"
+                                id="pertanyaan"
+                                rows="4"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Masukkan pertanyaan pretest"
                                 required
                             >{{ old('pertanyaan', $pretest->pertanyaan) }}</textarea>
                             @error('pertanyaan')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -79,17 +81,17 @@
                                 <label for="pilihan_a" class="block text-sm font-medium text-gray-700 mb-1">
                                     Pilihan A <span class="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="pilihan_a" 
-                                    id="pilihan_a" 
-                                    value="{{ old('pilihan_a', $pretest->pilihan_a) }}" 
+                                <input
+                                    type="text"
+                                    name="pilihan_a"
+                                    id="pilihan_a"
+                                    value="{{ old('pilihan_a', $pretest->pilihan_a) }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Masukkan pilihan A"
                                     required
                                 >
                                 @error('pilihan_a')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -98,17 +100,17 @@
                                 <label for="pilihan_b" class="block text-sm font-medium text-gray-700 mb-1">
                                     Pilihan B <span class="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="pilihan_b" 
-                                    id="pilihan_b" 
-                                    value="{{ old('pilihan_b', $pretest->pilihan_b) }}" 
+                                <input
+                                    type="text"
+                                    name="pilihan_b"
+                                    id="pilihan_b"
+                                    value="{{ old('pilihan_b', $pretest->pilihan_b) }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Masukkan pilihan B"
                                     required
                                 >
                                 @error('pilihan_b')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -117,17 +119,17 @@
                                 <label for="pilihan_c" class="block text-sm font-medium text-gray-700 mb-1">
                                     Pilihan C <span class="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="pilihan_c" 
-                                    id="pilihan_c" 
-                                    value="{{ old('pilihan_c', $pretest->pilihan_c) }}" 
+                                <input
+                                    type="text"
+                                    name="pilihan_c"
+                                    id="pilihan_c"
+                                    value="{{ old('pilihan_c', $pretest->pilihan_c) }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Masukkan pilihan C"
                                     required
                                 >
                                 @error('pilihan_c')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -136,17 +138,17 @@
                                 <label for="pilihan_d" class="block text-sm font-medium text-gray-700 mb-1">
                                     Pilihan D <span class="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="pilihan_d" 
-                                    id="pilihan_d" 
-                                    value="{{ old('pilihan_d', $pretest->pilihan_d) }}" 
+                                <input
+                                    type="text"
+                                    name="pilihan_d"
+                                    id="pilihan_d"
+                                    value="{{ old('pilihan_d', $pretest->pilihan_d) }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Masukkan pilihan D"
                                     required
                                 >
                                 @error('pilihan_d')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
@@ -157,25 +159,33 @@
                                 Jawaban Benar <span class="text-red-500">*</span>
                             </label>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <label class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'A' ? 'bg-green-50 border-green-300' : '' }}">
-                                    <input type="radio" name="jawaban_benar" value="A" class="mr-3 text-blue-600" {{ old('jawaban_benar', $pretest->jawaban_benar) === 'A' ? 'checked' : '' }} required>
+                                <label
+                                    class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'A' ? 'bg-green-50 border-green-300' : '' }}">
+                                    <input type="radio" name="jawaban_benar" value="A" class="mr-3 text-blue-600"
+                                           {{ old('jawaban_benar', $pretest->jawaban_benar) === 'A' ? 'checked' : '' }} required>
                                     <span class="text-sm font-medium">Pilihan A</span>
                                 </label>
-                                <label class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'B' ? 'bg-green-50 border-green-300' : '' }}">
-                                    <input type="radio" name="jawaban_benar" value="B" class="mr-3 text-blue-600" {{ old('jawaban_benar', $pretest->jawaban_benar) === 'B' ? 'checked' : '' }} required>
+                                <label
+                                    class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'B' ? 'bg-green-50 border-green-300' : '' }}">
+                                    <input type="radio" name="jawaban_benar" value="B" class="mr-3 text-blue-600"
+                                           {{ old('jawaban_benar', $pretest->jawaban_benar) === 'B' ? 'checked' : '' }} required>
                                     <span class="text-sm font-medium">Pilihan B</span>
                                 </label>
-                                <label class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'C' ? 'bg-green-50 border-green-300' : '' }}">
-                                    <input type="radio" name="jawaban_benar" value="C" class="mr-3 text-blue-600" {{ old('jawaban_benar', $pretest->jawaban_benar) === 'C' ? 'checked' : '' }} required>
+                                <label
+                                    class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'C' ? 'bg-green-50 border-green-300' : '' }}">
+                                    <input type="radio" name="jawaban_benar" value="C" class="mr-3 text-blue-600"
+                                           {{ old('jawaban_benar', $pretest->jawaban_benar) === 'C' ? 'checked' : '' }} required>
                                     <span class="text-sm font-medium">Pilihan C</span>
                                 </label>
-                                <label class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'D' ? 'bg-green-50 border-green-300' : '' }}">
-                                    <input type="radio" name="jawaban_benar" value="D" class="mr-3 text-blue-600" {{ old('jawaban_benar', $pretest->jawaban_benar) === 'D' ? 'checked' : '' }} required>
+                                <label
+                                    class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors {{ old('jawaban_benar', $pretest->jawaban_benar) === 'D' ? 'bg-green-50 border-green-300' : '' }}">
+                                    <input type="radio" name="jawaban_benar" value="D" class="mr-3 text-blue-600"
+                                           {{ old('jawaban_benar', $pretest->jawaban_benar) === 'D' ? 'checked' : '' }} required>
                                     <span class="text-sm font-medium">Pilihan D</span>
                                 </label>
                             </div>
                             @error('jawaban_benar')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -200,14 +210,16 @@
 
                     <!-- Form Actions -->
                     <div class="px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-3">
-                        <a href="{{ route('admin.pretest', $pretest->materi_id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                        <a href="{{ route('admin.pretest', $pretest->materi_id) }}"
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                             Batal
                         </a>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                             <i class="fas fa-save mr-2"></i>
                             Simpan Perubahan
                         </button>
-                    </div>
+                        </d
                 </form>
             </div>
         </div>
