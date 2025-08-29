@@ -194,4 +194,10 @@ return [
     'view_report' => 'View Report',
     'your_rank' => 'Your Rank',
     'leaderboard' => 'Leaderboard',
+    'please_enter_your_phone_number' => 'Please enter your phone number',
+    'please_enter_your_address' => 'Please enter your address',
+    'please_enter_your_date_of_birth' => 'Please enter your date of birth',
+    'please_enter_your_job' => 'Please enter your job',
+    'job' => 'Job',
+    'date_of_birth' => 'Date of Birth',
 ];

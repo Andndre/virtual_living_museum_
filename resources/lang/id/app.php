@@ -194,4 +194,10 @@ return [
     'view_report' => 'Lihat Rapor',
     'your_rank' => 'Peringkat Kamu',
     'leaderboard' => 'Papan Peringkat',
+    'please_enter_your_phone_number' => 'Mohon masukkan nomor telepon Anda',
+    'please_enter_your_address' => 'Mohon masukkan alamat Anda',
+    'please_enter_your_date_of_birth' => 'Mohon masukkan tanggal lahir Anda',
+    'please_enter_your_job' => 'Mohon masukkan pekerjaan Anda',
+    'job' => 'Pekerjaan',
+    'date_of_birth' => 'Tanggal Lahir',
 ];
