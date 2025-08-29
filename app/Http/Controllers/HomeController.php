@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ebook;
 use App\Models\JawabanUser;
+use App\Models\Katalog;
 use App\Models\LogAktivitas;
 use App\Models\Materi;
 use App\Models\MuseumUserVisit;
@@ -41,7 +42,7 @@ class HomeController extends Controller
         $user = Auth::user();
 
         // Check if profile is complete
-        $profileComplete = ! empty($user->phone_number) && ! empty($user->address) && ! empty($user->date_of_birth);
+        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
 
         return view('guest.home', compact('greeting', 'profileComplete'));
     }
@@ -61,28 +62,28 @@ class HomeController extends Controller
 
         // Get all users with their posttest scores (0-100 scale per material)
         $users = User::where('role', 'user')
-            ->with(['jawabanUser' => function($query) {
+            ->with(['jawabanUser' => function ($query) {
                 $query->where('jenis', 'posttest');
             }])
             ->get()
-            ->map(function($user) {
+            ->map(function ($user) {
                 // Group posttest answers by materi_id
                 $scoresByMateri = $user->jawabanUser->groupBy('materi_id');
-                
+
                 // Calculate average score (0-100) across all materials
                 $totalScore = 0;
                 $materiCount = $scoresByMateri->count();
-                
+
                 foreach ($scoresByMateri as $materiId => $answers) {
                     $totalQuestions = $answers->count();
                     $correctAnswers = $answers->where('benar', true)->count();
                     $materiScore = $totalQuestions > 0 ? ($correctAnswers / $totalQuestions) * 100 : 0;
                     $totalScore += $materiScore;
                 }
-                
+
                 // Calculate average score (0-100) for the user
                 $averageScore = $materiCount > 0 ? $totalScore / $materiCount : 0;
-                
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -139,34 +140,34 @@ class HomeController extends Controller
     public function rapor()
     {
         $user = auth()->user();
-        
+
         // Get all materials with user's test results
         $materials = Materi::with(['pretest', 'posttest'])
             ->orderBy('urutan')
             ->get()
-            ->map(function($materi) use ($user) {
+            ->map(function ($materi) use ($user) {
                 // Get pretest results
                 $pretest = JawabanUser::where('user_id', $user->id)
                     ->where('materi_id', $materi->materi_id)
                     ->where('jenis', 'pretest')
                     ->get();
-                
+
                 // Get posttest results
                 $posttest = JawabanUser::where('user_id', $user->id)
                     ->where('materi_id', $materi->materi_id)
                     ->where('jenis', 'posttest')
                     ->get();
-                
+
                 // Calculate scores on 0-100 scale
                 $pretestCorrect = $pretest->where('benar', true)->count();
                 $pretestTotal = $materi->pretest->count();
                 $posttestCorrect = $posttest->where('benar', true)->count();
                 $posttestTotal = $materi->posttest->count();
-                
+
                 // Calculate percentage scores (0-100)
                 $pretestScore = $pretestTotal > 0 ? round(($pretestCorrect / $pretestTotal) * 100) : 0;
                 $posttestScore = $posttestTotal > 0 ? round(($posttestCorrect / $posttestTotal) * 100) : 0;
-                
+
                 return [
                     'id' => $materi->materi_id,
                     'judul' => $materi->judul,
@@ -185,12 +186,12 @@ class HomeController extends Controller
                     'completion' => $posttestScore, // Completion is same as posttest percentage
                 ];
             });
-        
+
         // Total score is the sum of all posttest scores (0-300 for 3 materials)
         $totalScore = $materials->sum('posttest.score');
         $maxTotalScore = 100 * $materials->count(); // 100 per material
         $overallPercentage = $totalScore / $materials->count(); // Average percentage
-        
+
         return view('guest.statistik.rapor', [
             'materials' => $materials,
             'totalScore' => $totalScore,
@@ -238,7 +239,7 @@ class HomeController extends Controller
         $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
 
         $nextMateri = $materis->first(function ($materi) {
-            return $materi->is_available && ! $materi->is_completed;
+            return $materi->is_available && !$materi->is_completed;
         });
 
         $riwayatAktivitas = LogAktivitas::where('user_id', $user->id)
@@ -403,7 +404,7 @@ class HomeController extends Controller
         $materi = Materi::with('posttest')->findOrFail($materi_id);
 
         // Check if pretest is completed (requirement for posttest)
-        if (! $this->isPretestCompleted($user->id, $materi_id)) {
+        if (!$this->isPretestCompleted($user->id, $materi_id)) {
             return redirect()->route('guest.elearning.materi', $materi_id)
                 ->with('error', 'Selesaikan pretest terlebih dahulu.');
         }
@@ -534,7 +535,7 @@ class HomeController extends Controller
         }
 
         // Log AR activity
-        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: '.$museum->nama.' di '.$situs->nama);
+        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: ' . $museum->nama . ' di ' . $situs->nama);
 
         // --- Museum Visit Tracking Logic ---
         // 1. Catat kunjungan user ke museum ini (jika belum ada)
@@ -565,7 +566,7 @@ class HomeController extends Controller
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
                 if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->urutan) {
                     $user->incrementProgressLevel();
-                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: '.$materiId);
+                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: ' . $materiId);
                 }
             }
         }
@@ -575,17 +576,28 @@ class HomeController extends Controller
         return view('guest.ar.museum', compact('situs', 'museum'));
     }
 
+    public function arMarkerKatalog()
+    {
+        $katalog = Katalog::first();
+//      download katalog
+        if ($katalog->path_pdf && Storage::disk('public')->exists($katalog->path_pdf)) {
+            return response()->download(storage_path('app/public/' . $katalog->path_pdf));
+        }
+//      not found
+        return redirect()->back()->with('error', 'Katalog tidak ditemukan');
+    }
+
     /**
      * Check if materi is completed
      */
     private function isMateriCompleted($user_id, $materi_id)
     {
-        if (! $materi_id) {
+        if (!$materi_id) {
             return true;
         }
 
         $materi = Materi::with(['pretest', 'posttest'])->find($materi_id);
-        if (! $materi) {
+        if (!$materi) {
             return false;
         }
 
@@ -602,11 +614,11 @@ class HomeController extends Controller
     private function isPretestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (! $materi) {
+        if (!$materi) {
             return false;
         }
         $user = User::find($user_id);
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 
@@ -625,11 +637,11 @@ class HomeController extends Controller
     private function isPosttestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (! $materi) {
+        if (!$materi) {
             return false;
         }
         $user = User::find($user_id);
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 
@@ -711,19 +723,19 @@ class HomeController extends Controller
 
         // Check if user has completed pretest for this materi
         $pretestCompleted = $this->isPretestCompleted($user->id, $ebook->materi_id);
-        if (! $pretestCompleted) {
+        if (!$pretestCompleted) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'Anda harus menyelesaikan pre-test terlebih dahulu untuk mengakses e-book ini.');
         }
 
         // Check if file exists
-        if (! $ebook->path_file || ! file_exists(storage_path('app/public/'.$ebook->path_file))) {
+        if (!$ebook->path_file || !file_exists(storage_path('app/public/' . $ebook->path_file))) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'File e-book tidak ditemukan.');
         }
 
         // Log activity with ebook_id for tracking
-        $this->logActivity($user->id, 'Telah membaca E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
+        $this->logActivity($user->id, 'Telah membaca E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
 
         // Catatan: Progress level akan diupdate via AJAX saat user membaca halaman terakhir (lihat endpoint di bawah)
 
@@ -747,7 +759,7 @@ class HomeController extends Controller
         }
 
         // Log aktivitas jika perlu
-        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
+        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
 
         return response()->json(['success' => true]);
     }
