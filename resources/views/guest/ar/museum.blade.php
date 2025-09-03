@@ -16,19 +16,19 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Joti+One&display=swap" rel="stylesheet">
 
-    <script type="importmap">
-        {
-          "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@v0.153.0/build/three.module.js",
-            "three/jsm/": "https://cdn.jsdelivr.net/npm/three@v0.153.0/examples/jsm/"
-          }
-        }
-    </script>
+    {{--    <script type="importmap">--}}
+    {{--        {--}}
+    {{--          "imports": {--}}
+    {{--            "three": "https://cdn.jsdelivr.net/npm/three@v0.153.0/build/three.module.js",--}}
+    {{--            "three/jsm/": "https://cdn.jsdelivr.net/npm/three@v0.153.0/examples/jsm/"--}}
+    {{--          }--}}
+    {{--        }--}}
+    {{--    </script>--}}
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
             integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
 
-    <script src="https://launchar.app/sdk/v1?key=5aBe43oIyUoBC3PyhermEi3oqqswm07z&redirect=true"></script>
+    <script src="https://launchar.app/sdk/v1?key=RDgojZ30201nvtK5SuFFTIUNDDLpxiVj&redirect=true"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap"
           rel="stylesheet"/>
 
@@ -178,12 +178,12 @@
 </div>
 <div id="app">
     <div
-        class="flex flex-col items-center justify-center max-w-5xl min-w-[320px] min-h-[80vh] p-8 gap-4 mx-auto text-center absolute inset-0 z-[15] pointer-events-none">
+        class="flex flex-col items-center pt-36 max-w-5xl min-w-[320px] min-h-[80vh] p-8 gap-4 mx-auto text-center absolute inset-0 z-[15] pointer-events-none">
         <div class="flex justify-center mb-2">
             <x-application-logo class="w-12 h-12"/>
         </div>
         <h2 class="text-2xl font-bold text-primary mb-2 text-center">Virtual Living Museum</h2>
-        <div id="ar-not-supported" class="w-full bg-white rounded-xl shadow p-6 mt-4">
+        <div id="ar-not-supported" class="hidden w-full bg-white rounded-xl shadow p-6 mt-8">
             <p class="text-red-600 font-semibold">Teknologi WebXR tidak didukung di perangkat Anda.</p>
             <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a
                     href="https://launch.variant3d.com/docs" class="underline">https://launch.variant3d.com</a>.</p>
@@ -208,8 +208,7 @@
         console.log(museum);
     </script>
 
-    {{-- AR Museum Implementation --}}
-    <script type="module" src="{{ asset('js/ar-museum.js') }}"></script>
+    @vite(['resources/js/ar-museum.js'])
 </div>
 </body>
 

@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/jsm/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
-import { ARButton } from "three/jsm/webxr/ARButton.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
 
 let initialized = false;
 
@@ -50,12 +50,12 @@ class SceneManager {
             70,
             window.innerWidth / window.innerHeight,
             0.01,
-            999
+            999,
         );
 
         this.reticle = new THREE.Mesh(
             new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-            new THREE.MeshBasicMaterial()
+            new THREE.MeshBasicMaterial(),
         );
         this.reticle.matrixAutoUpdate = false;
         this.reticle.visible = false;
@@ -71,7 +71,11 @@ class SceneManager {
         this.skybox = null;
 
         // Add hemisphere light (ambient light from sky and ground)
-        const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
+        const hemisphereLight = new THREE.HemisphereLight(
+            0xffffff,
+            0xbbbbff,
+            0.3,
+        );
         hemisphereLight.position.set(0.5, 1, 0.25);
         this.scene.add(hemisphereLight);
 
@@ -114,7 +118,7 @@ class SceneManager {
 
         // Load sky texture - we'll use a simple equirectangular texture
         // This can be replaced with a more suitable texture for the museum context
-        const texture = textureLoader.load('/images/hdri/langit.jpg', () => {
+        const texture = textureLoader.load("/images/hdri/langit.jpg", () => {
             console.log("Skybox texture loaded");
             showToaster("Skybox texture loaded");
         });
@@ -128,7 +132,7 @@ class SceneManager {
         skyGeometry.scale(-1, 1, 1);
 
         const skyMaterial = new THREE.MeshBasicMaterial({
-            map: texture
+            map: texture,
         });
 
         this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
@@ -154,7 +158,6 @@ function showToaster(message) {
     // toaster.className = "toaster";
     // toaster.innerText = message;
     // toasterContainer.appendChild(toaster);
-
     // setTimeout(() => {
     //     toaster.remove();
     // }, 3000);
@@ -188,7 +191,7 @@ class RendererManager {
 
         this.renderer.xr.addEventListener(
             "sessionstart",
-            this.onSessionStart.bind(this)
+            this.onSessionStart.bind(this),
         );
     }
 
@@ -212,7 +215,7 @@ class RendererManager {
      */
     animate(sceneManager) {
         this.renderer.setAnimationLoop((timestamp, frame) =>
-            this.render(timestamp, frame, sceneManager)
+            this.render(timestamp, frame, sceneManager),
         );
     }
 
@@ -234,17 +237,21 @@ class RendererManager {
 
             if (this.hitTestSource) {
                 const hitTestResults = frame.getHitTestResults(
-                    this.hitTestSource
+                    this.hitTestSource,
                 );
                 this.handleHitTestResults(
                     hitTestResults,
                     referenceSpace,
-                    sceneManager
+                    sceneManager,
                 );
             }
 
             // Update skybox position to follow the camera if it exists and is visible
-            if (sceneManager.skybox && sceneManager.skybox.visible && sceneManager.placed) {
+            if (
+                sceneManager.skybox &&
+                sceneManager.skybox.visible &&
+                sceneManager.placed
+            ) {
                 const cameraPosition = new THREE.Vector3();
                 sceneManager.camera.getWorldPosition(cameraPosition);
                 sceneManager.skybox.position.copy(cameraPosition);
@@ -299,7 +306,7 @@ class RendererManager {
             const hit = hitTestResults[0];
             sceneManager.reticle.visible = true;
             sceneManager.reticle.matrix.fromArray(
-                hit.getPose(referenceSpace).transform.matrix
+                hit.getPose(referenceSpace).transform.matrix,
             );
         } else {
             sceneManager.reticle.visible = false;
@@ -314,7 +321,7 @@ class ModelLoader {
     static async loadModel(name, onProgress) {
         this.dracoLoader.setDecoderConfig({ type: "js" });
         this.dracoLoader.setDecoderPath(
-            "https://www.gstatic.com/draco/v1/decoders/"
+            "https://www.gstatic.com/draco/v1/decoders/",
         );
         this.loader.setDRACOLoader(this.dracoLoader);
         const model = await this.loader.loadAsync(name, onProgress);
@@ -337,7 +344,7 @@ function createARButton(renderer) {
             ARButton.createButton(renderer, {
                 requiredFeatures: ["local", "hit-test", "dom-overlay"],
                 domOverlay: { root: document.querySelector("#overlay") },
-            })
+            }),
         );
     }
 }
@@ -350,7 +357,7 @@ async function main() {
 
     showToaster("Loading model...");
     const model = await ModelLoader.loadModel(
-        '/storage/' + museum.path_obj,
+        "/storage/" + museum.path_obj,
         (event) => {
             const fileSize = event.total || museum.file_size || 43445936; // Use server-provided size as fallback
             let progress = (event.loaded / fileSize) * 100;
@@ -360,7 +367,7 @@ async function main() {
                 "block";
             document.getElementById("loading-bar").style.width = `${progress}%`;
             showToaster(`Loading progress: ${progress}%`);
-        }
+        },
     );
 
     document.getElementById("loading-container").style.display = "none";
@@ -380,11 +387,12 @@ async function main() {
 
     sceneManager.setOnSelect((matrix) => {
         if (model.visible) return;
+        document.getElementById("app").style.display = "none";
         document.getElementById("instructions").style.display = "none";
-        console.log("Placing model");
-        console.log("Position: ", model.position);
-        console.log("Quaternion: ", model.quaternion);
-        console.log("Scale: ", model.scale);
+        showToaster("Placing model");
+        showToaster("Position: " + model.position);
+        showToaster("Quaternion: " + model.quaternion);
+        showToaster("Scale: " + model.scale);
         matrix.decompose(model.position, model.quaternion, model.scale);
 
         const targetPosition = new THREE.Vector3();
@@ -407,11 +415,17 @@ async function main() {
         if (sceneManager.sunLight) {
             // Position the sun light relative to the model
             const lightOffset = new THREE.Vector3(15, 20, 10);
-            sceneManager.sunLight.position.copy(model.position).add(lightOffset);
+            sceneManager.sunLight.position
+                .copy(model.position)
+                .add(lightOffset);
             sceneManager.sunLight.target = model;
 
             // Make sure the target is part of the scene for the directional light to work properly
-            if (!sceneManager.scene.children.includes(sceneManager.sunLight.target)) {
+            if (
+                !sceneManager.scene.children.includes(
+                    sceneManager.sunLight.target,
+                )
+            ) {
                 sceneManager.scene.add(sceneManager.sunLight.target);
             }
 
@@ -420,31 +434,6 @@ async function main() {
 
         sceneManager.reticle.visible = false;
         sceneManager.placed = true;
-
-        // const audio = document.getElementById("audio-portal");
-        // audio.addEventListener("canplay", async () => {
-        //     showToaster("Audio can play");
-        //     console.log("Audio can play");
-        //     await audio.play().catch((error) => {
-        //         showToaster("Audio play error: " + error.message);
-        //         console.error("Audio play error:", error);
-        //     });
-        // });
-
-        // audio.addEventListener("error", (e) => {
-        //     showToaster("Audio error: " + e.message);
-        //     console.error("Audio error:", e);
-        // });
-
-        // if (audio.readyState >= 2) {
-        //     showToaster("Audio already loaded");
-        //     console.log("Audio already loaded");
-        //     audio.dispatchEvent(new Event("canplay"));
-        // } else {
-        //     showToaster("Loading audio");
-        //     console.log("Loading audio");
-        //     audio.load();
-        // }
     });
 
     showToaster("Starting animation loop");
@@ -455,9 +444,22 @@ async function main() {
 if ("xr" in navigator) {
     navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
         if (supported) {
+            showToaster("Supported");
             //hide "ar-not-supported"
             document.getElementById("ar-not-supported").style.display = "none";
             main();
+        } else {
+            arNotSupported();
         }
     });
+} else {
+    arNotSupported();
+}
+
+function arNotSupported() {
+    document.getElementById("ar-not-supported").style.display = "block";
+    document.getElementById("ar-button-container").style.display = "none";
+    document.getElementById("instructions").style.display = "none";
+    document.getElementById("expand-bottom-sheet").style.display = "none";
+    document.getElementById("loading-container").style.display = "none";
 }

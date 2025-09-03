@@ -99,7 +99,9 @@
                                     <h4 class="font-semibold text-gray-900">{{ $museum->nama }}</h4>
                                     @if($museum->virtualMuseumObjects->count() > 0)
                                         <p class="text-sm text-gray-600">
-                                            <span class="font-medium">{{ $museum->virtualMuseumObjects->count() }}</span> objek peninggalan tersedia
+                                            <span
+                                                class="font-medium">{{ $museum->virtualMuseumObjects->count() }}</span>
+                                            objek peninggalan tersedia
                                         </p>
                                     @endif
                                 </div>
@@ -133,15 +135,18 @@
                     </h5>
                     <ol class="text-sm text-gray-700 space-y-2 ml-4">
                         <li class="flex items-start">
-                            <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">1</span>
+                            <span
+                                class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">1</span>
                             <span>Pilih spot yang ingin dijelajahi dan klik tombol "Jelajahi AR"</span>
                         </li>
                         <li class="flex items-start">
-                            <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">2</span>
+                            <span
+                                class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">2</span>
                             <span>Izinkan akses kamera dan arahkan ke permukaan datar</span>
                         </li>
                         <li class="flex items-start">
-                            <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">3</span>
+                            <span
+                                class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">3</span>
                             <span>Ketuk lingkaran untuk menempatkan objek berukuran besar</span>
                         </li>
                     </ol>
@@ -153,7 +158,8 @@
                         <i class="fas fa-exclamation-triangle text-amber-600 mt-0.5"></i>
                         <div class="text-left">
                             <p class="text-sm font-medium text-amber-800">Persyaratan:</p>
-                            <p class="text-xs text-amber-700 mt-1">Browser dengan dukungan WebXR, kamera, koneksi stabil, dan pencahayaan cukup</p>
+                            <p class="text-xs text-amber-700 mt-1">Browser dengan dukungan WebXR, kamera, koneksi
+                                stabil, dan pencahayaan cukup</p>
                         </div>
                     </div>
                 </div>
@@ -194,69 +200,12 @@
     {{-- AR JavaScript (Three.js WebXR implementation) --}}
     <script>
         function launchSpotAR(museumId, museumName) {
-            // Check WebXR support first
-            if (!('xr' in navigator)) {
-                alert('WebXR tidak didukung di browser ini. Gunakan browser yang mendukung WebXR seperti Chrome atau Edge terbaru.');
-                return;
+            const confirmation = confirm(`Memulai pengalaman AR untuk spot "${museumName}"?\n\nPastikan Anda berada di tempat yang memiliki pencahayaan cukup dan permukaan datar untuk penempatan objek.`);
+
+            if (confirmation) {
+                // Redirect to AR experience page using Laravel route
+                window.location.href = `{{ url('/situs') }}/{{ $situs->situs_id }}/ar/${museumId}`;
             }
-
-            navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-                if (!supported) {
-                    alert('AR tidak didukung di perangkat ini. Pastikan Anda menggunakan perangkat yang mendukung WebXR.');
-                    return;
-                }
-
-                // Launch AR for specific museum spot
-                const confirmation = confirm(`Memulai pengalaman AR untuk spot "${museumName}"?\n\nPastikan Anda berada di tempat yang memiliki pencahayaan cukup dan permukaan datar untuk penempatan objek.`);
-
-                if (confirmation) {
-                    // Redirect to AR experience page using Laravel route
-                    const arUrl = `{{ url('/situs') }}/{{ $situs->situs_id }}/ar/${museumId}`;
-                    window.location.href = arUrl;
-                }
-            }).catch((error) => {
-                console.error('Error checking WebXR support:', error);
-                alert('Terjadi kesalahan saat memeriksa dukungan AR. Pastikan browser Anda mendukung WebXR.');
-            });
-        }
-
-        // Check AR support on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            if ('xr' in navigator) {
-                navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-                    if (!supported) {
-                        console.log('AR not supported on this device');
-                        // Optionally update UI to show limited support
-                        const arButtons = document.querySelectorAll('button[onclick*="launchSpotAR"]');
-                        arButtons.forEach(button => {
-                            button.classList.add('opacity-50', 'cursor-not-allowed');
-                            button.disabled = true;
-                            button.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>AR Tidak Didukung';
-                        });
-                    }
-                });
-            } else {
-                console.log('WebXR not supported');
-                // Disable all AR buttons
-                const arButtons = document.querySelectorAll('button[onclick*="launchSpotAR"]');
-                arButtons.forEach(button => {
-                    button.classList.add('opacity-50', 'cursor-not-allowed');
-                    button.disabled = true;
-                    button.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>WebXR Tidak Didukung';
-                });
-            }
-        });
-
-        // Helper function to show loading state
-        function showARLoading(button) {
-            const originalHTML = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memuat AR...';
-            button.disabled = true;
-
-            return function() {
-                button.innerHTML = originalHTML;
-                button.disabled = false;
-            };
         }
     </script>
 </x-elearning-layout>
