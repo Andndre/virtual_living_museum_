@@ -99,6 +99,38 @@
             background: #1d4ed8 !important; /* biru lebih gelap saat hover */
             border-width: 3px !important;
         }
+
+
+        @keyframes circle {
+            from {
+                transform: translateX(-50%) rotate(0deg) translateX(50px) rotate(0deg);
+            }
+            to {
+                transform: translateX(-50%) rotate(360deg) translateX(50px) rotate(-360deg);
+            }
+        }
+
+        @keyframes elongate {
+            from {
+                transform: translateX(100px);
+            }
+            to {
+                transform: translateX(-100px);
+            }
+        }
+
+        #tracking-prompt {
+            position: absolute;
+            left: 50%;
+            bottom: 175px;
+            animation: elongate 2s infinite ease-in-out alternate;
+            display: none;
+        }
+
+        #tracking-prompt > img {
+            animation: circle 4s linear infinite;
+        }
+
     </style>
 </head>
 
