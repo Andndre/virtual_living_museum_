@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
+import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
 
 let initialized = false;
 
@@ -37,6 +38,7 @@ async function generateQRCode(text) {
 
 async function generateLaunchCode() {
     let url = await VLaunch.getLaunchUrl(window.location.href);
+    console.log(url);
 
     await generateQRCode(url);
     showToaster("QR berhasil dibuat");
@@ -52,6 +54,15 @@ class SceneManager {
             0.01,
             999,
         );
+
+        this.composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(this.scene, this.camera);
+        this.composer.addPass(renderPass);
+
+        // Ssao effect
+        const ssaoEffect = new SSAOEffect(this.camera);
+
+        this.composer.addPass(ssaoEffect);
 
         this.reticle = new THREE.Mesh(
             new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
