@@ -224,7 +224,7 @@
                 <div id="qr-code"
                      class="p-4 bg-white mx-auto text-black flex flex-col items-center gap-3 rounded-lg shadow">
                     <span class="sr-only">Loading...</span>
-                    <p>Memuat QR</p>
+                    <p>Error 426: Perangkat/Browser tidak didukung</p>
                 </div>
             </div>
         </div>
