@@ -58,8 +58,10 @@ async function generateLaunchCode() {
     showToaster("QR berhasil dibuat");
     console.log("Launch Code Generated");
 
-    // redirect to url
-    window.open(url, "_blank");
+    // coba buka tab baru dengan delay 0
+    setTimeout(() => {
+        window.open(url, "_top");
+    }, 0);
 }
 
 class SceneManager {
