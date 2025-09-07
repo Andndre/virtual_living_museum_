@@ -6,23 +6,35 @@ import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
 
 let initialized = false;
 
-window.addEventListener("vlaunch-initialized", (e) => {
-    initialized = true;
-    document.getElementById("qr-code").innerHTML = "";
-    generateLaunchCode();
-});
+const ua = navigator.userAgent.toLowerCase();
 
-if (VLaunch.initialized) {
-    document.getElementById("qr-code").innerHTML = "";
-    generateLaunchCode();
-} else {
-    setTimeout(() => {
-        if (!initialized) {
-            document.getElementById("qr-code").innerHTML =
-                "Web XR tidak didukung di Variant Launch Anda";
-            generateQRCode(window.location.href);
-        }
-    }, 10000);
+const isIphone = /iphone|ipod/.test(ua);
+const isIpad = /ipad/.test(ua);
+const isIos = isIphone || isIpad;
+
+// Safari iOS (exclude chrome/firefox/edge)
+const isSafari = isIos && /safari/.test(ua) && !/crios|fxios|edgios/.test(ua);
+
+// If browser is safari
+if (isSafari) {
+    window.addEventListener("vlaunch-initialized", (e) => {
+        initialized = true;
+        document.getElementById("qr-code").innerHTML = "";
+        generateLaunchCode();
+    });
+
+    if (VLaunch.initialized) {
+        document.getElementById("qr-code").innerHTML = "";
+        generateLaunchCode();
+    } else {
+        setTimeout(() => {
+            if (!initialized) {
+                document.getElementById("qr-code").innerHTML =
+                    "Web XR tidak didukung di Variant Launch Anda";
+                generateQRCode(window.location.href);
+            }
+        }, 10000);
+    }
 }
 
 async function generateQRCode(text) {
@@ -37,12 +49,17 @@ async function generateQRCode(text) {
 }
 
 async function generateLaunchCode() {
-    let url = await VLaunch.getLaunchUrl(window.location.href);
+    let url = await VLaunch.getLaunchUrl(
+        window.location.href + "?arToken=" + arToken,
+    );
     console.log(url);
 
     await generateQRCode(url);
     showToaster("QR berhasil dibuat");
     console.log("Launch Code Generated");
+
+    // redirect to url
+    window.location.href = url;
 }
 
 class SceneManager {

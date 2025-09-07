@@ -28,7 +28,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
             integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
 
-    <script src="https://launchar.app/sdk/v1?key=RDgojZ30201nvtK5SuFFTIUNDDLpxiVj&redirect=true"></script>
+    <script src="https://launchar.app/sdk/v1?key=RDgojZ30201nvtK5SuFFTIUNDDLpxiVj&redirect=false"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap"
           rel="stylesheet"/>
 
@@ -137,6 +137,7 @@
 <body>
 <script>
     var popupVisible = false;
+    var arToken = '{{ $arToken }}';
 </script>
 <div class="px-6 py-6 bg-primary text-white rounded-b-3xl pointer-events-auto">
     <div class="flex items-center space-x-4">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\TokenHelper;
 use App\Models\Ebook;
 use App\Models\JawabanUser;
 use App\Models\Katalog;
@@ -608,9 +609,16 @@ class HomeController extends Controller
             }
         }
 
-        // dd($museum);
+        // Generate a secure token for AR session with user ID and expiration timestamp
+        $arToken = TokenHelper::generate($user->id);
 
-        return view('guest.ar.museum', compact('situs', 'museum'));
+        // Debug log
+        \Log::debug('Generated AR Token:', [
+            'user_id' => $user->id,
+            'token' => $arToken,
+        ]);
+
+        return view('guest.ar.museum', compact('situs', 'museum', 'arToken'));
     }
 
     public function arMarkerKatalog()

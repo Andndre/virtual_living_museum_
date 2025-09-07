@@ -64,9 +64,10 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::post('/laporan-peninggalan/{id}/like', [LaporanPeninggalanController::class, 'toggleLike'])->name('guest.laporan-peninggalan.like');
     Route::post('/laporan-peninggalan/{id}/comment', [LaporanPeninggalanController::class, 'storeComment'])->name('guest.laporan-peninggalan.comment');
 
-    // AR routes
-    Route::get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
 });
+
+// AR routes - Using token-based authentication
+Route::middleware('ar.token')->get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
 
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
