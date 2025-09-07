@@ -59,7 +59,7 @@ async function generateLaunchCode() {
     console.log("Launch Code Generated");
 
     // redirect to url
-    window.location.href = url;
+    window.open(url, "_blank");
 }
 
 class SceneManager {
