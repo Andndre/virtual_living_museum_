@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
-import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
-import {ARButton} from "three/examples/jsm/webxr/ARButton.js";
-import {EffectComposer, RenderPass, SSAOEffect} from "postprocessing";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
+import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
 
 let initialized = false;
 
@@ -49,9 +49,6 @@ async function generateQRCode(text) {
 }
 
 async function generateLaunchCode() {
-    // coba buka tab dari gesture user
-    const newTab = window.open("about:blank", "_blank");
-
     let url = await VLaunch.getLaunchUrl(
         window.location.href + "?arToken=" + arToken,
     );
@@ -60,13 +57,8 @@ async function generateLaunchCode() {
     await generateQRCode(url);
     showToaster("QR berhasil dibuat");
 
-    if (newTab) {
-        // sukses buka tab baru
-        newTab.location.href = url;
-    } else {
-        // gagal (diblock popup), redirect di tab ini
-        window.location.href = url;
-    }
+    // redirect
+    window.location.href = url;
 }
 
 class SceneManager {
