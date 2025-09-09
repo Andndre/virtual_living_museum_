@@ -6,35 +6,23 @@ import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
 
 let initialized = false;
 
-const ua = navigator.userAgent.toLowerCase();
+window.addEventListener("vlaunch-initialized", (e) => {
+    initialized = true;
+    document.getElementById("qr-code").innerHTML = "";
+    generateLaunchCode();
+});
 
-const isIphone = /iphone|ipod/.test(ua);
-const isIpad = /ipad/.test(ua);
-const isIos = isIphone || isIpad;
-
-// Safari iOS (exclude chrome/firefox/edge)
-const isSafari = isIos && /safari/.test(ua) && !/crios|fxios|edgios/.test(ua);
-
-// If browser is safari
-if (isSafari) {
-    window.addEventListener("vlaunch-initialized", (e) => {
-        initialized = true;
-        document.getElementById("qr-code").innerHTML = "";
-        generateLaunchCode();
-    });
-
-    if (VLaunch.initialized) {
-        document.getElementById("qr-code").innerHTML = "";
-        generateLaunchCode();
-    } else {
-        setTimeout(() => {
-            if (!initialized) {
-                document.getElementById("qr-code").innerHTML =
-                    "Web XR tidak didukung di Variant Launch Anda";
-                generateQRCode(window.location.href);
-            }
-        }, 10000);
-    }
+if (VLaunch.initialized) {
+    document.getElementById("qr-code").innerHTML = "";
+    generateLaunchCode();
+} else {
+    setTimeout(() => {
+        if (!initialized) {
+            document.getElementById("qr-code").innerHTML =
+                "Web XR tidak didukung di Variant Launch Anda";
+            generateQRCode(window.location.href);
+        }
+    }, 10000);
 }
 
 async function generateQRCode(text) {
