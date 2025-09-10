@@ -13,16 +13,9 @@ window.addEventListener("vlaunch-initialized", (e) => {
 });
 
 if (VLaunch.initialized) {
-    document.getElementById("qr-code").innerHTML = "";
-    generateLaunchCode();
+    generateLaunchCode(); // generate a Launch Code for this url
 } else {
-    setTimeout(() => {
-        if (!initialized) {
-            document.getElementById("qr-code").innerHTML =
-                "Web XR tidak didukung di Variant Launch Anda";
-            generateQRCode(window.location.href);
-        }
-    }, 10000);
+    generateQRCode(window.location.href); // generate regular QR code for this url
 }
 
 async function generateQRCode(text) {
@@ -44,9 +37,6 @@ async function generateLaunchCode() {
 
     await generateQRCode(url);
     showToaster("QR berhasil dibuat");
-
-    // redirect
-    window.location.href = url;
 }
 
 class SceneManager {
