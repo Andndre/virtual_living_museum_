@@ -15,6 +15,32 @@ if (VLaunch.initialized) {
     generateQRCode(window.location.href); // generate regular QR code for this url
 }
 
+function hideElement(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.visibility = "hidden";
+    el.style.pointerEvents = "none";
+}
+
+function showElement(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.visibility = "visible";
+    el.style.pointerEvents = "auto";
+}
+
+window.onbeforeunload = function (e) {
+    var e = e || window.event;
+
+    // For IE and Firefox
+    if (e) {
+        e.returnValue = "Leaving the page";
+    }
+
+    // For Safari
+    return "Leaving the page";
+};
+
 async function generateQRCode(text) {
     new QRCode("qr-code", {
         text: text,
@@ -118,7 +144,8 @@ class SceneManager {
     }
 
     setOnSelect(onSelect) {
-        this.controller.addEventListener("select", () => {
+        this.controller.addEventListener("select", (event) => {
+            // event.preventDefault?.();
             if (this.reticle.visible) onSelect(this.reticle.matrix);
         });
     }
@@ -314,10 +341,12 @@ class RendererManager {
         if (hitTestResults.length > 0) {
             if (!sceneManager.planeFound) {
                 sceneManager.reticle.visible = false;
-                document.getElementById("tracking-prompt").style.display =
-                    "none";
+                // document.getElementById("tracking-prompt").style.display =
+                //     "none";
+                hideElement("tracking-prompt");
                 console.log("Plane found");
-                document.getElementById("instructions").style.display = "block";
+                // document.getElementById("instructions").style.display = "block";
+                showElement("instructions");
             }
 
             const hit = hitTestResults[0];
@@ -469,9 +498,11 @@ async function main() {
 
     debugInfo.innerHTML = "";
     debugInfo.appendChild(list);
-    debugInfo.classList.remove("hidden");
+    // debugInfo.classList.remove("hidden");
+    showElement("debug-info");
 
-    document.getElementById("ar-not-supported").style.display = "none";
+    // document.getElementById("ar-not-supported").style.display = "none";
+    hideElement("ar-not-supported");
     const rendererManager = new RendererManager();
     const sceneManager = new SceneManager(rendererManager.renderer);
 
@@ -481,16 +512,18 @@ async function main() {
         (event) => {
             const fileSize = event.total || museum.file_size || 43445936; // Use server-provided size as fallback
             let progress = (event.loaded / fileSize) * 100;
-            console.log(event.loaded, fileSize, progress);
+            // console.log(event.loaded, fileSize, progress);
             progress = Math.min(progress, 100); // Ensure progress does not exceed 100%
-            document.getElementById("loading-container").style.display =
-                "block";
+            // document.getElementById("loading-container").style.display =
+            //     "block";
+            showElement("loading-container");
             document.getElementById("loading-bar").style.width = `${progress}%`;
-            showToaster(`Loading progress: ${progress}%`);
+            // showToaster(`Loading progress: ${progress}%`);
         },
     );
 
-    document.getElementById("loading-container").style.display = "none";
+    // document.getElementById("loading-container").style.display = "none";
+    hideElement("loading-container");
 
     showToaster("Model loaded, creating AR button");
     createARButton(rendererManager.renderer);
@@ -507,8 +540,11 @@ async function main() {
 
     sceneManager.setOnSelect((matrix) => {
         if (model.visible) return;
-        document.getElementById("app").style.display = "none";
-        document.getElementById("instructions").style.display = "none";
+        // document.getElementById("app").style.visibility = "hidden";
+        // document.getElementById("instructions").style.visibility = "hidden";
+        hideElement("app");
+        hideElement("instructions");
+
         showToaster("Placing model");
         showToaster("Position: " + model.position);
         showToaster("Quaternion: " + model.quaternion);
@@ -562,9 +598,14 @@ async function main() {
 }
 
 function arNotSupported() {
-    document.getElementById("ar-not-supported").style.display = "block";
-    document.getElementById("ar-button-container").style.display = "none";
-    document.getElementById("instructions").style.display = "none";
-    document.getElementById("expand-bottom-sheet").style.display = "none";
-    document.getElementById("loading-container").style.display = "none";
+    // document.getElementById("ar-not-supported").style.display = "block";
+    // document.getElementById("ar-button-container").style.display = "none";
+    // document.getElementById("instructions").style.display = "none";
+    // document.getElementById("expand-bottom-sheet").style.display = "none";
+    // document.getElementById("loading-container").style.display = "none";
+    showElement("ar-not-supported");
+    hideElement("ar-button-container");
+    hideElement("instructions");
+    hideElement("expand-bottom-sheet");
+    hideElement("loading-container");
 }

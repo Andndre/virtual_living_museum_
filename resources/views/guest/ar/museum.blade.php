@@ -152,7 +152,7 @@
 </div>
 <div id="overlay" class="absolute inset-0 z-[999999] flex flex-col justify-center items-center pointer-events-none">
     <div id="instructions"
-         class="z-[100000] w-full text-center hidden absolute top-0 p-4 bg-primary text-white rounded-t-xl">Tekan
+         class="z-[100000] w-full text-center invisible absolute top-0 p-4 bg-primary text-white rounded-t-xl">Tekan
         lingkaran untuk memunculkan ruangan
     </div>
     {{-- <audio id="audio-portal">
@@ -162,7 +162,7 @@
             <source src="{{ asset('assets/music/english-wayang-kamasan-gallery.mp3') }}" type="audio/mpeg">
         @endif
     </audio> --}}
-    <div id="tracking-prompt" class="absolute left-1/2 bottom-[44] hidden animate-pulse">
+    <div id="tracking-prompt" class="absolute left-1/2 bottom-[44] invisible animate-pulse">
         <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;"
              alt=""/>
     </div>
@@ -173,7 +173,7 @@
             <h3 class="text-lg font-bold text-primary pointer-events-auto">Objek Peninggalan</h3>
         </div>
         <div id="bottom-sheet-content"
-             class="hidden p-4 overflow-y-scroll h-[80vh] text-gray-800 text-center pointer-events-auto">
+             class="invisible p-4 overflow-y-scroll h-[80vh] text-gray-800 text-center pointer-events-auto">
             <ul id="lukisan-list" class="py-2 flex flex-col gap-6">
                 @foreach ($museum->virtualMuseumObjects as $i => $object)
                     <li>
@@ -216,7 +216,7 @@
             <x-application-logo class="w-12 h-12"/>
         </div>
         <h2 class="text-2xl font-bold text-primary mb-2 text-center">Virtual Living Museum</h2>
-        <div id="ar-not-supported" class="hidden w-full bg-white rounded-xl shadow p-6 mt-8">
+        <div id="ar-not-supported" class="invisible w-full bg-white rounded-xl shadow p-6 mt-8">
             <p class="text-red-600 font-semibold">Teknologi WebXR tidak didukung di perangkat Anda.</p>
             <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a
                     href="https://launch.variant3d.com/docs" class="underline">https://launch.variant3d.com</a>.</p>
@@ -229,7 +229,7 @@
             </div>
         </div>
         {{--        debug information just like ar-not-supported, but uses <pre>--}}
-        <div id="debug-info" class="hidden w-full bg-white rounded-xl shadow p-6 mt-8">
+        <div id="debug-info" class="invisible w-full bg-white rounded-xl shadow p-6 mt-8">
             <pre id="debug-info-text"></pre>
         </div>
 
