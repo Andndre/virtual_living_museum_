@@ -404,6 +404,7 @@ async function main() {
     const sensors = await checkSensors();
     const debugInfo = document.getElementById("debug-info");
     debugInfo.innerHTML = JSON.stringify(sensors, null, 2);
+    debugInfo.classList.remove("hidden");
 
     document.getElementById("ar-not-supported").style.display = "none";
     const rendererManager = new RendererManager();
