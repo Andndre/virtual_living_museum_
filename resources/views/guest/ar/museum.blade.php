@@ -228,6 +228,11 @@
                 </div>
             </div>
         </div>
+        {{--        debug information just like ar-not-supported, but uses <pre>--}}
+        <div id="debug-info" class="hidden w-full bg-white rounded-xl shadow p-6 mt-8">
+            <pre id="debug-info-text"></pre>
+        </div>
+
         <div id="loading-container" class="w-4/5 bg-gray-300 h-2 rounded-full max-w-xl mx-auto my-8">
             <div id="loading-bar" class="h-full bg-orange-400 rounded-full transition-all duration-200"
                  style="width:0"></div>

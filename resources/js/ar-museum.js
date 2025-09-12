@@ -157,15 +157,15 @@ class SceneManager {
  * @param {string} message - The message to display in the toaster.
  */
 function showToaster(message) {
-    console.log(message);
-    // const toasterContainer = document.getElementById("toaster-container");
-    // const toaster = document.createElement("div");
-    // toaster.className = "toaster";
-    // toaster.innerText = message;
-    // toasterContainer.appendChild(toaster);
-    // setTimeout(() => {
-    //     toaster.remove();
-    // }, 3000);
+    // console.log(message);
+    const toasterContainer = document.getElementById("toaster-container");
+    const toaster = document.createElement("div");
+    toaster.className = "toaster";
+    toaster.innerText = message;
+    toasterContainer.appendChild(toaster);
+    setTimeout(() => {
+        toaster.remove();
+    }, 3000);
 }
 /**
  * Manages the rendering process and XR session for the application.
@@ -354,8 +354,57 @@ function createARButton(renderer) {
     }
 }
 
+async function checkSensors() {
+    let sensors = {
+        accelerometer: false,
+        gyroscope: false,
+        orientation: false,
+        magnetometer: false,
+    };
+
+    return new Promise((resolve) => {
+        function handleMotion(event) {
+            if (event.acceleration || event.accelerationIncludingGravity) {
+                sensors.accelerometer = true;
+            }
+            window.removeEventListener("devicemotion", handleMotion);
+            maybeDone();
+        }
+
+        function handleOrientation(event) {
+            if (
+                event.alpha !== null ||
+                event.beta !== null ||
+                event.gamma !== null
+            ) {
+                sensors.gyroscope = true;
+                sensors.orientation = true;
+            }
+            window.removeEventListener("deviceorientation", handleOrientation);
+            maybeDone();
+        }
+
+        let timeout = setTimeout(() => resolve(sensors), 2000);
+
+        function maybeDone() {
+            clearTimeout(timeout);
+            resolve(sensors);
+        }
+
+        window.addEventListener("devicemotion", handleMotion, { once: true });
+        window.addEventListener("deviceorientation", handleOrientation, {
+            once: true,
+        });
+    });
+}
+
 async function main() {
     showToaster("Initializing AR...");
+
+    const sensors = await checkSensors();
+    const debugInfo = document.getElementById("debug-info");
+    debugInfo.innerHTML = JSON.stringify(sensors, null, 2);
+
     document.getElementById("ar-not-supported").style.display = "none";
     const rendererManager = new RendererManager();
     const sceneManager = new SceneManager(rendererManager.renderer);
