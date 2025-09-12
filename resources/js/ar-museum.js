@@ -4,11 +4,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
 import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
 
-let initialized = false;
-
+//If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
 window.addEventListener("vlaunch-initialized", (e) => {
-    initialized = true;
-    document.getElementById("qr-code").innerHTML = "";
     generateLaunchCode();
 });
 
@@ -37,6 +34,21 @@ async function generateLaunchCode() {
 
     await generateQRCode(url);
     showToaster("QR berhasil dibuat");
+}
+
+if ("xr" in navigator) {
+    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
+        if (supported) {
+            showToaster("Supported");
+            //hide "ar-not-supported"
+            document.getElementById("ar-not-supported").style.display = "none";
+            main();
+        } else {
+            arNotSupported();
+        }
+    });
+} else {
+    arNotSupported();
 }
 
 class SceneManager {
@@ -354,56 +366,109 @@ function createARButton(renderer) {
     }
 }
 
-async function checkSensors() {
-    let sensors = {
-        accelerometer: false,
-        gyroscope: false,
-        orientation: false,
-        magnetometer: false,
-    };
+async function requestSensorPermission() {
+    try {
+        if (
+            typeof DeviceMotionEvent !== "undefined" &&
+            typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+            const response = await DeviceMotionEvent.requestPermission();
+            console.log("Motion permission:", response);
+        }
+        if (
+            typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+            const response = await DeviceOrientationEvent.requestPermission();
+            console.log("Orientation permission:", response);
+        }
+    } catch (err) {
+        console.warn("Sensor permission request failed:", err);
+    }
+}
 
+async function checkSensors() {
     return new Promise((resolve) => {
-        function handleMotion(event) {
-            if (event.acceleration || event.accelerationIncludingGravity) {
-                sensors.accelerometer = true;
-            }
-            window.removeEventListener("devicemotion", handleMotion);
-            maybeDone();
+        const sensors = {
+            accelerometer: false,
+            gyro: false,
+            orientation: false,
+            magnetometer: false, // hampir selalu false di web
+        };
+
+        let checks = 0;
+        let timeout = null;
+
+        function done() {
+            clearTimeout(timeout);
+            resolve(sensors);
         }
 
-        function handleOrientation(event) {
+        function motionHandler(event) {
+            if (
+                event.acceleration &&
+                (event.acceleration.x !== null ||
+                    event.acceleration.y !== null ||
+                    event.acceleration.z !== null)
+            ) {
+                sensors.accelerometer = true;
+            }
+            if (
+                event.rotationRate &&
+                (event.rotationRate.alpha !== null ||
+                    event.rotationRate.beta !== null ||
+                    event.rotationRate.gamma !== null)
+            ) {
+                sensors.gyro = true;
+            }
+            checks++;
+            if (checks >= 2) done();
+            window.removeEventListener("devicemotion", motionHandler);
+        }
+
+        function orientationHandler(event) {
             if (
                 event.alpha !== null ||
                 event.beta !== null ||
                 event.gamma !== null
             ) {
-                sensors.gyroscope = true;
                 sensors.orientation = true;
             }
-            window.removeEventListener("deviceorientation", handleOrientation);
-            maybeDone();
+            checks++;
+            if (checks >= 2) done();
+            window.removeEventListener("deviceorientation", orientationHandler);
         }
 
-        let timeout = setTimeout(() => resolve(sensors), 2000);
+        window.addEventListener("devicemotion", motionHandler);
+        window.addEventListener("deviceorientation", orientationHandler);
 
-        function maybeDone() {
-            clearTimeout(timeout);
-            resolve(sensors);
-        }
-
-        window.addEventListener("devicemotion", handleMotion, { once: true });
-        window.addEventListener("deviceorientation", handleOrientation, {
-            once: true,
-        });
+        // fallback kalau event tidak pernah muncul
+        timeout = setTimeout(done, 2000);
     });
 }
 
 async function main() {
     showToaster("Initializing AR...");
 
+    await requestSensorPermission();
+
     const sensors = await checkSensors();
     const debugInfo = document.getElementById("debug-info");
-    debugInfo.innerHTML = JSON.stringify(sensors, null, 2);
+    const list = document.createElement("ul");
+
+    for (const sensor in sensors) {
+        const item = document.createElement("li");
+        item.textContent = sensor + ": ";
+        if (sensors[sensor]) {
+            item.innerHTML += "✔️";
+        } else {
+            item.innerHTML += "❌";
+        }
+        list.appendChild(item);
+    }
+
+    debugInfo.innerHTML = "";
+    debugInfo.appendChild(list);
     debugInfo.classList.remove("hidden");
 
     document.getElementById("ar-not-supported").style.display = "none";
@@ -494,21 +559,6 @@ async function main() {
     showToaster("Starting animation loop");
 
     rendererManager.animate(sceneManager);
-}
-
-if ("xr" in navigator) {
-    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
-        if (supported) {
-            showToaster("Supported");
-            //hide "ar-not-supported"
-            document.getElementById("ar-not-supported").style.display = "none";
-            main();
-        } else {
-            arNotSupported();
-        }
-    });
-} else {
-    arNotSupported();
 }
 
 function arNotSupported() {
