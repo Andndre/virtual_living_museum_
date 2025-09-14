@@ -8,7 +8,6 @@ export default defineConfig({
                 "resources/css/app.css",
                 "resources/js/app.js",
                 "resources/js/ebook.js",
-                "resources/js/ar-museum.js",
             ],
             refresh: true,
         }),

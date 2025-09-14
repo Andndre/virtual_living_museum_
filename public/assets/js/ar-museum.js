@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
+import { GLTFLoader } from "three/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
+import { ARButton } from "three/jsm/webxr/ARButton.js";
 
 let initialized = false;
 

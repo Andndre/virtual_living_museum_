@@ -16,14 +16,14 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Joti+One&display=swap" rel="stylesheet">
 
-    {{--    <script type="importmap">--}}
-    {{--        {--}}
-    {{--          "imports": {--}}
-    {{--            "three": "https://cdn.jsdelivr.net/npm/three@v0.153.0/build/three.module.js",--}}
-    {{--            "three/jsm/": "https://cdn.jsdelivr.net/npm/three@v0.153.0/examples/jsm/"--}}
-    {{--          }--}}
-    {{--        }--}}
-    {{--    </script>--}}
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@v0.153.0/build/three.module.js",
+            "three/jsm/": "https://cdn.jsdelivr.net/npm/three@v0.153.0/examples/jsm/"
+          }
+        }
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
             integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
@@ -188,13 +188,6 @@
          class="z-[100000] w-full text-center invisible absolute top-0 p-4 bg-primary text-white rounded-t-xl">Tekan
         lingkaran untuk memunculkan ruangan
     </div>
-    {{-- <audio id="audio-portal">
-        @if (session()->has('locale') && session('locale') == 'id')
-            <source src="{{ asset('assets/music/indonesia-wayang-kamasan-gallery.mp3') }}" type="audio/mpeg">
-        @else
-            <source src="{{ asset('assets/music/english-wayang-kamasan-gallery.mp3') }}" type="audio/mpeg">
-        @endif
-    </audio> --}}
     <div id="tracking-prompt" class="absolute left-1/2 bottom-[44] invisible animate-pulse">
         <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;"
              alt=""/>
@@ -275,7 +268,7 @@
         console.log(museum);
     </script>
 
-    @vite(['resources/js/ar-museum.js'])
+    <script src="{{ asset('assets/js/ar-museum.js') }}" type="module"></script>
 </div>
 </body>
 
