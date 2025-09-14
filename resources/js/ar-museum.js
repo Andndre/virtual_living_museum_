@@ -2,17 +2,59 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
-import { EffectComposer, RenderPass, SSAOEffect } from "postprocessing";
+
+// Add iOS-specific event prevention at the top level
+document.addEventListener(
+    "touchstart",
+    function (e) {
+        // Prevent default touch behavior that might cause refresh
+        if (e.target.closest("#overlay") || e.target.closest("canvas")) {
+            e.preventDefault();
+        }
+    },
+    { passive: false },
+);
+
+document.addEventListener(
+    "touchend",
+    function (e) {
+        // Prevent default touch behavior that might cause refresh
+        if (e.target.closest("#overlay") || e.target.closest("canvas")) {
+            e.preventDefault();
+        }
+    },
+    { passive: false },
+);
+
+// Prevent page refresh on iOS Safari/WebView
+window.addEventListener("beforeunload", function (e) {
+    // Don't show confirmation dialog in AR session
+    if (window.navigator.xr && document.querySelector("canvas")) {
+        e.preventDefault();
+        return undefined;
+    }
+});
+
+let initialized = false;
 
 //If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
 window.addEventListener("vlaunch-initialized", (e) => {
+    initialized = true;
+    document.getElementById("qr-code").innerHTML = "";
     generateLaunchCode();
 });
 
 if (VLaunch.initialized) {
     generateLaunchCode(); // generate a Launch Code for this url
 } else {
-    generateQRCode(window.location.href); // generate regular QR code for this url
+    setTimeout(() => {
+        if (!initialized) {
+            showToaster("Variant Launch tidak terinisialisasi");
+            document.getElementById("qr-code").innerHTML =
+                "Web XR tidak didukung di Variant Launch Anda";
+            generateQRCode(window.location.href);
+        }
+    }, 10000);
 }
 
 function hideElement(id) {
@@ -28,18 +70,6 @@ function showElement(id) {
     el.style.visibility = "visible";
     el.style.pointerEvents = "auto";
 }
-
-window.onbeforeunload = function (e) {
-    var e = e || window.event;
-
-    // For IE and Firefox
-    if (e) {
-        e.returnValue = "Leaving the page";
-    }
-
-    // For Safari
-    return "Leaving the page";
-};
 
 async function generateQRCode(text) {
     new QRCode("qr-code", {
@@ -65,16 +95,11 @@ async function generateLaunchCode() {
 if ("xr" in navigator) {
     navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
         if (supported) {
-            showToaster("Supported");
             //hide "ar-not-supported"
-            document.getElementById("ar-not-supported").style.display = "none";
+            hideElement("ar-not-supported");
             main();
-        } else {
-            arNotSupported();
         }
     });
-} else {
-    arNotSupported();
 }
 
 class SceneManager {
@@ -86,15 +111,6 @@ class SceneManager {
             0.01,
             999,
         );
-
-        this.composer = new EffectComposer(renderer);
-        const renderPass = new RenderPass(this.scene, this.camera);
-        this.composer.addPass(renderPass);
-
-        // Ssao effect
-        const ssaoEffect = new SSAOEffect(this.camera);
-
-        this.composer.addPass(ssaoEffect);
 
         this.reticle = new THREE.Mesh(
             new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
@@ -204,7 +220,7 @@ function showToaster(message) {
     toasterContainer.appendChild(toaster);
     setTimeout(() => {
         toaster.remove();
-    }, 3000);
+    }, 5000);
 }
 /**
  * Manages the rendering process and XR session for the application.
@@ -507,6 +523,7 @@ async function main() {
     const sceneManager = new SceneManager(rendererManager.renderer);
 
     showToaster("Loading model...");
+    showToaster("File size: " + museum.file_size + "KB");
     const model = await ModelLoader.loadModel(
         "/storage/" + museum.path_obj,
         (event) => {

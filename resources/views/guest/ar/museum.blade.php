@@ -38,6 +38,23 @@
     @yield('css')
 
     <style>
+        /* Ensure canvas is full screen */
+        canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1 !important;
+        }
+
+        /* Make sure body and html don't have padding/margin that affects canvas */
+        body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+
         .toaster {
             background-color: black;
             color: white;
@@ -173,7 +190,7 @@
             <h3 class="text-lg font-bold text-primary pointer-events-auto">Objek Peninggalan</h3>
         </div>
         <div id="bottom-sheet-content"
-             class="invisible p-4 overflow-y-scroll h-[80vh] text-gray-800 text-center pointer-events-auto">
+             class="hidden p-4 overflow-y-scroll h-[80vh] text-gray-800 text-center pointer-events-auto">
             <ul id="lukisan-list" class="py-2 flex flex-col gap-6">
                 @foreach ($museum->virtualMuseumObjects as $i => $object)
                     <li>
