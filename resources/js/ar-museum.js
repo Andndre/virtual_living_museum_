@@ -161,8 +161,13 @@ class SceneManager {
 
     setOnSelect(onSelect) {
         this.controller.addEventListener("select", (event) => {
-            // event.preventDefault?.();
-            if (this.reticle.visible) onSelect(this.reticle.matrix);
+            // Prevent default behavior to avoid page refresh on iOS
+            event.preventDefault?.();
+            event.stopPropagation?.();
+
+            if (this.reticle.visible) {
+                onSelect(this.reticle.matrix);
+            }
         });
     }
 
@@ -214,12 +219,18 @@ class SceneManager {
 function showToaster(message) {
     // console.log(message);
     const toasterContainer = document.getElementById("toaster-container");
+    if (!toasterContainer) {
+        console.warn("Toaster container not found");
+        return;
+    }
     const toaster = document.createElement("div");
     toaster.className = "toaster";
     toaster.innerText = message;
     toasterContainer.appendChild(toaster);
     setTimeout(() => {
-        toaster.remove();
+        if (toaster && toaster.parentNode) {
+            toaster.remove();
+        }
     }, 5000);
 }
 /**
@@ -260,10 +271,24 @@ class RendererManager {
      * Displays the tracking prompt.
      */
     onSessionStart() {
-        document.getElementById("tracking-prompt").style.display = "block";
-        document.getElementById("expand-bottom-sheet").style.display = "block";
-        // hilangkan tombol #ar-button-container #ARButton
-        document.getElementById("ar-button-container").style.display = "none";
+        const trackingPrompt = document.getElementById("tracking-prompt");
+        const expandBottomSheet = document.getElementById(
+            "expand-bottom-sheet",
+        );
+        const arButtonContainer = document.getElementById(
+            "ar-button-container",
+        );
+
+        if (trackingPrompt) {
+            trackingPrompt.style.display = "block";
+        }
+        if (expandBottomSheet) {
+            expandBottomSheet.style.display = "block";
+        }
+        if (arButtonContainer) {
+            arButtonContainer.style.display = "none";
+        }
+
         for (const callback of this.onSessionStarts) {
             callback();
         }
@@ -360,7 +385,6 @@ class RendererManager {
                 // document.getElementById("tracking-prompt").style.display =
                 //     "none";
                 hideElement("tracking-prompt");
-                console.log("Plane found");
                 // document.getElementById("instructions").style.display = "block";
                 showElement("instructions");
             }
@@ -497,27 +521,6 @@ async function main() {
 
     await requestSensorPermission();
 
-    const sensors = await checkSensors();
-    const debugInfo = document.getElementById("debug-info");
-    const list = document.createElement("ul");
-
-    for (const sensor in sensors) {
-        const item = document.createElement("li");
-        item.textContent = sensor + ": ";
-        if (sensors[sensor]) {
-            item.innerHTML += "✔️";
-        } else {
-            item.innerHTML += "❌";
-        }
-        list.appendChild(item);
-    }
-
-    debugInfo.innerHTML = "";
-    debugInfo.appendChild(list);
-    // debugInfo.classList.remove("hidden");
-    showElement("debug-info");
-
-    // document.getElementById("ar-not-supported").style.display = "none";
     hideElement("ar-not-supported");
     const rendererManager = new RendererManager();
     const sceneManager = new SceneManager(rendererManager.renderer);

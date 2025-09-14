@@ -156,7 +156,7 @@
     var popupVisible = false;
     var arToken = '{{ $arToken }}';
 </script>
-<div class="px-6 py-6 bg-primary text-white rounded-b-3xl pointer-events-auto">
+<div class="px-6 py-6 bg-primary text-white rounded-b-3xl pointer-events-auto z-[10000000]">
     <div class="flex items-center space-x-4">
         <a href="{{ route('guest.home') }}" class="p-2 hover:bg-white/10 rounded-full transition-colors">
             <i class="fas fa-arrow-left text-xl"></i>
@@ -244,10 +244,6 @@
                     <p>Error 426: Perangkat/Browser tidak didukung</p>
                 </div>
             </div>
-        </div>
-        {{--        debug information just like ar-not-supported, but uses <pre>--}}
-        <div id="debug-info" class="invisible w-full bg-white rounded-xl shadow p-6 mt-8">
-            <pre id="debug-info-text"></pre>
         </div>
 
         <div id="loading-container" class="w-4/5 bg-gray-300 h-2 rounded-full max-w-xl mx-auto my-8">
