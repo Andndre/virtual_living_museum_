@@ -170,7 +170,7 @@
 <body>
 <script>
     var popupVisible = false;
-    var arToken = '{{ $arToken }}';
+    var arToken = '{{ $arToken }}' + 'wow';
 </script>
 <div class="px-6 py-6 bg-primary text-white rounded-b-3xl pointer-events-auto z-[10000000]">
     <div class="flex items-center space-x-4">
