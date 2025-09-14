@@ -53,6 +53,22 @@
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
+            /* Prevent touch actions that could trigger refresh */
+            touch-action: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -khtml-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+
+        /* Specific for iOS Safari/WebView */
+        @supports (-webkit-touch-callout: none) {
+            * {
+                -webkit-touch-callout: none !important;
+                -webkit-tap-highlight-color: transparent !important;
+            }
         }
 
         .toaster {

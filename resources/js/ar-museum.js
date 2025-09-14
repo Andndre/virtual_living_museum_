@@ -3,38 +3,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
 
-// Add iOS-specific event prevention at the top level
-document.addEventListener(
-    "touchstart",
-    function (e) {
-        // Prevent default touch behavior that might cause refresh
-        if (e.target.closest("#overlay") || e.target.closest("canvas")) {
-            e.preventDefault();
-        }
-    },
-    { passive: false },
-);
-
-document.addEventListener(
-    "touchend",
-    function (e) {
-        // Prevent default touch behavior that might cause refresh
-        if (e.target.closest("#overlay") || e.target.closest("canvas")) {
-            e.preventDefault();
-        }
-    },
-    { passive: false },
-);
-
-// Prevent page refresh on iOS Safari/WebView
-window.addEventListener("beforeunload", function (e) {
-    // Don't show confirmation dialog in AR session
-    if (window.navigator.xr && document.querySelector("canvas")) {
-        e.preventDefault();
-        return undefined;
-    }
-});
-
 let initialized = false;
 
 //If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
@@ -160,11 +128,7 @@ class SceneManager {
     }
 
     setOnSelect(onSelect) {
-        this.controller.addEventListener("select", (event) => {
-            // Prevent default behavior to avoid page refresh on iOS
-            event.preventDefault?.();
-            event.stopPropagation?.();
-
+        this.controller.addEventListener("select", () => {
             if (this.reticle.visible) {
                 onSelect(this.reticle.matrix);
             }
@@ -526,7 +490,9 @@ async function main() {
     const sceneManager = new SceneManager(rendererManager.renderer);
 
     showToaster("Loading model...");
-    showToaster("File size: " + museum.file_size + "KB");
+    showToaster(
+        "File size: " + (museum.file_size / 1024 / 1024).toFixed(2) + " MB",
+    );
     const model = await ModelLoader.loadModel(
         "/storage/" + museum.path_obj,
         (event) => {
