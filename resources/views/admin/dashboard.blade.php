@@ -118,6 +118,10 @@
                             <i class="fas fa-comments mr-2"></i>
                             Kritik & Saran
                         </a>
+                        <a href="{{ route('admin.video-peninggalan.index') }}" class="flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-video mr-2"></i>
+                            Video Peninggalan
+                        </a>
                     </div>
                 </div>
             </div>

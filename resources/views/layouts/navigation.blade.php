@@ -26,7 +26,7 @@
                         <div class="relative h-full flex items-center" x-data="{ open: false }"
                              style="overflow: visible">
                             <button @click="open = !open"
-                                    :class="{'text-gray-900 border-b-2 border-blue-500': open || ['admin.users*', 'admin.materi*', 'admin.situs*', 'admin.virtual-museum*', 'admin.reports*', 'admin.feedback*', 'admin.riwayat-pengembang*'].some(route => request().routeIs(route))}"
+                                    :class="{'text-gray-900 border-b-2 border-blue-500': open || ['admin.users*', 'admin.materi*', 'admin.situs*', 'admin.virtual-museum*', 'admin.reports*', 'admin.feedback*', 'admin.riwayat-pengembang*', 'admin.katalog*', 'admin.video-peninggalan*'].some(route => request().routeIs(route))}"
                                     class="inline-flex items-center px-1 pt-1 h-full text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <span>Kelola</span>
                                 <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,6 +78,10 @@
                                     <x-dropdown-link :href="route('admin.katalog.edit')"
                                                      :active="request()->routeIs('admin.katalog*')">
                                         <i class="fas fa-book-open mr-2 w-5 text-center"></i> Katalog
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.video-peninggalan.index')"
+                                                     :active="request()->routeIs('admin.video-peninggalan*')">
+                                        <i class="fas fa-video mr-2 w-5 text-center"></i> Video Peninggalan
                                     </x-dropdown-link>
                                 </div>
                             </div>
@@ -188,6 +192,10 @@
                 <x-responsive-nav-link :href="route('admin.katalog.edit')"
                                        :active="request()->routeIs('admin.katalog*')">
                     Katalog
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.video-peninggalan.index')"
+                                       :active="request()->routeIs('admin.video-peninggalan*')">
+                    Video Peninggalan
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('guest.home')" :active="request()->routeIs('guest.home')">

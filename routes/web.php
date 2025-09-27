@@ -9,6 +9,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LaporanPeninggalanController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\VideoPeninggalanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -63,7 +64,6 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/laporan-peninggalan/{id}', [LaporanPeninggalanController::class, 'show'])->name('guest.laporan-peninggalan.show');
     Route::post('/laporan-peninggalan/{id}/like', [LaporanPeninggalanController::class, 'toggleLike'])->name('guest.laporan-peninggalan.like');
     Route::post('/laporan-peninggalan/{id}/comment', [LaporanPeninggalanController::class, 'storeComment'])->name('guest.laporan-peninggalan.comment');
-
 });
 
 // AR routes - Using token-based authentication
@@ -162,6 +162,14 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     // Katalog
     Route::get('admin/katalog', [KatalogController::class, 'edit'])->name('admin.katalog.edit');
     Route::put('admin/katalog', [KatalogController::class, 'update'])->name('admin.katalog.update');
+
+    // Video Peninggalan
+    Route::get('admin/video-peninggalan', [VideoPeninggalanController::class, 'index'])->name('admin.video-peninggalan.index');
+    Route::get('admin/video-peninggalan/create', [VideoPeninggalanController::class, 'create'])->name('admin.video-peninggalan.create');
+    Route::post('admin/video-peninggalan', [VideoPeninggalanController::class, 'store'])->name('admin.video-peninggalan.store');
+    Route::get('admin/video-peninggalan/{id}/edit', [VideoPeninggalanController::class, 'edit'])->name('admin.video-peninggalan.edit');
+    Route::put('admin/video-peninggalan/{id}', [VideoPeninggalanController::class, 'update'])->name('admin.video-peninggalan.update');
+    Route::delete('admin/video-peninggalan/{id}', [VideoPeninggalanController::class, 'destroy'])->name('admin.video-peninggalan.destroy');
 });
 
 Route::middleware('auth')->group(function () {
