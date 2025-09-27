@@ -54,7 +54,7 @@
 
             {{-- Video Peninggalan --}}
             <div class="flex flex-col items-center">
-                <a href="#"
+                <a href="{{ route('guest.video-peninggalan') }}"
                    class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
                     <img src="{{ asset('images/icons/video-peninggalan.png') }}" alt="Video Peninggalan"
                          class="w-12 h-12"/>

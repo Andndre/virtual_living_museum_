@@ -785,4 +785,22 @@ class HomeController extends Controller
 
         return $pretestCompleted && $posttestCompleted;
     }
+
+    /**
+     * Display video peninggalan listing page
+     */
+    public function videoPeninggalan(Request $request)
+    {
+        $videos = \App\Models\VideoPeninggalan::all();
+        return view('guest.video-peninggalan.index', compact('videos'));
+    }
+
+    /**
+     * Display video peninggalan detail page
+     */
+    public function videoPeninggalanShow(Request $request, $id)
+    {
+        $video = \App\Models\VideoPeninggalan::findOrFail($id);
+        return view('guest.video-peninggalan.show', compact('video'));
+    }
 }
