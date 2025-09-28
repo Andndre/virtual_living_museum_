@@ -50,7 +50,18 @@ class HomeController extends Controller
 
     public function panduan(Request $request)
     {
-        return view('guest.panduan');
+        // Get all guides from language file except the title and description keys
+        $allGuides = __('guides');
+        $guides = [];
+
+        // Filter out non-guide keys (app_guide, learn_how_to_use)
+        foreach ($allGuides as $key => $guide) {
+            if (is_array($guide) && isset($guide['id'], $guide['title'], $guide['description'], $guide['steps'])) {
+                $guides[] = $guide;
+            }
+        }
+
+        return view('guest.panduan', compact('guides'));
     }
 
     /**

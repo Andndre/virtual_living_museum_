@@ -7,47 +7,13 @@
         </div>
 
         <div class="pt-8 pb-8">
-            <h1 class="text-xl font-bold">{{ __('app.app_guide') }}</h1>
-            <p class="text-sm opacity-90">{{ __('app.learn_how_to_use') }}</p>
+            <h1 class="text-xl font-bold">{{ __('guides.app_guide') }}</h1>
+            <p class="text-sm opacity-90">{{ __('guides.learn_how_to_use') }}</p>
         </div>
     </div>
 
     {{-- Content Section --}}
     <div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
-        @php
-            $guides = [
-                [
-                    'id' => 'virtualLivingMuseum',
-                    'icon' => 'fa-vr-cardboard',
-                    'title' => 'Virtual Living Museum',
-                    'description' => 'Panduan penggunaan fitur AR Virtual Living Museum',
-                    'steps' => [
-                        [
-                            'title' => 'Buka Menu Virtual Living Museum',
-                            'description' => 'Pilih menu Virtual Living Museum dari halaman utama aplikasi'
-                        ],
-                        [
-                            'title' => 'Izinkan Akses Kamera',
-                            'description' => 'Izinkan aplikasi untuk mengakses kamera perangkat Anda'
-                        ],
-                        [
-                            'title' => 'Arahkan Kamera',
-                            'description' => 'Arahkan kamera ke area lapang sampai muncul lingkaran putih'
-                        ],
-                        [
-                            'title' => 'Lihat Konten AR',
-                            'description' => 'Tekan layar untuk meletakkan objek AR. Anda bisa berkeliling untuk melihat objek AR dari sudut yang berbeda'
-                        ],
-                        [
-                            'title' => 'Lihat Informasi Peninggalan',
-                            'description' => 'Gunakan tombol info untuk melihat daftar informasi peninggalan pada objek AR'
-                        ]
-                    ]
-                ],
-                // Tambahkan panduan lain di sini
-            ];
-        @endphp
-
         <div class="space-y-4" x-data="{ activeGuide: '{{ $guides[0]['id'] }}' }">
             @foreach($guides as $guide)
                 <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
