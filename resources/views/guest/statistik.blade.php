@@ -87,7 +87,7 @@
         </div>
 
         <!-- Leaderboard -->
-        <div class="space-y-4">
+        <div class="space-y-4 pb-32">
             @foreach($topUsers as $user)
                 <div
                     class="flex items-center p-3 rounded-lg {{ $user['id'] === $currentUser->id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
