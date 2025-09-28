@@ -15,7 +15,7 @@
     {{-- Content Section --}}
     <div class="px-6 py-6 bg-gray-50 min-h-screen">
         @if($videos->count() > 0)
-            <div class="space-y-4">
+            <div class="space-y-4 pb-32">
                 @foreach($videos as $video)
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                         <a href="{{ route('guest.video-peninggalan.show', $video->id) }}" class="block">
