@@ -21,7 +21,7 @@
         @stack('head')
     </head>
     <body class="font-sans bg-black text-gray-900 antialiased">
-        <div class="w-full lg:max-w-xl mx-auto bg-white min-h-[100dvh]">
+        <div class="w-full lg:max-w-xl mx-auto bg-gray-50 min-h-[100dvh]">
             {{ $slot }}
         </div>
         

@@ -13,7 +13,7 @@
     </div>
 
     {{-- Menu Grid Section --}}
-    <div class="px-6 py-8 pb-36 bg-gray-50 rounded-t-3xl -mt-6 relative">
+    <div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
         <div class="grid grid-cols-3 gap-6">
             {{-- E-Learning --}}
             <div class="flex flex-col items-center">

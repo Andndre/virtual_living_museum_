@@ -15,6 +15,7 @@ use App\Models\VirtualMuseum;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
@@ -153,7 +154,10 @@ class HomeController extends Controller
      */
     public function rapor()
     {
-        $user = auth()->user();
+        /**
+         * @var User $user
+         */
+        $user = Auth::user();
 
         // Get all materials with user's test results
         $materials = Materi::with(['pretest', 'posttest'])
@@ -624,7 +628,7 @@ class HomeController extends Controller
         $arToken = TokenHelper::generate($user->id);
 
         // Debug log
-        \Log::debug('Generated AR Token:', [
+        Log::debug('Generated AR Token:', [
             'user_id' => $user->id,
             'token' => $arToken,
         ]);
