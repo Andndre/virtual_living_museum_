@@ -604,7 +604,8 @@ class HomeController extends Controller
             $materiId = $situs->materi_id;
             $materi = Materi::findOrFail($materiId);
             // Ambil semua museum_id pada materi ini
-            $allMuseumIds = VirtualMuseum::whereIn('situs_id',
+            $allMuseumIds = VirtualMuseum::whereIn(
+                'situs_id',
                 SitusPeninggalan::where('materi_id', $materiId)->pluck('situs_id')
             )->pluck('museum_id')->toArray();
 
