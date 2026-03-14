@@ -192,6 +192,8 @@
             let visibleObjects = new Set();
             const modelStates = new Map();
             let slowLoadingTimer = null;
+            const COMPATIBILITY_RETRY_TIMEOUT_MS = 12000;
+            const FINAL_MODEL_TIMEOUT_MS = 45000;
 
             function clearSlowLoadingTimer() {
                 if (slowLoadingTimer) {
@@ -308,15 +310,96 @@
                 showLoading(objectName);
 
                 const loadingPromise = new Promise(async (resolve, reject) => {
-                    const handleLoaded = function() {
+                    let finished = false;
+                    let compatibilityRetryTimer = null;
+                    let finalModelTimeout = null;
+
+                    const clearModelTimers = function() {
+                        if (compatibilityRetryTimer) {
+                            clearTimeout(compatibilityRetryTimer);
+                            compatibilityRetryTimer = null;
+                        }
+
+                        if (finalModelTimeout) {
+                            clearTimeout(finalModelTimeout);
+                            finalModelTimeout = null;
+                        }
+                    };
+
+                    const cleanupListeners = function() {
                         entity.removeEventListener('model-loaded', handleLoaded);
                         entity.removeEventListener('model-error', handleError);
+                    };
+
+                    const cleanupObjectUrl = function() {
+                        const currentState = modelStates.get(markerId);
+                        if (currentState?.objectUrl) {
+                            URL.revokeObjectURL(currentState.objectUrl);
+                        }
+
+                        modelStates.set(markerId, {
+                            loaded: false,
+                            loadingPromise,
+                            objectUrl: null,
+                        });
+                    };
+
+                    const failLoading = function(message) {
+                        if (finished) {
+                            return;
+                        }
+
+                        finished = true;
+                        clearModelTimers();
+                        cleanupListeners();
+                        cleanupObjectUrl();
+                        entity.removeAttribute('gltf-model');
+
+                        showLoadingError(objectName, message);
+                        reject(new Error(message));
+                    };
+
+                    const switchToCompatibilityMode = function(reason) {
+                        if (!isGlb || finished) {
+                            return false;
+                        }
+
+                        const state = modelStates.get(markerId);
+                        if (!state?.objectUrl) {
+                            return false;
+                        }
+
+                        cleanupObjectUrl();
+                        entity.removeAttribute('gltf-model');
+
+                        setProgress(96,
+                            'Mode kompatibilitas aktif. Mencoba memuat dari URL langsung...');
+                        loadingTextElement.textContent = reason ||
+                            'Parsing model terlalu lama. Mencoba mode alternatif...';
+                        entity.setAttribute('gltf-model', modelSrc);
+
+                        return true;
+                    };
+
+                    const handleLoaded = function() {
+                        if (finished) {
+                            return;
+                        }
+
+                        finished = true;
+                        clearModelTimers();
+                        cleanupListeners();
+
+                        const currentState = modelStates.get(markerId);
+                        if (currentState?.objectUrl) {
+                            URL.revokeObjectURL(currentState.objectUrl);
+                        }
 
                         setProgress(100, 'Model siap ditampilkan.');
                         modelStates.set(markerId, {
                             loaded: true,
                             loadingPromise: null,
-                            objectUrl: modelStates.get(markerId)?.objectUrl || null,
+                            objectUrl: null,
                         });
 
                         setTimeout(() => {
@@ -326,26 +409,19 @@
                     };
 
                     const handleError = function(event) {
-                        entity.removeEventListener('model-loaded', handleLoaded);
-                        entity.removeEventListener('model-error', handleError);
-
-                        const currentState = modelStates.get(markerId);
-                        if (currentState?.objectUrl) {
-                            URL.revokeObjectURL(currentState.objectUrl);
+                        if (finished) {
+                            return;
                         }
 
-                        modelStates.set(markerId, {
-                            loaded: false,
-                            loadingPromise: null,
-                            objectUrl: null,
-                        });
-
-                        entity.removeAttribute('gltf-model');
                         const detailMessage = event?.detail?.src ?
                             `Tidak bisa memuat sumber model: ${event.detail.src}` :
                             'Format atau isi file model tidak valid.';
-                        showLoadingError(objectName, detailMessage);
-                        reject(new Error('Gagal memuat model untuk ' + objectName));
+
+                        const switched = switchToCompatibilityMode(
+                            'Percobaan pertama gagal dimuat. Beralih ke mode kompatibilitas...');
+                        if (!switched) {
+                            failLoading(detailMessage);
+                        }
                     };
 
                     entity.addEventListener('model-loaded', handleLoaded, {
@@ -354,6 +430,20 @@
                     entity.addEventListener('model-error', handleError, {
                         once: true
                     });
+
+                    finalModelTimeout = setTimeout(() => {
+                        if (finished) {
+                            return;
+                        }
+
+                        const switched = switchToCompatibilityMode(
+                            'Menyusun model terlalu lama. Mencoba mode kompatibilitas...');
+                        if (!switched) {
+                            failLoading(
+                                'Waktu memuat model habis. Coba ulangi dengan model yang lebih ringan.'
+                                );
+                        }
+                    }, FINAL_MODEL_TIMEOUT_MS);
 
                     try {
                         if (isGlb) {
@@ -367,6 +457,16 @@
                             });
 
                             entity.setAttribute('gltf-model', objectUrl);
+
+                            compatibilityRetryTimer = setTimeout(() => {
+                                if (finished) {
+                                    return;
+                                }
+
+                                switchToCompatibilityMode(
+                                    'Parsing model dari cache lokal lama. Mencoba mode kompatibilitas...'
+                                    );
+                            }, COMPATIBILITY_RETRY_TIMEOUT_MS);
                         } else {
                             setProgress(18, 'Memuat model. Menunggu resource pendukung...');
                             loadingProgressTextElement.textContent =
@@ -374,17 +474,7 @@
                             entity.setAttribute('gltf-model', modelSrc);
                         }
                     } catch (downloadError) {
-                        entity.removeEventListener('model-loaded', handleLoaded);
-                        entity.removeEventListener('model-error', handleError);
-
-                        modelStates.set(markerId, {
-                            loaded: false,
-                            loadingPromise: null,
-                            objectUrl: null,
-                        });
-
-                        showLoadingError(objectName, downloadError.message || 'Gagal mengunduh model.');
-                        reject(downloadError);
+                        failLoading(downloadError.message || 'Gagal mengunduh model.');
                     }
                 });
 
