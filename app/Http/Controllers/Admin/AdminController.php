@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helper\ArPatternHelper;
 use App\Http\Controllers\Controller;
 use App\Models\AksesSitusUser;
 use App\Models\Ebook;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
@@ -493,7 +495,6 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
-            'path_patt' => 'nullable|file|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
 
@@ -519,18 +520,8 @@ class AdminController extends Controller
             $data['path_obj'] = $path;
         }
 
-        if ($request->hasFile('path_patt')) {
-            $file = $request->file('path_patt');
-            $filename = time() . '_patt_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
-            $path = $file->storeAs('virtual-museum/objects/patterns', $filename, 'public');
-            $data['path_patt'] = $path;
-        }
-
         if ($request->hasFile('path_gambar_marker')) {
-            $file = $request->file('path_gambar_marker');
-            $filename = time() . '_marker_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
-            $path = $file->storeAs('virtual-museum/objects/markers', $filename, 'public');
-            $data['path_gambar_marker'] = $path;
+            $data = array_merge($data, $this->storeMarkerAssets($request->file('path_gambar_marker')));
         }
 
         VirtualMuseumObject::create($data);
@@ -571,7 +562,6 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
-            'path_patt' => 'nullable|file|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
         ]);
 
@@ -605,31 +595,19 @@ class AdminController extends Controller
             $data['path_obj'] = $path;
         }
 
-        if ($request->hasFile('path_patt')) {
-            // Delete old file if it exists
-            if ($object->path_patt && Storage::disk('public')->exists($object->path_patt)) {
-                Storage::disk('public')->delete($object->path_patt);
-            }
-
-            $file = $request->file('path_patt');
-            $filename = time() . '_patt_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
-            $path = $file->storeAs('virtual-museum/objects/patterns', $filename, 'public');
-            $data['path_patt'] = $path;
-        }
+        $oldMarkerPathToDelete = null;
+        $oldPatternPathToDelete = null;
 
         if ($request->hasFile('path_gambar_marker')) {
-            // Delete old file if it exists
-            if ($object->path_gambar_marker && Storage::disk('public')->exists($object->path_gambar_marker)) {
-                Storage::disk('public')->delete($object->path_gambar_marker);
-            }
-
-            $file = $request->file('path_gambar_marker');
-            $filename = time() . '_marker_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
-            $path = $file->storeAs('virtual-museum/objects/markers', $filename, 'public');
-            $data['path_gambar_marker'] = $path;
+            $data = array_merge($data, $this->storeMarkerAssets($request->file('path_gambar_marker')));
+            $oldMarkerPathToDelete = $object->path_gambar_marker;
+            $oldPatternPathToDelete = $object->path_patt;
         }
 
         $object->update($data);
+
+        $this->deletePublicFile($oldMarkerPathToDelete);
+        $this->deletePublicFile($oldPatternPathToDelete);
 
         return redirect()->route('admin.virtual-museum-object.show', $object_id)
             ->with('success', 'Object Virtual Living Museum berhasil diperbarui!');
@@ -645,7 +623,7 @@ class AdminController extends Controller
         $nama = $object->nama;
 
         // Delete associated files
-        $files = ['gambar_real', 'path_obj', 'path_patt'];
+        $files = ['gambar_real', 'path_obj', 'path_patt', 'path_gambar_marker'];
         foreach ($files as $fileField) {
             if ($object->$fileField && Storage::disk('public')->exists($object->$fileField)) {
                 Storage::disk('public')->delete($object->$fileField);
@@ -656,6 +634,46 @@ class AdminController extends Controller
 
         return redirect()->route('admin.virtual-museum.show', $museum_id)
             ->with('success', "Object Virtual Living Museum '{$nama}' berhasil dihapus.");
+    }
+
+    private function storeMarkerAssets($file): array
+    {
+        $originalName = preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+        $baseName = preg_replace('/[^a-zA-Z0-9_-]/', '', pathinfo($originalName, PATHINFO_FILENAME)) ?: 'marker';
+        $extension = strtolower($file->getClientOriginalExtension());
+        $timestamp = now()->format('YmdHis');
+
+        $markerFilename = $timestamp . '_marker_' . $baseName . '.' . $extension;
+        $markerPath = $file->storeAs('virtual-museum/objects/markers', $markerFilename, 'public');
+
+        try {
+            $patternContent = ArPatternHelper::encodeImageToPattern(Storage::disk('public')->path($markerPath));
+            $patternPath = 'virtual-museum/objects/patterns/' . $timestamp . '_patt_' . $baseName . '.patt';
+            Storage::disk('public')->put($patternPath, $patternContent);
+        } catch (\Throwable $exception) {
+            $this->deletePublicFile($markerPath);
+
+            Log::error('Gagal membuat AR pattern otomatis', [
+                'marker_path' => $markerPath,
+                'message' => $exception->getMessage(),
+            ]);
+
+            throw ValidationException::withMessages([
+                'path_gambar_marker' => 'Gagal membuat file pattern otomatis dari gambar marker. Pastikan file gambar valid lalu coba lagi.',
+            ]);
+        }
+
+        return [
+            'path_gambar_marker' => $markerPath,
+            'path_patt' => $patternPath,
+        ];
+    }
+
+    private function deletePublicFile(?string $path): void
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     /**
