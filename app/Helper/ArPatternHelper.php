@@ -6,23 +6,15 @@ use RuntimeException;
 
 class ArPatternHelper
 {
+  private const FULL_MARKER_SIZE = 512;
   private const PATTERN_SIZE = 16;
+  private const WHITE_MARGIN = 0.1;
+  private const DEFAULT_PATTERN_RATIO = 0.5;
 
   public static function encodeImageToPattern(string $imagePath): string
   {
-    if (! function_exists('imagecreatefromstring')) {
-      throw new RuntimeException('Ekstensi GD tidak tersedia untuk membuat file pattern AR.');
-    }
-
-    $imageContents = @file_get_contents($imagePath);
-    if ($imageContents === false) {
-      throw new RuntimeException('Gagal membaca file gambar marker.');
-    }
-
-    $sourceImage = @imagecreatefromstring($imageContents);
-    if ($sourceImage === false) {
-      throw new RuntimeException('Format gambar marker tidak didukung.');
-    }
+    self::ensureGdAvailable();
+    $sourceImage = self::loadImage($imagePath);
 
     $baseImage = null;
 
@@ -66,6 +58,147 @@ class ArPatternHelper
 
       imagedestroy($sourceImage);
     }
+  }
+
+  public static function buildFullMarkerPng(
+    string $imagePath,
+    float $patternRatio = self::DEFAULT_PATTERN_RATIO,
+    int $size = self::FULL_MARKER_SIZE,
+    string $borderColor = 'black'
+  ): string {
+    self::ensureGdAvailable();
+
+    if ($size < 128) {
+      throw new RuntimeException('Ukuran marker minimal 128 piksel.');
+    }
+
+    if ($patternRatio <= 0 || $patternRatio >= 1) {
+      throw new RuntimeException('Pattern ratio harus berada di antara 0 dan 1.');
+    }
+
+    $sourceImage = self::loadImage($imagePath);
+    $canvas = null;
+
+    try {
+      $canvas = imagecreatetruecolor($size, $size);
+      if ($canvas === false) {
+        throw new RuntimeException('Gagal menyiapkan kanvas marker AR.');
+      }
+
+      [$borderR, $borderG, $borderB] = self::resolveBorderColor($borderColor);
+      $white = imagecolorallocate($canvas, 255, 255, 255);
+      $blackBorder = imagecolorallocate($canvas, $borderR, $borderG, $borderB);
+
+      imagefill($canvas, 0, 0, $white);
+
+      $whiteMargin = self::WHITE_MARGIN;
+      $blackMargin = (1 - 2 * $whiteMargin) * ((1 - $patternRatio) / 2);
+      $innerMargin = $whiteMargin + $blackMargin;
+
+      $outerX = (int) round($whiteMargin * $size);
+      $outerY = (int) round($whiteMargin * $size);
+      $outerW = max(1, (int) round((1 - 2 * $whiteMargin) * $size));
+      $outerH = max(1, (int) round((1 - 2 * $whiteMargin) * $size));
+
+      imagefilledrectangle(
+        $canvas,
+        $outerX,
+        $outerY,
+        $outerX + $outerW - 1,
+        $outerY + $outerH - 1,
+        $blackBorder
+      );
+
+      $innerX = (int) round($innerMargin * $size);
+      $innerY = (int) round($innerMargin * $size);
+      $innerW = max(1, (int) round((1 - 2 * $innerMargin) * $size));
+      $innerH = max(1, (int) round((1 - 2 * $innerMargin) * $size));
+
+      imagefilledrectangle(
+        $canvas,
+        $innerX,
+        $innerY,
+        $innerX + $innerW - 1,
+        $innerY + $innerH - 1,
+        $white
+      );
+
+      imagecopyresampled(
+        $canvas,
+        $sourceImage,
+        $innerX,
+        $innerY,
+        0,
+        0,
+        $innerW,
+        $innerH,
+        imagesx($sourceImage),
+        imagesy($sourceImage)
+      );
+
+      ob_start();
+      imagepng($canvas);
+      $pngBinary = ob_get_clean();
+
+      if ($pngBinary === false) {
+        throw new RuntimeException('Gagal mengenkode marker AR ke PNG.');
+      }
+
+      return $pngBinary;
+    } finally {
+      if ($canvas !== null) {
+        imagedestroy($canvas);
+      }
+
+      imagedestroy($sourceImage);
+    }
+  }
+
+  private static function ensureGdAvailable(): void
+  {
+    if (! function_exists('imagecreatefromstring')) {
+      throw new RuntimeException('Ekstensi GD tidak tersedia untuk membuat file pattern AR.');
+    }
+  }
+
+  private static function loadImage(string $imagePath): \GdImage
+  {
+    $imageContents = @file_get_contents($imagePath);
+    if ($imageContents === false) {
+      throw new RuntimeException('Gagal membaca file gambar marker.');
+    }
+
+    $sourceImage = @imagecreatefromstring($imageContents);
+    if ($sourceImage === false) {
+      throw new RuntimeException('Format gambar marker tidak didukung.');
+    }
+
+    return $sourceImage;
+  }
+
+  private static function resolveBorderColor(string $borderColor): array
+  {
+    $normalized = strtolower(trim($borderColor));
+
+    if ($normalized === '' || $normalized === 'black') {
+      return [0, 0, 0];
+    }
+
+    if ($normalized === 'white') {
+      return [255, 255, 255];
+    }
+
+    if (preg_match('/^#([0-9a-f]{6})$/i', $normalized, $matches) === 1) {
+      $hex = $matches[1];
+
+      return [
+        hexdec(substr($hex, 0, 2)),
+        hexdec(substr($hex, 2, 2)),
+        hexdec(substr($hex, 4, 2)),
+      ];
+    }
+
+    return [0, 0, 0];
   }
 
   private static function rotateImage(\GdImage $image, int $rotation): \GdImage

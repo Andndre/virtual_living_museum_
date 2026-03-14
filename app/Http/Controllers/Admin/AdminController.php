@@ -640,18 +640,29 @@ class AdminController extends Controller
     {
         $originalName = preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
         $baseName = preg_replace('/[^a-zA-Z0-9_-]/', '', pathinfo($originalName, PATHINFO_FILENAME)) ?: 'marker';
-        $extension = strtolower($file->getClientOriginalExtension());
         $timestamp = now()->format('YmdHis');
 
-        $markerFilename = $timestamp . '_marker_' . $baseName . '.' . $extension;
-        $markerPath = $file->storeAs('virtual-museum/objects/markers', $markerFilename, 'public');
+        $markerPath = null;
+        $patternPath = null;
 
         try {
-            $patternContent = ArPatternHelper::encodeImageToPattern(Storage::disk('public')->path($markerPath));
+            $sourcePath = $file->getRealPath();
+            if ($sourcePath === false) {
+                throw ValidationException::withMessages([
+                    'path_gambar_marker' => 'File marker tidak valid. Silakan unggah ulang gambar marker.',
+                ]);
+            }
+
+            $patternContent = ArPatternHelper::encodeImageToPattern($sourcePath);
             $patternPath = 'virtual-museum/objects/patterns/' . $timestamp . '_patt_' . $baseName . '.patt';
             Storage::disk('public')->put($patternPath, $patternContent);
+
+            $markerPng = ArPatternHelper::buildFullMarkerPng($sourcePath, 0.5, 512, 'black');
+            $markerPath = 'virtual-museum/objects/markers/' . $timestamp . '_marker_' . $baseName . '.png';
+            Storage::disk('public')->put($markerPath, $markerPng);
         } catch (\Throwable $exception) {
             $this->deletePublicFile($markerPath);
+            $this->deletePublicFile($patternPath);
 
             Log::error('Gagal membuat AR pattern otomatis', [
                 'marker_path' => $markerPath,
