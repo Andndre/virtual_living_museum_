@@ -6,6 +6,7 @@ use App\Helper\ArPatternHelper;
 use App\Http\Controllers\Controller;
 use App\Models\AksesSitusUser;
 use App\Models\Ebook;
+use App\Models\Era;
 use App\Models\KritikSaran;
 use App\Models\LaporanPeninggalan;
 use App\Models\Materi;
@@ -165,7 +166,14 @@ class AdminController extends Controller
      */
     public function materi()
     {
-        $materis = Materi::orderBy('urutan', 'asc')->paginate(20);
+        $materis = Materi::with('era')
+            ->leftJoin('era', 'materi.era_id', '=', 'era.era_id')
+            ->orderByRaw('CASE WHEN materi.era_id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('era.urutan', 'asc')
+            ->orderBy('materi.bab', 'asc')
+            ->orderBy('materi.urutan', 'asc')
+            ->select('materi.*')
+            ->paginate(20);
 
         return view('admin.materi.index', compact('materis'));
     }
@@ -194,7 +202,14 @@ class AdminController extends Controller
      */
     public function createSitus()
     {
-        $materis = Materi::orderBy('judul')->get();
+        $materis = Materi::with('era')
+            ->leftJoin('era', 'materi.era_id', '=', 'era.era_id')
+            ->orderByRaw('CASE WHEN materi.era_id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('era.urutan')
+            ->orderBy('materi.bab')
+            ->orderBy('materi.urutan')
+            ->select('materi.*')
+            ->get();
 
         return view('admin.situs.create', compact('materis'));
     }
@@ -251,7 +266,14 @@ class AdminController extends Controller
     public function editSitus($situs_id)
     {
         $situs = SitusPeninggalan::findOrFail($situs_id);
-        $materis = Materi::orderBy('judul')->get();
+        $materis = Materi::with('era')
+            ->leftJoin('era', 'materi.era_id', '=', 'era.era_id')
+            ->orderByRaw('CASE WHEN materi.era_id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('era.urutan')
+            ->orderBy('materi.bab')
+            ->orderBy('materi.urutan')
+            ->select('materi.*')
+            ->get();
 
         return view('admin.situs.edit', compact('situs', 'materis'));
     }
@@ -770,7 +792,9 @@ class AdminController extends Controller
      */
     public function createMateri()
     {
-        return view('admin.materi.create');
+        $eras = Era::orderBy('urutan')->get();
+
+        return view('admin.materi.create', compact('eras'));
     }
 
     /**
@@ -779,6 +803,8 @@ class AdminController extends Controller
     public function storeMateri(Request $request)
     {
         $request->validate([
+            'era_id' => 'required|exists:era,era_id',
+            'bab' => 'required|integer|min:1',
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
         ]);
@@ -800,7 +826,7 @@ class AdminController extends Controller
      */
     public function showMateri($id)
     {
-        $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
+        $materi = Materi::with(['era', 'pretest', 'posttest', 'ebook', 'situsPeninggalan'])
             ->findOrFail($id);
 
         return view('admin.materi.show', compact('materi'));
@@ -812,8 +838,9 @@ class AdminController extends Controller
     public function editMateri($id)
     {
         $materi = Materi::findOrFail($id);
+        $eras = Era::orderBy('urutan')->get();
 
-        return view('admin.materi.edit', compact('materi'));
+        return view('admin.materi.edit', compact('materi', 'eras'));
     }
 
     /**
@@ -824,11 +851,13 @@ class AdminController extends Controller
         $materi = Materi::findOrFail($id);
 
         $request->validate([
+            'era_id' => 'required|exists:era,era_id',
+            'bab' => 'required|integer|min:1',
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
         ]);
 
-        $materi->update($request->only(['judul', 'deskripsi']));
+        $materi->update($request->only(['era_id', 'bab', 'judul', 'deskripsi']));
 
         return redirect()->route('admin.materi')
             ->with('success', 'Materi berhasil diperbarui!');

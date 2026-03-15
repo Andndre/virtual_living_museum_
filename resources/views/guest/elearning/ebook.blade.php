@@ -1,56 +1,76 @@
 <x-elearning-layout>
     {{-- Header Section --}}
-    <div class="px-6 py-6 bg-primary text-white">
-        <div class="flex justify-between items-center">
-            <button class="back-button p-2 hover:bg-white/10 rounded-full transition-colors">
+    <div class="bg-primary px-6 py-6 text-white">
+        <div class="flex items-center justify-between">
+            <button class="back-button rounded-full p-2 transition-colors hover:bg-white/10">
                 <i class="fas fa-arrow-left text-xl"></i>
             </button>
-            <div class="flex-1 text-center mx-4">
+            <div class="mx-4 flex-1 text-center">
                 <h1 class="text-lg font-bold">{{ $ebook->judul }}</h1>
-                <p class="text-sm opacity-90">{{ $ebook->materi->judul }}</p>
+                <p class="text-sm opacity-90">
+                    {{ $ebook->materi->judul }}
+                    @if ($ebook->materi->bab)
+                        &mdash; Bab {{ $ebook->materi->bab }}
+                    @endif
+                </p>
             </div>
-            <a href="{{ route('profile.edit') }}" class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 hover:border-white/50 transition-colors">
-                @if(auth()->user()->profile_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture" class="w-full h-full object-cover" />
+            <a href="{{ route('profile.edit') }}"
+                class="h-12 w-12 overflow-hidden rounded-full border-2 border-white/30 transition-colors hover:border-white/50">
+                @if (auth()->user()->profile_photo)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture"
+                        class="h-full w-full object-cover" />
                 @else
-                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture" class="w-full h-full object-cover" />
+                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture"
+                        class="h-full w-full object-cover" />
                 @endif
             </a>
         </div>
     </div>
 
     {{-- E-book Viewer Section --}}
-    <div class="bg-white min-h-screen">
+    <div class="min-h-screen bg-white">
         <div class="container mx-auto px-2 py-3 md:px-4 md:py-6">
             {{-- Flipbook Container --}}
-            <div id="flipbook-container" class="w-full bg-gray-100 rounded-xl md:rounded-2xl shadow-lg overflow-hidden flex flex-col items-center justify-center min-h-[85vh] md:min-h-[80vh] relative">
+            <div id="flipbook-container"
+                class="relative flex min-h-[85vh] w-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray-100 shadow-lg md:min-h-[80vh] md:rounded-2xl">
                 <!-- Loading Spinner -->
-                <div class="loading-container absolute inset-0 flex items-center justify-center z-40 bg-white/80">
+                <div class="loading-container absolute inset-0 z-40 flex items-center justify-center bg-white/80">
                     <div class="text-center">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <div class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
                         <p class="text-gray-600">Memuat e-book...</p>
                     </div>
                 </div>
                 {{-- Flipbook Element --}}
-                <div class="w-full flex justify-center items-center">
-                    <div id="flipbook" class="flipbook hidden relative">
+                <div class="flex w-full items-center justify-center">
+                    <div id="flipbook" class="flipbook relative hidden">
                         <!-- Overlay hanya menutupi flipbook -->
-                        <div id="flipbook-start-overlay" class="absolute left-0 top-0 w-full h-full z-50 flex flex-col items-center justify-center bg-black/60 text-white text-center cursor-pointer select-none" style="backdrop-filter: blur(2px);">
+                        <div id="flipbook-start-overlay"
+                            class="absolute left-0 top-0 z-50 flex h-full w-full cursor-pointer select-none flex-col items-center justify-center bg-black/60 text-center text-white"
+                            style="backdrop-filter: blur(2px);">
                             <div>
-                                <div class="text-2xl font-bold mb-2">Klik untuk mulai membaca</div>
+                                <div class="mb-2 text-2xl font-bold">Klik untuk mulai membaca</div>
                                 <div class="mb-4 text-base">E-book akan tampil fullscreen</div>
-                                <button class="px-6 py-3 bg-blue-600 rounded-lg font-semibold text-white text-lg hover:bg-blue-700 transition">Mulai Membaca</button>
+                                <button
+                                    class="rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-blue-700">Mulai
+                                    Membaca</button>
                             </div>
                         </div>
                         <!-- PageFlip container -->
-                        <div id="pageflip-viewer" class="w-full h-full"></div>
+                        <div id="pageflip-viewer" class="h-full w-full"></div>
                         <!-- Fullscreen controls (bottom, small, horizontal) -->
-                        <div id="fullscreen-controls" class="hidden absolute left-1/2 bottom-4 -translate-x-1/2 z-50 flex items-center gap-3">
-                            <button id="fullscreen-prev" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
+                        <div id="fullscreen-controls"
+                            class="absolute bottom-4 left-1/2 z-50 flex hidden -translate-x-1/2 items-center gap-3">
+                            <button id="fullscreen-prev"
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-xl text-white transition hover:bg-black/70 focus:outline-none"
+                                style="backdrop-filter: blur(2px);">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <div id="fullscreen-page-indicator" class="pointer-events-none select-none text-black text-base font-semibold bg-white/80 rounded-lg px-1 py-1 shadow"></div>
-                            <button id="fullscreen-next" class="bg-black/40 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl focus:outline-none transition" style="backdrop-filter: blur(2px);">
+                            <div id="fullscreen-page-indicator"
+                                class="pointer-events-none select-none rounded-lg bg-white/80 px-1 py-1 text-base font-semibold text-black shadow">
+                            </div>
+                            <button id="fullscreen-next"
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-xl text-white transition hover:bg-black/70 focus:outline-none"
+                                style="backdrop-filter: blur(2px);">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -59,21 +79,24 @@
             </div>
 
             {{-- Navigation Controls --}}
-            <div class="flex justify-center items-center space-x-2 md:space-x-4 mt-3 md:mt-6">
-                <button id="prev-page" class="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 text-sm md:text-base" disabled>
+            <div class="mt-3 flex items-center justify-center space-x-2 md:mt-6 md:space-x-4">
+                <button id="prev-page"
+                    class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 md:px-4 md:py-2 md:text-base"
+                    disabled>
                     <i class="fas fa-chevron-left mr-1 md:mr-2"></i>
                     <span class="hidden sm:inline">Sebelumnya</span>
                     <span class="sm:hidden">Prev</span>
                 </button>
 
                 <div class="flex items-center space-x-1 md:space-x-2">
-                    <span class="text-xs md:text-sm text-gray-600">Hal.</span>
-                    <span id="current-page" class="font-semibold text-sm md:text-base">1</span>
-                    <span class="text-xs md:text-sm text-gray-600">dari</span>
-                    <span id="total-pages" class="font-semibold text-sm md:text-base">-</span>
+                    <span class="text-xs text-gray-600 md:text-sm">Hal.</span>
+                    <span id="current-page" class="text-sm font-semibold md:text-base">1</span>
+                    <span class="text-xs text-gray-600 md:text-sm">dari</span>
+                    <span id="total-pages" class="text-sm font-semibold md:text-base">-</span>
                 </div>
 
-                <button id="next-page" class="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm md:text-base">
+                <button id="next-page"
+                    class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 md:px-4 md:py-2 md:text-base">
                     <span class="hidden sm:inline">Selanjutnya</span>
                     <span class="sm:hidden">Next</span>
                     <i class="fas fa-chevron-right ml-1 md:ml-2"></i>
@@ -124,7 +147,7 @@
             background-color: white;
             background-size: 100% 100%;
             border: 1px solid #ccc;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -168,6 +191,7 @@
                 max-width: 100vw;
                 min-height: 220px;
             }
+
             #flipbook-container {
                 min-height: 85vh;
             }
@@ -178,6 +202,7 @@
                 max-width: 100vw;
                 min-height: 180px;
             }
+
             #flipbook-container {
                 min-height: 90vh;
                 padding: 8px;
@@ -189,6 +214,7 @@
                 max-width: 100vw;
                 min-height: 120px;
             }
+
             #flipbook-container {
                 min-height: 95vh;
                 padding: 4px;
@@ -220,8 +246,15 @@
 
         /* Loading animation for pages */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .page canvas {

@@ -1,9 +1,9 @@
 <x-app-layout>
     <div class="py-6">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="mb-8">
-                <nav class="flex mb-4" aria-label="Breadcrumb">
+                <nav class="mb-4 flex" aria-label="Breadcrumb">
                     <ol class="flex items-center space-x-4">
                         <li>
                             <a href="{{ route('admin.dashboard') }}" class="text-gray-400 hover:text-gray-500">
@@ -12,38 +12,43 @@
                         </li>
                         <li>
                             <div class="flex items-center">
-                                <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
-                                <a href="{{ route('admin.situs') }}" class="text-gray-400 hover:text-gray-500">Kelola Situs</a>
+                                <i class="fas fa-chevron-right mr-4 text-gray-400"></i>
+                                <a href="{{ route('admin.situs') }}" class="text-gray-400 hover:text-gray-500">Kelola
+                                    Situs</a>
                             </div>
                         </li>
                         <li>
                             <div class="flex items-center">
-                                <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
-                                <a href="{{ route('admin.situs.show', $situs->situs_id) }}" class="text-gray-400 hover:text-gray-500">{{ $situs->nama }}</a>
+                                <i class="fas fa-chevron-right mr-4 text-gray-400"></i>
+                                <a href="{{ route('admin.situs.show', $situs->situs_id) }}"
+                                    class="text-gray-400 hover:text-gray-500">{{ $situs->nama }}</a>
                             </div>
                         </li>
                         <li>
                             <div class="flex items-center">
-                                <i class="fas fa-chevron-right text-gray-400 mr-4"></i>
-                                <span class="text-gray-900 font-medium">Edit</span>
+                                <i class="fas fa-chevron-right mr-4 text-gray-400"></i>
+                                <span class="font-medium text-gray-900">Edit</span>
                             </div>
                         </li>
                     </ol>
                 </nav>
 
                 <div class="mb-4">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Situs Peninggalan</h1>
-                    <p class="mt-2 text-sm sm:text-base text-gray-600">Mengedit situs: <strong>{{ $situs->nama }}</strong></p>
+                    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Edit Situs Peninggalan</h1>
+                    <p class="mt-2 text-sm text-gray-600 sm:text-base">Mengedit situs:
+                        <strong>{{ $situs->nama }}</strong></p>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-3">
-                    <a href="{{ route('admin.situs.show', $situs->situs_id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <div class="flex flex-col gap-3 sm:flex-row sm:gap-3">
+                    <a href="{{ route('admin.situs.show', $situs->situs_id) }}"
+                        class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50">
                         <i class="fas fa-eye mr-2"></i>
                         <span class="hidden sm:inline">Lihat Detail</span>
                         <span class="sm:hidden">Detail</span>
                     </a>
-                    <a href="{{ route('admin.situs') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <a href="{{ route('admin.situs') }}"
+                        class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50">
                         <i class="fas fa-arrow-left mr-2"></i>
                         <span class="hidden sm:inline">Kembali ke Situs</span>
                         <span class="sm:hidden">Kembali</span>
@@ -52,41 +57,36 @@
             </div>
 
             <!-- Success/Error Messages -->
-            @if(session('success'))
-                <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative">
+            @if (session('success'))
+                <div class="relative mb-4 rounded border border-green-200 bg-green-50 px-4 py-3 text-green-700">
                     <i class="fas fa-check-circle mr-2"></i>
                     {{ session('success') }}
                 </div>
             @endif
 
-            @if(session('error'))
-                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
+            @if (session('error'))
+                <div class="relative mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
                     <i class="fas fa-exclamation-circle mr-2"></i>
                     {{ session('error') }}
                 </div>
             @endif
 
             <!-- Form -->
-            <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                <form id="situsForm" action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
+            <div class="border border-gray-200 bg-white shadow-lg sm:rounded-lg">
+                <form id="situsForm" action="{{ route('admin.situs.update', $situs->situs_id) }}" method="POST"
+                    class="space-y-6" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="_method" value="PUT">
-                    <div class="px-4 py-5 sm:p-6 space-y-6">
+                    <div class="space-y-6 px-4 py-5 sm:p-6">
                         <!-- Nama Situs -->
                         <div>
-                            <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="nama" class="mb-1 block text-sm font-medium text-gray-700">
                                 Nama Situs <span class="text-red-500">*</span>
                             </label>
-                            <input
-                                type="text"
-                                name="nama"
-                                id="nama"
-                                value="{{ old('nama', $situs->nama) }}"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('nama') border-red-500 @enderror"
-                                placeholder="Contoh: Candi Borobudur"
-                                required
-                            >
+                            <input type="text" name="nama" id="nama" value="{{ old('nama', $situs->nama) }}"
+                                class="@error('nama') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                placeholder="Contoh: Candi Borobudur" required>
                             @error('nama')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -94,17 +94,12 @@
 
                         <!-- Alamat -->
                         <div>
-                            <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="alamat" class="mb-1 block text-sm font-medium text-gray-700">
                                 Alamat <span class="text-red-500">*</span>
                             </label>
-                            <textarea
-                                name="alamat"
-                                id="alamat"
-                                rows="3"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('alamat') border-red-500 @enderror"
-                                placeholder="Contoh: Jl. Badrawati, Borobudur, Magelang, Jawa Tengah"
-                                required
-                            >{{ old('alamat', $situs->alamat) }}</textarea>
+                            <textarea name="alamat" id="alamat" rows="3"
+                                class="@error('alamat') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                placeholder="Contoh: Jl. Badrawati, Borobudur, Magelang, Jawa Tengah" required>{{ old('alamat', $situs->alamat) }}</textarea>
                             @error('alamat')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -113,51 +108,40 @@
                         <!-- Koordinat dengan Interactive Map -->
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <label class="mb-2 block text-sm font-medium text-gray-700">
                                     Koordinat Lokasi <span class="text-red-500">*</span>
                                 </label>
-                                <p class="text-sm text-gray-600 mb-3">Klik pada peta atau masukkan koordinat secara manual</p>
+                                <p class="mb-3 text-sm text-gray-600">Klik pada peta atau masukkan koordinat secara
+                                    manual</p>
                             </div>
 
                             <!-- Interactive Map -->
-                            <div class="border border-gray-300 rounded-md overflow-hidden">
+                            <div class="overflow-hidden rounded-md border border-gray-300">
                                 <div id="map" style="height: 400px; width: 100%;"></div>
                             </div>
 
                             <!-- Coordinate Inputs -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label for="lat" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="lat" class="mb-1 block text-sm font-medium text-gray-700">
                                         Latitude <span class="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="number"
-                                        name="lat"
-                                        id="lat"
-                                        step="any"
+                                    <input type="number" name="lat" id="lat" step="any"
                                         value="{{ old('lat', $situs->lat) }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('lat') border-red-500 @enderror"
-                                        placeholder="Contoh: -7.608543"
-                                        required
-                                    >
+                                        class="@error('lat') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                        placeholder="Contoh: -7.608543" required>
                                     @error('lat')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label for="lng" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="lng" class="mb-1 block text-sm font-medium text-gray-700">
                                         Longitude <span class="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="number"
-                                        name="lng"
-                                        id="lng"
-                                        step="any"
+                                    <input type="number" name="lng" id="lng" step="any"
                                         value="{{ old('lng', $situs->lng) }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('lng') border-red-500 @enderror"
-                                        placeholder="Contoh: 110.203751"
-                                        required
-                                    >
+                                        class="@error('lng') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                        placeholder="Contoh: 110.203751" required>
                                     @error('lng')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -166,11 +150,13 @@
 
                             <!-- Map Controls -->
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" id="getCurrentLocation" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <button type="button" id="getCurrentLocation"
+                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <i class="fas fa-crosshairs mr-2"></i>
                                     Lokasi Saya
                                 </button>
-                                <button type="button" id="searchLocation" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <button type="button" id="searchLocation"
+                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <i class="fas fa-search mr-2"></i>
                                     Cari Lokasi
                                 </button>
@@ -179,20 +165,26 @@
 
                         <!-- Materi Terkait -->
                         <div>
-                            <label for="materi_id" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="materi_id" class="mb-1 block text-sm font-medium text-gray-700">
                                 Materi Terkait <span class="text-red-500">*</span>
                             </label>
-                            <select
-                                name="materi_id"
-                                id="materi_id"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('materi_id') border-red-500 @enderror"
-                                required
-                            >
+                            @php
+                                $groupedMateris = $materis->groupBy(fn($m) => $m->era_id ?? 0);
+                            @endphp
+                            <select name="materi_id" id="materi_id"
+                                class="@error('materi_id') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                required>
                                 <option value="">Pilih Materi</option>
-                                @foreach($materis as $materi)
-                                    <option value="{{ $materi->materi_id }}" {{ (old('materi_id', $situs->materi_id) == $materi->materi_id) ? 'selected' : '' }}>
-                                        {{ $materi->judul }}
-                                    </option>
+                                @foreach ($groupedMateris as $eraId => $eraGroup)
+                                    @php $era = $eraGroup->first()->era; @endphp
+                                    <optgroup label="{{ $era ? $era->kode . '. ' . $era->nama : 'Umum' }}">
+                                        @foreach ($eraGroup as $materi)
+                                            <option value="{{ $materi->materi_id }}"
+                                                {{ old('materi_id', $situs->materi_id) == $materi->materi_id ? 'selected' : '' }}>
+                                                {{ $materi->bab ? 'Bab ' . $materi->bab . ' — ' : '' }}{{ $materi->judul }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                             @error('materi_id')
@@ -202,17 +194,12 @@
 
                         <!-- Deskripsi -->
                         <div>
-                            <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="deskripsi" class="mb-1 block text-sm font-medium text-gray-700">
                                 Deskripsi <span class="text-red-500">*</span>
                             </label>
-                            <textarea
-                                name="deskripsi"
-                                id="deskripsi"
-                                rows="6"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('deskripsi') border-red-500 @enderror"
-                                placeholder="Jelaskan tentang situs peninggalan ini, sejarah, fungsi, dan hal menarik lainnya..."
-                                required
-                            >{{ old('deskripsi', $situs->deskripsi) }}</textarea>
+                            <textarea name="deskripsi" id="deskripsi" rows="6"
+                                class="@error('deskripsi') border-red-500 @enderror w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                placeholder="Jelaskan tentang situs peninggalan ini, sejarah, fungsi, dan hal menarik lainnya..." required>{{ old('deskripsi', $situs->deskripsi) }}</textarea>
                             @error('deskripsi')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -220,43 +207,48 @@
 
                         <!-- Thumbnail Image -->
                         <div>
-                            <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="thumbnail" class="mb-1 block text-sm font-medium text-gray-700">
                                 Gambar Thumbnail
                             </label>
                             <div class="mt-1">
                                 <!-- Hidden input to track thumbnail removal -->
                                 <input type="hidden" name="remove_thumbnail" id="remove_thumbnail" value="0">
-                                
+
                                 <!-- Thumbnail Preview -->
-                                <div id="thumbnail-preview" class="{{ $situs->thumbnail ? 'block' : 'hidden' }} mb-3">
+                                <div id="thumbnail-preview"
+                                    class="{{ $situs->thumbnail ? 'block' : 'hidden' }} mb-3">
                                     <div class="relative inline-block">
                                         <img src="{{ $situs->thumbnail ? asset('storage/' . $situs->thumbnail) : '#' }}"
-                                             alt="Thumbnail Preview"
-                                             class="h-32 w-auto object-cover rounded-lg border border-gray-300">
-                                        <button type="button" id="remove-thumbnail" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors">
+                                            alt="Thumbnail Preview"
+                                            class="h-32 w-auto rounded-lg border border-gray-300 object-cover">
+                                        <button type="button" id="remove-thumbnail"
+                                            class="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600">
                                             <i class="fas fa-times text-xs"></i>
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Upload Area -->
                                 <div id="upload-area" class="{{ $situs->thumbnail ? 'hidden' : 'block' }}">
-                                    <label class="block w-full px-3 py-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-center">
+                                    <label
+                                        class="block w-full cursor-pointer rounded-md border-2 border-dashed border-gray-300 px-3 py-6 text-center hover:bg-gray-50">
                                         <div class="flex flex-col items-center justify-center">
-                                            <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                                            <i class="fas fa-cloud-upload-alt mb-2 text-3xl text-gray-400"></i>
                                             <span class="text-sm text-gray-500">Klik untuk mengunggah gambar</span>
-                                            <span class="text-xs text-gray-400 mt-1">Format: JPG, PNG, GIF (Maks. 2MB)</span>
+                                            <span class="mt-1 text-xs text-gray-400">Format: JPG, PNG, GIF (Maks.
+                                                2MB)</span>
                                         </div>
-                                        <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="sr-only">
+                                        <input type="file" name="thumbnail" id="thumbnail" accept="image/*"
+                                            class="sr-only">
                                     </label>
                                 </div>
-                                
+
                                 @error('thumbnail')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const form = document.getElementById('situsForm');
@@ -265,7 +257,7 @@
                                 const removeThumbnailInput = document.getElementById('remove_thumbnail');
                                 const thumbnailPreview = document.getElementById('thumbnail-preview');
                                 const uploadArea = document.getElementById('upload-area');
-                                
+
                                 // Handle file selection
                                 if (thumbnailInput) {
                                     thumbnailInput.addEventListener('change', function(e) {
@@ -278,14 +270,14 @@
                                                 this.value = '';
                                                 return;
                                             }
-                                            
+
                                             // Validate file size (2MB)
                                             if (file.size > 2 * 1024 * 1024) {
                                                 alert('Ukuran file terlalu besar. Maksimal 2MB.');
                                                 this.value = '';
                                                 return;
                                             }
-                                            
+
                                             const reader = new FileReader();
                                             reader.onload = function(e) {
                                                 const img = thumbnailPreview.querySelector('img');
@@ -298,7 +290,7 @@
                                         }
                                     });
                                 }
-                                
+
                                 // Handle remove thumbnail
                                 if (removeThumbnailBtn) {
                                     removeThumbnailBtn.addEventListener('click', function(e) {
@@ -309,13 +301,13 @@
                                         uploadArea.classList.remove('hidden');
                                     });
                                 }
-                                
+
                                 // Initialize preview if thumbnail exists
-                                @if($situs->thumbnail)
+                                @if ($situs->thumbnail)
                                     thumbnailPreview.classList.remove('hidden');
                                     uploadArea.classList.add('hidden');
                                 @endif
-                                
+
                                 // Form submission handler
                                 if (form) {
                                     form.addEventListener('submit', function(e) {
@@ -332,18 +324,20 @@
                         </script>
 
                         <!-- Virtual Objects Info -->
-                        @if($situs->virtualMuseumObject->count() > 0)
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        @if ($situs->virtualMuseumObject->count() > 0)
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
                                 <div class="flex">
                                     <div class="flex-shrink-0">
                                         <i class="fas fa-info-circle text-blue-400"></i>
                                     </div>
                                     <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-blue-800">Objek Virtual Living Museum Terkait</h3>
+                                        <h3 class="text-sm font-medium text-blue-800">Objek Virtual Living Museum
+                                            Terkait</h3>
                                         <div class="mt-2 text-sm text-blue-700">
-                                            <p>Situs ini memiliki {{ $situs->virtualMuseumObject->count() }} objek virtual living museum:</p>
-                                            <ul class="list-disc list-inside mt-1">
-                                                @foreach($situs->virtualMuseumObject as $object)
+                                            <p>Situs ini memiliki {{ $situs->virtualMuseumObject->count() }} objek
+                                                virtual living museum:</p>
+                                            <ul class="mt-1 list-inside list-disc">
+                                                @foreach ($situs->virtualMuseumObject as $object)
                                                     <li>{{ $object->nama }}</li>
                                                 @endforeach
                                             </ul>
@@ -355,12 +349,15 @@
                     </div>
 
                     <!-- Form Actions -->
-                    <div class="px-4 py-4 sm:px-6 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
-                        <a href="{{ route('admin.situs.show', $situs->situs_id) }}" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <div
+                        class="flex flex-col justify-end space-y-2 border-t border-gray-200 bg-gray-50 px-4 py-4 sm:flex-row sm:space-x-3 sm:space-y-0 sm:px-6">
+                        <a href="{{ route('admin.situs.show', $situs->situs_id) }}"
+                            class="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 sm:w-auto">
                             <i class="fas fa-times mr-2"></i>
                             Batal
                         </a>
-                        <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors">
+                        <button type="submit"
+                            class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-yellow-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 sm:w-auto">
                             <i class="fas fa-save mr-2"></i>
                             Simpan Perubahan
                         </button>
@@ -372,9 +369,9 @@
 
     <!-- Leaflet CSS and JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -437,7 +434,8 @@
                         map.setView([lat, lng], 15);
                         updateInputs(lat, lng);
                     }, function() {
-                        alert('Tidak dapat mengakses lokasi Anda. Pastikan GPS diaktifkan dan izin lokasi diberikan.');
+                        alert(
+                            'Tidak dapat mengakses lokasi Anda. Pastikan GPS diaktifkan dan izin lokasi diberikan.');
                     });
                 } else {
                     alert('Geolocation tidak didukung oleh browser ini.');
@@ -449,7 +447,8 @@
                 const query = prompt('Masukkan nama lokasi yang ingin dicari:');
                 if (query) {
                     // Using Nominatim API for geocoding
-                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+                    fetch(
+                            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.length > 0) {

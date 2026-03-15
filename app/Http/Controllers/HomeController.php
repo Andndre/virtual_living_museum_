@@ -160,8 +160,13 @@ class HomeController extends Controller
         $user = Auth::user();
 
         // Get all materials with user's test results
-        $materials = Materi::with(['pretest', 'posttest'])
-            ->orderBy('urutan')
+        $materials = Materi::with(['era', 'pretest', 'posttest'])
+            ->leftJoin('era', 'materi.era_id', '=', 'era.era_id')
+            ->orderByRaw('CASE WHEN materi.era_id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('era.urutan')
+            ->orderBy('materi.bab')
+            ->orderBy('materi.urutan')
+            ->select('materi.*')
             ->get()
             ->map(function ($materi) use ($user) {
                 // Get pretest results
@@ -230,14 +235,19 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        // Get all materis ordered by urutan
-        $materis = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])
-            ->orderBy('urutan')
+        // Get all materis ordered by era then bab.
+        $materis = Materi::with(['era', 'pretest', 'posttest', 'ebook', 'situsPeninggalan'])
+            ->leftJoin('era', 'materi.era_id', '=', 'era.era_id')
+            ->orderByRaw('CASE WHEN materi.era_id IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('era.urutan')
+            ->orderBy('materi.bab')
+            ->orderBy('materi.urutan')
+            ->select('materi.*')
             ->get();
 
         // Tandai status tiap materi (completed, available, locked) berdasarkan level user
         $materis = $materis->map(function ($materi) use ($user) {
-            $materiLevel = $materi->urutan;
+            $materiLevel = $materi->getLinearLevel();
             if ($materiLevel < $user->level_sekarang + 1) {
                 $materi->is_completed = true;
                 $materi->is_available = true;
@@ -283,10 +293,10 @@ class HomeController extends Controller
     {
         $userAuth = Auth::user();
         $user = User::findOrFail($userAuth->id);
-        $materi = Materi::with(['pretest', 'posttest', 'ebook', 'situsPeninggalan'])->findOrFail($materi_id);
+        $materi = Materi::with(['era', 'pretest', 'posttest', 'ebook', 'situsPeninggalan'])->findOrFail($materi_id);
 
         // Cek status progress user pada materi ini
-        $materiLevel = $materi->urutan;
+        $materiLevel = $materi->getLinearLevel();
         $isAvailable = ($materiLevel == $user->level_sekarang + 1);
         $isCompleted = ($materiLevel < $user->level_sekarang + 1);
 
@@ -366,7 +376,7 @@ class HomeController extends Controller
         }
 
         // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) {
+        if ($materi->getLinearLevel() < $user->level_sekarang + 1) {
             return true;
         }
 
@@ -618,7 +628,7 @@ class HomeController extends Controller
 
             // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
-                if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->urutan) {
+                if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
                     $user->incrementProgressLevel();
                     $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: ' . $materiId);
                 }
@@ -689,7 +699,7 @@ class HomeController extends Controller
 
         // Cek apakah user sudah pada step EBOOK dan materi yang benar
         $materi = $ebook->materi;
-        if ($materi && $materi->urutan == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
+        if ($materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
             // Increment progress ke EBOOK
             $user->incrementProgressLevel();
         }
@@ -773,7 +783,7 @@ class HomeController extends Controller
         }
 
         // Jika materi sudah lewat level user, pasti sudah selesai
-        if ($materi->urutan < $user->level_sekarang + 1) {
+        if ($materi->getLinearLevel() < $user->level_sekarang + 1) {
             return true;
         }
 
