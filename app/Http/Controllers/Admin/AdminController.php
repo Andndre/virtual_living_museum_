@@ -942,7 +942,8 @@ class AdminController extends Controller
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            'pilihan_e' => 'nullable|string|max:255',
+            'jawaban_benar' => 'required|in:A,B,C,D,E',
         ]);
 
         $data = $request->all();
@@ -1001,7 +1002,8 @@ class AdminController extends Controller
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            'pilihan_e' => 'nullable|string|max:255',
+            'jawaban_benar' => 'required|in:A,B,C,D,E',
         ]);
 
         $pretest->update($request->all());
@@ -1062,7 +1064,8 @@ class AdminController extends Controller
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            'pilihan_e' => 'nullable|string|max:255',
+            'jawaban_benar' => 'required|in:A,B,C,D,E',
         ]);
 
         $data = $request->all();
@@ -1121,7 +1124,8 @@ class AdminController extends Controller
             'pilihan_b' => 'required|string|max:255',
             'pilihan_c' => 'required|string|max:255',
             'pilihan_d' => 'required|string|max:255',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            'pilihan_e' => 'nullable|string|max:255',
+            'jawaban_benar' => 'required|in:A,B,C,D,E',
         ]);
 
         $posttest->update($request->all());
