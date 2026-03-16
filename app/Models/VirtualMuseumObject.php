@@ -20,6 +20,7 @@ class VirtualMuseumObject extends Model
     protected $fillable = [
         'situs_id',
         'museum_id',
+        'marker_id',
         'nama',
         'gambar_real',
         'path_obj',
@@ -31,6 +32,7 @@ class VirtualMuseumObject extends Model
     protected $casts = [
         'situs_id' => 'integer',
         'museum_id' => 'integer',
+        'marker_id' => 'integer',
     ];
 
     // Relationships
@@ -42,5 +44,10 @@ class VirtualMuseumObject extends Model
     public function virtualMuseum(): BelongsTo
     {
         return $this->belongsTo(VirtualMuseum::class, 'museum_id', 'museum_id');
+    }
+
+    public function arMarker(): BelongsTo
+    {
+        return $this->belongsTo(ArMarker::class, 'marker_id', 'marker_id');
     }
 }

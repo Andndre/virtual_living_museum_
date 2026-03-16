@@ -61,6 +61,12 @@
 
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
+        @php
+            $activeMarker = $object->arMarker;
+            $markerPathPatt = $activeMarker->path_patt ?? $object->path_patt;
+            $markerImagePath = $activeMarker->path_gambar_marker ?? $object->path_gambar_marker;
+        @endphp
+
         @if (session('success'))
             <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
                 <div class="flex items-center">
@@ -124,6 +130,17 @@
                                 </dd>
                             </div>
 
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Marker AR</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    @if ($activeMarker)
+                                        {{ $activeMarker->nama ?: 'Marker #' . $activeMarker->marker_id }}
+                                    @else
+                                        <span class="italic text-gray-400">Belum ditautkan</span>
+                                    @endif
+                                </dd>
+                            </div>
+
                         </dl>
                     </div>
                 </div>
@@ -173,7 +190,7 @@
                         @endif
 
                         <!-- AR Pattern -->
-                        @if ($object->path_patt)
+                        @if ($markerPathPatt)
                             <div>
                                 <h3 class="mb-2 text-sm font-medium text-gray-700">AR Pattern File</h3>
                                 <div
@@ -187,9 +204,9 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-sm font-medium text-gray-900">AR Pattern</p>
-                                        <p class="break-all text-sm text-gray-500">{{ basename($object->path_patt) }}
+                                        <p class="break-all text-sm text-gray-500">{{ basename($markerPathPatt) }}
                                         </p>
-                                        <a href="{{ asset('storage/' . $object->path_patt) }}" target="_blank"
+                                        <a href="{{ asset('storage/' . $markerPathPatt) }}" target="_blank"
                                             class="text-xs text-blue-600 hover:text-blue-800">Download File</a>
                                     </div>
                                 </div>
@@ -197,22 +214,22 @@
                         @endif
 
                         <!-- AR Marker Image -->
-                        @if ($object->path_gambar_marker)
+                        @if ($markerImagePath)
                             <div>
                                 <h3 class="mb-2 text-sm font-medium text-gray-700">Gambar Marker AR (Siap Cetak)</h3>
                                 <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                                    <img src="{{ asset('storage/' . $object->path_gambar_marker) }}"
+                                    <img src="{{ asset('storage/' . $markerImagePath) }}"
                                         alt="Gambar Marker AR {{ $object->nama }}"
                                         class="h-auto max-h-64 max-w-full rounded-lg bg-white object-contain shadow-sm">
                                     <p class="mt-2 break-all text-xs text-gray-500">
-                                        {{ basename($object->path_gambar_marker) }}</p>
-                                    <a href="{{ asset('storage/' . $object->path_gambar_marker) }}" target="_blank"
+                                        {{ basename($markerImagePath) }}</p>
+                                    <a href="{{ asset('storage/' . $markerImagePath) }}" target="_blank"
                                         class="text-xs text-blue-600 hover:text-blue-800">Download Marker</a>
                                 </div>
                             </div>
                         @endif
 
-                        @if (!$object->gambar_real && !$object->path_obj && !$object->path_patt && !$object->path_gambar_marker)
+                        @if (!$object->gambar_real && !$object->path_obj && !$markerPathPatt && !$markerImagePath)
                             <div class="py-8 text-center">
                                 <div class="mx-auto h-12 w-12 text-gray-400">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,15 +306,15 @@
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600">AR Pattern</span>
                             <span
-                                class="{{ $object->path_patt ? 'text-green-600' : 'text-gray-400' }} text-sm font-semibold">
-                                {{ $object->path_patt ? 'Ada' : 'Tidak Ada' }}
+                                class="{{ $markerPathPatt ? 'text-green-600' : 'text-gray-400' }} text-sm font-semibold">
+                                {{ $markerPathPatt ? 'Ada' : 'Tidak Ada' }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600">Gambar Marker AR</span>
                             <span
-                                class="{{ $object->path_gambar_marker ? 'text-green-600' : 'text-gray-400' }} text-sm font-semibold">
-                                {{ $object->path_gambar_marker ? 'Ada' : 'Tidak Ada' }}
+                                class="{{ $markerImagePath ? 'text-green-600' : 'text-gray-400' }} text-sm font-semibold">
+                                {{ $markerImagePath ? 'Ada' : 'Tidak Ada' }}
                             </span>
                         </div>
                     </div>

@@ -43,6 +43,52 @@
             color: #ccc;
         }
 
+        #ar-object-nav {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 188px;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #ar-object-nav.is-visible {
+            display: flex;
+        }
+
+        .ar-nav-button {
+            width: 46px;
+            height: 46px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.78);
+            color: #fff;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .ar-nav-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        #ar-object-counter {
+            flex: 1;
+            text-align: center;
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #e5e7eb;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
         #ar-loading {
             position: absolute;
             inset: 0;
@@ -140,14 +186,22 @@
 <body>
     <a-scene arjs embedded renderer="logarithmicDepthBuffer: true;" vr-mode-ui="enabled: false" gesture-detector
         id="scene">
-        @foreach ($arObjects as $object)
-            <!-- {{ $object->nama }} marker -->
-            <a-marker type="pattern" url="/storage/{{ $object->path_patt }}" raycaster="objects: .clickable"
-                emitevents="true" cursor="fuse: false; rayOrigin: mouse;" id="marker{{ $object->object_id }}"
-                data-object-name="{{ $object->nama }}" data-object-description="{{ $object->deskripsi }}"
-                data-model-src="/storage/{{ $object->path_obj }}">
-                <a-entity id="{{ $object->object_id }}-entity" position="0 0 0" scale="{{ $object->scale_string }}"
-                    class="clickable" gesture-handler>
+        @foreach ($arMarkers as $marker)
+            @continue($marker->virtualMuseumObjects->isEmpty())
+            <!-- {{ $marker->nama ?: 'Marker #' . $marker->marker_id }} -->
+            <a-marker type="pattern" url="/storage/{{ $marker->path_patt }}" raycaster="objects: .clickable"
+                emitevents="true" cursor="fuse: false; rayOrigin: mouse;" id="marker{{ $marker->marker_id }}"
+                data-marker-name="{{ $marker->nama ?: 'Marker #' . $marker->marker_id }}"
+                data-marker-objects='@json(
+                    $marker->virtualMuseumObjects->map(fn($object) => [
+                                'object_id' => $object->object_id,
+                                'nama' => $object->nama,
+                                'deskripsi' => $object->deskripsi,
+                                'model_src' => "/storage/{$object->path_obj}",
+                                'scale' => $object->scale_string ?? '1 1 1',
+                            ])->values())'>
+                <a-entity id="marker{{ $marker->marker_id }}-entity" position="0 0 0" scale="1 1 1" class="clickable"
+                    gesture-handler>
                 </a-entity>
             </a-marker>
         @endforeach
@@ -159,6 +213,12 @@
     <div id="ar-description">
         <h4 id="ar-title"></h4>
         <p id="ar-text"></p>
+    </div>
+
+    <div id="ar-object-nav" aria-label="Navigasi object marker">
+        <button id="ar-prev-object" class="ar-nav-button" type="button" aria-label="Object sebelumnya">&#8249;</button>
+        <div id="ar-object-counter">Object 1 dari 1</div>
+        <button id="ar-next-object" class="ar-nav-button" type="button" aria-label="Object berikutnya">&#8250;</button>
     </div>
 
     <div id="ar-loading" role="status" aria-live="polite" aria-hidden="true">
@@ -182,18 +242,34 @@
             const descriptionDiv = document.getElementById('ar-description');
             const titleElement = document.getElementById('ar-title');
             const textElement = document.getElementById('ar-text');
+            const objectNavElement = document.getElementById('ar-object-nav');
+            const objectCounterElement = document.getElementById('ar-object-counter');
+            const prevObjectButton = document.getElementById('ar-prev-object');
+            const nextObjectButton = document.getElementById('ar-next-object');
             const loadingOverlay = document.getElementById('ar-loading');
             const loadingCard = document.getElementById('ar-loading-card');
             const loadingTitleElement = document.getElementById('ar-loading-title');
             const loadingTextElement = document.getElementById('ar-loading-text');
             const loadingProgressBarElement = document.getElementById('ar-loading-progress-bar');
             const loadingProgressTextElement = document.getElementById('ar-loading-progress-text');
-            let lastVisibleObject = null;
-            let visibleObjects = new Set();
+            let activeMarkerId = null;
+            const visibleMarkers = new Map();
             const modelStates = new Map();
             let slowLoadingTimer = null;
             const COMPATIBILITY_RETRY_TIMEOUT_MS = 12000;
             const FINAL_MODEL_TIMEOUT_MS = 45000;
+
+            function parseMarkerObjects(marker) {
+                const rawObjects = marker.getAttribute('data-marker-objects') || '[]';
+
+                try {
+                    const parsed = JSON.parse(rawObjects);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (error) {
+                    console.error('Gagal membaca data object marker:', error);
+                    return [];
+                }
+            }
 
             function clearSlowLoadingTimer() {
                 if (slowLoadingTimer) {
@@ -289,15 +365,17 @@
                 return URL.createObjectURL(blob);
             }
 
-            function loadModelForMarker(marker) {
+            function loadObjectForMarker(marker, objectData) {
                 const entity = marker.querySelector('a-entity');
-                const objectName = marker.getAttribute('data-object-name');
-                const modelSrc = marker.getAttribute('data-model-src');
-                const markerId = marker.id;
+                const objectName = objectData.nama || 'Object AR';
+                const modelSrc = objectData.model_src;
+                const modelKey = marker.id + ':' + objectData.object_id;
                 const isGlb = /\.glb($|\?)/i.test(modelSrc);
-                const existingState = modelStates.get(markerId);
+                const existingState = modelStates.get(modelKey);
 
                 if (existingState?.loaded) {
+                    entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
+                    entity.setAttribute('scale', objectData.scale || '1 1 1');
                     hideLoading();
                     return Promise.resolve();
                 }
@@ -332,15 +410,16 @@
                     };
 
                     const cleanupObjectUrl = function() {
-                        const currentState = modelStates.get(markerId);
+                        const currentState = modelStates.get(modelKey);
                         if (currentState?.objectUrl) {
                             URL.revokeObjectURL(currentState.objectUrl);
                         }
 
-                        modelStates.set(markerId, {
+                        modelStates.set(modelKey, {
                             loaded: false,
                             loadingPromise,
                             objectUrl: null,
+                            modelSrc,
                         });
                     };
 
@@ -364,7 +443,7 @@
                             return false;
                         }
 
-                        const state = modelStates.get(markerId);
+                        const state = modelStates.get(modelKey);
                         if (!state?.objectUrl) {
                             return false;
                         }
@@ -390,16 +469,17 @@
                         clearModelTimers();
                         cleanupListeners();
 
-                        const currentState = modelStates.get(markerId);
+                        const currentState = modelStates.get(modelKey);
                         if (currentState?.objectUrl) {
                             URL.revokeObjectURL(currentState.objectUrl);
                         }
 
                         setProgress(100, 'Model siap ditampilkan.');
-                        modelStates.set(markerId, {
+                        modelStates.set(modelKey, {
                             loaded: true,
                             loadingPromise: null,
                             objectUrl: null,
+                            modelSrc,
                         });
 
                         setTimeout(() => {
@@ -441,7 +521,7 @@
                         if (!switched) {
                             failLoading(
                                 'Waktu memuat model habis. Coba ulangi dengan model yang lebih ringan.'
-                                );
+                            );
                         }
                     }, FINAL_MODEL_TIMEOUT_MS);
 
@@ -450,13 +530,15 @@
                             setProgress(4, 'Memulai unduhan model...');
                             const objectUrl = await downloadGlbWithProgress(modelSrc);
 
-                            modelStates.set(markerId, {
+                            modelStates.set(modelKey, {
                                 loaded: false,
                                 loadingPromise,
                                 objectUrl,
+                                modelSrc,
                             });
 
                             entity.setAttribute('gltf-model', objectUrl);
+                            entity.setAttribute('scale', objectData.scale || '1 1 1');
 
                             compatibilityRetryTimer = setTimeout(() => {
                                 if (finished) {
@@ -465,27 +547,122 @@
 
                                 switchToCompatibilityMode(
                                     'Parsing model dari cache lokal lama. Mencoba mode kompatibilitas...'
-                                    );
+                                );
                             }, COMPATIBILITY_RETRY_TIMEOUT_MS);
                         } else {
                             setProgress(18, 'Memuat model. Menunggu resource pendukung...');
                             loadingProgressTextElement.textContent =
                                 'Format .gltf terdeteksi, progress byte tidak selalu tersedia.';
                             entity.setAttribute('gltf-model', modelSrc);
+                            entity.setAttribute('scale', objectData.scale || '1 1 1');
                         }
                     } catch (downloadError) {
                         failLoading(downloadError.message || 'Gagal mengunduh model.');
                     }
                 });
 
-                modelStates.set(markerId, {
+                modelStates.set(modelKey, {
                     loaded: false,
                     loadingPromise,
                     objectUrl: null,
+                    modelSrc,
                 });
 
                 return loadingPromise;
             }
+
+            function setActiveMarker(markerId) {
+                if (!visibleMarkers.has(markerId)) {
+                    activeMarkerId = null;
+                    return;
+                }
+
+                activeMarkerId = markerId;
+                visibleMarkers.get(markerId).timestamp = Date.now();
+            }
+
+            function getCurrentMarkerState() {
+                if (activeMarkerId && visibleMarkers.has(activeMarkerId)) {
+                    return visibleMarkers.get(activeMarkerId);
+                }
+
+                if (visibleMarkers.size === 0) {
+                    return null;
+                }
+
+                const mostRecent = [...visibleMarkers.values()].reduce((latest, current) =>
+                    current.timestamp > latest.timestamp ? current : latest
+                );
+                activeMarkerId = mostRecent.marker.id;
+
+                return mostRecent;
+            }
+
+            function updateDescription() {
+                const markerState = getCurrentMarkerState();
+
+                if (!markerState || markerState.objects.length === 0) {
+                    descriptionDiv.style.display = 'none';
+                    objectNavElement.classList.remove('is-visible');
+                    return;
+                }
+
+                const index = markerState.index || 0;
+                const objectData = markerState.objects[index];
+
+                titleElement.textContent = objectData.nama || markerState.marker.getAttribute('data-marker-name');
+                textElement.textContent = objectData.deskripsi || 'Tidak ada deskripsi untuk object ini.';
+                descriptionDiv.style.display = 'block';
+
+                if (markerState.objects.length > 1) {
+                    objectCounterElement.textContent =
+                        `Object ${index + 1} dari ${markerState.objects.length}`;
+                    prevObjectButton.disabled = false;
+                    nextObjectButton.disabled = false;
+                    objectNavElement.classList.add('is-visible');
+                } else {
+                    objectNavElement.classList.remove('is-visible');
+                }
+            }
+
+            function showObjectForMarker(marker, nextIndex) {
+                const markerState = visibleMarkers.get(marker.id);
+                if (!markerState || markerState.objects.length === 0) {
+                    return;
+                }
+
+                const totalObjects = markerState.objects.length;
+                const normalizedIndex = ((nextIndex % totalObjects) + totalObjects) % totalObjects;
+                const objectData = markerState.objects[normalizedIndex];
+
+                loadObjectForMarker(marker, objectData)
+                    .then(() => {
+                        markerState.index = normalizedIndex;
+                        setActiveMarker(marker.id);
+                        updateDescription();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            prevObjectButton.addEventListener('click', () => {
+                const markerState = getCurrentMarkerState();
+                if (!markerState || markerState.objects.length <= 1) {
+                    return;
+                }
+
+                showObjectForMarker(markerState.marker, markerState.index - 1);
+            });
+
+            nextObjectButton.addEventListener('click', () => {
+                const markerState = getCurrentMarkerState();
+                if (!markerState || markerState.objects.length <= 1) {
+                    return;
+                }
+
+                showObjectForMarker(markerState.marker, markerState.index + 1);
+            });
 
             // Get all markers
             const markers = document.querySelectorAll('a-marker');
@@ -493,75 +670,37 @@
             markers.forEach(marker => {
                 // When marker becomes visible
                 marker.addEventListener('markerFound', function() {
-                    const objectName = this.getAttribute('data-object-name');
-                    const objectDescription = this.getAttribute('data-object-description');
+                    const markerObjects = parseMarkerObjects(this);
+                    if (markerObjects.length === 0) {
+                        return;
+                    }
 
-                    console.log('Marker found:', objectName);
+                    const previousState = visibleMarkers.get(this.id);
+                    visibleMarkers.set(this.id, {
+                        marker: this,
+                        objects: markerObjects,
+                        index: previousState?.index || 0,
+                        timestamp: Date.now(),
+                    });
 
-                    loadModelForMarker(this)
-                        .then(() => {
-                            visibleObjects.add({
-                                name: objectName,
-                                description: objectDescription,
-                                timestamp: Date.now()
-                            });
-
-                            lastVisibleObject = {
-                                name: objectName,
-                                description: objectDescription
-                            };
-
-                            updateDescription();
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
+                    showObjectForMarker(this, visibleMarkers.get(this.id).index);
                 });
 
                 // When marker becomes invisible
                 marker.addEventListener('markerLost', function() {
-                    const objectName = this.getAttribute('data-object-name');
+                    visibleMarkers.delete(this.id);
 
-                    console.log('Marker lost:', objectName);
-
-                    // Remove from visible objects
-                    visibleObjects = new Set([...visibleObjects].filter(obj => obj.name !==
-                        objectName));
-
-                    // If this was the last visible object, find the next most recent
-                    if (lastVisibleObject && lastVisibleObject.name === objectName) {
-                        if (visibleObjects.size > 0) {
-                            // Get the most recent visible object
-                            const mostRecent = [...visibleObjects].reduce((latest, current) =>
-                                current.timestamp > latest.timestamp ? current : latest
-                            );
-                            lastVisibleObject = {
-                                name: mostRecent.name,
-                                description: mostRecent.description
-                            };
-                        } else {
-                            lastVisibleObject = null;
-                        }
+                    if (activeMarkerId === this.id) {
+                        activeMarkerId = null;
                     }
 
-                    const state = modelStates.get(this.id);
-                    if (state && !state.loaded) {
+                    if (visibleMarkers.size === 0) {
                         hideLoading();
                     }
 
                     updateDescription();
                 });
             });
-
-            function updateDescription() {
-                if (lastVisibleObject && lastVisibleObject.description) {
-                    titleElement.textContent = lastVisibleObject.name;
-                    textElement.textContent = lastVisibleObject.description;
-                    descriptionDiv.style.display = 'block';
-                } else {
-                    descriptionDiv.style.display = 'none';
-                }
-            }
         });
     </script>
 </body>

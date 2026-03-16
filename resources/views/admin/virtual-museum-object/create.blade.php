@@ -97,6 +97,45 @@
                         </p>
                     </div>
 
+                    <!-- Pengaturan Marker -->
+                    <div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
+                        <h3 class="text-sm font-semibold text-blue-900">Pengaturan Marker AR</h3>
+                        <p class="mt-1 text-xs text-blue-700">Pilih marker yang sudah ada agar satu marker bisa
+                            memuat lebih dari satu object, atau upload marker baru.</p>
+
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <label for="marker_id" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Gunakan Marker Yang Sudah Ada
+                                </label>
+                                <select id="marker_id" name="marker_id"
+                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- Buat marker baru / tanpa marker --</option>
+                                    @foreach ($museum->arMarkers as $marker)
+                                        <option value="{{ $marker->marker_id }}" @selected(old('marker_id') == $marker->marker_id)>
+                                            {{ $marker->nama ?: 'Marker #' . $marker->marker_id }}
+                                            @if ($marker->virtualMuseumObjects->count() > 0)
+                                                ({{ $marker->virtualMuseumObjects->count() }} object)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="nama_marker" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Nama Marker Baru
+                                </label>
+                                <input type="text" id="nama_marker" name="nama_marker"
+                                    value="{{ old('nama_marker') }}"
+                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Contoh: Marker Candi Utama">
+                                <p class="mt-1 text-xs text-gray-500">Digunakan saat Anda upload gambar marker baru.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -172,7 +211,7 @@
                     <!-- AR Marker Image -->
                     <div>
                         <label for="path_gambar_marker" class="mb-2 block text-sm font-medium text-gray-700">
-                            Gambar Marker AR
+                            Gambar Marker AR (Baru)
                         </label>
                         <div id="path_gambar_marker_dropzone"
                             class="mt-1 flex cursor-pointer justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pb-6 pt-5 transition-colors hover:border-gray-400">
@@ -197,7 +236,8 @@
                             </div>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Gambar marker yang akan digunakan untuk mendeteksi AR.
-                            File pattern `.patt` akan dibuat otomatis saat object disimpan.</p>
+                            File pattern `.patt` akan dibuat otomatis dan marker baru akan dibagikan ke object lain
+                            jika dipilih di form berikutnya.</p>
                     </div>
 
                 </div>
