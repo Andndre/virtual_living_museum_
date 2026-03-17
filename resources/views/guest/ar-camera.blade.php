@@ -451,7 +451,7 @@
                 const OriginalGLTFLoader = window.THREE.GLTFLoader;
                 const dracoLoader = new window.THREE.DRACOLoader();
 
-                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
                 dracoLoader.setDecoderConfig({
                     type: 'js'
                 });
