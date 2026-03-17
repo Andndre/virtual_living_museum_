@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.111.0/examples/js/loaders/DRACOLoader.js"></script>
     <script src="/js/gesture-detector.js"></script>
     <script src="/js/gesture-handler.js"></script>
@@ -314,16 +314,18 @@
             const loadingProgressTextElement = document.getElementById('ar-loading-progress-text');
             const debugToggleButton = document.getElementById('ar-debug-toggle');
             const debugPanelElement = document.getElementById('ar-debug-panel');
+            const isDebugMode = new URLSearchParams(window.location.search).get('debug') === '1';
             let activeMarkerId = null;
             const visibleMarkers = new Map();
             const modelStates = new Map();
+            const markerVisibilityVersion = new Map();
             const debugLogLines = [];
             let lastDebugLineText = null;
             let lastDebugLineAt = 0;
             let slowLoadingTimer = null;
-            const LOADING_HINT_TIMEOUT_MS = 20000;
-            const LONG_LOADING_HINT_TIMEOUT_MS = 120000;
-            const MODEL_LOAD_TIMEOUT_MS = 180000;
+            const LOADING_HINT_TIMEOUT_MS = 12000;
+            const LONG_LOADING_HINT_TIMEOUT_MS = 45000;
+            const MODEL_LOAD_TIMEOUT_MS = 90000;
             const NOISY_REJECTION_EVENTS = new Set(['load']);
             let sharedDracoLoader = null;
             const inspectedGlbSources = new Set();
@@ -351,6 +353,13 @@
             }
 
             function pushDebugLog(level, message, payload = null) {
+                if (!isDebugMode) {
+                    if (level === 'error') {
+                        console.error('[AR]', message, payload || '');
+                    }
+                    return;
+                }
+
                 const timestamp = new Date().toLocaleTimeString('id-ID', {
                     hour12: false
                 });
@@ -430,6 +439,17 @@
             function setDebugPanelVisible(isVisible) {
                 debugPanelElement.classList.toggle('is-visible', isVisible);
                 debugToggleButton.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+            }
+
+            function bumpMarkerVisibilityVersion(markerId) {
+                const nextVersion = (markerVisibilityVersion.get(markerId) || 0) + 1;
+                markerVisibilityVersion.set(markerId, nextVersion);
+                return nextVersion;
+            }
+
+            function isMarkerLoadStillRelevant(markerId, visibilityVersion) {
+                return visibleMarkers.has(markerId) &&
+                    (markerVisibilityVersion.get(markerId) || 0) === visibilityVersion;
             }
 
             function setupDracoForAframe() {
@@ -525,8 +545,8 @@
                 setDebugPanelVisible(nextVisible);
             });
 
-            const forceDebugVisible = new URLSearchParams(window.location.search).get('debug') === '1';
-            setDebugPanelVisible(forceDebugVisible);
+            setDebugPanelVisible(isDebugMode);
+            debugToggleButton.style.display = isDebugMode ? 'block' : 'none';
             pushDebugLog('info', 'Debug panel siap. Tambahkan ?debug=1 agar otomatis terbuka.');
             setupDracoForAframe();
 
@@ -544,7 +564,10 @@
                 const reason = event.reason;
 
                 if (reason instanceof Event && NOISY_REJECTION_EVENTS.has(reason.type)) {
-                    pushDebugLog('warn', 'Promise rejection event load diabaikan (noise dari library AR).');
+                    if (isDebugMode) {
+                        pushDebugLog('warn',
+                            'Promise rejection event load diabaikan (noise dari library AR).');
+                    }
                     return;
                 }
 
@@ -555,6 +578,10 @@
 
             const sceneElement = document.getElementById('scene');
             sceneElement?.addEventListener('renderstart', () => {
+                if (!isDebugMode) {
+                    return;
+                }
+
                 const rendererInfo = sceneElement.renderer?.capabilities || null;
                 pushDebugLog('info', 'Scene renderstart', rendererInfo ? {
                     maxTextureSize: rendererInfo.maxTextureSize,
@@ -940,13 +967,14 @@
                 });
             }
 
-            function loadObjectForMarker(marker, objectData) {
+            function loadObjectForMarker(marker, objectData, visibilityVersion) {
                 const entity = marker.querySelector('a-entity');
                 const objectName = objectData.nama || 'Object AR';
                 const modelSrc = objectData.model_src;
                 const modelExt = extractModelExtension(modelSrc);
                 const modelKey = marker.id + ':' + objectData.object_id;
                 const existingState = modelStates.get(modelKey);
+                const startedAt = isDebugMode ? performance.now() : 0;
 
                 pushDebugLog('info', 'Format model terdeteksi', {
                     objectName,
@@ -976,7 +1004,9 @@
                     }
 
                     if (existingState.loadedMode !== 'three') {
-                        entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
+                        if (!entity.getAttribute('gltf-model')) {
+                            entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
+                        }
                         entity.setAttribute('scale', objectData.scale || '1 1 1');
                         pushDebugLog('info', 'Gunakan model cache (aframe gltf-model)', {
                             objectName,
@@ -989,50 +1019,53 @@
                     pushDebugLog('warn', 'Cache three object3D tidak tersedia di entity, reload ulang.');
                 }
 
-                if (existingState?.loadingPromise) {
+                if (existingState?.loadingPromise && existingState.visibilityVersion === visibilityVersion) {
                     showLoading(objectName);
                     return existingState.loadingPromise;
                 }
 
                 showLoading(objectName);
                 setProgress(20, 'Mengunduh dan memproses model...');
-                probeModelAccessibility(modelSrc);
-                inspectModelSignature(modelSrc);
-                inspectGlbStructure(modelSrc);
+                if (isDebugMode) {
+                    probeModelAccessibility(modelSrc);
+                    inspectModelSignature(modelSrc);
+                    inspectGlbStructure(modelSrc);
 
-                fetchModelMeta(modelSrc)
-                    .then(meta => {
-                        if (!meta) {
-                            return;
-                        }
+                    fetchModelMeta(modelSrc)
+                        .then(meta => {
+                            if (!meta) {
+                                return;
+                            }
 
-                        pushDebugLog('info', 'Metadata model', {
-                            objectName,
-                            modelSrc,
-                            modelExt,
-                            contentType: meta.contentType,
-                            size: meta.sizeText,
-                        });
+                            pushDebugLog('info', 'Metadata model', {
+                                objectName,
+                                modelSrc,
+                                modelExt,
+                                contentType: meta.contentType,
+                                size: meta.sizeText,
+                            });
 
-                        if (isMimeLikelyMismatch(meta.contentType, modelExt)) {
-                            const expectedMimes = getExpectedMimeList(modelExt).join(' / ') || 'MIME model 3D';
-                            pushDebugLog('warn',
-                                `HEAD metadata menunjukkan Content-Type tidak cocok untuk .${modelExt}. Disarankan: ${expectedMimes}.`
-                            );
-                        }
+                            if (isMimeLikelyMismatch(meta.contentType, modelExt)) {
+                                const expectedMimes = getExpectedMimeList(modelExt).join(' / ') ||
+                                    'MIME model 3D';
+                                pushDebugLog('warn',
+                                    `HEAD metadata menunjukkan Content-Type tidak cocok untuk .${modelExt}. Disarankan: ${expectedMimes}.`
+                                );
+                            }
 
-                        if (meta.sizeText !== 'unknown') {
-                            loadingProgressTextElement.textContent =
-                                `Ukuran model ${meta.sizeText}. Sedang diproses...`;
-                        }
+                            if (meta.sizeText !== 'unknown') {
+                                loadingProgressTextElement.textContent =
+                                    `Ukuran model ${meta.sizeText}. Sedang diproses...`;
+                            }
 
-                        if (meta.bytes && meta.bytes > 12 * 1024 * 1024) {
-                            pushDebugLog('warn',
-                                'Model cukup besar untuk mobile marker AR (>12MB). Pertimbangkan kompresi DRACO/tekstur.'
-                            );
-                        }
-                    })
-                    .catch(() => {});
+                            if (meta.bytes && meta.bytes > 12 * 1024 * 1024) {
+                                pushDebugLog('warn',
+                                    'Model cukup besar untuk mobile marker AR (>12MB). Pertimbangkan kompresi DRACO/tekstur.'
+                                );
+                            }
+                        })
+                        .catch(() => {});
+                }
 
                 const loadingPromise = new Promise((resolve, reject) => {
                     let finished = false;
@@ -1040,6 +1073,27 @@
                     let loadingHintTimer = null;
                     let longLoadingHintTimer = null;
                     let loadingTimeoutTimer = null;
+
+                    const rejectIfStaleMarker = function() {
+                        if (isMarkerLoadStillRelevant(marker.id, visibilityVersion)) {
+                            return false;
+                        }
+
+                        finished = true;
+                        clearModelTimers();
+                        cleanupListeners();
+
+                        modelStates.set(modelKey, {
+                            loaded: false,
+                            loadingPromise: null,
+                            modelSrc,
+                            loadedMode: null,
+                            visibilityVersion: null,
+                        });
+
+                        reject(new Error('MARKER_NOT_VISIBLE'));
+                        return true;
+                    };
 
                     const clearModelTimers = function() {
                         if (loadingHintTimer) {
@@ -1068,6 +1122,10 @@
                             return;
                         }
 
+                        if (rejectIfStaleMarker()) {
+                            return;
+                        }
+
                         finished = true;
                         clearModelTimers();
                         cleanupListeners();
@@ -1081,6 +1139,7 @@
                             loadingPromise: null,
                             modelSrc,
                             loadedMode: null,
+                            visibilityVersion: null,
                         });
 
                         pushDebugLog('error', 'Gagal load model', {
@@ -1098,6 +1157,10 @@
                             return;
                         }
 
+                        if (rejectIfStaleMarker()) {
+                            return;
+                        }
+
                         finished = true;
                         clearModelTimers();
                         cleanupListeners();
@@ -1108,6 +1171,7 @@
                             loadingPromise: null,
                             modelSrc,
                             loadedMode: 'aframe',
+                            visibilityVersion,
                         });
                         pushDebugLog('info', 'Model loaded', {
                             objectName,
@@ -1117,12 +1181,24 @@
 
                         setTimeout(() => {
                             hideLoading();
+                            if (isDebugMode) {
+                                pushDebugLog('info', 'Marker ke model visible', {
+                                    markerId: marker.id,
+                                    objectName,
+                                    durationMs: Math.round(performance.now() -
+                                        startedAt),
+                                });
+                            }
                             resolve();
                         }, 180);
                     };
 
                     const handleError = function(event) {
                         if (finished) {
+                            return;
+                        }
+
+                        if (rejectIfStaleMarker()) {
                             return;
                         }
 
@@ -1165,6 +1241,7 @@
                                         loadingPromise: null,
                                         modelSrc,
                                         loadedMode: 'three',
+                                        visibilityVersion,
                                     });
                                     pushDebugLog('info',
                                         'Fallback Three.js berhasil memuat model.', {
@@ -1175,6 +1252,15 @@
 
                                     setTimeout(() => {
                                         hideLoading();
+                                        if (isDebugMode) {
+                                            pushDebugLog('info',
+                                                'Marker ke model visible (fallback)', {
+                                                    markerId: marker.id,
+                                                    objectName,
+                                                    durationMs: Math.round(performance
+                                                        .now() - startedAt),
+                                                });
+                                        }
                                         resolve();
                                     }, 180);
                                 })
@@ -1252,6 +1338,7 @@
                     loadingPromise,
                     modelSrc,
                     loadedMode: null,
+                    visibilityVersion,
                 });
 
                 return loadingPromise;
@@ -1320,6 +1407,7 @@
                 const totalObjects = markerState.objects.length;
                 const normalizedIndex = ((nextIndex % totalObjects) + totalObjects) % totalObjects;
                 const objectData = markerState.objects[normalizedIndex];
+                const visibilityVersion = markerVisibilityVersion.get(marker.id) || 0;
                 pushDebugLog('info', 'Ganti object marker', {
                     markerId: marker.id,
                     targetIndex: normalizedIndex,
@@ -1327,13 +1415,21 @@
                     objectName: objectData.nama,
                 });
 
-                loadObjectForMarker(marker, objectData)
+                loadObjectForMarker(marker, objectData, visibilityVersion)
                     .then(() => {
+                        if (!isMarkerLoadStillRelevant(marker.id, visibilityVersion)) {
+                            return;
+                        }
+
                         markerState.index = normalizedIndex;
                         setActiveMarker(marker.id);
                         updateDescription();
                     })
                     .catch(error => {
+                        if (error?.message === 'MARKER_NOT_VISIBLE') {
+                            return;
+                        }
+
                         console.error(error);
                     });
             }
@@ -1362,6 +1458,7 @@
             markers.forEach(marker => {
                 // When marker becomes visible
                 marker.addEventListener('markerFound', function() {
+                    const visibilityVersion = bumpMarkerVisibilityVersion(this.id);
                     const markerObjects = parseMarkerObjects(this);
                     if (markerObjects.length === 0) {
                         pushDebugLog('warn', 'Marker ditemukan tapi tanpa object', {
@@ -1383,6 +1480,7 @@
                         objects: markerObjects,
                         index: previousState?.index || 0,
                         timestamp: Date.now(),
+                        visibilityVersion,
                     });
 
                     showObjectForMarker(this, visibleMarkers.get(this.id).index);
@@ -1390,6 +1488,7 @@
 
                 // When marker becomes invisible
                 marker.addEventListener('markerLost', function() {
+                    bumpMarkerVisibilityVersion(this.id);
                     visibleMarkers.delete(this.id);
                     pushDebugLog('warn', 'Marker hilang', {
                         markerId: this.id,
