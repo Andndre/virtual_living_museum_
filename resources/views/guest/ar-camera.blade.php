@@ -323,6 +323,7 @@
             const LOADING_HINT_TIMEOUT_MS = 20000;
             const LONG_LOADING_HINT_TIMEOUT_MS = 120000;
             const MODEL_LOAD_TIMEOUT_MS = 180000;
+            const NOISY_REJECTION_EVENTS = new Set(['load']);
 
             function stringifyForDebug(data) {
                 if (data === undefined || data === null) {
@@ -442,8 +443,15 @@
 
             window.addEventListener('unhandledrejection', event => {
                 event.preventDefault();
+                const reason = event.reason;
+
+                if (reason instanceof Event && NOISY_REJECTION_EVENTS.has(reason.type)) {
+                    pushDebugLog('warn', 'Promise rejection event load diabaikan (noise dari library AR).');
+                    return;
+                }
+
                 pushDebugLog('error', 'Unhandled promise rejection', {
-                    reason: getRejectionReasonInfo(event.reason),
+                    reason: getRejectionReasonInfo(reason),
                 });
             });
 
@@ -507,8 +515,57 @@
                 }
             }
 
+            function extractModelExtension(modelSrc) {
+                const cleanPath = (modelSrc || '').split('?')[0].toLowerCase();
+
+                if (cleanPath.endsWith('.glb')) {
+                    return 'glb';
+                }
+
+                if (cleanPath.endsWith('.gltf')) {
+                    return 'gltf';
+                }
+
+                if (cleanPath.endsWith('.obj')) {
+                    return 'obj';
+                }
+
+                return 'unknown';
+            }
+
+            function getExpectedMimeList(modelExt) {
+                if (modelExt === 'glb') {
+                    return ['model/gltf-binary', 'application/octet-stream'];
+                }
+
+                if (modelExt === 'gltf') {
+                    return ['model/gltf+json', 'application/json'];
+                }
+
+                return [];
+            }
+
+            function isMimeLikelyMismatch(contentType, modelExt) {
+                const lowered = (contentType || '').toLowerCase();
+                if (!lowered) {
+                    return false;
+                }
+
+                if (lowered.includes('text/plain') || lowered.includes('text/html')) {
+                    return true;
+                }
+
+                const expected = getExpectedMimeList(modelExt);
+                if (expected.length === 0) {
+                    return false;
+                }
+
+                return !expected.some(type => lowered.includes(type));
+            }
+
             async function probeModelAccessibility(modelSrc) {
                 try {
+                    const modelExt = extractModelExtension(modelSrc);
                     const response = await fetch(modelSrc, {
                         method: 'GET',
                         headers: {
@@ -524,6 +581,7 @@
                         contentType: response.headers.get('content-type') || null,
                         contentLength: response.headers.get('content-length') || null,
                         acceptRanges: response.headers.get('accept-ranges') || null,
+                        modelExt,
                     };
 
                     if (!response.ok && response.status !== 206) {
@@ -532,8 +590,67 @@
                     }
 
                     pushDebugLog('info', 'Probe akses model berhasil', detail);
+
+                    if (isMimeLikelyMismatch(detail.contentType, modelExt)) {
+                        const expectedMimes = getExpectedMimeList(modelExt).join(' / ') || 'MIME model 3D';
+                        pushDebugLog('warn',
+                            `Content-Type model tidak ideal untuk .${modelExt}. Disarankan: ${expectedMimes}.`
+                            );
+                    }
                 } catch (error) {
                     pushDebugLog('error', 'Probe akses model error', {
+                        modelSrc,
+                        message: error.message,
+                    });
+                }
+            }
+
+            async function inspectModelSignature(modelSrc) {
+                try {
+                    const modelExt = extractModelExtension(modelSrc);
+                    const response = await fetch(modelSrc, {
+                        method: 'GET',
+                        headers: {
+                            Range: 'bytes=0-31'
+                        },
+                        cache: 'no-store'
+                    });
+
+                    if (!response.ok && response.status !== 206) {
+                        pushDebugLog('warn', 'Tidak bisa inspeksi signature model', {
+                            modelSrc,
+                            status: response.status,
+                        });
+                        return;
+                    }
+
+                    const buffer = await response.arrayBuffer();
+                    const bytes = new Uint8Array(buffer);
+                    const ascii = Array.from(bytes)
+                        .map(b => (b >= 32 && b <= 126 ? String.fromCharCode(b) : '.'))
+                        .join('');
+                    const header = String.fromCharCode(...bytes.slice(0, 4));
+
+                    pushDebugLog('info', 'Signature awal model', {
+                        modelSrc,
+                        modelExt,
+                        header,
+                        asciiPreview: ascii.slice(0, 16),
+                    });
+
+                    if (modelExt === 'glb' && header !== 'glTF') {
+                        pushDebugLog('error',
+                            'Header file bukan glTF. Kemungkinan file korup/terpotong/terganti response teks oleh server.'
+                        );
+                    }
+
+                    if (modelExt === 'gltf' && !ascii.trim().startsWith('{')) {
+                        pushDebugLog('warn',
+                            'Preview .gltf tidak terlihat seperti JSON. Periksa apakah file benar dan tidak terdistorsi server.'
+                            );
+                    }
+                } catch (error) {
+                    pushDebugLog('warn', 'Gagal inspeksi signature model', {
                         modelSrc,
                         message: error.message,
                     });
@@ -613,10 +730,17 @@
                 const entity = marker.querySelector('a-entity');
                 const objectName = objectData.nama || 'Object AR';
                 const modelSrc = objectData.model_src;
+                const modelExt = extractModelExtension(modelSrc);
                 const modelKey = marker.id + ':' + objectData.object_id;
                 const existingState = modelStates.get(modelKey);
 
-                if (/\.obj($|\?)/i.test(modelSrc)) {
+                pushDebugLog('info', 'Format model terdeteksi', {
+                    objectName,
+                    modelExt,
+                    modelSrc,
+                });
+
+                if (modelExt === 'obj') {
                     const message =
                         'Format .obj belum didukung di AR marker ini. Gunakan .glb (disarankan) atau .gltf.';
                     pushDebugLog('error', 'Format model tidak didukung', {
@@ -645,6 +769,7 @@
                 showLoading(objectName);
                 setProgress(20, 'Mengunduh dan memproses model...');
                 probeModelAccessibility(modelSrc);
+                inspectModelSignature(modelSrc);
 
                 fetchModelMeta(modelSrc)
                     .then(meta => {
@@ -655,9 +780,17 @@
                         pushDebugLog('info', 'Metadata model', {
                             objectName,
                             modelSrc,
+                            modelExt,
                             contentType: meta.contentType,
                             size: meta.sizeText,
                         });
+
+                        if (isMimeLikelyMismatch(meta.contentType, modelExt)) {
+                            const expectedMimes = getExpectedMimeList(modelExt).join(' / ') || 'MIME model 3D';
+                            pushDebugLog('warn',
+                                `HEAD metadata menunjukkan Content-Type tidak cocok untuk .${modelExt}. Disarankan: ${expectedMimes}.`
+                                );
+                        }
 
                         if (meta.sizeText !== 'unknown') {
                             loadingProgressTextElement.textContent =
