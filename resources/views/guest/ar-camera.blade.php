@@ -326,6 +326,7 @@
             const MODEL_LOAD_TIMEOUT_MS = 180000;
             const NOISY_REJECTION_EVENTS = new Set(['load']);
             let sharedDracoLoader = null;
+            const inspectedGlbSources = new Set();
 
             function stringifyForDebug(data) {
                 if (data === undefined || data === null) {
@@ -747,6 +748,109 @@
                 }
             }
 
+            async function inspectGlbStructure(modelSrc) {
+                if (extractModelExtension(modelSrc) !== 'glb' || inspectedGlbSources.has(modelSrc)) {
+                    return;
+                }
+
+                inspectedGlbSources.add(modelSrc);
+
+                try {
+                    const response = await fetch(modelSrc, {
+                        method: 'GET',
+                        cache: 'no-store'
+                    });
+
+                    if (!response.ok) {
+                        pushDebugLog('warn', 'Gagal inspeksi struktur GLB (HTTP)', {
+                            modelSrc,
+                            status: response.status,
+                        });
+                        return;
+                    }
+
+                    const buffer = await response.arrayBuffer();
+                    const view = new DataView(buffer);
+
+                    if (buffer.byteLength < 20) {
+                        pushDebugLog('warn', 'GLB terlalu kecil untuk inspeksi struktur.', {
+                            modelSrc,
+                            byteLength: buffer.byteLength,
+                        });
+                        return;
+                    }
+
+                    const magic = view.getUint32(0, true);
+                    const version = view.getUint32(4, true);
+                    const length = view.getUint32(8, true);
+                    const jsonChunkLength = view.getUint32(12, true);
+                    const jsonChunkType = view.getUint32(16, true);
+
+                    if (magic !== 0x46546c67 || jsonChunkType !== 0x4e4f534a) {
+                        pushDebugLog('warn', 'Header GLB tidak sesuai spesifikasi.', {
+                            modelSrc,
+                            magic,
+                            jsonChunkType,
+                        });
+                        return;
+                    }
+
+                    const jsonBytes = new Uint8Array(buffer, 20, jsonChunkLength);
+                    const jsonText = new TextDecoder('utf-8').decode(jsonBytes).trim();
+                    const gltf = JSON.parse(jsonText);
+
+                    const images = Array.isArray(gltf.images) ? gltf.images : [];
+                    const textures = Array.isArray(gltf.textures) ? gltf.textures : [];
+                    const extensionsUsed = Array.isArray(gltf.extensionsUsed) ? gltf.extensionsUsed : [];
+                    const extensionsRequired = Array.isArray(gltf.extensionsRequired) ? gltf
+                        .extensionsRequired : [];
+
+                    const invalidTextureSources = textures
+                        .map((texture, index) => ({
+                            index,
+                            source: texture?.source,
+                        }))
+                        .filter(item => typeof item.source === 'number' && !images[item.source]);
+
+                    pushDebugLog('info', 'Struktur GLB terbaca', {
+                        modelSrc,
+                        glbVersion: version,
+                        declaredLength: length,
+                        actualLength: buffer.byteLength,
+                        assetVersion: gltf?.asset?.version || null,
+                        generator: gltf?.asset?.generator || null,
+                        imagesCount: images.length,
+                        texturesCount: textures.length,
+                        extensionsUsed,
+                        extensionsRequired,
+                    });
+
+                    if (invalidTextureSources.length > 0) {
+                        pushDebugLog('error', 'Ada texture.source yang menunjuk image tidak ada.', {
+                            modelSrc,
+                            invalidTextureSources,
+                        });
+                    }
+
+                    const knownRiskExtensions = extensionsRequired.filter(ext => ['EXT_texture_webp',
+                        'KHR_texture_basisu', 'EXT_meshopt_compression'
+                    ].includes(ext));
+
+                    if (knownRiskExtensions.length > 0) {
+                        pushDebugLog('warn',
+                            'Model memakai extension yang berisiko tidak kompatibel dengan GLTFLoader lama.', {
+                                modelSrc,
+                                knownRiskExtensions,
+                            });
+                    }
+                } catch (error) {
+                    pushDebugLog('warn', 'Gagal parsing struktur GLB', {
+                        modelSrc,
+                        message: error.message,
+                    });
+                }
+            }
+
             function parseMarkerObjects(marker) {
                 const rawObjects = marker.getAttribute('data-marker-objects') || '[]';
 
@@ -874,6 +978,7 @@
                 setProgress(20, 'Mengunduh dan memproses model...');
                 probeModelAccessibility(modelSrc);
                 inspectModelSignature(modelSrc);
+                inspectGlbStructure(modelSrc);
 
                 fetchModelMeta(modelSrc)
                     .then(meta => {
@@ -1040,11 +1145,11 @@
                                         loadedMode: 'three',
                                     });
                                     pushDebugLog('info',
-                                    'Fallback Three.js berhasil memuat model.', {
-                                        objectName,
-                                        markerId: marker.id,
-                                        modelSrc,
-                                    });
+                                        'Fallback Three.js berhasil memuat model.', {
+                                            objectName,
+                                            markerId: marker.id,
+                                            modelSrc,
+                                        });
 
                                     setTimeout(() => {
                                         hideLoading();
