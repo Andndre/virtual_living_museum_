@@ -39,6 +39,15 @@ function showElement(id) {
     el.style.pointerEvents = "auto";
 }
 
+function getActiveCamera(renderer, fallbackCamera) {
+    if (!renderer?.xr) {
+        return fallbackCamera;
+    }
+
+    const xrCamera = renderer.xr.getCamera(fallbackCamera);
+    return xrCamera || fallbackCamera;
+}
+
 async function generateQRCode(text) {
     new QRCode("qr-code", {
         text: text,
@@ -156,15 +165,17 @@ class SceneManager {
         texture.colorSpace = THREE.SRGBColorSpace;
 
         // Create a large sphere for the skybox
-        const skyGeometry = new THREE.SphereGeometry(500, 60, 40);
-        // Flip the geometry inside out
-        skyGeometry.scale(-1, 1, 1);
+        const skyGeometry = new THREE.SphereGeometry(1000, 64, 48);
 
         const skyMaterial = new THREE.MeshBasicMaterial({
             map: texture,
+            side: THREE.BackSide,
+            depthWrite: false,
+            toneMapped: false,
         });
 
         this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+        this.skybox.frustumCulled = false;
         this.skybox.visible = false; // Initially hidden
         this.scene.add(this.skybox);
 
@@ -276,6 +287,11 @@ class RendererManager {
      * @param {Object} sceneManager - The scene manager containing the scene and camera.
      */
     render(timestamp, frame, sceneManager) {
+        const activeCamera = getActiveCamera(
+            this.renderer,
+            sceneManager.camera,
+        );
+
         if (frame) {
             const referenceSpace = this.renderer.xr.getReferenceSpace();
             const session = this.renderer.xr.getSession();
@@ -302,12 +318,12 @@ class RendererManager {
                 sceneManager.placed
             ) {
                 const cameraPosition = new THREE.Vector3();
-                sceneManager.camera.getWorldPosition(cameraPosition);
+                activeCamera.getWorldPosition(cameraPosition);
                 sceneManager.skybox.position.copy(cameraPosition);
             }
         }
 
-        this.renderer.render(sceneManager.scene, sceneManager.camera);
+        this.renderer.render(sceneManager.scene, activeCamera);
     }
 
     /**
@@ -538,7 +554,11 @@ async function main() {
         matrix.decompose(model.position, model.quaternion, model.scale);
 
         const targetPosition = new THREE.Vector3();
-        sceneManager.camera.getWorldPosition(targetPosition);
+        const activeCamera = getActiveCamera(
+            rendererManager.renderer,
+            sceneManager.camera,
+        );
+        activeCamera.getWorldPosition(targetPosition);
 
         const direction = new THREE.Vector3();
         direction.subVectors(targetPosition, model.position);
