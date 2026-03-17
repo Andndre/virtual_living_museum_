@@ -327,6 +327,12 @@
             const NOISY_REJECTION_EVENTS = new Set(['load']);
             let sharedDracoLoader = null;
             const inspectedGlbSources = new Set();
+            const modelDiagnostics = new Map();
+            const EXTENSION_HINTS = {
+                EXT_texture_webp: 'Model memakai EXT_texture_webp, tetapi loader lama A-Frame/Three di halaman ini sering gagal membacanya. Ubah tekstur ke PNG/JPG lalu ekspor ulang GLB.',
+                KHR_materials_specular: 'Model memakai KHR_materials_specular. Untuk kompatibilitas mobile maksimal, nonaktifkan specular extension saat ekspor.',
+                KHR_materials_ior: 'Model memakai KHR_materials_ior. Untuk kompatibilitas mobile maksimal, nonaktifkan ior extension saat ekspor.',
+            };
 
             function stringifyForDebug(data) {
                 if (data === undefined || data === null) {
@@ -836,6 +842,19 @@
                         'KHR_texture_basisu', 'EXT_meshopt_compression'
                     ].includes(ext));
 
+                    const detectedHints = [];
+                    [...extensionsUsed, ...extensionsRequired].forEach(ext => {
+                        if (EXTENSION_HINTS[ext] && !detectedHints.includes(EXTENSION_HINTS[ext])) {
+                            detectedHints.push(EXTENSION_HINTS[ext]);
+                        }
+                    });
+
+                    modelDiagnostics.set(modelSrc, {
+                        extensionsUsed,
+                        extensionsRequired,
+                        hints: detectedHints,
+                    });
+
                     if (knownRiskExtensions.length > 0) {
                         pushDebugLog('warn',
                             'Model memakai extension yang berisiko tidak kompatibel dengan GLTFLoader lama.', {
@@ -1107,6 +1126,8 @@
                         }
 
                         const detail = event?.detail || {};
+                        const diagnostics = modelDiagnostics.get(modelSrc);
+                        const firstHint = diagnostics?.hints?.[0] || null;
                         const detailMessage = detail.src ?
                             `Tidak bisa memuat sumber model: ${detail.src}` :
                             (detail.message || 'Format atau isi file model tidak valid.');
@@ -1163,7 +1184,14 @@
                                         modelSrc,
                                         message: fallbackError?.message || String(
                                             fallbackError),
+                                        hint: firstHint,
                                     });
+
+                                    if (firstHint) {
+                                        failLoading(`${detailMessage}. ${firstHint}`);
+                                        return;
+                                    }
+
                                     failLoading(detailMessage);
                                 });
 
