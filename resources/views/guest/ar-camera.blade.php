@@ -9,6 +9,7 @@
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.111.0/examples/js/loaders/DRACOLoader.js"></script>
     <script src="/js/gesture-detector.js"></script>
     <script src="/js/gesture-handler.js"></script>
 
@@ -423,6 +424,47 @@
                 debugToggleButton.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
             }
 
+            function setupDracoForAframe() {
+                if (!window.THREE || !window.THREE.GLTFLoader) {
+                    pushDebugLog('warn', 'THREE.GLTFLoader belum tersedia saat setup Draco.');
+                    return;
+                }
+
+                if (!window.THREE.DRACOLoader) {
+                    pushDebugLog('warn', 'THREE.DRACOLoader tidak ditemukan. Model Draco akan gagal.');
+                    return;
+                }
+
+                if (window.THREE.GLTFLoader.__arDracoPatched) {
+                    pushDebugLog('info', 'Draco loader sudah aktif sebelumnya.');
+                    return;
+                }
+
+                const OriginalGLTFLoader = window.THREE.GLTFLoader;
+                const dracoLoader = new window.THREE.DRACOLoader();
+
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+                dracoLoader.setDecoderConfig({
+                    type: 'js'
+                });
+
+                function PatchedGLTFLoader(manager) {
+                    const loader = new OriginalGLTFLoader(manager);
+
+                    if (typeof loader.setDRACOLoader === 'function') {
+                        loader.setDRACOLoader(dracoLoader);
+                    }
+
+                    return loader;
+                }
+
+                PatchedGLTFLoader.prototype = OriginalGLTFLoader.prototype;
+                PatchedGLTFLoader.__arDracoPatched = true;
+                window.THREE.GLTFLoader = PatchedGLTFLoader;
+
+                pushDebugLog('info', 'Draco loader aktif untuk pipeline A-Frame marker.');
+            }
+
             debugToggleButton.addEventListener('click', () => {
                 const nextVisible = !debugPanelElement.classList.contains('is-visible');
                 setDebugPanelVisible(nextVisible);
@@ -431,6 +473,7 @@
             const forceDebugVisible = new URLSearchParams(window.location.search).get('debug') === '1';
             setDebugPanelVisible(forceDebugVisible);
             pushDebugLog('info', 'Debug panel siap. Tambahkan ?debug=1 agar otomatis terbuka.');
+            setupDracoForAframe();
 
             window.addEventListener('error', event => {
                 pushDebugLog('error', 'Runtime error', {
@@ -595,7 +638,7 @@
                         const expectedMimes = getExpectedMimeList(modelExt).join(' / ') || 'MIME model 3D';
                         pushDebugLog('warn',
                             `Content-Type model tidak ideal untuk .${modelExt}. Disarankan: ${expectedMimes}.`
-                            );
+                        );
                     }
                 } catch (error) {
                     pushDebugLog('error', 'Probe akses model error', {
@@ -647,7 +690,7 @@
                     if (modelExt === 'gltf' && !ascii.trim().startsWith('{')) {
                         pushDebugLog('warn',
                             'Preview .gltf tidak terlihat seperti JSON. Periksa apakah file benar dan tidak terdistorsi server.'
-                            );
+                        );
                     }
                 } catch (error) {
                     pushDebugLog('warn', 'Gagal inspeksi signature model', {
@@ -789,7 +832,7 @@
                             const expectedMimes = getExpectedMimeList(modelExt).join(' / ') || 'MIME model 3D';
                             pushDebugLog('warn',
                                 `HEAD metadata menunjukkan Content-Type tidak cocok untuk .${modelExt}. Disarankan: ${expectedMimes}.`
-                                );
+                            );
                         }
 
                         if (meta.sizeText !== 'unknown') {
