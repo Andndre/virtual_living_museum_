@@ -262,8 +262,8 @@
             const visibleMarkers = new Map();
             const modelStates = new Map();
             let slowLoadingTimer = null;
-            const COMPATIBILITY_RETRY_TIMEOUT_MS = 12000;
-            const FINAL_MODEL_TIMEOUT_MS = 45000;
+            const LOADING_HINT_TIMEOUT_MS = 20000;
+            const LONG_LOADING_HINT_TIMEOUT_MS = 120000;
 
             function parseMarkerObjects(marker) {
                 const rawObjects = marker.getAttribute('data-marker-objects') || '[]';
@@ -327,57 +327,19 @@
                 loadingOverlay.setAttribute('aria-hidden', 'false');
             }
 
-            async function downloadGlbWithProgress(modelSrc) {
-                const response = await fetch(modelSrc);
-
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status + ' saat mengunduh model');
-                }
-
-                const totalBytes = Number(response.headers.get('content-length') || 0);
-
-                if (!response.body || !Number.isFinite(totalBytes) || totalBytes <= 0) {
-                    const blobWithoutStream = await response.blob();
-                    setProgress(100, 'Unduhan selesai. Menyusun model...');
-                    return URL.createObjectURL(blobWithoutStream);
-                }
-
-                const reader = response.body.getReader();
-                const chunks = [];
-                let receivedBytes = 0;
-
-                while (true) {
-                    const {
-                        done,
-                        value
-                    } = await reader.read();
-
-                    if (done) {
-                        break;
-                    }
-
-                    chunks.push(value);
-                    receivedBytes += value.length;
-
-                    const percentage = (receivedBytes / totalBytes) * 100;
-                    const downloadedMb = (receivedBytes / 1024 / 1024).toFixed(2);
-                    const totalMb = (totalBytes / 1024 / 1024).toFixed(2);
-
-                    setProgress(percentage, `Mengunduh ${downloadedMb} MB / ${totalMb} MB`);
-                }
-
-                const blob = new Blob(chunks);
-                setProgress(100, 'Unduhan selesai. Menyusun model...');
-                return URL.createObjectURL(blob);
-            }
-
             function loadObjectForMarker(marker, objectData) {
                 const entity = marker.querySelector('a-entity');
                 const objectName = objectData.nama || 'Object AR';
                 const modelSrc = objectData.model_src;
                 const modelKey = marker.id + ':' + objectData.object_id;
-                const isGlb = /\.glb($|\?)/i.test(modelSrc);
                 const existingState = modelStates.get(modelKey);
+
+                if (/\.obj($|\?)/i.test(modelSrc)) {
+                    const message =
+                        'Format .obj belum didukung di AR marker ini. Gunakan .glb (disarankan) atau .gltf.';
+                    showLoadingError(objectName, message);
+                    return Promise.reject(new Error(message));
+                }
 
                 if (existingState?.loaded) {
                     entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
@@ -392,41 +354,28 @@
                 }
 
                 showLoading(objectName);
+                setProgress(20, 'Mengunduh dan memproses model...');
 
-                const loadingPromise = new Promise(async (resolve, reject) => {
+                const loadingPromise = new Promise((resolve, reject) => {
                     let finished = false;
-                    let compatibilityRetryTimer = null;
-                    let finalModelTimeout = null;
+                    let loadingHintTimer = null;
+                    let longLoadingHintTimer = null;
 
                     const clearModelTimers = function() {
-                        if (compatibilityRetryTimer) {
-                            clearTimeout(compatibilityRetryTimer);
-                            compatibilityRetryTimer = null;
+                        if (loadingHintTimer) {
+                            clearTimeout(loadingHintTimer);
+                            loadingHintTimer = null;
                         }
 
-                        if (finalModelTimeout) {
-                            clearTimeout(finalModelTimeout);
-                            finalModelTimeout = null;
+                        if (longLoadingHintTimer) {
+                            clearTimeout(longLoadingHintTimer);
+                            longLoadingHintTimer = null;
                         }
                     };
 
                     const cleanupListeners = function() {
                         entity.removeEventListener('model-loaded', handleLoaded);
                         entity.removeEventListener('model-error', handleError);
-                    };
-
-                    const cleanupObjectUrl = function() {
-                        const currentState = modelStates.get(modelKey);
-                        if (currentState?.objectUrl) {
-                            URL.revokeObjectURL(currentState.objectUrl);
-                        }
-
-                        modelStates.set(modelKey, {
-                            loaded: false,
-                            loadingPromise,
-                            objectUrl: null,
-                            modelSrc,
-                        });
                     };
 
                     const failLoading = function(message) {
@@ -437,33 +386,16 @@
                         finished = true;
                         clearModelTimers();
                         cleanupListeners();
-                        cleanupObjectUrl();
                         entity.removeAttribute('gltf-model');
+
+                        modelStates.set(modelKey, {
+                            loaded: false,
+                            loadingPromise: null,
+                            modelSrc,
+                        });
 
                         showLoadingError(objectName, message);
                         reject(new Error(message));
-                    };
-
-                    const switchToCompatibilityMode = function(reason) {
-                        if (!isGlb || finished) {
-                            return false;
-                        }
-
-                        const state = modelStates.get(modelKey);
-                        if (!state?.objectUrl) {
-                            return false;
-                        }
-
-                        cleanupObjectUrl();
-                        entity.removeAttribute('gltf-model');
-
-                        setProgress(96,
-                            'Mode kompatibilitas aktif. Mencoba memuat dari URL langsung...');
-                        loadingTextElement.textContent = reason ||
-                            'Parsing model terlalu lama. Mencoba mode alternatif...';
-                        entity.setAttribute('gltf-model', modelSrc);
-
-                        return true;
                     };
 
                     const handleLoaded = function() {
@@ -475,16 +407,10 @@
                         clearModelTimers();
                         cleanupListeners();
 
-                        const currentState = modelStates.get(modelKey);
-                        if (currentState?.objectUrl) {
-                            URL.revokeObjectURL(currentState.objectUrl);
-                        }
-
                         setProgress(100, 'Model siap ditampilkan.');
                         modelStates.set(modelKey, {
                             loaded: true,
                             loadingPromise: null,
-                            objectUrl: null,
                             modelSrc,
                         });
 
@@ -503,11 +429,7 @@
                             `Tidak bisa memuat sumber model: ${event.detail.src}` :
                             'Format atau isi file model tidak valid.';
 
-                        const switched = switchToCompatibilityMode(
-                            'Percobaan pertama gagal dimuat. Beralih ke mode kompatibilitas...');
-                        if (!switched) {
-                            failLoading(detailMessage);
-                        }
+                        failLoading(detailMessage);
                     };
 
                     entity.addEventListener('model-loaded', handleLoaded, {
@@ -517,60 +439,34 @@
                         once: true
                     });
 
-                    finalModelTimeout = setTimeout(() => {
+                    loadingHintTimer = setTimeout(() => {
                         if (finished) {
                             return;
                         }
 
-                        const switched = switchToCompatibilityMode(
-                            'Menyusun model terlalu lama. Mencoba mode kompatibilitas...');
-                        if (!switched) {
-                            failLoading(
-                                'Waktu memuat model habis. Coba ulangi dengan model yang lebih ringan.'
+                        setProgress(70,
+                            'Model masih diproses. Tetap arahkan kamera ke marker.');
+                        loadingTextElement.textContent =
+                            'Model bertekstur/kompleks bisa butuh waktu lebih lama di perangkat mobile.';
+                    }, LOADING_HINT_TIMEOUT_MS);
+
+                    longLoadingHintTimer = setTimeout(() => {
+                        if (finished) {
+                            return;
+                        }
+
+                        setProgress(88,
+                            'Masih memproses model besar. Jika perlu, sederhanakan polygon/tekstur.'
                             );
-                        }
-                    }, FINAL_MODEL_TIMEOUT_MS);
+                    }, LONG_LOADING_HINT_TIMEOUT_MS);
 
-                    try {
-                        if (isGlb) {
-                            setProgress(4, 'Memulai unduhan model...');
-                            const objectUrl = await downloadGlbWithProgress(modelSrc);
-
-                            modelStates.set(modelKey, {
-                                loaded: false,
-                                loadingPromise,
-                                objectUrl,
-                                modelSrc,
-                            });
-
-                            entity.setAttribute('gltf-model', objectUrl);
-                            entity.setAttribute('scale', objectData.scale || '1 1 1');
-
-                            compatibilityRetryTimer = setTimeout(() => {
-                                if (finished) {
-                                    return;
-                                }
-
-                                switchToCompatibilityMode(
-                                    'Parsing model dari cache lokal lama. Mencoba mode kompatibilitas...'
-                                );
-                            }, COMPATIBILITY_RETRY_TIMEOUT_MS);
-                        } else {
-                            setProgress(18, 'Memuat model. Menunggu resource pendukung...');
-                            loadingProgressTextElement.textContent =
-                                'Format .gltf terdeteksi, progress byte tidak selalu tersedia.';
-                            entity.setAttribute('gltf-model', modelSrc);
-                            entity.setAttribute('scale', objectData.scale || '1 1 1');
-                        }
-                    } catch (downloadError) {
-                        failLoading(downloadError.message || 'Gagal mengunduh model.');
-                    }
+                    entity.setAttribute('gltf-model', modelSrc);
+                    entity.setAttribute('scale', objectData.scale || '1 1 1');
                 });
 
                 modelStates.set(modelKey, {
                     loaded: false,
                     loadingPromise,
-                    objectUrl: null,
                     modelSrc,
                 });
 
