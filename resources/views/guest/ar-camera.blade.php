@@ -327,7 +327,10 @@
             const LONG_LOADING_HINT_TIMEOUT_MS = 45000;
             const MODEL_LOAD_TIMEOUT_MS = 90000;
             const NOISY_REJECTION_EVENTS = new Set(['load']);
+            const DRACO_DECODER_PATH = '/ar-marker/';
             let sharedDracoLoader = null;
+            let dracoSetupRetryCount = 0;
+            const MAX_DRACO_SETUP_RETRY = 20;
             const inspectedGlbSources = new Set();
             const modelDiagnostics = new Map();
             const EXTENSION_HINTS = {
@@ -455,6 +458,10 @@
             function setupDracoForAframe() {
                 if (!window.THREE || !window.THREE.GLTFLoader) {
                     pushDebugLog('warn', 'THREE.GLTFLoader belum tersedia saat setup Draco.');
+                    if (dracoSetupRetryCount < MAX_DRACO_SETUP_RETRY) {
+                        dracoSetupRetryCount += 1;
+                        setTimeout(setupDracoForAframe, 300);
+                    }
                     return;
                 }
 
@@ -471,12 +478,13 @@
                 const OriginalGLTFLoader = window.THREE.GLTFLoader;
                 const dracoLoader = new window.THREE.DRACOLoader();
 
-                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+                dracoLoader.setDecoderPath(DRACO_DECODER_PATH);
                 dracoLoader.setDecoderConfig({
                     type: 'wasm'
                 });
                 dracoLoader.preload();
                 sharedDracoLoader = dracoLoader;
+                dracoSetupRetryCount = MAX_DRACO_SETUP_RETRY;
 
                 function PatchedGLTFLoader(manager) {
                     const loader = new OriginalGLTFLoader(manager);
@@ -497,6 +505,8 @@
 
             function loadModelWithThreeFallback(entity, modelSrc, scaleValue) {
                 return new Promise((resolve, reject) => {
+                    setupDracoForAframe();
+
                     if (!window.THREE || !window.THREE.GLTFLoader) {
                         reject(new Error('THREE.GLTFLoader tidak tersedia untuk fallback.'));
                         return;
@@ -1025,6 +1035,7 @@
                 }
 
                 showLoading(objectName);
+                setupDracoForAframe();
                 setProgress(20, 'Mengunduh dan memproses model...');
                 if (isDebugMode) {
                     probeModelAccessibility(modelSrc);
