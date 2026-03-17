@@ -188,18 +188,24 @@
         id="scene">
         @foreach ($arMarkers as $marker)
             @continue($marker->virtualMuseumObjects->isEmpty())
+            @php
+                $markerObjects = $marker->virtualMuseumObjects
+                    ->map(function ($object) {
+                        return [
+                            'object_id' => $object->object_id,
+                            'nama' => $object->nama,
+                            'deskripsi' => $object->deskripsi,
+                            'model_src' => '/storage/' . $object->path_obj,
+                            'scale' => $object->scale_string ?? '1 1 1',
+                        ];
+                    })
+                    ->values();
+            @endphp
             <!-- {{ $marker->nama ?: 'Marker #' . $marker->marker_id }} -->
             <a-marker type="pattern" url="/storage/{{ $marker->path_patt }}" raycaster="objects: .clickable"
                 emitevents="true" cursor="fuse: false; rayOrigin: mouse;" id="marker{{ $marker->marker_id }}"
                 data-marker-name="{{ $marker->nama ?: 'Marker #' . $marker->marker_id }}"
-                data-marker-objects='@json(
-                    $marker->virtualMuseumObjects->map(fn($object) => [
-                                'object_id' => $object->object_id,
-                                'nama' => $object->nama,
-                                'deskripsi' => $object->deskripsi,
-                                'model_src' => "/storage/{$object->path_obj}",
-                                'scale' => $object->scale_string ?? '1 1 1',
-                            ])->values())'>
+                data-marker-objects='@json($markerObjects)'>
                 <a-entity id="marker{{ $marker->marker_id }}-entity" position="0 0 0" scale="1 1 1" class="clickable"
                     gesture-handler>
                 </a-entity>
