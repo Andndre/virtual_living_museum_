@@ -317,6 +317,8 @@
             const visibleMarkers = new Map();
             const modelStates = new Map();
             const debugLogLines = [];
+            let lastDebugLineText = null;
+            let lastDebugLineAt = 0;
             let slowLoadingTimer = null;
             const LOADING_HINT_TIMEOUT_MS = 20000;
             const LONG_LOADING_HINT_TIMEOUT_MS = 120000;
@@ -345,6 +347,22 @@
                 const suffix = payload ? ` | ${stringifyForDebug(payload)}` : '';
                 const lineText = `[${timestamp}] [${level.toUpperCase()}] ${message}${suffix}`;
 
+                if (lineText === lastDebugLineText && Date.now() - lastDebugLineAt < 1500 && debugLogLines.length >
+                    0) {
+                    const lastLine = debugLogLines[debugLogLines.length - 1];
+                    lastLine.repeatCount = (lastLine.repeatCount || 1) + 1;
+                    lastLine.text = `${lineText} (x${lastLine.repeatCount})`;
+                    debugPanelElement.innerHTML = debugLogLines
+                        .map(line => `<div class="ar-debug-line ${line.level}">${line.text}</div>`)
+                        .join('');
+                    debugPanelElement.scrollTop = debugPanelElement.scrollHeight;
+                    lastDebugLineAt = Date.now();
+                    return;
+                }
+
+                lastDebugLineText = lineText;
+                lastDebugLineAt = Date.now();
+
                 if (debugLogLines.length >= 120) {
                     debugLogLines.shift();
                 }
@@ -352,6 +370,7 @@
                 debugLogLines.push({
                     level,
                     text: lineText,
+                    repeatCount: 1,
                 });
 
                 debugPanelElement.innerHTML = debugLogLines
@@ -366,6 +385,36 @@
                 } else {
                     console.log('[AR]', message, payload || '');
                 }
+            }
+
+            function getRejectionReasonInfo(reason) {
+                if (reason instanceof Error) {
+                    return {
+                        type: 'Error',
+                        message: reason.message,
+                        stack: reason.stack,
+                    };
+                }
+
+                if (reason instanceof Event) {
+                    const target = reason.target;
+                    return {
+                        type: 'Event',
+                        eventType: reason.type,
+                        isTrusted: reason.isTrusted,
+                        targetTag: target?.tagName || null,
+                        targetSrc: target?.src || target?.currentSrc || null,
+                    };
+                }
+
+                if (typeof reason === 'object' && reason !== null) {
+                    return reason;
+                }
+
+                return {
+                    type: typeof reason,
+                    value: String(reason),
+                };
             }
 
             function setDebugPanelVisible(isVisible) {
@@ -392,8 +441,9 @@
             });
 
             window.addEventListener('unhandledrejection', event => {
+                event.preventDefault();
                 pushDebugLog('error', 'Unhandled promise rejection', {
-                    reason: stringifyForDebug(event.reason),
+                    reason: getRejectionReasonInfo(event.reason),
                 });
             });
 
@@ -419,7 +469,7 @@
                         'WebGL context hilang. Kemungkinan memori GPU tidak cukup.');
                     showLoadingError('Model AR',
                         'WebGL context hilang. Kurangi ukuran tekstur/polygon model lalu coba lagi.'
-                        );
+                    );
                 });
 
                 canvas.addEventListener('webglcontextrestored', () => {
@@ -454,6 +504,39 @@
                         message: error.message,
                     });
                     return null;
+                }
+            }
+
+            async function probeModelAccessibility(modelSrc) {
+                try {
+                    const response = await fetch(modelSrc, {
+                        method: 'GET',
+                        headers: {
+                            Range: 'bytes=0-0'
+                        },
+                        cache: 'no-store'
+                    });
+
+                    const detail = {
+                        modelSrc,
+                        status: response.status,
+                        statusText: response.statusText,
+                        contentType: response.headers.get('content-type') || null,
+                        contentLength: response.headers.get('content-length') || null,
+                        acceptRanges: response.headers.get('accept-ranges') || null,
+                    };
+
+                    if (!response.ok && response.status !== 206) {
+                        pushDebugLog('error', 'Probe akses model gagal (indikasi server/path)', detail);
+                        return;
+                    }
+
+                    pushDebugLog('info', 'Probe akses model berhasil', detail);
+                } catch (error) {
+                    pushDebugLog('error', 'Probe akses model error', {
+                        modelSrc,
+                        message: error.message,
+                    });
                 }
             }
 
@@ -561,6 +644,7 @@
 
                 showLoading(objectName);
                 setProgress(20, 'Mengunduh dan memproses model...');
+                probeModelAccessibility(modelSrc);
 
                 fetchModelMeta(modelSrc)
                     .then(meta => {
@@ -583,7 +667,7 @@
                         if (meta.bytes && meta.bytes > 12 * 1024 * 1024) {
                             pushDebugLog('warn',
                                 'Model cukup besar untuk mobile marker AR (>12MB). Pertimbangkan kompresi DRACO/tekstur.'
-                                );
+                            );
                         }
                     })
                     .catch(() => {});
