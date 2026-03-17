@@ -984,6 +984,7 @@
                 const modelExt = extractModelExtension(modelSrc);
                 const modelKey = marker.id + ':' + objectData.object_id;
                 const existingState = modelStates.get(modelKey);
+                const activeModelKey = entity.getAttribute('data-active-model-key');
                 const startedAt = isDebugMode ? performance.now() : 0;
 
                 pushDebugLog('info', 'Format model terdeteksi', {
@@ -1003,9 +1004,9 @@
                 }
 
                 if (existingState?.loaded) {
-                    if (existingState.loadedMode === 'three' && entity.getObject3D('mesh')) {
+                    if (activeModelKey === modelKey) {
                         entity.setAttribute('scale', objectData.scale || '1 1 1');
-                        pushDebugLog('info', 'Gunakan model cache (three object3D)', {
+                        pushDebugLog('info', 'Object aktif sudah tampil, gunakan cache langsung', {
                             objectName,
                             modelSrc,
                         });
@@ -1013,11 +1014,19 @@
                         return Promise.resolve();
                     }
 
+                    if (existingState.loadedMode === 'three' && entity.getObject3D('mesh')) {
+                        pushDebugLog('warn',
+                            'Object three cache tidak sedang aktif. Load ulang agar mesh sesuai object terpilih.'
+                            );
+                    }
+
                     if (existingState.loadedMode !== 'three') {
-                        if (!entity.getAttribute('gltf-model')) {
-                            entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
+                        if (entity.getObject3D('mesh')) {
+                            entity.removeObject3D('mesh');
                         }
+                        entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
                         entity.setAttribute('scale', objectData.scale || '1 1 1');
+                        entity.setAttribute('data-active-model-key', modelKey);
                         pushDebugLog('info', 'Gunakan model cache (aframe gltf-model)', {
                             objectName,
                             modelSrc,
@@ -1101,6 +1110,7 @@
                             loadedMode: null,
                             visibilityVersion: null,
                         });
+                        entity.removeAttribute('data-active-model-key');
 
                         reject(new Error('MARKER_NOT_VISIBLE'));
                         return true;
@@ -1152,6 +1162,7 @@
                             loadedMode: null,
                             visibilityVersion: null,
                         });
+                        entity.removeAttribute('data-active-model-key');
 
                         pushDebugLog('error', 'Gagal load model', {
                             objectName,
@@ -1184,6 +1195,7 @@
                             loadedMode: 'aframe',
                             visibilityVersion,
                         });
+                        entity.setAttribute('data-active-model-key', modelKey);
                         pushDebugLog('info', 'Model loaded', {
                             objectName,
                             markerId: marker.id,
@@ -1254,6 +1266,7 @@
                                         loadedMode: 'three',
                                         visibilityVersion,
                                     });
+                                    entity.setAttribute('data-active-model-key', modelKey);
                                     pushDebugLog('info',
                                         'Fallback Three.js berhasil memuat model.', {
                                             objectName,
