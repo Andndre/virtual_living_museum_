@@ -26,7 +26,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/panduan', [HomeController::class, 'panduan'])->name('guest.panduan');
     Route::get('/pengaturan', [HomeController::class, 'pengaturan'])->name('guest.pengaturan');
     Route::get('/pengembang', [HomeController::class, 'pengembang'])->name('guest.pengembang');
-    Route::get('/ar-marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
+    Route::get('/marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
     Route::get('/ar-marker/camera', [ArMarkerCameraController::class, 'index'])->name('ar-marker.camera');
     Route::get('/ar-marker/katalog', [HomeController::class, 'arMarkerKatalog'])->name('ar-marker.katalog');
 
