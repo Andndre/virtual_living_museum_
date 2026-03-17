@@ -453,8 +453,9 @@
 
                 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
                 dracoLoader.setDecoderConfig({
-                    type: 'js'
+                    type: 'wasm'
                 });
+                dracoLoader.preload();
                 sharedDracoLoader = dracoLoader;
 
                 function PatchedGLTFLoader(manager) {
