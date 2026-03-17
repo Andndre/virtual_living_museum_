@@ -325,6 +325,7 @@
             const LONG_LOADING_HINT_TIMEOUT_MS = 120000;
             const MODEL_LOAD_TIMEOUT_MS = 180000;
             const NOISY_REJECTION_EVENTS = new Set(['load']);
+            let sharedDracoLoader = null;
 
             function stringifyForDebug(data) {
                 if (data === undefined || data === null) {
@@ -447,6 +448,7 @@
                 dracoLoader.setDecoderConfig({
                     type: 'js'
                 });
+                sharedDracoLoader = dracoLoader;
 
                 function PatchedGLTFLoader(manager) {
                     const loader = new OriginalGLTFLoader(manager);
@@ -463,6 +465,51 @@
                 window.THREE.GLTFLoader = PatchedGLTFLoader;
 
                 pushDebugLog('info', 'Draco loader aktif untuk pipeline A-Frame marker.');
+            }
+
+            function loadModelWithThreeFallback(entity, modelSrc, scaleValue) {
+                return new Promise((resolve, reject) => {
+                    if (!window.THREE || !window.THREE.GLTFLoader) {
+                        reject(new Error('THREE.GLTFLoader tidak tersedia untuk fallback.'));
+                        return;
+                    }
+
+                    const loader = new window.THREE.GLTFLoader();
+
+                    if (sharedDracoLoader && typeof loader.setDRACOLoader === 'function') {
+                        loader.setDRACOLoader(sharedDracoLoader);
+                    }
+
+                    if (typeof loader.setCrossOrigin === 'function') {
+                        loader.setCrossOrigin('anonymous');
+                    }
+
+                    loader.load(
+                        modelSrc,
+                        gltf => {
+                            const scene = gltf?.scene || (Array.isArray(gltf?.scenes) ? gltf.scenes[0] :
+                                null);
+
+                            if (!scene) {
+                                reject(new Error('GLTF berhasil dimuat tetapi scene kosong.'));
+                                return;
+                            }
+
+                            entity.removeAttribute('gltf-model');
+                            if (entity.getObject3D('mesh')) {
+                                entity.removeObject3D('mesh');
+                            }
+
+                            entity.setObject3D('mesh', scene);
+                            entity.setAttribute('scale', scaleValue || '1 1 1');
+                            resolve();
+                        },
+                        undefined,
+                        error => {
+                            reject(error instanceof Error ? error : new Error(String(error)));
+                        }
+                    );
+                });
             }
 
             debugToggleButton.addEventListener('click', () => {
@@ -794,14 +841,28 @@
                 }
 
                 if (existingState?.loaded) {
-                    entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
-                    entity.setAttribute('scale', objectData.scale || '1 1 1');
-                    pushDebugLog('info', 'Gunakan model cache', {
-                        objectName,
-                        modelSrc,
-                    });
-                    hideLoading();
-                    return Promise.resolve();
+                    if (existingState.loadedMode === 'three' && entity.getObject3D('mesh')) {
+                        entity.setAttribute('scale', objectData.scale || '1 1 1');
+                        pushDebugLog('info', 'Gunakan model cache (three object3D)', {
+                            objectName,
+                            modelSrc,
+                        });
+                        hideLoading();
+                        return Promise.resolve();
+                    }
+
+                    if (existingState.loadedMode !== 'three') {
+                        entity.setAttribute('gltf-model', existingState.modelSrc || modelSrc);
+                        entity.setAttribute('scale', objectData.scale || '1 1 1');
+                        pushDebugLog('info', 'Gunakan model cache (aframe gltf-model)', {
+                            objectName,
+                            modelSrc,
+                        });
+                        hideLoading();
+                        return Promise.resolve();
+                    }
+
+                    pushDebugLog('warn', 'Cache three object3D tidak tersedia di entity, reload ulang.');
                 }
 
                 if (existingState?.loadingPromise) {
@@ -850,6 +911,7 @@
 
                 const loadingPromise = new Promise((resolve, reject) => {
                     let finished = false;
+                    let attemptedThreeFallback = false;
                     let loadingHintTimer = null;
                     let longLoadingHintTimer = null;
                     let loadingTimeoutTimer = null;
@@ -885,11 +947,15 @@
                         clearModelTimers();
                         cleanupListeners();
                         entity.removeAttribute('gltf-model');
+                        if (entity.getObject3D('mesh')) {
+                            entity.removeObject3D('mesh');
+                        }
 
                         modelStates.set(modelKey, {
                             loaded: false,
                             loadingPromise: null,
                             modelSrc,
+                            loadedMode: null,
                         });
 
                         pushDebugLog('error', 'Gagal load model', {
@@ -916,6 +982,7 @@
                             loaded: true,
                             loadingPromise: null,
                             modelSrc,
+                            loadedMode: 'aframe',
                         });
                         pushDebugLog('info', 'Model loaded', {
                             objectName,
@@ -945,6 +1012,58 @@
                             modelSrc,
                             detail,
                         });
+
+                        if (!attemptedThreeFallback && (modelExt === 'glb' || modelExt === 'gltf')) {
+                            attemptedThreeFallback = true;
+                            setProgress(76, 'A-Frame gagal, mencoba fallback loader Three.js...');
+                            pushDebugLog('warn', 'Mencoba fallback loader Three.js untuk model ini.', {
+                                objectName,
+                                markerId: marker.id,
+                                modelSrc,
+                            });
+
+                            loadModelWithThreeFallback(entity, modelSrc, objectData.scale)
+                                .then(() => {
+                                    if (finished) {
+                                        return;
+                                    }
+
+                                    finished = true;
+                                    clearModelTimers();
+                                    cleanupListeners();
+
+                                    setProgress(100, 'Model siap ditampilkan (fallback Three.js).');
+                                    modelStates.set(modelKey, {
+                                        loaded: true,
+                                        loadingPromise: null,
+                                        modelSrc,
+                                        loadedMode: 'three',
+                                    });
+                                    pushDebugLog('info',
+                                    'Fallback Three.js berhasil memuat model.', {
+                                        objectName,
+                                        markerId: marker.id,
+                                        modelSrc,
+                                    });
+
+                                    setTimeout(() => {
+                                        hideLoading();
+                                        resolve();
+                                    }, 180);
+                                })
+                                .catch(fallbackError => {
+                                    pushDebugLog('error', 'Fallback Three.js gagal', {
+                                        objectName,
+                                        markerId: marker.id,
+                                        modelSrc,
+                                        message: fallbackError?.message || String(
+                                            fallbackError),
+                                    });
+                                    failLoading(detailMessage);
+                                });
+
+                            return;
+                        }
 
                         failLoading(detailMessage);
                     };
@@ -987,6 +1106,9 @@
                         );
                     }, MODEL_LOAD_TIMEOUT_MS);
 
+                    if (entity.getObject3D('mesh')) {
+                        entity.removeObject3D('mesh');
+                    }
                     entity.setAttribute('gltf-model', modelSrc);
                     entity.setAttribute('scale', objectData.scale || '1 1 1');
                 });
@@ -995,6 +1117,7 @@
                     loaded: false,
                     loadingPromise,
                     modelSrc,
+                    loadedMode: null,
                 });
 
                 return loadingPromise;
