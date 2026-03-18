@@ -469,7 +469,7 @@ class HomeController extends Controller
         // Validate the request
         $request->validate([
             'answers' => 'required|array',
-            'answers.*' => 'required|in:A,B,C,D',
+            'answers.*' => 'required|in:A,B,C,D,E',
         ], [
             'answers.required' => 'Mohon jawab semua pertanyaan.',
             'answers.*.required' => 'Setiap pertanyaan harus dijawab.',
@@ -586,7 +586,7 @@ class HomeController extends Controller
         // Validate the request
         $request->validate([
             'answers' => 'required|array',
-            'answers.*' => 'required|in:A,B,C,D',
+            'answers.*' => 'required|in:A,B,C,D,E',
         ], [
             'answers.required' => 'Mohon jawab semua pertanyaan.',
             'answers.*.required' => 'Setiap pertanyaan harus dijawab.',
