@@ -81,94 +81,64 @@
         <div class="px-6 py-6">
             {{-- Materi Tab Content --}}
             <div id="content-materi" class="tab-content">
-                @php
-                    $groupedMateri = $materis->groupBy(function ($m) {
-                        return $m->era_id ?? 0;
-                    });
-                @endphp
-                @if ($groupedMateri->isEmpty())
+                @if ($eraCards->isEmpty())
                     <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
                         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                             <i class="fas fa-book text-2xl text-gray-400"></i>
                         </div>
-                        <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Materi</h3>
-                        <p class="text-gray-600">Materi pembelajaran akan segera tersedia.</p>
+                        <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Era</h3>
+                        <p class="text-gray-600">Data era pembelajaran akan segera tersedia.</p>
                     </div>
                 @else
-                    @foreach ($groupedMateri as $eraId => $eraMateri)
-                        @php $era = $eraMateri->first()->era; @endphp
-                        {{-- Era Group Header --}}
-                        <div class="mb-3 mt-6 flex items-center gap-3 first:mt-0">
-                            <div class="h-px flex-1 bg-blue-100"></div>
-                            <div
-                                class="flex min-w-0 flex-col items-center rounded-xl border border-blue-200 bg-blue-50 px-3 py-1.5 text-center">
-                                @if ($era)
-                                    <span
-                                        class="text-xs font-bold uppercase tracking-wide text-blue-700">{{ $era->kode }}.
-                                        {{ $era->nama }}</span>
-                                    @if ($era->rentang_waktu)
-                                        <span class="text-[11px] text-blue-500">{{ $era->rentang_waktu }}</span>
-                                    @endif
-                                @else
-                                    <span class="text-xs font-bold uppercase tracking-wide text-gray-600">Materi</span>
-                                @endif
-                            </div>
-                            <div class="h-px flex-1 bg-blue-100"></div>
-                        </div>
+                    <div class="space-y-4">
+                        @foreach ($eraCards as $eraCard)
+                            <a href="{{ route('guest.elearning.era', $eraCard->era_id) }}"
+                                class="group block overflow-hidden rounded-2xl border border-blue-100 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                                        <i class="fas fa-landmark text-lg"></i>
+                                    </div>
 
-                        <div class="space-y-3">
-                            @foreach ($eraMateri as $materi)
-                                <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                                    <div class="flex">
-                                        {{-- Gambar Sampul --}}
-                                        <div class="h-20 w-20 flex-shrink-0">
-                                            @if ($materi->gambar_sampul)
-                                                <img src="{{ asset('storage/' . $materi->gambar_sampul) }}"
-                                                    alt="{{ $materi->judul }}" class="h-full w-full object-cover">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="mb-1 flex items-center gap-2">
+                                            @if ($eraCard->kode)
+                                                <span
+                                                    class="rounded bg-blue-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-blue-700">Era
+                                                    {{ $eraCard->kode }}</span>
                                             @else
-                                                <div
-                                                    class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
-                                                    <i class="fas fa-book text-xl text-white"></i>
-                                                </div>
+                                                <span
+                                                    class="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gray-600">Materi</span>
                                             @endif
                                         </div>
 
-                                        {{-- Content --}}
-                                        <div class="flex-1 p-4">
-                                            @if ($materi->bab)
-                                                <span
-                                                    class="mb-1 inline-block rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-600">Bab
-                                                    {{ $materi->bab }}</span>
-                                            @endif
-                                            <h3 class="mb-1 font-semibold text-gray-900">{{ $materi->judul }}</h3>
-                                            <p class="mb-3 line-clamp-2 text-sm text-gray-600">{{ $materi->deskripsi }}
-                                            </p>
+                                        <h3 class="text-base font-semibold text-gray-900">{{ $eraCard->judul }}</h3>
+                                        @if ($eraCard->rentang_waktu)
+                                            <p class="text-xs text-gray-500">{{ $eraCard->rentang_waktu }}</p>
+                                        @endif
 
-                                            {{-- Action Button --}}
-                                            @if ($materi->is_available)
-                                                <a href="{{ route('guest.elearning.materi', $materi->materi_id) }}"
-                                                    class="inline-flex items-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-700">
-                                                    @if ($materi->is_completed)
-                                                        <i class="fas fa-redo mr-1"></i>
-                                                        Lihat
-                                                    @else
-                                                        <i class="fas fa-play mr-1"></i>
-                                                        {{ $materi->is_started ?? false ? 'Lanjutkan' : 'Mulai' }}
-                                                    @endif
-                                                </a>
-                                            @else
-                                                <div
-                                                    class="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-400">
-                                                    <i class="fas fa-lock mr-1"></i>
-                                                    Terkunci
-                                                </div>
+                                        <div class="mt-3 flex items-center gap-2 text-xs text-gray-600">
+                                            <span>{{ $eraCard->completed_materi }}/{{ $eraCard->total_materi }} materi
+                                                selesai</span>
+                                            @if (!$eraCard->is_available)
+                                                <span
+                                                    class="rounded bg-gray-100 px-2 py-0.5 text-gray-500">Terkunci</span>
                                             @endif
+                                        </div>
+
+                                        <div class="mt-2 h-1.5 w-full rounded-full bg-gray-100">
+                                            <div class="h-full rounded-full bg-blue-500"
+                                                style="width: {{ $eraCard->progress_percentage }}%"></div>
                                         </div>
                                     </div>
+
+                                    <div class="pt-1 text-blue-500 transition-transform group-hover:translate-x-0.5">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
                                 </div>
-                            @endforeach
-                        </div>
-                    @endforeach
+                            </a>
+                        @endforeach
+                    </div>
                 @endif
             </div>
 

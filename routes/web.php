@@ -37,6 +37,9 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     // E-Learning routes
     Route::get('/kunjungi-peninggalan', [HomeController::class, 'kunjungiPeninggalan'])->name('guest.elearning');
+    Route::get('/kunjungi-peninggalan/era/{era_id}', [HomeController::class, 'kunjungiPeninggalanEra'])
+        ->whereNumber('era_id')
+        ->name('guest.elearning.era');
     Route::get('/kunjungi-peninggalan/materi/{materi_id}', [HomeController::class, 'elearningMateri'])->name('guest.elearning.materi');
     Route::get('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'elearningPretest'])->name('guest.elearning.pretest');
     Route::post('/kunjungi-peninggalan/materi/{materi_id}/pretest', [HomeController::class, 'submitPretest'])->name('guest.elearning.pretest.submit');

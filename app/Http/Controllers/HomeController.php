@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\TokenHelper;
 use App\Models\Ebook;
+use App\Models\Era;
 use App\Models\JawabanUser;
 use App\Models\Katalog;
 use App\Models\LogAktivitas;
@@ -278,11 +279,83 @@ class HomeController extends Controller
                 return $item->created_at->format('Y-m-d');
             });
 
+        $eraCards = $materis->groupBy(function ($materi) {
+            return $materi->era_id ?? 0;
+        })->map(function ($eraMateris, $eraId) {
+            $era = $eraMateris->first()->era;
+            $totalMateriEra = $eraMateris->count();
+            $completedMateriEra = $eraMateris->where('is_completed', true)->count();
+            $availableMateriEra = $eraMateris->where('is_available', true)->count();
+
+            return (object) [
+                'era_id' => (int) $eraId,
+                'era' => $era,
+                'judul' => $era ? $era->nama : 'Materi Lainnya',
+                'kode' => $era ? $era->kode : null,
+                'rentang_waktu' => $era ? $era->rentang_waktu : null,
+                'total_materi' => $totalMateriEra,
+                'completed_materi' => $completedMateriEra,
+                'progress_percentage' => $totalMateriEra > 0 ? round(($completedMateriEra / $totalMateriEra) * 100) : 0,
+                'is_available' => $availableMateriEra > 0,
+            ];
+        })->values();
+
         return view('guest.elearning', compact(
-            'materis',
+            'eraCards',
             'progressPercentage',
             'nextMateri',
             'riwayatAktivitas'
+        ));
+    }
+
+    /**
+     * E-Learning Materi List by Era
+     */
+    public function kunjungiPeninggalanEra(Request $request, int $era_id)
+    {
+        $user = Auth::user();
+
+        $era = $era_id === 0 ? null : Era::findOrFail($era_id);
+
+        $materisQuery = Materi::with(['era', 'pretest', 'posttest', 'ebook', 'situsPeninggalan'])
+            ->orderBy('bab')
+            ->orderBy('urutan')
+            ->orderBy('materi_id');
+
+        if ($era_id === 0) {
+            $materisQuery->whereNull('era_id');
+        } else {
+            $materisQuery->where('era_id', $era_id);
+        }
+
+        $materis = $materisQuery->get();
+
+        // Tandai status tiap materi (completed, available, locked) berdasarkan level user.
+        $materis = $materis->map(function ($materi) use ($user) {
+            $materiLevel = $materi->getLinearLevel();
+            if ($materiLevel < $user->level_sekarang + 1) {
+                $materi->is_completed = true;
+                $materi->is_available = true;
+            } elseif ($materiLevel == $user->level_sekarang + 1) {
+                $materi->is_completed = false;
+                $materi->is_available = true;
+            } else {
+                $materi->is_completed = false;
+                $materi->is_available = false;
+            }
+
+            return $materi;
+        });
+
+        $totalMateri = $materis->count();
+        $completedMateri = $materis->where('is_completed', true)->count();
+        $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
+
+        return view('guest.elearning.era-materi', compact(
+            'era',
+            'era_id',
+            'materis',
+            'progressPercentage'
         ));
     }
 
