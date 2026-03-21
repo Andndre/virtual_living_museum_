@@ -1,6 +1,10 @@
-<x-guest-layout>
+<x-auth-layout>
+    <x-slot name="title">
+        Forgot Password
+    </x-slot>
+
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        Lupa password? Masukkan email akun Anda dan kami akan mengirimkan link untuk reset password.
     </div>
 
     <!-- Session Status -->
@@ -11,15 +15,29 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <x-text-input id="email" placeholder="Email" class="mt-1 block w-full" type="email" name="email"
+                :value="old('email')" required autofocus />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+        <div class="mt-4 flex items-center justify-end">
+            <x-primary-button class="flex w-full justify-center">
+                Kirim Link Reset Password
             </x-primary-button>
         </div>
+
+        <div class="mt-4 text-center">
+            <a class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                href="{{ route('login') }}">
+                Kembali ke Login
+            </a>
+        </div>
     </form>
-</x-guest-layout>
+
+    <x-slot name="footer">
+        Belum punya akun?
+        <a href="{{ route('register') }}" class="font-semibold leading-6 text-blue-500 hover:text-blue-600">
+            Buat akun
+        </a>
+    </x-slot>
+</x-auth-layout>
