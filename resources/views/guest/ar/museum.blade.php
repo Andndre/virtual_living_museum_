@@ -182,7 +182,7 @@
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>
             <div class="flex-1">
-                <h1 class="text-lg font-bold">Virtual Living Museum AR</h1>
+                <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
                 <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
             </div>
         </div>
@@ -246,7 +246,7 @@
             <div class="mb-2 flex justify-center">
                 <x-application-logo class="h-12 w-12" />
             </div>
-            <h2 class="mb-2 text-center text-2xl font-bold text-primary">Virtual Living Museum</h2>
+            <h2 class="mb-2 text-center text-2xl font-bold text-primary">{{ config('app.name') }}</h2>
             <div id="ar-not-supported" class="invisible mt-8 w-full rounded-xl bg-white p-6 shadow">
                 <p class="font-semibold text-red-600">Teknologi WebXR tidak didukung di perangkat Anda.</p>
                 <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a

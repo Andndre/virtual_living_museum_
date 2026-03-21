@@ -8,7 +8,7 @@
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             <li class="inline-flex items-center">
                                 <a href="{{ route('admin.virtual-museum') }}"
-                                    class="text-gray-400 hover:text-gray-500">Virtual Living Museum</a>
+                                    class="text-gray-400 hover:text-gray-500">{{ config('app.name') }}</a>
                             </li>
                             <li>
                                 <div class="flex items-center">
@@ -33,7 +33,7 @@
                             </li>
                         </ol>
                     </nav>
-                    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Tambah Object Virtual Living Museum</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Tambah Object {{ config('app.name') }}</h1>
                     <p class="mt-2 text-sm text-gray-600 sm:text-base">Untuk {{ $museum->nama }} -
                         {{ $museum->situsPeninggalan->nama }}</p>
                 </div>
@@ -67,7 +67,7 @@
             <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="border-b border-gray-200 px-6 py-4">
                     <h2 class="text-lg font-medium text-gray-900">Informasi Object</h2>
-                    <p class="mt-1 text-sm text-gray-600">Lengkapi data object virtual living museum yang akan
+                    <p class="mt-1 text-sm text-gray-600">Lengkapi data object {{ config('app.name') }} yang akan
                         ditambahkan.</p>
                 </div>
 

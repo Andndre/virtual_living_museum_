@@ -34,7 +34,7 @@
                             if (auth()->user()->progress_level_sekarang == 1) {
                                 $stepLabel = 'E-Book';
                             } elseif (auth()->user()->progress_level_sekarang == 2) {
-                                $stepLabel = 'Virtual Living Museum';
+                                $stepLabel = config('app.name');
                             } elseif (auth()->user()->progress_level_sekarang == 3) {
                                 $stepLabel = 'Post-test';
                             }

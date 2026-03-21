@@ -78,7 +78,7 @@
                         <i class="fas fa-map-marker-alt text-white"></i>
                     @endif
                 </div>
-                <span class="text-center text-xs text-white">Virtual Living Museum</span>
+                <span class="text-center text-xs text-white">{{ config('app.name') }}</span>
             </button>
 
             {{-- Post-test Tab --}}
@@ -290,7 +290,7 @@
             {{-- Virtual Living Museum Tab Content --}}
             <div id="museum-content" class="tab-content hidden">
                 @if ($materi->situsPeninggalan->count() > 0)
-                    <h2 class="mb-6 text-center text-xl font-bold text-gray-900">Virtual Living Museum</h2>
+                    <h2 class="mb-6 text-center text-xl font-bold text-gray-900">{{ config('app.name') }}</h2>
 
                     @if (!$museum_available)
                         <div class="rounded-2xl bg-gray-100 p-8 text-center">
@@ -298,9 +298,9 @@
                                 class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
                                 <i class="fas fa-lock text-2xl text-gray-400"></i>
                             </div>
-                            <h3 class="mb-2 text-lg font-medium text-gray-900">Virtual Living Museum Terkunci</h3>
-                            <p class="text-gray-600">Baca semua e-book terlebih dahulu untuk mengakses virtual living
-                                museum</p>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">{{ config('app.name') }} Terkunci</h3>
+                            <p class="text-gray-600">Baca semua e-book terlebih dahulu untuk mengakses
+                                {{ config('app.name') }}</p>
                         </div>
                     @else
                         <div class="space-y-4">
@@ -334,8 +334,9 @@
                         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
                             <i class="fas fa-map-marker-alt text-2xl text-gray-400"></i>
                         </div>
-                        <h3 class="mb-2 text-lg font-medium text-gray-900">Virtual Living Museum Tidak Tersedia</h3>
-                        <p class="text-gray-600">Materi ini tidak memiliki virtual living museum</p>
+                        <h3 class="mb-2 text-lg font-medium text-gray-900">{{ config('app.name') }} Tidak Tersedia
+                        </h3>
+                        <p class="text-gray-600">Materi ini tidak memiliki {{ config('app.name') }}</p>
                     </div>
                 @endif
             </div>
@@ -352,7 +353,7 @@
                                 <i class="fas fa-lock text-2xl text-gray-400"></i>
                             </div>
                             <h3 class="mb-2 text-lg font-medium text-gray-900">Post Test Terkunci</h3>
-                            <p class="text-gray-600">Kunjungi semua virtual living museum terlebih dahulu untuk
+                            <p class="text-gray-600">Kunjungi semua {{ config('app.name') }} terlebih dahulu untuk
                                 mengakses post-test</p>
                         </div>
                     @else
