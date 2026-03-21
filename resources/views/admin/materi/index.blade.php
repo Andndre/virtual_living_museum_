@@ -81,10 +81,6 @@
                                     </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Deskripsi
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                         Pretest
                                     </th>
                                     <th
@@ -96,7 +92,7 @@
                                         Dibuat
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                        class="sticky right-0 z-10 w-24 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                         Aksi
                                     </th>
                                 </tr>
@@ -127,10 +123,6 @@
                                         <td class="px-6 py-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $materi->judul }}</div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm text-gray-900">{{ Str::limit($materi->deskripsi, 60) }}
-                                            </div>
-                                        </td>
                                         <td class="whitespace-nowrap px-6 py-4">
                                             <span
                                                 class="{{ $materi->pretest()->count() > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} inline-flex rounded-full px-2 py-1 text-xs font-semibold">
@@ -146,7 +138,8 @@
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                             {{ $materi->created_at->format('d M Y') }}
                                         </td>
-                                        <td class="space-x-2 whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <td
+                                            class="sticky right-0 z-10 w-24 space-x-2 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium">
                                             <a href="{{ route('admin.materi.show', $materi->materi_id) }}"
                                                 class="text-blue-600 hover:text-blue-900">
                                                 <i class="fas fa-eye"></i>
@@ -168,7 +161,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="px-6 py-12 text-center">
+                                        <td colspan="9" class="px-6 py-12 text-center">
                                             <div class="text-gray-500">
                                                 <i class="fas fa-book mb-4 text-4xl"></i>
                                                 <p class="text-lg font-medium">Belum Ada Materi</p>
