@@ -20,7 +20,7 @@ return [
             ],
             [
                 'title' => 'Follow Each Step',
-                'description' => 'Follow each step: take pretest, read e-book, visit virtual living museum, and take posttest'
+                'description' => 'Follow each step: take pretest, read e-book, visit AR feature, and take posttest'
             ],
         ]
     ],
@@ -28,16 +28,16 @@ return [
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
         'title' => 'Virtual Living Museum',
-        'description' => 'Guide to using AR Virtual Living Museum feature in Visit Heritage menu',
+        'description' => 'Guide to using AR feature in Visit Heritage menu',
         'icon' => 'fa-vr-cardboard',
         'steps' => [
             [
-                'title' => 'Visit One of the Virtual Living Museums',
-                'description' => 'Select Virtual Living Museum menu from Visit Heritage page'
+                'title' => 'Visit AR Feature',
+                'description' => 'Select AR feature from Visit Heritage page'
             ],
             [
                 'title' => 'Choose Available AR Spot',
-                'description' => 'Choose one of the available AR spots on Virtual Living Museum page'
+                'description' => 'Choose one of the available AR spots on AR feature page'
             ],
             [
                 'title' => 'Allow Camera Access',
@@ -112,7 +112,7 @@ return [
             ],
             [
                 'title' => 'Study Material',
-                'description' => 'After pretest, study e-book material and visit virtual living museum'
+                'description' => 'After pretest, study e-book material and visit AR feature'
             ],
             [
                 'title' => 'Take Posttest',

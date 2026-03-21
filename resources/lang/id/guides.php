@@ -20,7 +20,7 @@ return [
             ],
             [
                 'title' => 'Ikuti Setiap Langkah',
-                'description' => 'Ikuti setiap langkah: isi pretest, baca e-book, kunjungi virtual living museum, dan isi posttest'
+                'description' => 'Ikuti setiap langkah: isi pretest, baca e-book, kunjungi fitur AR, dan isi posttest'
             ],
         ]
     ],
@@ -28,16 +28,16 @@ return [
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
         'title' => 'Virtual Living Museum',
-        'description' => 'Panduan penggunaan fitur AR Virtual Living Museum pada menu Kunjungi Peninggalan',
+        'description' => 'Panduan penggunaan fitur AR pada menu Kunjungi Peninggalan',
         'icon' => 'fa-vr-cardboard',
         'steps' => [
             [
-                'title' => 'Kunjungi Salah Satu Virtual Living Museum',
-                'description' => 'Pilih menu Virtual Living Museum dari halaman Kunjungi Peninggalan'
+                'title' => 'Kunjungi Fitur AR',
+                'description' => 'Pilih fitur AR dari halaman Kunjungi Peninggalan'
             ],
             [
                 'title' => 'Pilih Spot AR yang Tersedia',
-                'description' => 'Pilih salah satu spot AR yang tersedia pada halaman Virtual Living Museum'
+                'description' => 'Pilih salah satu spot AR yang tersedia pada halaman fitur AR'
             ],
             [
                 'title' => 'Izinkan Akses Kamera',
@@ -112,7 +112,7 @@ return [
             ],
             [
                 'title' => 'Pelajari Materi',
-                'description' => 'Setelah pretest, pelajari materi e-book dan kunjungi virtual living museum'
+                'description' => 'Setelah pretest, pelajari materi e-book dan kunjungi fitur AR'
             ],
             [
                 'title' => 'Kerjakan Posttest',
