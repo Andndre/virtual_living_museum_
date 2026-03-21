@@ -27,7 +27,7 @@ return [
 
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
-        'title' => 'Virtual Living Museum',
+        'title' => 'Augmented Reality',
         'description' => 'Panduan penggunaan fitur AR pada menu Kunjungi Peninggalan',
         'icon' => 'fa-vr-cardboard',
         'steps' => [

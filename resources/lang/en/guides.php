@@ -27,7 +27,7 @@ return [
 
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
-        'title' => 'Virtual Living Museum',
+        'title' => 'Augmented Reality',
         'description' => 'Guide to using AR feature in Visit Heritage menu',
         'icon' => 'fa-vr-cardboard',
         'steps' => [
