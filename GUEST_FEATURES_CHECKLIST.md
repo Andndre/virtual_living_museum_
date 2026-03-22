@@ -58,21 +58,29 @@ Sistem e-learning utama dengan progress tracking
     - Route: `/kunjungi-peninggalan/era/{era_id}`
     - Check: Tampilkan materials dalam era tertentu, progress tracking
 
-- [ ] **Material Details** - Detail konten pembelajaran
+- [ ] **Material Details** - Halaman detail materi dengan 4 tab
     - Route: `/kunjungi-peninggalan/materi/{materi_id}`
-    - Check: Deskripsi materi, buttons untuk pre-test, ebook, post-test
+    - Tab 1: Pre-test
+    - Tab 2: E-Book
+    - Tab 3: Kunjungi Situs (Virtual Living Museum - WebXR)
+    - Tab 4: Post-test
+    - Check: Semua tab tersedia, tab lock/unlock sesuai progress, UI responsif
 
-- [ ] **Pre-Test** - Soal pre-learning assessment
+- [ ] **Pre-Test** - Soal pre-learning assessment (Tab 1)
     - Route: GET `/kunjungi-peninggalan/materi/{materi_id}/pretest`
     - Aksi: POST `/kunjungi-peninggalan/materi/{materi_id}/pretest`
     - Check: Render pertanyaan, submit form, score calculation, progress update
 
-- [ ] **E-Book** - Material pembelajaran berbentuk flipbook
+- [ ] **E-Book** - Material pembelajaran berbentuk flipbook (Tab 2)
     - Route: `/kunjungi-peninggalan/ebook/{ebook_id}`
     - Aksi: POST `/kunjungi-peninggalan/ebook/{ebook_id}/read` (mark as read)
     - Check: PDF flipper works, page navigation, completion tracking
 
-- [ ] **Post-Test** - Soal post-learning assessment
+- [ ] **Kunjungi Situs (Virtual Living Museum - WebXR)** - Museum 3D dengan AR (Tab 3)
+    - Route: `/situs/{situs_id}/ar/{museum_id}` (token-based access)
+    - Check: Scene loading, object interaction, lighting/shadows, hit-test, WebXR support check
+
+- [ ] **Post-Test** - Soal post-learning assessment (Tab 4)
     - Route: GET `/kunjungi-peninggalan/materi/{materi_id}/posttest`
     - Aksi: POST `/kunjungi-peninggalan/materi/{materi_id}/posttest`
     - Check: Render pertanyaan, scoring, progress to next level
@@ -171,25 +179,25 @@ Form feedback dan saran pengguna
 
 ---
 
-## 🎨 FITUR TAMBAHAN
+## 🎨 7. AR MARKER (Pemindaian Marker)
 
-AR dan pengaturan lainnya
+Fitur pemindaian marker untuk augmented reality
 
-### Fitur AR
+- [ ] **AR Marker Page** - Halaman utama AR marker
+    - Route: `/marker`
+    - Check: Loading, menu option untuk katalog dan kamera
 
-- [ ] **AR Marker Catalog** - Halaman katalog AR marker
-    - Route: `/marker` or `/ar-marker/katalog`
-    - Check: List available markers, descriptions, download options
+- [ ] **AR Marker Katalog** - Katalog marker yang tersedia
+    - Route: `/ar-marker/katalog`
+    - Check: List markers, thumbnails, descriptions, download option
 
-- [ ] **AR Camera** - Kamera AR untuk scan marker
+- [ ] **AR Marker Camera** - Kamera untuk scan marker
     - Route: `/ar-marker/camera`
-    - Check: Camera permission, marker detection, 3D model rendering
+    - Check: Camera permission, marker detection, 3D object rendering, touch gestures
 
-- [ ] **Virtual Living Museum (WebXR)** - Museum 3D dengan WebXR
-    - Route: `/situs/{situs_id}/ar/{museum_id}` (token-based access)
-    - Check: Scene loading, object interaction, lighting/shadows, hit-test
+## PENGATURAN & LAINNYA
 
-### Pengaturan & Lainnya
+Halaman pengaturan dan fitur tambahan lainnya
 
 - [ ] **Pengaturan (Settings)** - Halaman pengaturan user
     - Route: `/pengaturan`
@@ -243,6 +251,6 @@ AR dan pengaturan lainnya
 
 ## 🎯 Pelacakan Progres
 
-**Total Fitur Terautentikasi:** ~35+  
+**Total Fitur Terautentikasi:** ~33+  
 **Total Fitur Tamu:** 5  
 **Progress:** [ ] / [ ]
