@@ -238,14 +238,14 @@ Halaman pengaturan dan fitur tambahan lainnya
 
 ### Pengecekan Umum untuk Setiap Fitur
 
-- [ ] Page loads without errors
-- [ ] UI responsive & properly styled
-- [ ] Form validation works
-- [ ] Submit actions complete successfully
-- [ ] Error messages are clear
-- [ ] Redirects work correctly
-- [ ] Session maintains properly
-- [ ] Loading indicators/spinners show if needed
+- [ ] Halaman dimuat tanpa error
+- [ ] UI responsif dan styling tepat
+- [ ] Validasi form berfungsi
+- [ ] Aksi submit berhasil
+- [ ] Pesan error jelas
+- [ ] Redirect berfungsi dengan benar
+- [ ] Session terjaga dengan baik
+- [ ] Indikator loading/spinner menampil jika diperlukan
 
 ---
 
