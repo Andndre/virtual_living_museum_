@@ -9,7 +9,7 @@ Fitur yang bisa diakses tanpa login
 - [ ] **Register Page** - Halaman registrasi akun
     - Route: `/register` (GET)
     - Aksi: POST `/register`
-    - Check: Form registrasi berfungsi, validasi password, email verification
+    - Check: Form registrasi berfungsi, validasi password, dan penyimpanan akun
 
 - [ ] **Login Page** - Halaman login
     - Route: `/login` (GET)
@@ -74,7 +74,7 @@ Sistem e-learning utama dengan progress tracking
 - [ ] **E-Book** - Material pembelajaran berbentuk flipbook (Tab 2)
     - Route: `/kunjungi-peninggalan/ebook/{ebook_id}`
     - Aksi: POST `/kunjungi-peninggalan/ebook/{ebook_id}/read` (mark as read)
-    - Check: PDF flipper works, page navigation, completion tracking
+    - Check: Flipbook PDF berjalan, navigasi halaman, dan pelacakan penyelesaian
 
 - [ ] **Kunjungi Situs (Virtual Living Museum - WebXR)** - Museum 3D dengan AR (Tab 3)
     - Route: `/situs/{situs_id}/ar/{museum_id}` (token-based access)
@@ -185,19 +185,24 @@ Fitur pemindaian marker untuk augmented reality
 
 - [ ] **AR Marker Page** - Halaman utama AR marker
     - Route: `/marker`
-    - Check: Loading, menu option untuk katalog dan kamera
+    - Check: Halaman termuat, menu katalog dan kamera tersedia
 
 - [ ] **AR Marker Katalog** - Katalog marker yang tersedia
     - Route: `/ar-marker/katalog`
-    - Check: List markers, thumbnails, descriptions, download option
+    - Check: Daftar marker, thumbnail, deskripsi, dan opsi unduh
 
 - [ ] **AR Marker Camera** - Kamera untuk scan marker
     - Route: `/ar-marker/camera`
-    - Check: Camera permission, marker detection, 3D object rendering, touch gestures
+    - Check: Izin kamera, deteksi marker, render objek 3D, dan gesture sentuh
 
 ## PENGATURAN & LAINNYA
 
 Halaman pengaturan dan fitur tambahan lainnya
+
+- [ ] **Profil Pengguna** - Kelola profil akun
+    - Route: GET `/profile`
+    - Aksi: PATCH `/profile`, DELETE `/profile`
+    - Check: Data profil dapat diubah, foto profil tersimpan, dan hapus akun berjalan sesuai konfirmasi
 
 - [ ] **Pengaturan (Settings)** - Halaman pengaturan user
     - Route: `/pengaturan`
@@ -213,10 +218,11 @@ Halaman pengaturan dan fitur tambahan lainnya
 
 - [ ] **Confirm Password** - Confirm password untuk action sensitif
     - Route: `/confirm-password` (GET)
-    - Check: Password prompt appears, validation works
+    - Aksi: POST `/confirm-password`
+    - Check: Prompt konfirmasi password muncul dan validasi berhasil
 
 - [ ] **Change Password** - Ubah password (authenticated)
-    - Route: `/password` (PATCH)
+    - Route: `/password` (PUT)
     - Check: Old password validation, new password requirements, success
 
 ---
