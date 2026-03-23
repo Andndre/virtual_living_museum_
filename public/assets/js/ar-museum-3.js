@@ -192,21 +192,21 @@ class SceneManager {
  * @param {string} message - The message to display in the toaster.
  */
 function showToaster(message) {
-    // console.log(message);
-    const toasterContainer = document.getElementById("toaster-container");
-    if (!toasterContainer) {
-        console.warn("Toaster container not found");
-        return;
-    }
-    const toaster = document.createElement("div");
-    toaster.className = "toaster";
-    toaster.innerText = message;
-    toasterContainer.appendChild(toaster);
-    setTimeout(() => {
-        if (toaster && toaster.parentNode) {
-            toaster.remove();
-        }
-    }, 5000);
+    console.log(message);
+    // const toasterContainer = document.getElementById("toaster-container");
+    // if (!toasterContainer) {
+    //     console.warn("Toaster container not found");
+    //     return;
+    // }
+    // const toaster = document.createElement("div");
+    // toaster.className = "toaster";
+    // toaster.innerText = message;
+    // toasterContainer.appendChild(toaster);
+    // setTimeout(() => {
+    //     if (toaster && toaster.parentNode) {
+    //         toaster.remove();
+    //     }
+    // }, 5000);
 }
 /**
  * Manages the rendering process and XR session for the application.

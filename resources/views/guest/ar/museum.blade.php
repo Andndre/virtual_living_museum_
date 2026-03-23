@@ -273,7 +273,7 @@
             console.log(museum);
         </script>
 
-        <script src="{{ asset('assets/js/ar-museum-2.js') }}" type="module"></script>
+        <script src="{{ asset('assets/js/ar-museum-3.js') }}" type="module"></script>
     </div>
 </body>
 
