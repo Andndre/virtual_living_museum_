@@ -257,7 +257,7 @@ class HomeController extends Controller
                 $materi->is_available = true;
             } else {
                 $materi->is_completed = false;
-                $materi->is_available = false;
+                $materi->is_available = env('APP_DEMO_MODE', false) ? true : false;
             }
 
             return $materi;
@@ -341,7 +341,7 @@ class HomeController extends Controller
                 $materi->is_available = true;
             } else {
                 $materi->is_completed = false;
-                $materi->is_available = false;
+                $materi->is_available = env('APP_DEMO_MODE', false) ? true : false;
             }
 
             return $materi;

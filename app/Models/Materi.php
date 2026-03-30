@@ -40,6 +40,10 @@ class Materi extends Model
 
     public function shouldIncrementProgress(User $user, int $progress): bool
     {
+        if (env('APP_DEMO_MODE', false)) {
+            return true;
+        }
+
         $materiLevel = $this->getLinearLevel();
 
         return $materiLevel > $user->level_sekarang ||
