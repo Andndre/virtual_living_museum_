@@ -376,13 +376,24 @@ class HomeController extends Controller
         // Progress step: 1=pretest, 2=ebook, 3=museum, 4=posttest
         $progress = $user->progress_level_sekarang;
 
-        $pretest_completed = $isCompleted || $progress >= User::PRE_TEST;
-        $ebook_available = $pretest_completed;
-        $all_ebooks_read = $isCompleted || $progress >= User::EBOOK;
-        $museum_available = $all_ebooks_read;
-        $all_museums_visited = $isCompleted || $progress >= User::VIRTUAL_LIVING_MUSEUM;
-        $posttest_available = $all_museums_visited;
-        $posttest_completed = $isCompleted || $progress >= User::POST_TEST;
+        // In demo mode, all tabs are open for exploration without tracking progress
+        if (env('APP_DEMO_MODE', false)) {
+            $pretest_completed = false;
+            $ebook_available = true;
+            $all_ebooks_read = false;
+            $museum_available = true;
+            $all_museums_visited = false;
+            $posttest_available = true;
+            $posttest_completed = false;
+        } else {
+            $pretest_completed = $isCompleted || $progress >= User::PRE_TEST;
+            $ebook_available = $pretest_completed;
+            $all_ebooks_read = $isCompleted || $progress >= User::EBOOK;
+            $museum_available = $all_ebooks_read;
+            $all_museums_visited = $isCompleted || $progress >= User::VIRTUAL_LIVING_MUSEUM;
+            $posttest_available = $all_museums_visited;
+            $posttest_completed = $isCompleted || $progress >= User::POST_TEST;
+        }
 
         return view('guest.elearning.materi', compact(
             'materi',
@@ -510,7 +521,8 @@ class HomeController extends Controller
         // Update progress materi
         // Seharusnya ini akan selalu True untuk sekarang
         // karena pretest tidak bisa diulang
-        if ($materi->shouldIncrementProgress($user, 1)) {
+        // Skip in demo mode — exploration only, no progress tracking
+        if (!env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 1)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul}");
         }
@@ -625,7 +637,8 @@ class HomeController extends Controller
         }
 
         // Increment user progress if needed
-        if ($materi->shouldIncrementProgress($user, 4)) {
+        // Skip in demo mode — exploration only, no progress tracking
+        if (!env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 4)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul}");
         }
@@ -700,8 +713,9 @@ class HomeController extends Controller
                 ->pluck('museum_id')->unique()->toArray();
 
             // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
+            // Skip in demo mode — exploration only, no progress tracking
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
-                if ($user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
+                if (!env('APP_DEMO_MODE', false) && $user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
                     $user->incrementProgressLevel();
                     $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: ' . $materiId);
                 }
@@ -772,7 +786,8 @@ class HomeController extends Controller
 
         // Cek apakah user sudah pada step EBOOK dan materi yang benar
         $materi = $ebook->materi;
-        if ($materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
+        // Skip in demo mode — exploration only, no progress tracking
+        if (!env('APP_DEMO_MODE', false) && $materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
             // Increment progress ke EBOOK
             $user->incrementProgressLevel();
         }

@@ -78,7 +78,7 @@
                         <i class="fas fa-map-marker-alt text-white"></i>
                     @endif
                 </div>
-                <span class="text-center text-xs text-white">{{ config('app.name') }}</span>
+                <span class="text-center text-xs text-white">Virtual Living Museum</span>
             </button>
 
             {{-- Post-test Tab --}}

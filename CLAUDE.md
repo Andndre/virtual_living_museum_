@@ -111,7 +111,34 @@ $table->unique(['user_id', 'situs_id']);
 
 ---
 
-## Vite Entry Points
+## Demo Mode
+
+Toggle via `.env`:
+```env
+APP_DEMO_MODE=true
+```
+
+When enabled:
+- All materi are accessible (no "Terkunci" locks on materi cards or tabs)
+- All tabs within a materi (pre-test, ebook, museum, post-test) are open
+- **No progress is tracked** — `incrementProgressLevel()` calls are skipped across all controllers
+- User can explore all content freely without affecting their `level_sekarang` or `progress_level_sekarang`
+
+Use case: shareable demo accounts where anyone can browse all content without a linear progression gate.
+
+### Files that respect `APP_DEMO_MODE`
+
+| File | Behavior |
+|------|----------|
+| `HomeController::elearningMateri()` | All tab availability flags set to open |
+| `HomeController::elearningList()` / `elearningEra()` | All materi marked `is_available = true` |
+| `HomeController::submitPretest()` | Skips `incrementProgressLevel()` |
+| `HomeController::submitPosttest()` | Skips `incrementProgressLevel()` |
+| `HomeController::markEbookRead()` | Skips progress increment |
+| `HomeController::arMuseum()` | Skips museum visit progress tracking |
+| `Materi::shouldIncrementProgress()` | Returns `true` (safety net for any future call sites) |
+
+
 
 Three separate bundles in `vite.config.js`:
 - `resources/css/app.css` — Tailwind
