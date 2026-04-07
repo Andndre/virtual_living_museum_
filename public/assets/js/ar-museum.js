@@ -4,7 +4,6 @@ import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/jsm/webxr/ARButton.js";
 
 let initialized = false;
-let audioMuted = false;
 
 //If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
 window.addEventListener("vlaunch-initialized", (e) => {
@@ -192,15 +191,15 @@ class SceneManager {
  * Uses the audio element from the HTML page.
  */
 function playArAudio() {
-    if (audioMuted) return;
-
     const audio = document.getElementById('ar-audio');
-    if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(err => {
-            console.log('Audio playback failed:', err);
-        });
-    }
+    if (!audio) return;
+    if (audio.muted) return;
+    if (!audio.src) return;
+
+    audio.currentTime = 0;
+    audio.play().catch(err => {
+        console.log('Audio playback failed:', err);
+    });
 }
 
 /**
@@ -619,13 +618,6 @@ async function main() {
     });
 
     showToaster("Starting animation loop");
-
-    // Sync audio mute state from HTML toggle
-    setInterval(() => {
-        if (typeof window.audioMuted !== 'undefined') {
-            audioMuted = window.audioMuted;
-        }
-    }, 100);
 
     rendererManager.animate(sceneManager);
 }

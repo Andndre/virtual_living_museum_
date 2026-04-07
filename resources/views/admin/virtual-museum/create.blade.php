@@ -311,7 +311,6 @@ function updateAudioFileName(input) {
             return;
         }
 
-        const fileName = file.name;
         const fileSize = (file.size / 1024 / 1024).toFixed(2);
         fileNameDiv.innerHTML = `
             <div class="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -319,8 +318,8 @@ function updateAudioFileName(input) {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
                 </svg>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">${fileName}</p>
-                    <p class="text-xs text-gray-500">${fileSize} MB</p>
+                    <p id="audio-filename-text" class="text-sm font-medium text-gray-900 truncate"></p>
+                    <p id="audio-filesize-text" class="text-xs text-gray-500"></p>
                 </div>
                 <button type="button" onclick="clearAudioFile()" class="text-red-500 hover:text-red-700">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,6 +328,8 @@ function updateAudioFileName(input) {
                 </button>
             </div>
         `;
+        document.getElementById('audio-filename-text').textContent = file.name;
+        document.getElementById('audio-filesize-text').textContent = fileSize + ' MB';
         fileNameDiv.classList.remove('hidden');
     }
 }
