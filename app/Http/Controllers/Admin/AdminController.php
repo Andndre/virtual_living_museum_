@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -411,7 +412,8 @@ class AdminController extends Controller
         // Handle file upload
         if ($request->hasFile('obj_file')) {
             $file = $request->file('obj_file');
-            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::uuid()->toString().'.'.$extension;
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -419,7 +421,8 @@ class AdminController extends Controller
         // Handle audio file upload
         if ($request->hasFile('audio_file')) {
             $file = $request->file('audio_file');
-            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::uuid()->toString().'.'.$extension;
             $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
             $data['path_audio'] = $path;
         }
@@ -475,6 +478,12 @@ class AdminController extends Controller
             'nama' => $request->nama,
         ];
 
+        // Handle remove audio flag
+        if ($request->boolean('remove_audio') && $museum->path_audio) {
+            Storage::disk('public')->delete($museum->path_audio);
+            $data['path_audio'] = null;
+        }
+
         // Handle file upload if new file is provided
         if ($request->hasFile('obj_file')) {
             // Delete old file if it exists
@@ -483,7 +492,8 @@ class AdminController extends Controller
             }
 
             $file = $request->file('obj_file');
-            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::uuid()->toString().'.'.$extension;
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -496,7 +506,8 @@ class AdminController extends Controller
             }
 
             $file = $request->file('audio_file');
-            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::uuid()->toString().'.'.$extension;
             $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
             $data['path_audio'] = $path;
         }
@@ -890,8 +901,13 @@ class AdminController extends Controller
             return redirect()->route('admin.feedback')
                 ->with('success', 'Feedback berhasil dihapus.');
         } catch (\Exception $e) {
+            Log::error('Gagal menghapus feedback', [
+                'id' => $id,
+                'message' => $e->getMessage(),
+            ]);
+
             return redirect()->route('admin.feedback')
-                ->with('error', 'Gagal menghapus feedback: '.$e->getMessage());
+                ->with('error', 'Gagal menghapus feedback.');
         }
     }
 

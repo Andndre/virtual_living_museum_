@@ -283,45 +283,26 @@
         <!-- Hidden audio element for AR playback -->
         <audio id="ar-audio" preload="auto" style="display:none;">
             @if($museum->path_audio)
-                <source src="{{ asset('/storage/' . $museum->path_audio) }}" type="audio/mpeg">
+                <source src="{{ asset('/storage/' . $museum->path_audio) }}">
             @endif
         </audio>
 
         <script>
             // Audio toggle functionality
-            var audioMuted = false;
-
             document.getElementById('audio-toggle').addEventListener('click', function() {
-                audioMuted = !audioMuted;
                 var audio = document.getElementById('ar-audio');
                 var icon = document.getElementById('audio-icon');
 
-                if (audioMuted) {
-                    audio.muted = true;
-                    icon.className = 'fas fa-volume-mute text-xl';
-                    document.getElementById('audio-toggle').classList.add('muted');
-                } else {
+                if (audio.muted) {
                     audio.muted = false;
                     icon.className = 'fas fa-volume-up text-xl';
                     document.getElementById('audio-toggle').classList.remove('muted');
+                } else {
+                    audio.muted = true;
+                    icon.className = 'fas fa-volume-mute text-xl';
+                    document.getElementById('audio-toggle').classList.add('muted');
                 }
             });
-
-            // Sync mute state to JS module
-            function syncAudioMuteState() {
-                var toggleBtn = document.getElementById('audio-toggle');
-                if (toggleBtn) {
-                    toggleBtn.addEventListener('click', function() {
-                        window.audioMuted = audioMuted;
-                    });
-                }
-            }
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', syncAudioMuteState);
-            } else {
-                syncAudioMuteState();
-            }
         </script>
     </div>
 </body>
