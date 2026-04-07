@@ -141,6 +141,33 @@
                     </div>
                 </div>
 
+                <!-- Audio Information Card -->
+                @if($museum->path_audio)
+                    <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+                        <div class="border-b border-gray-200 px-6 py-4">
+                            <h2 class="text-lg font-medium text-gray-900">Audio Narasi</h2>
+                        </div>
+                        <div class="px-6 py-6">
+                            <div class="flex items-center space-x-3 rounded-lg bg-gray-50 p-4">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-8 w-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900">File Audio Narasi</p>
+                                    <p class="break-all text-sm text-gray-500">{{ $museum->path_audio }}</p>
+                                    <audio controls class="mt-3 w-full max-w-md">
+                                        <source src="{{ asset('/storage/' . $museum->path_audio) }}">
+                                        Browser tidak mendukung audio
+                                    </audio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Virtual Living Museum Objects -->
                 <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
                     <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
@@ -315,6 +342,12 @@
                             <span class="text-sm text-gray-600">Objek dengan Gambar</span>
                             <span
                                 class="text-sm font-semibold text-gray-900">{{ $museum->virtualMuseumObjects->whereNotNull('gambar_real')->count() }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Audio</span>
+                            <span class="text-sm font-semibold text-gray-900">
+                                {{ $museum->path_audio ? 'Ada' : 'Tidak Ada' }}
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -111,7 +111,7 @@ class AdminController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'role' => 'required|in:user,admin',
             'password' => 'nullable|string|min:8|confirmed',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -128,8 +128,8 @@ class AdminController extends Controller
 
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if exists
-            if ($user->profile_photo && Storage::exists('public/' . $user->profile_photo)) {
-                Storage::delete('public/' . $user->profile_photo);
+            if ($user->profile_photo && Storage::exists('public/'.$user->profile_photo)) {
+                Storage::delete('public/'.$user->profile_photo);
             }
 
             $photoPath = $request->file('profile_photo')->store('profile_photos', 'public');
@@ -153,8 +153,8 @@ class AdminController extends Controller
         }
 
         // Delete profile photo if exists
-        if ($user->profile_photo && Storage::exists('public/' . $user->profile_photo)) {
-            Storage::delete('public/' . $user->profile_photo);
+        if ($user->profile_photo && Storage::exists('public/'.$user->profile_photo)) {
+            Storage::delete('public/'.$user->profile_photo);
         }
 
         $user->delete();
@@ -303,7 +303,7 @@ class AdminController extends Controller
         if ($request->has('remove_thumbnail') && $request->remove_thumbnail == '1') {
             // Delete old thumbnail if exists
             if ($situs->thumbnail) {
-                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                $oldThumbnailPath = 'public/'.$situs->thumbnail;
                 if (Storage::exists($oldThumbnailPath)) {
                     Storage::delete($oldThumbnailPath);
                     Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
@@ -315,7 +315,7 @@ class AdminController extends Controller
         elseif ($request->hasFile('thumbnail')) {
             // Delete old thumbnail if exists
             if ($situs->thumbnail) {
-                $oldThumbnailPath = 'public/' . $situs->thumbnail;
+                $oldThumbnailPath = 'public/'.$situs->thumbnail;
                 if (Storage::exists($oldThumbnailPath)) {
                     Storage::delete($oldThumbnailPath);
                     Log::info('Thumbnail lama dihapus', ['path' => $oldThumbnailPath]);
@@ -324,7 +324,7 @@ class AdminController extends Controller
 
             // Simpan file baru
             $file = $request->file('thumbnail');
-            $filename = 'situs-' . $situs_id . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'situs-'.$situs_id.'-'.time().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('situs-thumbnails', $filename, 'public');
 
             $data['thumbnail'] = $path;
@@ -345,8 +345,8 @@ class AdminController extends Controller
         $nama = $situs->nama;
 
         // Delete thumbnail if exists
-        if ($situs->thumbnail && Storage::exists('public/' . $situs->thumbnail)) {
-            Storage::delete('public/' . $situs->thumbnail);
+        if ($situs->thumbnail && Storage::exists('public/'.$situs->thumbnail)) {
+            Storage::delete('public/'.$situs->thumbnail);
         }
 
         $situs->delete();
@@ -400,6 +400,7 @@ class AdminController extends Controller
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
             'obj_file' => 'required|file|max:307200', // 300MB max, any file type
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
         ]);
 
         $data = [
@@ -410,9 +411,17 @@ class AdminController extends Controller
         // Handle file upload
         if ($request->hasFile('obj_file')) {
             $file = $request->file('obj_file');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
+        }
+
+        // Handle audio file upload
+        if ($request->hasFile('audio_file')) {
+            $file = $request->file('audio_file');
+            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
+            $data['path_audio'] = $path;
         }
 
         VirtualMuseum::create($data);
@@ -458,6 +467,7 @@ class AdminController extends Controller
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
             'obj_file' => 'nullable|file|max:307200', // 300MB max, optional for update, any file type
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
         ]);
 
         $data = [
@@ -473,9 +483,22 @@ class AdminController extends Controller
             }
 
             $file = $request->file('obj_file');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/models', $filename, 'public');
             $data['path_obj'] = $path;
+        }
+
+        // Handle audio file upload
+        if ($request->hasFile('audio_file')) {
+            // Delete old audio file if exists
+            if ($museum->path_audio && Storage::disk('public')->exists($museum->path_audio)) {
+                Storage::disk('public')->delete($museum->path_audio);
+            }
+
+            $file = $request->file('audio_file');
+            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
+            $data['path_audio'] = $path;
         }
 
         $museum->update($data);
@@ -490,6 +513,12 @@ class AdminController extends Controller
     public function destroyVirtualMuseum($museum_id)
     {
         $museum = VirtualMuseum::findOrFail($museum_id);
+
+        // Delete audio file if exists
+        if ($museum->path_audio && Storage::disk('public')->exists($museum->path_audio)) {
+            Storage::disk('public')->delete($museum->path_audio);
+        }
+
         $nama = $museum->nama;
         $museum->delete();
 
@@ -540,14 +569,14 @@ class AdminController extends Controller
         // Handle file uploads
         if ($request->hasFile('gambar_real')) {
             $file = $request->file('gambar_real');
-            $filename = time() . '_gambar_real_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_gambar_real_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/images', $filename, 'public');
             $data['gambar_real'] = $path;
         }
 
         if ($request->hasFile('path_obj')) {
             $file = $request->file('path_obj');
-            $filename = time() . '_obj_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -628,7 +657,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('gambar_real');
-            $filename = time() . '_gambar_real_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_gambar_real_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/images', $filename, 'public');
             $data['gambar_real'] = $path;
         }
@@ -640,7 +669,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_obj');
-            $filename = time() . '_obj_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
         }
@@ -682,7 +711,7 @@ class AdminController extends Controller
             }
         }
 
-        if (!$oldMarker) {
+        if (! $oldMarker) {
             $this->deletePublicFile($object->path_gambar_marker);
             $this->deletePublicFile($object->path_patt);
         }
@@ -715,11 +744,11 @@ class AdminController extends Controller
             }
 
             $patternContent = ArPatternHelper::encodeImageToPattern($sourcePath);
-            $patternPath = 'virtual-museum/objects/patterns/' . $timestamp . '_patt_' . $baseName . '.patt';
+            $patternPath = 'virtual-museum/objects/patterns/'.$timestamp.'_patt_'.$baseName.'.patt';
             Storage::disk('public')->put($patternPath, $patternContent);
 
             $markerPng = ArPatternHelper::buildFullMarkerPng($sourcePath, 0.5, 512, 'black');
-            $markerPath = 'virtual-museum/objects/markers/' . $timestamp . '_marker_' . $baseName . '.png';
+            $markerPath = 'virtual-museum/objects/markers/'.$timestamp.'_marker_'.$baseName.'.png';
             Storage::disk('public')->put($markerPath, $markerPng);
         } catch (\Throwable $exception) {
             $this->deletePublicFile($markerPath);
@@ -749,7 +778,7 @@ class AdminController extends Controller
             $assets = $this->storeMarkerAssets($request->file('path_gambar_marker'));
             $markerName = $request->filled('nama_marker')
                 ? $request->input('nama_marker')
-                : ('Marker ' . $request->input('nama', 'AR'));
+                : ('Marker '.$request->input('nama', 'AR'));
 
             return ArMarker::create([
                 'situs_id' => $museum->situs_id,
@@ -862,7 +891,7 @@ class AdminController extends Controller
                 ->with('success', 'Feedback berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->route('admin.feedback')
-                ->with('error', 'Gagal menghapus feedback: ' . $e->getMessage());
+                ->with('error', 'Gagal menghapus feedback: '.$e->getMessage());
         }
     }
 
@@ -1268,7 +1297,7 @@ class AdminController extends Controller
         // Handle file upload
         if ($request->hasFile('path_file')) {
             $file = $request->file('path_file');
-            $filename = time() . '_ebook_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_ebook_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('ebooks', $filename, 'public');
             $data['path_file'] = $path;
         }
@@ -1315,7 +1344,7 @@ class AdminController extends Controller
             }
 
             $file = $request->file('path_file');
-            $filename = time() . '_ebook_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $filename = time().'_ebook_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('ebooks', $filename, 'public');
             $data['path_file'] = $path;
         }

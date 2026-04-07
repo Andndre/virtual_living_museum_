@@ -20,6 +20,7 @@ class VirtualMuseum extends Model
         'situs_id',
         'nama',
         'path_obj',
+        'path_audio',
     ];
 
     protected $casts = [
