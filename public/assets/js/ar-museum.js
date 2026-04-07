@@ -4,6 +4,7 @@ import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/jsm/webxr/ARButton.js";
 
 let initialized = false;
+let audioMuted = false;
 
 //If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
 window.addEventListener("vlaunch-initialized", (e) => {
@@ -183,6 +184,22 @@ class SceneManager {
         this.scene.environment = texture;
 
         return this.skybox;
+    }
+}
+
+/**
+ * Plays the AR audio narration.
+ * Uses the audio element from the HTML page.
+ */
+function playArAudio() {
+    if (audioMuted) return;
+
+    const audio = document.getElementById('ar-audio');
+    if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(err => {
+            console.log('Audio playback failed:', err);
+        });
     }
 }
 
@@ -596,19 +613,24 @@ async function main() {
 
         sceneManager.reticle.visible = false;
         sceneManager.placed = true;
+
+        // Play audio when model is placed
+        playArAudio();
     });
 
     showToaster("Starting animation loop");
+
+    // Sync audio mute state from HTML toggle
+    setInterval(() => {
+        if (typeof window.audioMuted !== 'undefined') {
+            audioMuted = window.audioMuted;
+        }
+    }, 100);
 
     rendererManager.animate(sceneManager);
 }
 
 function arNotSupported() {
-    // document.getElementById("ar-not-supported").style.display = "block";
-    // document.getElementById("ar-button-container").style.display = "none";
-    // document.getElementById("instructions").style.display = "none";
-    // document.getElementById("expand-bottom-sheet").style.display = "none";
-    // document.getElementById("loading-container").style.display = "none";
     showElement("ar-not-supported");
     hideElement("ar-button-container");
     hideElement("instructions");
