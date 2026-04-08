@@ -400,8 +400,8 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'required|file|max:307200', // 300MB max, any file type
-            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
+            'obj_file' => 'required|file|max:307200',
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240',
         ]);
 
         $data = [
@@ -409,28 +409,70 @@ class AdminController extends Controller
             'nama' => $request->nama,
         ];
 
-        // Handle file upload
-        if ($request->hasFile('obj_file')) {
-            $file = $request->file('obj_file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid()->toString().'.'.$extension;
-            $path = $file->storeAs('virtual-museum/models', $filename, 'public');
-            $data['path_obj'] = $path;
+        $uploadedPaths = [];
+
+        try {
+            // Persist DB record first
+            $museum = VirtualMuseum::create($data);
+
+            // Handle file uploads only after DB success
+            if ($request->hasFile('obj_file')) {
+                $file = $request->file('obj_file');
+                $mime = $file->getMimeType();
+                $allowedMimes = ['model/gltf-binary', 'application/octet-stream'];
+                if (! in_array($mime, $allowedMimes) && ! str_starts_with($mime, 'model/')) {
+                    throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'glb');
+                $filename = Str::uuid()->toString().'.'.$extension;
+                $path = $file->storeAs('virtual-museum/models', $filename, 'public');
+                $museum->path_obj = $path;
+                $uploadedPaths[] = $path;
+            }
+
+            if ($request->hasFile('audio_file')) {
+                $file = $request->file('audio_file');
+                $mime = $file->getMimeType();
+                $allowedAudioMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/aac', 'audio/x-wav', 'audio/x-aac'];
+                if (! in_array($mime, $allowedAudioMimes)) {
+                    throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'mp3');
+                $filename = Str::uuid()->toString().'.'.$extension;
+                $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
+                $museum->path_audio = $path;
+                $uploadedPaths[] = $path;
+            }
+
+            $museum->save();
+
+            return redirect()->route('admin.virtual-museum')
+                ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            // Rollback uploaded files on failure
+            foreach ($uploadedPaths as $p) {
+                if (Storage::disk('public')->exists($p)) {
+                    Storage::disk('public')->delete($p);
+                }
+            }
+            throw $e;
         }
+    }
 
-        // Handle audio file upload
-        if ($request->hasFile('audio_file')) {
-            $file = $request->file('audio_file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid()->toString().'.'.$extension;
-            $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
-            $data['path_audio'] = $path;
-        }
+    private function safeExtensionFromMime(string $mime, string $clientExtension, string $default): string
+    {
+        static $map = [
+            'model/gltf-binary' => 'glb',
+            'application/octet-stream' => 'glb',
+            'audio/mpeg' => 'mp3',
+            'audio/wav' => 'wav',
+            'audio/ogg' => 'ogg',
+            'audio/aac' => 'aac',
+            'audio/x-wav' => 'wav',
+            'audio/x-aac' => 'aac',
+        ];
 
-        VirtualMuseum::create($data);
-
-        return redirect()->route('admin.virtual-museum')
-            ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
+        return $map[$mime] ?? $default;
     }
 
     /**
@@ -469,50 +511,80 @@ class AdminController extends Controller
         $request->validate([
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'nullable|file|max:307200', // 300MB max, optional for update, any file type
-            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
+            'obj_file' => 'nullable|file|max:307200',
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240',
         ]);
+
+        // Capture original paths BEFORE any mutation so we know what to clean up
+        $oldObjPath = $museum->path_obj;
+        $oldAudioPath = $museum->path_audio;
+        $removeAudio = $request->boolean('remove_audio');
 
         $data = [
             'situs_id' => $request->situs_id,
             'nama' => $request->nama,
         ];
 
-        // Handle remove audio flag
-        if ($request->boolean('remove_audio') && $museum->path_audio) {
-            Storage::disk('public')->delete($museum->path_audio);
+        if ($removeAudio) {
             $data['path_audio'] = null;
         }
 
-        // Handle file upload if new file is provided
-        if ($request->hasFile('obj_file')) {
-            // Delete old file if it exists
-            if ($museum->path_obj && Storage::disk('public')->exists($museum->path_obj)) {
-                Storage::disk('public')->delete($museum->path_obj);
-            }
-
-            $file = $request->file('obj_file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid()->toString().'.'.$extension;
-            $path = $file->storeAs('virtual-museum/models', $filename, 'public');
-            $data['path_obj'] = $path;
-        }
-
-        // Handle audio file upload
-        if ($request->hasFile('audio_file')) {
-            // Delete old audio file if exists
-            if ($museum->path_audio && Storage::disk('public')->exists($museum->path_audio)) {
-                Storage::disk('public')->delete($museum->path_audio);
-            }
-
-            $file = $request->file('audio_file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid()->toString().'.'.$extension;
-            $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
-            $data['path_audio'] = $path;
-        }
-
+        // Persist DB record first
         $museum->update($data);
+
+        try {
+            // Handle file upload for obj
+            if ($request->hasFile('obj_file')) {
+                $file = $request->file('obj_file');
+                $mime = $file->getMimeType();
+                if (! str_starts_with($mime, 'model/') && $mime !== 'application/octet-stream') {
+                    throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'glb');
+                $filename = Str::uuid()->toString().'.'.$extension;
+                $path = $file->storeAs('virtual-museum/models', $filename, 'public');
+                $museum->path_obj = $path;
+                $museum->save();
+
+                // Delete old file only after new upload is committed
+                if ($oldObjPath && Storage::disk('public')->exists($oldObjPath)) {
+                    Storage::disk('public')->delete($oldObjPath);
+                }
+            }
+
+            // Handle audio file upload
+            if ($request->hasFile('audio_file')) {
+                $file = $request->file('audio_file');
+                $mime = $file->getMimeType();
+                $allowedAudioMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/aac', 'audio/x-wav', 'audio/x-aac'];
+                if (! in_array($mime, $allowedAudioMimes)) {
+                    throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'mp3');
+                $filename = Str::uuid()->toString().'.'.$extension;
+                $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
+                $museum->path_audio = $path;
+                $museum->save();
+
+                // Delete old audio file only after new upload is committed
+                if ($oldAudioPath && Storage::disk('public')->exists($oldAudioPath)) {
+                    Storage::disk('public')->delete($oldAudioPath);
+                }
+            }
+
+            // Handle remove audio flag (DB already updated, delete file now)
+            if ($removeAudio && $oldAudioPath) {
+                if (Storage::disk('public')->exists($oldAudioPath)) {
+                    Storage::disk('public')->delete($oldAudioPath);
+                }
+            }
+        } catch (\Exception $e) {
+            // Log but do not rollback DB changes
+            Log::error('File operation failed after DB update', [
+                'museum_id' => $museum_id,
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->route('admin.virtual-museum.show', $museum_id)
             ->with('success', 'Virtual Living Museum berhasil diperbarui!');
@@ -524,14 +596,23 @@ class AdminController extends Controller
     public function destroyVirtualMuseum($museum_id)
     {
         $museum = VirtualMuseum::findOrFail($museum_id);
-
-        // Delete audio file if exists
-        if ($museum->path_audio && Storage::disk('public')->exists($museum->path_audio)) {
-            Storage::disk('public')->delete($museum->path_audio);
-        }
-
         $nama = $museum->nama;
+
+        // Delete DB record first
         $museum->delete();
+
+        // Clean up files only after DB deletion succeeds
+        try {
+            if ($museum->path_audio && Storage::disk('public')->exists($museum->path_audio)) {
+                Storage::disk('public')->delete($museum->path_audio);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to delete audio file after museum deletion', [
+                'museum_id' => $museum_id,
+                'path_audio' => $museum->path_audio,
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->route('admin.virtual-museum')
             ->with('success', "Virtual Living Museum '{$nama}' berhasil dihapus.");

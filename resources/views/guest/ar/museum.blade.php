@@ -281,11 +281,11 @@
         <script src="{{ asset('assets/js/ar-museum.js') }}" type="module"></script>
 
         <!-- Hidden audio element for AR playback -->
-        <audio id="ar-audio" preload="auto" style="display:none;">
+        <audio id="ar-audio" preload="auto" style="display:none;"
             @if($museum->path_audio)
-                <source src="{{ asset('/storage/' . $museum->path_audio) }}">
+                src="{{ asset('/storage/' . $museum->path_audio) }}"
             @endif
-        </audio>
+        ></audio>
 
         <script>
             // Audio toggle functionality
