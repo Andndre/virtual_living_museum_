@@ -432,9 +432,11 @@
                         fileInput.files = files;
                         updateFileName(fileInput);
                     } else {
+                        clearFile();
                         alert('File terlalu besar! Maksimal 300MB.');
                     }
                 } else {
+                    clearFile();
                     alert('Hanya file GLB yang diizinkan!');
                 }
             }
@@ -447,12 +449,14 @@
                 const file = input.files[0];
 
                 if (!file.name.match(/\.(mp3|wav|ogg|aac)$/i)) {
+                    clearAudioFile();
                     alert('Hanya file audio MP3, WAV, OGG, AAC yang diizinkan!');
                     input.value = '';
                     return;
                 }
 
                 if (file.size > 10 * 1024 * 1024) {
+                    clearAudioFile();
                     alert('File terlalu besar! Maksimal 10MB.');
                     input.value = '';
                     return;
