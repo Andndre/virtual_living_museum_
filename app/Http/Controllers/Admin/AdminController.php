@@ -411,7 +411,7 @@ class AdminController extends Controller
 
         $uploadedPaths = [];
 
-        try {
+        DB::transaction(function () use ($request, $data, &$uploadedPaths) {
             // Persist DB record first
             $museum = VirtualMuseum::create($data);
 
@@ -423,7 +423,12 @@ class AdminController extends Controller
                 if (! in_array($mime, $allowedMimes) && ! str_starts_with($mime, 'model/')) {
                     throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
                 }
-                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'glb');
+                // Verify GLB magic bytes: first 4 bytes must be "glTF" (0x46546C67)
+                $header = $file->get(0, 4);
+                if ($header !== 'glTF') {
+                    throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, 'glb');
                 $filename = Str::uuid()->toString().'.'.$extension;
                 $path = $file->storeAs('virtual-museum/models', $filename, 'public');
                 $museum->path_obj = $path;
@@ -437,7 +442,7 @@ class AdminController extends Controller
                 if (! in_array($mime, $allowedAudioMimes)) {
                     throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
                 }
-                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'mp3');
+                $extension = $this->safeExtensionFromMime($mime, 'mp3');
                 $filename = Str::uuid()->toString().'.'.$extension;
                 $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
                 $museum->path_audio = $path;
@@ -445,21 +450,13 @@ class AdminController extends Controller
             }
 
             $museum->save();
+        });
 
-            return redirect()->route('admin.virtual-museum')
-                ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            // Rollback uploaded files on failure
-            foreach ($uploadedPaths as $p) {
-                if (Storage::disk('public')->exists($p)) {
-                    Storage::disk('public')->delete($p);
-                }
-            }
-            throw $e;
-        }
+        return redirect()->route('admin.virtual-museum')
+            ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
     }
 
-    private function safeExtensionFromMime(string $mime, string $clientExtension, string $default): string
+    private function safeExtensionFromMime(string $mime, string $default): string
     {
         static $map = [
             'model/gltf-binary' => 'glb',
@@ -540,7 +537,12 @@ class AdminController extends Controller
                 if (! str_starts_with($mime, 'model/') && $mime !== 'application/octet-stream') {
                     throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
                 }
-                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'glb');
+                // Verify GLB magic bytes: first 4 bytes must be "glTF" (0x46546C67)
+                $header = $file->get(0, 4);
+                if ($header !== 'glTF') {
+                    throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
+                }
+                $extension = $this->safeExtensionFromMime($mime, 'glb');
                 $filename = Str::uuid()->toString().'.'.$extension;
                 $path = $file->storeAs('virtual-museum/models', $filename, 'public');
                 $museum->path_obj = $path;
@@ -560,7 +562,7 @@ class AdminController extends Controller
                 if (! in_array($mime, $allowedAudioMimes)) {
                     throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
                 }
-                $extension = $this->safeExtensionFromMime($mime, $file->getClientOriginalExtension(), 'mp3');
+                $extension = $this->safeExtensionFromMime($mime, 'mp3');
                 $filename = Str::uuid()->toString().'.'.$extension;
                 $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
                 $museum->path_audio = $path;
@@ -579,7 +581,11 @@ class AdminController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            // Log but do not rollback DB changes
+            // ValidationException should be re-thrown so the framework shows the validation error
+            if ($e instanceof ValidationException) {
+                throw $e;
+            }
+            // Log non-validation errors but still return success since DB update succeeded
             Log::error('File operation failed after DB update', [
                 'museum_id' => $museum_id,
                 'message' => $e->getMessage(),
@@ -610,6 +616,18 @@ class AdminController extends Controller
             Log::error('Failed to delete audio file after museum deletion', [
                 'museum_id' => $museum_id,
                 'path_audio' => $museum->path_audio,
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            if ($museum->path_obj && Storage::disk('public')->exists($museum->path_obj)) {
+                Storage::disk('public')->delete($museum->path_obj);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to delete model file after museum deletion', [
+                'museum_id' => $museum_id,
+                'path_obj' => $museum->path_obj,
                 'message' => $e->getMessage(),
             ]);
         }
