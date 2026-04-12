@@ -397,41 +397,50 @@ class AdminController extends Controller
      */
     public function storeVirtualMuseum(Request $request)
     {
-        $request->validate([
+        // Support both chunked upload (via obj_file_path) and standard upload (via obj_file)
+        $rules = [
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'required|file|max:307200',
-        ]);
+        ];
+
+        if ($request->filled('obj_file_path')) {
+            // Chunked upload — path already uploaded, no file needed
+            $rules['obj_file_path'] = 'required|string|max:500';
+        } else {
+            // Standard upload
+            $rules['obj_file'] = 'required|file|max:307200';
+        }
+
+        $request->validate($rules);
 
         $data = [
             'situs_id' => $request->situs_id,
             'nama' => $request->nama,
         ];
 
-        $uploadedPaths = [];
-
-        // Handle file uploads first to get path for DB insert
-        if ($request->hasFile('obj_file')) {
+        if ($request->filled('obj_file_path')) {
+            // Chunked upload: use the pre-uploaded path
+            $data['path_obj'] = $request->obj_file_path;
+        } elseif ($request->hasFile('obj_file')) {
+            // Standard upload
             $file = $request->file('obj_file');
             $mime = $file->getMimeType();
-            $allowedMimes = ['model/gltf-binary', 'application/octet-stream'];
-            if (! in_array($mime, $allowedMimes) && ! str_starts_with($mime, 'model/')) {
+            if (! str_starts_with($mime, 'model/') && ! in_array($mime, ['application/octet-stream'])) {
                 throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
             }
-            // Read first 4 bytes for GLB magic bytes verification
-            $header = file_get_contents($file->getRealPath(), false, null, 0, 4);
+            // Stream-based GLB magic bytes check (reads only 4 bytes, not whole file)
+            $handle = fopen($file->getRealPath(), 'rb');
+            $header = $handle ? fread($handle, 4) : false;
+            if ($handle) fclose($handle);
             if ($header !== 'glTF') {
                 throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
             }
             $extension = $this->safeExtensionFromMime($mime, 'glb');
             $filename = Str::uuid()->toString().'.'.$extension;
             $data['path_obj'] = $file->storeAs('virtual-museum/models', $filename, 'public');
-            $uploadedPaths[] = $data['path_obj'];
         }
 
-        DB::transaction(function () use ($data, &$uploadedPaths) {
-            VirtualMuseum::create($data);
-        });
+        VirtualMuseum::create($data);
 
         return redirect()->route('admin.virtual-museum')
             ->with('success', 'Virtual Living Museum berhasil ditambahkan!');
@@ -480,11 +489,18 @@ class AdminController extends Controller
     {
         $museum = VirtualMuseum::findOrFail($museum_id);
 
-        $request->validate([
+        $rules = [
             'situs_id' => 'required|exists:situs_peninggalan,situs_id',
             'nama' => 'required|string|max:255',
-            'obj_file' => 'nullable|file|max:307200',
-        ]);
+        ];
+
+        if ($request->filled('obj_file_path')) {
+            $rules['obj_file_path'] = 'required|string|max:500';
+        } else {
+            $rules['obj_file'] = 'nullable|file|max:307200';
+        }
+
+        $request->validate($rules);
 
         // Capture original path BEFORE any mutation
         $oldObjPath = $museum->path_obj;
@@ -494,19 +510,24 @@ class AdminController extends Controller
             'nama' => $request->nama,
         ];
 
-        // Persist DB record first
         $museum->update($data);
 
         try {
-            // Handle file upload for obj
-            if ($request->hasFile('obj_file')) {
+            if ($request->filled('obj_file_path')) {
+                // Chunked upload: use pre-uploaded path
+                $museum->path_obj = $request->obj_file_path;
+                $museum->save();
+            } elseif ($request->hasFile('obj_file')) {
+                // Standard upload
                 $file = $request->file('obj_file');
                 $mime = $file->getMimeType();
                 if (! str_starts_with($mime, 'model/') && $mime !== 'application/octet-stream') {
                     throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
                 }
-                // Verify GLB magic bytes: first 4 bytes must be "glTF" (0x46546C67)
-                $header = $file->get(0, 4);
+                // Stream-based GLB magic bytes check
+                $handle = fopen($file->getRealPath(), 'rb');
+                $header = $handle ? fread($handle, 4) : false;
+                if ($handle) fclose($handle);
                 if ($header !== 'glTF') {
                     throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
                 }
@@ -515,9 +536,11 @@ class AdminController extends Controller
                 $path = $file->storeAs('virtual-museum/models', $filename, 'public');
                 $museum->path_obj = $path;
                 $museum->save();
+            }
 
-                // Delete old file only after new upload is committed
-                if ($oldObjPath && Storage::disk('public')->exists($oldObjPath)) {
+            // Delete old file only after new upload is saved
+            if (! empty($oldObjPath) && $oldObjPath !== $museum->path_obj) {
+                if (Storage::disk('public')->exists($oldObjPath)) {
                     Storage::disk('public')->delete($oldObjPath);
                 }
             }
