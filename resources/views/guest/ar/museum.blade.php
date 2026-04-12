@@ -34,6 +34,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('assets/css/annotation-label.css') }}">
 
     @yield('css')
 
