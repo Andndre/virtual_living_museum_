@@ -189,6 +189,29 @@
                             </div>
                         @endif
 
+                        <!-- Audio Narasi -->
+                        @if ($object->path_audio)
+                            <div>
+                                <h3 class="mb-2 text-sm font-medium text-gray-700">Audio Narasi</h3>
+                                <div
+                                    class="flex items-center space-x-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-8 w-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                        </svg>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Audio Narasi</p>
+                                        <p class="break-all text-sm text-gray-500">{{ basename($object->path_audio) }}</p>
+                                        <audio controls class="mt-2 w-full max-w-sm">
+                                            <source src="{{ asset('/storage/' . $object->path_audio) }}">
+                                            Browser tidak mendukung audio
+                                        </audio>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- AR Pattern -->
                         @if ($markerPathPatt)
                             <div>
@@ -229,7 +252,7 @@
                             </div>
                         @endif
 
-                        @if (!$object->gambar_real && !$object->path_obj && !$markerPathPatt && !$markerImagePath)
+                        @if (!$object->gambar_real && !$object->path_obj && !$object->path_audio && !$markerPathPatt && !$markerImagePath)
                             <div class="py-8 text-center">
                                 <div class="mx-auto h-12 w-12 text-gray-400">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

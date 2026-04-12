@@ -585,6 +585,7 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'marker_id' => [
                 'nullable',
@@ -616,6 +617,13 @@ class AdminController extends Controller
             $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
+        }
+
+        if ($request->hasFile('audio_file')) {
+            $file = $request->file('audio_file');
+            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $path = $file->storeAs('virtual-museum/objects/audio', $filename, 'public');
+            $data['path_audio'] = $path;
         }
 
         $marker = $this->resolveMarkerForObject($request, $museum);
@@ -670,6 +678,7 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
+            'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
             'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'marker_id' => [
                 'nullable',
@@ -685,6 +694,13 @@ class AdminController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
         ];
+
+        if ($request->boolean('remove_audio')) {
+            if ($object->path_audio && Storage::disk('public')->exists($object->path_audio)) {
+                Storage::disk('public')->delete($object->path_audio);
+            }
+            $data['path_audio'] = null;
+        }
 
         // Handle file uploads
         if ($request->hasFile('gambar_real')) {
@@ -709,6 +725,16 @@ class AdminController extends Controller
             $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
+        }
+
+        if ($request->hasFile('audio_file')) {
+            if ($object->path_audio && Storage::disk('public')->exists($object->path_audio)) {
+                Storage::disk('public')->delete($object->path_audio);
+            }
+            $file = $request->file('audio_file');
+            $filename = time().'_audio_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            $path = $file->storeAs('virtual-museum/objects/audio', $filename, 'public');
+            $data['path_audio'] = $path;
         }
 
         $oldMarker = $object->arMarker;
@@ -741,7 +767,7 @@ class AdminController extends Controller
         $oldMarker = $object->arMarker;
 
         // Delete associated files
-        $files = ['gambar_real', 'path_obj'];
+        $files = ['gambar_real', 'path_obj', 'path_audio'];
         foreach ($files as $fileField) {
             if ($object->$fileField && Storage::disk('public')->exists($object->$fileField)) {
                 Storage::disk('public')->delete($object->$fileField);
