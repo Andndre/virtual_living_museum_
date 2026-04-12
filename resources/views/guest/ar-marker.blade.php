@@ -3,7 +3,9 @@
     <div class="px-6 py-6 bg-primary text-white">
         <div class="flex justify-between items-center">
             <button class="back-button w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <i class="fas fa-arrow-left text-white"></i>
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
             </button>
             <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30">
                 @if(auth()->user()->profile_photo)
