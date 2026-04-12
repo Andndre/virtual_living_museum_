@@ -166,17 +166,29 @@
                                            class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                         <span>Upload file baru</span>
                                         <input id="obj_file" name="obj_file" type="file" class="sr-only" accept=".glb"
-                                               onchange="updateFileName(this)">
+                                               onchange="handleGlbFileSelect(this)">
                                     </label>
                                     <p class="pl-1">atau drag and drop</p>
                                 </div>
-                                <p class="text-xs text-gray-500">GLB up to 300MB (Kosongkan jika tidak ingin
-                                    mengubah)</p>
+                                <p class="text-xs text-gray-500">GLB up to 300MB</p>
                             </div>
                         </div>
+
+                        <!-- Progress Bar -->
+                        <div id="upload-progress-container" class="hidden mt-3">
+                            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                <span id="upload-filename">-</span>
+                                <span id="upload-percent">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="upload-progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <p id="upload-status" class="text-xs text-gray-500 mt-1">Mengunggah...</p>
+                        </div>
+
+                        <!-- Uploaded file info -->
                         <div id="file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
-                        <p class="mt-1 text-xs text-gray-500">Upload file model 3D baru dalam format GLB jika ingin
-                            mengganti yang lama</p>
+                        <p class="mt-1 text-xs text-gray-500">Upload file model 3D baru dalam format GLB. Biarkan kosong jika tidak ingin mengubah.</p>
                     </div>
 
                 </div>
@@ -294,103 +306,248 @@
     </div>
 
     <script>
-        function updateFileName(input) {
-            const fileNameDiv = document.getElementById('file-name');
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
+const CHUNK_SIZE = 2 * 1024 * 1024;
 
-                // Validate file type
-                if (!file.name.toLowerCase().endsWith('.glb')) {
-                    alert('Hanya file GLB yang diizinkan!');
-                    input.value = '';
-                    return;
-                }
+let _uploadUuid = null;
+let _uploadFieldName = null;
+let _uploadTargetPath = null;
+let _uploadOriginalFilename = null;
+let _uploadMuseumId = null;
 
-                // Validate file size
-                if (file.size > 300 * 1024 * 1024) {
-                    alert('File terlalu besar! Maksimal 300MB.');
-                    input.value = '';
-                    return;
-                }
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
-                const fileName = file.name;
-                const fileSize = (file.size / 1024 / 1024).toFixed(2);
-                fileNameDiv.innerHTML = `
-            <div class="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">${fileName}</p>
-                    <p class="text-xs text-gray-500">${fileSize} MB</p>
-                </div>
-                <button type="button" onclick="clearFile()" class="text-red-500 hover:text-red-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-        `;
-                fileNameDiv.classList.remove('hidden');
-            }
+function handleGlbFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.glb')) {
+        alert('Hanya file GLB yang diizinkan!');
+        input.value = '';
+        return;
+    }
+    if (file.size > 300 * 1024 * 1024) {
+        alert('File terlalu besar! Maksimal 300MB.');
+        input.value = '';
+        return;
+    }
+
+    _uploadUuid = generateUUID();
+    _uploadFieldName = 'obj_file';
+    _uploadTargetPath = 'virtual-museum/models';
+    _uploadOriginalFilename = file.name;
+    _uploadMuseumId = null;
+
+    uploadChunks(file);
+}
+
+async function uploadChunks(file) {
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+    showProgress(file.name, 0);
+
+    try {
+        for (let i = 0; i < totalChunks; i++) {
+            const start = i * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            const chunk = file.slice(start, end);
+
+            await uploadChunk(chunk, i, totalChunks, file.name);
+
+            const pct = Math.round(((i + 1) / totalChunks) * 100);
+            updateProgress(pct, `Mengunggah chunk ${i + 1}/${totalChunks}`);
         }
 
-        function clearFile() {
+        updateProgress(100, 'Menyatukan file...');
+        const result = await finalizeUpload(file.name);
+
+        if (result.success) {
+            updateProgress(100, 'Selesai!');
+            let hidden = document.getElementById('_uploaded_path_obj');
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.id = '_uploaded_path_obj';
+                hidden.name = '_uploaded_path_obj';
+                document.querySelector('form').appendChild(hidden);
+            }
+            hidden.value = result.path;
+
+            showUploadedFile(file.name, file.size, result.path);
+        } else {
+            showError(result.error || 'Upload gagal.');
             document.getElementById('obj_file').value = '';
-            document.getElementById('file-name').classList.add('hidden');
         }
+    } catch (err) {
+        showError('Upload gagal: ' + err.message);
+        document.getElementById('obj_file').value = '';
+    }
+}
 
-        // Drag and Drop functionality
-        const dropArea = document.getElementById('drop-area');
-        const fileInput = document.getElementById('obj_file');
+async function uploadChunk(chunk, chunkIndex, totalChunks, fileName) {
+    const formData = new FormData();
+    formData.append('file', chunk, fileName);
+    formData.append('chunkIndex', chunkIndex);
+    formData.append('totalChunks', totalChunks);
+    formData.append('uuid', _uploadUuid);
+    formData.append('fieldName', _uploadFieldName);
+    if (_uploadMuseumId) formData.append('museum_id', _uploadMuseumId);
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
+    const response = await fetch('/admin/chunk-upload/chunk', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: formData,
+    });
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, highlight, false);
-        });
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${response.status}`);
+    }
+}
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, unhighlight, false);
-        });
+async function finalizeUpload(fileName) {
+    const formData = new FormData();
+    formData.append('uuid', _uploadUuid);
+    formData.append('fieldName', _uploadFieldName);
+    formData.append('target_path', _uploadTargetPath);
+    formData.append('original_filename', fileName);
+    if (_uploadMuseumId) formData.append('museum_id', _uploadMuseumId);
 
-        dropArea.addEventListener('drop', handleDrop, false);
+    const response = await fetch('/admin/chunk-upload/finalize', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: formData,
+    });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+    return response.json();
+}
 
-        function highlight(e) {
-            dropArea.classList.add('border-blue-500', 'bg-blue-50');
-        }
+function showProgress(fileName, pct) {
+    const container = document.getElementById('upload-progress-container');
+    document.getElementById('upload-filename').textContent = fileName;
+    document.getElementById('upload-percent').textContent = pct + '%';
+    document.getElementById('upload-progress-bar').style.width = pct + '%';
+    document.getElementById('upload-status').textContent = 'Mengunggah...';
+    container.classList.remove('hidden');
+}
 
-        function unhighlight(e) {
-            dropArea.classList.remove('border-blue-500', 'bg-blue-50');
-        }
+function updateProgress(pct, status) {
+    document.getElementById('upload-percent').textContent = pct + '%';
+    document.getElementById('upload-progress-bar').style.width = pct + '%';
+    document.getElementById('upload-status').textContent = status;
+}
 
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
+function showUploadedFile(fileName, fileSize, path) {
+    document.getElementById('upload-progress-container').classList.add('hidden');
+    const fileSizeMB = (fileSize / 1024 / 1024).toFixed(2);
+    const fileNameDiv = document.getElementById('file-name');
+    fileNameDiv.innerHTML = `
+        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">${fileName}</p>
+                <p class="text-xs text-gray-500">${fileSizeMB} MB — berhasil diunggah</p>
+            </div>
+            <button type="button" onclick="clearFile()" class="text-red-500 hover:text-red-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    `;
+    fileNameDiv.classList.remove('hidden');
+}
 
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.name.toLowerCase().endsWith('.glb')) {
-                    if (file.size <= 300 * 1024 * 1024) { // 300MB check
-                        fileInput.files = files;
-                        updateFileName(fileInput);
-                    } else {
-                        clearFile();
-                        alert('File terlalu besar! Maksimal 300MB.');
-                    }
-                } else {
-                    clearFile();
-                    alert('Hanya file GLB yang diizinkan!');
-                }
+function showError(msg) {
+    document.getElementById('upload-status').textContent = msg;
+    document.getElementById('upload-status').classList.add('text-red-600');
+}
+
+function clearFile() {
+    document.getElementById('obj_file').value = '';
+    document.getElementById('file-name').classList.add('hidden');
+    document.getElementById('upload-progress-container').classList.add('hidden');
+    const hidden = document.getElementById('_uploaded_path_obj');
+    if (hidden) hidden.remove();
+    _uploadUuid = null;
+}
+
+// Drag and Drop functionality
+const dropArea = document.getElementById('drop-area');
+const fileInput = document.getElementById('obj_file');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+    document.body.addEventListener(eventName, preventDefaults, false);
+});
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+});
+
+dropArea.addEventListener('drop', handleDrop, false);
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+function highlight(e) {
+    dropArea.classList.add('border-blue-500', 'bg-blue-50');
+}
+
+function unhighlight(e) {
+    dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+}
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length > 0) {
+        const file = files[0];
+        if (file.name.toLowerCase().endsWith('.glb')) {
+            if (file.size <= 300 * 1024 * 1024) {
+                fileInput.files = files;
+                handleGlbFileSelect(fileInput);
+            } else {
+                alert('File terlalu besar! Maksimal 300MB.');
             }
+        } else {
+            alert('Hanya file GLB yang diizinkan!');
         }
-    </script>
+    }
+}
+
+// Form submit: pass uploaded path as obj_file_path value
+document.querySelector('form').addEventListener('submit', function (e) {
+    const uploadedPath = document.getElementById('_uploaded_path_obj');
+    if (uploadedPath && uploadedPath.value) {
+        const dummyFileInput = document.getElementById('obj_file');
+
+        const pathField = document.createElement('input');
+        pathField.type = 'hidden';
+        pathField.name = 'obj_file_path';
+        pathField.value = uploadedPath.value;
+        this.appendChild(pathField);
+
+        dummyFileInput.disabled = true;
+    }
+});
+</script>
 </x-app-layout>

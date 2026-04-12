@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AnnotationController;
+use App\Http\Controllers\Admin\ChunkUploadController;
 use App\Http\Controllers\Admin\KatalogController;
 use App\Http\Controllers\Admin\VideoPeninggalanController;
 use App\Http\Controllers\ArMarkerCameraController;
@@ -147,6 +148,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/admin/virtual-museum-object/{object_id}/edit', [AdminController::class, 'editVirtualMuseumObject'])->name('admin.virtual-museum-object.edit');
     Route::put('/admin/virtual-museum-object/{object_id}', [AdminController::class, 'updateVirtualMuseumObject'])->name('admin.virtual-museum-object.update');
     Route::delete('/admin/virtual-museum-object/{object_id}', [AdminController::class, 'destroyVirtualMuseumObject'])->name('admin.virtual-museum-object.destroy');
+
+    // Chunked Upload (GLB / large files)
+    Route::post('/admin/chunk-upload/chunk', [ChunkUploadController::class, 'storeChunk'])->name('admin.chunk-upload.chunk');
+    Route::post('/admin/chunk-upload/finalize', [ChunkUploadController::class, 'finalize'])->name('admin.chunk-upload.finalize');
+    Route::get('/admin/chunk-upload/status', [ChunkUploadController::class, 'status'])->name('admin.chunk-upload.status');
+    Route::delete('/admin/chunk-upload/abort', [ChunkUploadController::class, 'abort'])->name('admin.chunk-upload.abort');
 
     Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
     Route::get('/admin/reports/{id}', [AdminController::class, 'showReport'])->name('admin.reports.show');
