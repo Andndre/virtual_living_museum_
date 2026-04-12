@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AnnotationController;
 use App\Http\Controllers\Admin\KatalogController;
+use App\Http\Controllers\Admin\VideoPeninggalanController;
 use App\Http\Controllers\ArMarkerCameraController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KritikSaranController;
@@ -9,7 +11,6 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LaporanPeninggalanController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\VideoPeninggalanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -72,7 +73,6 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/video-peninggalan', [HomeController::class, 'videoPeninggalan'])->name('guest.video-peninggalan');
     Route::get('/video-peninggalan/{id}', [HomeController::class, 'videoPeninggalanShow'])->name('guest.video-peninggalan.show');
 });
-
 
 // AR routes - Using token-based authentication
 Route::middleware('ar.token')->get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
@@ -178,6 +178,14 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('admin/video-peninggalan/{id}/edit', [VideoPeninggalanController::class, 'edit'])->name('admin.video-peninggalan.edit');
     Route::put('admin/video-peninggalan/{id}', [VideoPeninggalanController::class, 'update'])->name('admin.video-peninggalan.update');
     Route::delete('admin/video-peninggalan/{id}', [VideoPeninggalanController::class, 'destroy'])->name('admin.video-peninggalan.destroy');
+
+    // Annotations
+    Route::get('admin/annotations', [AnnotationController::class, 'index'])->name('admin.annotations.index');
+    Route::get('admin/annotations/create', [AnnotationController::class, 'create'])->name('admin.annotations.create');
+    Route::post('admin/annotations', [AnnotationController::class, 'store'])->name('admin.annotations.store');
+    Route::get('admin/annotations/{annotation}/edit', [AnnotationController::class, 'edit'])->name('admin.annotations.edit');
+    Route::put('admin/annotations/{annotation}', [AnnotationController::class, 'update'])->name('admin.annotations.update');
+    Route::delete('admin/annotations/{annotation}', [AnnotationController::class, 'destroy'])->name('admin.annotations.destroy');
 });
 
 Route::middleware('auth')->group(function () {
@@ -186,4 +194,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

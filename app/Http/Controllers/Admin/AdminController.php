@@ -411,45 +411,40 @@ class AdminController extends Controller
 
         $uploadedPaths = [];
 
-        DB::transaction(function () use ($request, $data, &$uploadedPaths) {
-            // Persist DB record first
-            $museum = VirtualMuseum::create($data);
-
-            // Handle file uploads only after DB success
-            if ($request->hasFile('obj_file')) {
-                $file = $request->file('obj_file');
-                $mime = $file->getMimeType();
-                $allowedMimes = ['model/gltf-binary', 'application/octet-stream'];
-                if (! in_array($mime, $allowedMimes) && ! str_starts_with($mime, 'model/')) {
-                    throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
-                }
-                // Verify GLB magic bytes: first 4 bytes must be "glTF" (0x46546C67)
-                $header = $file->get(0, 4);
-                if ($header !== 'glTF') {
-                    throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
-                }
-                $extension = $this->safeExtensionFromMime($mime, 'glb');
-                $filename = Str::uuid()->toString().'.'.$extension;
-                $path = $file->storeAs('virtual-museum/models', $filename, 'public');
-                $museum->path_obj = $path;
-                $uploadedPaths[] = $path;
+        // Handle file uploads first to get path for DB insert
+        if ($request->hasFile('obj_file')) {
+            $file = $request->file('obj_file');
+            $mime = $file->getMimeType();
+            $allowedMimes = ['model/gltf-binary', 'application/octet-stream'];
+            if (! in_array($mime, $allowedMimes) && ! str_starts_with($mime, 'model/')) {
+                throw ValidationException::withMessages(['obj_file' => 'File model harus bertipe GLB.']);
             }
-
-            if ($request->hasFile('audio_file')) {
-                $file = $request->file('audio_file');
-                $mime = $file->getMimeType();
-                $allowedAudioMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/aac', 'audio/x-wav', 'audio/x-aac'];
-                if (! in_array($mime, $allowedAudioMimes)) {
-                    throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
-                }
-                $extension = $this->safeExtensionFromMime($mime, 'mp3');
-                $filename = Str::uuid()->toString().'.'.$extension;
-                $path = $file->storeAs('virtual-museum/audio', $filename, 'public');
-                $museum->path_audio = $path;
-                $uploadedPaths[] = $path;
+            // Read first 4 bytes for GLB magic bytes verification
+            $header = file_get_contents($file->getRealPath(), false, null, 0, 4);
+            if ($header !== 'glTF') {
+                throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
             }
+            $extension = $this->safeExtensionFromMime($mime, 'glb');
+            $filename = Str::uuid()->toString().'.'.$extension;
+            $data['path_obj'] = $file->storeAs('virtual-museum/models', $filename, 'public');
+            $uploadedPaths[] = $data['path_obj'];
+        }
 
-            $museum->save();
+        if ($request->hasFile('audio_file')) {
+            $file = $request->file('audio_file');
+            $mime = $file->getMimeType();
+            $allowedAudioMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/aac', 'audio/x-wav', 'audio/x-aac'];
+            if (! in_array($mime, $allowedAudioMimes)) {
+                throw ValidationException::withMessages(['audio_file' => 'File audio harus bertipe MP3, WAV, OGG, atau AAC.']);
+            }
+            $extension = $this->safeExtensionFromMime($mime, 'mp3');
+            $filename = Str::uuid()->toString().'.'.$extension;
+            $data['path_audio'] = $file->storeAs('virtual-museum/audio', $filename, 'public');
+            $uploadedPaths[] = $data['path_audio'];
+        }
+
+        DB::transaction(function () use ($data, &$uploadedPaths) {
+            VirtualMuseum::create($data);
         });
 
         return redirect()->route('admin.virtual-museum')
