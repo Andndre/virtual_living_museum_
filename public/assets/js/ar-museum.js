@@ -262,14 +262,22 @@ class AnnotationManager {
 
     /**
      * Called every frame. Updates label visibility and font size based on distance to camera.
+     * Frustum culling: hides labels outside the camera's field of view.
      * @param {THREE.Camera} camera
      */
     update(camera) {
         const cam = camera || this.camera;
+
+        // Build frustum from camera's projection matrix
+        const frustum = new THREE.Frustum();
+        const matrix = new THREE.Matrix4();
+        matrix.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse);
+        frustum.setFromProjectionMatrix(matrix);
+
         const MIN_FONT = 10;
         const MAX_FONT = 16;
-        const REF_DISTANCE = 2;   // reference close distance (meters)
-        const FAR_DISTANCE = 10;  // max visibility distance (meters)
+        const REF_DISTANCE = 2;
+        const FAR_DISTANCE = 10;
 
         this.labels.forEach((label) => {
             if (!label.userData.isVisible) {
@@ -277,11 +285,11 @@ class AnnotationManager {
                 return;
             }
             const dist = cam.position.distanceTo(label.position);
-            const isVisible = dist < this.MAX_DISTANCE;
-            label.visible = isVisible;
+            const inRange = dist < this.MAX_DISTANCE;
+            const inFrustum = frustum.containsPoint(label.position);
+            label.visible = inRange && inFrustum;
 
-            if (isVisible && label.element) {
-                // Lerp font size based on distance
+            if (label.visible && label.element) {
                 const t = Math.max(0, Math.min(1, (FAR_DISTANCE - dist) / (FAR_DISTANCE - REF_DISTANCE)));
                 const fontSize = MIN_FONT + (MAX_FONT - MIN_FONT) * t;
                 label.element.style.fontSize = `${fontSize}px`;
