@@ -261,18 +261,31 @@ class AnnotationManager {
     }
 
     /**
-     * Called every frame. Updates label visibility based on distance to camera.
+     * Called every frame. Updates label visibility and font size based on distance to camera.
      * @param {THREE.Camera} camera
      */
     update(camera) {
         const cam = camera || this.camera;
+        const MIN_FONT = 10;
+        const MAX_FONT = 16;
+        const REF_DISTANCE = 2;   // reference close distance (meters)
+        const FAR_DISTANCE = 10;  // max visibility distance (meters)
+
         this.labels.forEach((label) => {
             if (!label.userData.isVisible) {
                 label.visible = false;
                 return;
             }
             const dist = cam.position.distanceTo(label.position);
-            label.visible = dist < this.MAX_DISTANCE;
+            const isVisible = dist < this.MAX_DISTANCE;
+            label.visible = isVisible;
+
+            if (isVisible && label.element) {
+                // Lerp font size based on distance
+                const t = Math.max(0, Math.min(1, (FAR_DISTANCE - dist) / (FAR_DISTANCE - REF_DISTANCE)));
+                const fontSize = MIN_FONT + (MAX_FONT - MIN_FONT) * t;
+                label.element.style.fontSize = `${fontSize}px`;
+            }
         });
     }
 
