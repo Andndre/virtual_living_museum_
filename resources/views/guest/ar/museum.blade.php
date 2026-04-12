@@ -186,11 +186,7 @@
                 <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
                 <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
             </div>
-            <button id="audio-toggle"
-                class="rounded-full p-2 transition-colors hover:bg-white/10"
-                title="Toggle Audio">
-                <i class="fas fa-volume-up text-xl" id="audio-icon"></i>
-            </button>
+            <div class="flex-1">
         </div>
     </div>
     <div id="overlay"
@@ -280,31 +276,6 @@
         </script>
 
         <script src="{{ asset('assets/js/ar-museum.js') }}" type="module"></script>
-
-        <!-- Hidden audio element for AR playback -->
-        <audio id="ar-audio" preload="auto" style="display:none;"
-            @if($museum->path_audio)
-                src="{{ asset('/storage/' . $museum->path_audio) }}"
-            @endif
-        ></audio>
-
-        <script>
-            // Audio toggle functionality
-            document.getElementById('audio-toggle').addEventListener('click', function() {
-                var audio = document.getElementById('ar-audio');
-                var icon = document.getElementById('audio-icon');
-
-                if (audio.muted) {
-                    audio.muted = false;
-                    icon.className = 'fas fa-volume-up text-xl';
-                    document.getElementById('audio-toggle').classList.remove('muted');
-                } else {
-                    audio.muted = true;
-                    icon.className = 'fas fa-volume-mute text-xl';
-                    document.getElementById('audio-toggle').classList.add('muted');
-                }
-            });
-        </script>
     </div>
 </body>
 

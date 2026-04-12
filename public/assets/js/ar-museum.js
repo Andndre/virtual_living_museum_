@@ -188,22 +188,6 @@ class SceneManager {
 }
 
 /**
- * Plays the AR audio narration.
- * Uses the audio element from the HTML page.
- */
-function playArAudio() {
-    const audio = document.getElementById('ar-audio');
-    if (!audio) return;
-    if (audio.muted) return;
-    if (!audio.src) return;
-
-    audio.currentTime = 0;
-    audio.play().catch(err => {
-        console.log('Audio playback failed:', err);
-    });
-}
-
-/**
  * Displays a toaster notification with the given message.
  *
  * @param {string} message - The message to display in the toaster.
@@ -693,11 +677,7 @@ async function main() {
             showToaster("Sunlight positioned");
         }
 
-        sceneManager.reticle.visible = false;
         sceneManager.placed = true;
-
-        // Play audio when model is placed
-        playArAudio();
     });
 
     showToaster("Starting animation loop");
