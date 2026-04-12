@@ -248,6 +248,7 @@
                             'deskripsi' => $object->deskripsi,
                             'model_src' => '/storage/' . $object->path_obj,
                             'scale' => $object->scale_string ?? '1 1 1',
+                            'audio_src' => $object->path_audio ? '/storage/' . $object->path_audio : null,
                         ];
                     })
                     ->values();
@@ -265,6 +266,14 @@
 
         <a-entity camera></a-entity>
     </a-scene>
+
+    <!-- Audio element for AR marker -->
+    <audio id="ar-marker-audio" preload="auto" style="display:none;"></audio>
+
+    <!-- Audio toggle button -->
+    <button id="ar-audio-toggle" type="button" aria-label="Toggle audio" style="position:absolute;top:16px;left:16px;z-index:1200;width:40px;height:40px;border:0;border-radius:999px;background:rgba(0,0,0,0.78);color:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.35);">
+        <i class="fas fa-volume-up" id="ar-audio-icon"></i>
+    </button>
 
     <!-- Description overlay -->
     <div id="ar-description">
@@ -338,6 +347,37 @@
                 KHR_materials_specular: 'Model memakai KHR_materials_specular. Untuk kompatibilitas mobile maksimal, nonaktifkan specular extension saat ekspor.',
                 KHR_materials_ior: 'Model memakai KHR_materials_ior. Untuk kompatibilitas mobile maksimal, nonaktifkan ior extension saat ekspor.',
             };
+
+            // Audio element and helper
+            const arMarkerAudio = document.getElementById('ar-marker-audio');
+
+            /**
+             * Play audio for the active object.
+             * Triggered on markerFound.
+             */
+            function playMarkerAudio(audioSrc) {
+                if (!audioSrc) return;
+                if (!arMarkerAudio) return;
+                if (arMarkerAudio.muted) return;
+
+                arMarkerAudio.src = audioSrc;
+                arMarkerAudio.currentTime = 0;
+                arMarkerAudio.play().catch(err => {
+                    console.log('Audio play gagal (mungkin autoplay diblokir):', err);
+                });
+            }
+
+            /**
+             * Stop/pause audio when marker is lost.
+             * Triggered on markerLost.
+             */
+            function stopMarkerAudio() {
+                if (!arMarkerAudio) return;
+                if (arMarkerAudio.paused) return;
+
+                arMarkerAudio.pause();
+                arMarkerAudio.currentTime = 0;
+            }
 
             function stringifyForDebug(data) {
                 if (data === undefined || data === null) {
@@ -559,6 +599,22 @@
             debugToggleButton.style.display = isDebugMode ? 'block' : 'none';
             pushDebugLog('info', 'Debug panel siap. Tambahkan ?debug=1 agar otomatis terbuka.');
             setupDracoForAframe();
+
+            // Audio toggle button
+            const audioToggleBtn = document.getElementById('ar-audio-toggle');
+            const audioIcon = document.getElementById('ar-audio-icon');
+            if (audioToggleBtn && arMarkerAudio) {
+                audioToggleBtn.addEventListener('click', function() {
+                    arMarkerAudio.muted = !arMarkerAudio.muted;
+                    if (arMarkerAudio.muted) {
+                        audioIcon.className = 'fas fa-volume-mute';
+                        audioToggleBtn.style.opacity = '0.6';
+                    } else {
+                        audioIcon.className = 'fas fa-volume-up';
+                        audioToggleBtn.style.opacity = '1';
+                    }
+                });
+            }
 
             window.addEventListener('error', event => {
                 pushDebugLog('error', 'Runtime error', {
@@ -1448,6 +1504,13 @@
                         markerState.index = normalizedIndex;
                         setActiveMarker(marker.id);
                         updateDescription();
+
+                        // Play audio for the new object, or stop if none
+                        if (objectData.audio_src) {
+                            playMarkerAudio(objectData.audio_src);
+                        } else {
+                            stopMarkerAudio();
+                        }
                     })
                     .catch(error => {
                         if (error?.message === 'MARKER_NOT_VISIBLE') {
@@ -1508,11 +1571,21 @@
                     });
 
                     showObjectForMarker(this, visibleMarkers.get(this.id).index);
+
+                    // Play audio for the active object
+                    const currentState = visibleMarkers.get(this.id);
+                    if (currentState && currentState.objects.length > 0) {
+                        const activeIndex = currentState.index || 0;
+                        const activeObjectData = currentState.objects[activeIndex];
+                        if (activeObjectData && activeObjectData.audio_src) {
+                            playMarkerAudio(activeObjectData.audio_src);
+                        }
+                    }
                 });
 
                 // When marker becomes invisible
                 marker.addEventListener('markerLost', function() {
-                    bumpMarkerVisibilityVersion(this.id);
+                    stopMarkerAudio();
                     visibleMarkers.delete(this.id);
                     pushDebugLog('warn', 'Marker hilang', {
                         markerId: this.id,

@@ -27,6 +27,7 @@ class VirtualMuseumObject extends Model
         'path_gambar_marker',
         'path_patt',
         'deskripsi',
+        'path_audio',
     ];
 
     protected $casts = [
