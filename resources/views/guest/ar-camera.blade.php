@@ -271,8 +271,10 @@
     <audio id="ar-marker-audio" preload="auto" style="display:none;"></audio>
 
     <!-- Audio toggle button -->
-    <button id="ar-audio-toggle" type="button" aria-label="Toggle audio" style="position:absolute;top:16px;left:16px;z-index:1200;width:40px;height:40px;border:0;border-radius:999px;background:rgba(0,0,0,0.78);color:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.35);">
-        <i class="fas fa-volume-up" id="ar-audio-icon"></i>
+    <button id="ar-audio-toggle" type="button" aria-label="Toggle audio" style="position:absolute;top:16px;left:16px;z-index:1200;width:40px;height:40px;border:0;border-radius:999px;background:rgba(0,0,0,0.78);cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.35);">
+        <svg id="ar-audio-icon" class="w-5 h-5" style="fill:none;stroke:#fff" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
     </button>
 
     <!-- Description overlay -->
@@ -603,14 +605,16 @@
             // Audio toggle button
             const audioToggleBtn = document.getElementById('ar-audio-toggle');
             const audioIcon = document.getElementById('ar-audio-icon');
+            const svgMuted = '<path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>';
+            const svgOn = '<path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
             if (audioToggleBtn && arMarkerAudio) {
                 audioToggleBtn.addEventListener('click', function() {
                     arMarkerAudio.muted = !arMarkerAudio.muted;
                     if (arMarkerAudio.muted) {
-                        audioIcon.className = 'fas fa-volume-mute';
+                        audioIcon.innerHTML = svgMuted;
                         audioToggleBtn.style.opacity = '0.6';
                     } else {
-                        audioIcon.className = 'fas fa-volume-up';
+                        audioIcon.innerHTML = svgOn;
                         audioToggleBtn.style.opacity = '1';
                     }
                 });
