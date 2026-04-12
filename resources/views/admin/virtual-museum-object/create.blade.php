@@ -97,6 +97,31 @@
                         </p>
                     </div>
 
+                    <!-- Audio Narasi -->
+                    <div>
+                        <label for="audio_file" class="mb-2 block text-sm font-medium text-gray-700">
+                            File Audio Narasi <span class="text-gray-400">(Opsional)</span>
+                        </label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors"
+                            id="audio-drop-area">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M24 4c-4.418 0-8 3.582-8 8v16c0 4.418 3.582 8 8 8s8-3.582 8-8V12c0-4.418-3.582-8-8-8zm-6 24c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M42 24c0 9.941-8.059 18-18 18S6 33.941 6 24s8.059-18 18-18 18 8.059 18 18z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="audio_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                        <span>Upload file audio</span>
+                                        <input id="audio_file" name="audio_file" type="file" class="sr-only" accept=".mp3,.wav,.ogg,.aac">
+                                    </label>
+                                    <p class="pl-1">atau drag and drop</p>
+                                </div>
+                                <p class="text-xs text-gray-500">MP3, WAV, OGG, AAC up to 10MB</p>
+                            </div>
+                        </div>
+                        <div id="audio-file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
+                    </div>
+
                     <!-- Pengaturan Marker -->
                     <div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
                         <h3 class="text-sm font-semibold text-blue-900">Pengaturan Marker AR</h3>
@@ -303,6 +328,68 @@
                     textElement.textContent = 'Upload gambar marker';
                     break;
             }
+        }
+
+        function updateAudioFileName(input) {
+            const fileNameDiv = document.getElementById('audio-file-name');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (!file.name.match(/\.(mp3|wav|ogg|aac)$/i)) {
+                    alert('Hanya file audio MP3, WAV, OGG, AAC yang diizinkan!');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File terlalu besar! Maksimal 10MB.');
+                    input.value = '';
+                    return;
+                }
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileNameDiv.innerHTML = `
+                    <div class="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                        </svg>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
+                            <p class="text-xs text-gray-500">${fileSize} MB</p>
+                        </div>
+                    </div>
+                `;
+                fileNameDiv.classList.remove('hidden');
+            }
+        }
+
+        function clearAudioFile() {
+            document.getElementById('audio_file').value = '';
+            document.getElementById('audio-file-name').classList.add('hidden');
+        }
+
+        // Drag and drop for audio
+        const audioDropArea = document.getElementById('audio-drop-area');
+        const audioFileInput = document.getElementById('audio_file');
+        if (audioDropArea && audioFileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                audioDropArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                audioDropArea.addEventListener(eventName, () => audioDropArea.classList.add('border-blue-500', 'bg-blue-50'), false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                audioDropArea.addEventListener(eventName, () => audioDropArea.classList.remove('border-blue-500', 'bg-blue-50'), false);
+            });
+            audioDropArea.addEventListener('drop', e => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.name.match(/\.(mp3|wav|ogg|aac)$/i) && file.size <= 10 * 1024 * 1024) {
+                        audioFileInput.files = files;
+                        updateAudioFileName(audioFileInput);
+                    } else {
+                        alert('File tidak valid! Gunakan MP3, WAV, OGG, atau AAC (maksimal 10MB).');
+                    }
+                }
+            }, false);
         }
 
         // Drag and drop functionality
