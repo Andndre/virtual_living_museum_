@@ -24,7 +24,7 @@ return [
     // Home
     'virtual_museum' => 'Virtual Living Museum',
     'elearning' => 'Visit Heritage',
-    'maps' => 'Maps',
+    'maps' => 'Geo Historia',
     'statistics' => 'Statistics',
     'report_heritage' => 'Report Heritage',
     'nearby_heritage' => 'Nearby Heritage',
