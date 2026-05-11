@@ -85,7 +85,6 @@ return [
     'change_photo' => 'Change Photo',
     'upload_photo' => 'Upload Photo',
     'name' => 'Name',
-    'email' => 'Email',
     'save' => 'Save',
     'saved' => 'Saved.',
     'email_unverified' => 'Your email address is unverified.',
@@ -124,11 +123,8 @@ return [
     'cancel' => 'Cancel',
 
     // Developer Page
-    'developer_info' => 'Developer Info',
-    'about_developer' => 'About the application developer',
     'developer_name' => 'Wayan Pardi',
     'developer_role' => 'Application Developer',
-    'contact_info' => 'Contact Information',
     'development_history' => 'Developer History',
     'send_feedback' => 'Send Feedback & Suggestions',
     'message' => 'Message',
@@ -146,7 +142,6 @@ return [
     'maps_choose_menu' => 'Choose Menu',
     'maps_maps' => 'Maps',
     'maps_virtual_museum' => 'Virtual Living Museum',
-    'lecturer' => 'Lecturer',
 
     // Admin Dashboard
     'admin_dashboard' => 'Admin Dashboard',

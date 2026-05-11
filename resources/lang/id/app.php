@@ -85,7 +85,6 @@ return [
     'change_photo' => 'Ubah Foto',
     'upload_photo' => 'Upload Foto',
     'name' => 'Nama',
-    'email' => 'Email',
     'save' => 'Simpan',
     'saved' => 'Tersimpan.',
     'email_unverified' => 'Alamat email Anda belum diverifikasi.',
@@ -124,11 +123,8 @@ return [
     'cancel' => 'Batal',
 
     // Developer Page
-    'developer_info' => 'Info Developer',
-    'about_developer' => 'Tentang pembuat aplikasi',
     'developer_name' => 'Wayan Pardi',
     'developer_role' => 'Pengembang Aplikasi',
-    'contact_info' => 'Informasi Kontak',
     'development_history' => 'Riwayat Pengembang',
     'send_feedback' => 'Kirim Kritik & Saran',
     'message' => 'Pesan',
@@ -146,7 +142,6 @@ return [
     'maps_choose_menu' => 'Pilih Menu',
     'maps_maps' => 'Maps',
     'maps_virtual_museum' => 'Virtual Living Museum',
-    'lecturer' => 'Dosen',
 
     // Admin Dashboard
     'admin_dashboard' => 'Dashboard Admin',
