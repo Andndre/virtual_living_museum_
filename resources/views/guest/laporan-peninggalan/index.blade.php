@@ -110,11 +110,14 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white p-8 rounded-lg shadow-sm text-center">
-                    <i class="fas fa-info-circle text-2xl text-gray-400 mb-2"></i>
-                    <p class="text-gray-600">{{ __('app.no_heritage_yet') }}.</p>
+                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                        <i class="fas fa-info-circle text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="mb-2 text-lg font-medium text-gray-900">{{ __('app.no_heritage_yet') }}</h3>
+                    <p class="text-gray-600 mb-4"> Jadilah yang pertama melaporkan peninggalan.</p>
                     <a href="{{ route('guest.laporan-peninggalan.create') }}"
-                       class="mt-4 inline-block px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
+                       class="inline-block px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
                         {{ __('app.be_the_first_to_report') }}
                     </a>
                 </div>
