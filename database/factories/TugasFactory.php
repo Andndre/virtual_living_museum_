@@ -24,8 +24,7 @@ class TugasFactory extends Factory
       'materi_id' => Materi::factory(),
       'judul' => fake()->sentence(3),
       'deskripsi' => fake()->paragraph(),
-      'tipe' => fake()->randomElement(['file', 'teks']),
-      'file_path' => null,
+      'gambar' => null,
     ];
   }
 }

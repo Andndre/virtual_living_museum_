@@ -14,7 +14,7 @@ describe('Feedback Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.feedback');
-      $response->assertViewHas('feedbacks');
+      $response->assertViewHas('feedback');
     });
   });
 

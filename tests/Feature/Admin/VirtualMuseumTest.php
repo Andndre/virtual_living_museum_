@@ -14,7 +14,7 @@ describe('Virtual Living Museum Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.virtual-museum.index');
-      $response->assertViewHas('virtualMuseums');
+      $response->assertViewHas('museums');
     });
   });
 
@@ -38,7 +38,7 @@ describe('Virtual Living Museum Management', function () {
       $response = $this->actingAs($admin)->post(route('admin.virtual-museum.store'), [
         'nama' => 'Virtual Museum Test',
         'situs_id' => $situs->situs_id,
-        'deskripsi' => 'Test deskripsi',
+        'obj_file_path' => 'virtual-museum/models/test.glb',
       ]);
 
       $response->assertRedirect(route('admin.virtual-museum'));
@@ -88,10 +88,11 @@ describe('Virtual Living Museum Management', function () {
 
       $response = $this->actingAs($admin)->put(route('admin.virtual-museum.update', $museum->museum_id), [
         'nama' => 'Updated Museum Name',
-        'deskripsi' => 'Updated deskripsi',
+        'situs_id' => $museum->situs_id,
+        'obj_file_path' => $museum->path_obj,
       ]);
 
-      $response->assertRedirect(route('admin.virtual-museum'));
+      $response->assertRedirect(route('admin.virtual-museum.show', $museum->museum_id));
       $response->assertSessionHas('success');
       $this->assertDatabaseHas('virtual_museum', [
         'museum_id' => $museum->museum_id,

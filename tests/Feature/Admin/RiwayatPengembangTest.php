@@ -13,7 +13,7 @@ describe('Riwayat Pengembang Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.riwayat-pengembang.index');
-      $response->assertViewHas('riwayatPengembangs');
+      $response->assertViewHas('riwayatPengembang');
     });
   });
 
@@ -33,15 +33,14 @@ describe('Riwayat Pengembang Management', function () {
       $admin = User::factory()->create(['role' => 'admin']);
 
       $response = $this->actingAs($admin)->post(route('admin.riwayat-pengembang.store'), [
-        'nama' => 'Pengembang Test',
-        'peran' => 'Developer',
-        'tahun' => 2024,
-        'deskripsi' => 'Test deskripsi',
+        'judul' => 'Pengembang Test',
+        'tahun' => '2024-01-01',
+        'tahun_selesai' => '2024-12-31',
       ]);
 
       $response->assertRedirect(route('admin.riwayat-pengembang'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseHas('riwayat_pengembang', ['nama' => 'Pengembang Test']);
+      $this->assertDatabaseHas('riwayat_pengembangs', ['judul' => 'Pengembang Test']);
     });
 
     it('validates required fields', function () {
@@ -49,7 +48,7 @@ describe('Riwayat Pengembang Management', function () {
 
       $response = $this->actingAs($admin)->post(route('admin.riwayat-pengembang.store'), []);
 
-      $response->assertSessionHasErrors(['nama', 'peran']);
+      $response->assertSessionHasErrors(['judul', 'tahun']);
     });
   });
 
@@ -72,17 +71,16 @@ describe('Riwayat Pengembang Management', function () {
       $riwayat = RiwayatPengembang::factory()->create();
 
       $response = $this->actingAs($admin)->put(route('admin.riwayat-pengembang.update', $riwayat->id), [
-        'nama' => 'Updated Nama',
-        'peran' => 'Updated Peran',
-        'tahun' => 2025,
-        'deskripsi' => 'Updated deskripsi',
+        'judul' => 'Updated Judul',
+        'tahun' => '2025-01-01',
+        'tahun_selesai' => '2025-06-30',
       ]);
 
       $response->assertRedirect(route('admin.riwayat-pengembang'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseHas('riwayat_pengembang', [
+      $this->assertDatabaseHas('riwayat_pengembangs', [
         'id' => $riwayat->id,
-        'nama' => 'Updated Nama',
+        'judul' => 'Updated Judul',
       ]);
     });
   });
@@ -96,7 +94,7 @@ describe('Riwayat Pengembang Management', function () {
 
       $response->assertRedirect(route('admin.riwayat-pengembang'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseMissing('riwayat_pengembang', ['id' => $riwayat->id]);
+      $this->assertDatabaseMissing('riwayat_pengembangs', ['id' => $riwayat->id]);
     });
   });
 });

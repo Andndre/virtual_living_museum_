@@ -9,6 +9,7 @@ class VideoPeninggalan extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    protected $table = 'video_peninggalans';
 
     protected $fillable = [
         'judul',

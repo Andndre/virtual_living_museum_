@@ -9,6 +9,7 @@ class RiwayatPengembang extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    protected $table = 'riwayat_pengembangs';
 
     protected $fillable = [
         'judul',

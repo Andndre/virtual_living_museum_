@@ -37,11 +37,10 @@ describe('Materi Management', function () {
       $era = Era::factory()->create();
 
       $response = $this->actingAs($admin)->post(route('admin.materi.store'), [
-        'judul' => 'Test Materi',
         'era_id' => $era->era_id,
         'bab' => 1,
-        'urutan' => 1,
-        'konten' => 'Test konten materi',
+        'judul' => 'Test Materi',
+        'deskripsi' => 'Test deskripsi materi',
       ]);
 
       $response->assertRedirect(route('admin.materi'));
@@ -54,7 +53,7 @@ describe('Materi Management', function () {
 
       $response = $this->actingAs($admin)->post(route('admin.materi.store'), []);
 
-      $response->assertSessionHasErrors(['judul', 'konten']);
+      $response->assertSessionHasErrors(['era_id', 'bab', 'judul', 'deskripsi']);
     });
   });
 
@@ -87,17 +86,20 @@ describe('Materi Management', function () {
   describe('PUT /admin/materi/{id}', function () {
     it('updates materi successfully', function () {
       $admin = User::factory()->create(['role' => 'admin']);
-      $materi = Materi::factory()->create();
+      $era = Era::factory()->create();
+      $materi = Materi::factory()->create(['era_id' => $era->era_id]);
 
       $response = $this->actingAs($admin)->put(route('admin.materi.update', $materi->materi_id), [
+        'era_id' => $era->era_id,
+        'bab' => 1,
         'judul' => 'Updated Judul',
-        'konten' => 'Updated konten',
+        'deskripsi' => 'Updated deskripsi',
       ]);
 
       $response->assertRedirect(route('admin.materi'));
       $response->assertSessionHas('success');
       $this->assertDatabaseHas('materi', [
-        'id' => $materi->materi_id,
+        'materi_id' => $materi->materi_id,
         'judul' => 'Updated Judul',
       ]);
     });
@@ -119,17 +121,18 @@ describe('Materi Management', function () {
   describe('POST /admin/materi/update-order', function () {
     it('updates materi order successfully', function () {
       $admin = User::factory()->create(['role' => 'admin']);
-      $materi1 = Materi::factory()->create();
-      $materi2 = Materi::factory()->create();
+      $era = Era::factory()->create();
+      $materi1 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 1]);
+      $materi2 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 2]);
 
       $response = $this->actingAs($admin)->post(route('admin.materi.update-order'), [
-        'order' => [
-          ['materi_id' => $materi1->materi_id, 'urutan' => 2],
-          ['materi_id' => $materi2->materi_id, 'urutan' => 1],
+        'items' => [
+          ['id' => $materi1->materi_id, 'position' => 2],
+          ['id' => $materi2->materi_id, 'position' => 1],
         ],
       ]);
 
-      $response->assertJson(['success' => true]);
+      $response->assertJson(['message' => 'Urutan materi berhasil diperbarui!']);
     });
   });
 });

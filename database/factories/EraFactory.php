@@ -20,6 +20,7 @@ class EraFactory extends Factory
   public function definition(): array
   {
     return [
+      'kode' => fake()->unique()->lexify('?????'),
       'nama' => fake()->word(),
       'urutan' => fake()->numberBetween(1, 10),
       'rentang_waktu' => fake()->year().' - '.fake()->year(),

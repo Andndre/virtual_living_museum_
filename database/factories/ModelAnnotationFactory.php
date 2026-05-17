@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\ModelAnnotation;
-use App\Models\VirtualMuseumObject;
+use App\Models\VirtualMuseum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,12 +21,13 @@ class ModelAnnotationFactory extends Factory
   public function definition(): array
   {
     return [
-      'object_id' => VirtualMuseumObject::factory(),
+      'museum_id' => VirtualMuseum::factory(),
       'label' => fake()->word(),
       'position_x' => fake()->randomFloat(2, -10, 10),
       'position_y' => fake()->randomFloat(2, -10, 10),
       'position_z' => fake()->randomFloat(2, -10, 10),
-      'deskripsi' => fake()->sentence(),
+      'is_visible' => true,
+      'display_order' => 0,
     ];
   }
 }

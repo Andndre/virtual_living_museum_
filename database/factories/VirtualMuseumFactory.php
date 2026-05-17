@@ -23,7 +23,7 @@ class VirtualMuseumFactory extends Factory
     return [
       'nama' => fake()->company().' Virtual Museum',
       'situs_id' => SitusPeninggalan::factory(),
-      'path_obj' => null,
+      'path_obj' => 'virtual-museum/models/'.fake()->uuid().'.glb',
     ];
   }
 }

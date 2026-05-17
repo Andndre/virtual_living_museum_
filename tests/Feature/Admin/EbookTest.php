@@ -3,6 +3,7 @@
 use App\Models\Ebook;
 use App\Models\Materi;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 describe('Ebook Management', function () {
   describe('GET /admin/ebook/{materi_id}', function () {
@@ -35,9 +36,11 @@ describe('Ebook Management', function () {
       $admin = User::factory()->create(['role' => 'admin']);
       $materi = Materi::factory()->create();
 
+      $file = UploadedFile::fake()->create('ebook.pdf', 100, 'application/pdf');
+
       $response = $this->actingAs($admin)->post(route('admin.ebook.store', $materi->materi_id), [
         'judul' => 'Test Ebook',
-        'path_file' => 'test/path.pdf',
+        'path_file' => $file,
       ]);
 
       $response->assertRedirect(route('admin.ebook', $materi->materi_id));
@@ -74,9 +77,11 @@ describe('Ebook Management', function () {
       $materi = Materi::factory()->create();
       $ebook = Ebook::factory()->create(['materi_id' => $materi->materi_id]);
 
+      $file = UploadedFile::fake()->create('ebook.pdf', 100, 'application/pdf');
+
       $response = $this->actingAs($admin)->put(route('admin.ebook.update', [$materi->materi_id, $ebook->ebook_id]), [
         'judul' => 'Updated Ebook Title',
-        'path_file' => 'updated/path.pdf',
+        'path_file' => $file,
       ]);
 
       $response->assertRedirect(route('admin.ebook', $materi->materi_id));

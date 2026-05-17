@@ -20,10 +20,9 @@ class RiwayatPengembangFactory extends Factory
   public function definition(): array
   {
     return [
-      'nama' => fake()->name(),
-      'peran' => fake()->jobTitle(),
-      'tahun' => fake()->year(),
-      'deskripsi' => fake()->paragraph(),
+      'judul' => fake()->sentence(3),
+      'tahun' => fake()->date(),
+      'tahun_selesai' => fake()->optional()->date(),
     ];
   }
 }

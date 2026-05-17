@@ -26,8 +26,10 @@ class VirtualMuseumObjectFactory extends Factory
       'situs_id' => SitusPeninggalan::factory(),
       'nama' => fake()->word().' Artifact',
       'deskripsi' => fake()->paragraph(),
-      'path_model' => null,
-      'thumbnail' => null,
+      'path_obj' => 'virtual-museum/objects/models/'.fake()->uuid().'.glb',
+      'gambar_real' => 'images/'.fake()->uuid().'.jpg',
+      'path_gambar_marker' => 'markers/'.fake()->uuid().'.png',
+      'path_patt' => 'patterns/'.fake()->uuid().'.patt',
       'path_audio' => null,
     ];
   }

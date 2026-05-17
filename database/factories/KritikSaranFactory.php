@@ -22,8 +22,7 @@ class KritikSaranFactory extends Factory
   {
     return [
       'user_id' => User::factory(),
-      'subjek' => fake()->sentence(3),
-      'kritik_saran' => fake()->paragraph(),
+      'pesan' => fake()->paragraph(),
     ];
   }
 }

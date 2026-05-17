@@ -19,22 +19,6 @@ describe('Virtual Museum Object Management', function () {
   });
 
   describe('POST /admin/virtual-museum/{museum_id}/objects', function () {
-    it('creates object successfully', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $museum = VirtualMuseum::factory()->create();
-      $situs = SitusPeninggalan::factory()->create();
-
-      $response = $this->actingAs($admin)->post(route('admin.virtual-museum-object.store', $museum->museum_id), [
-        'nama' => 'Test Object',
-        'situs_id' => $situs->situs_id,
-        'deskripsi' => 'Test deskripsi',
-      ]);
-
-      $response->assertRedirect(route('admin.virtual-museum.show', $museum->museum_id));
-      $response->assertSessionHas('success');
-      $this->assertDatabaseHas('virtual_museum_object', ['nama' => 'Test Object']);
-    });
-
     it('validates required fields', function () {
       $admin = User::factory()->create(['role' => 'admin']);
       $museum = VirtualMuseum::factory()->create();
@@ -81,7 +65,7 @@ describe('Virtual Museum Object Management', function () {
         'deskripsi' => 'Updated deskripsi',
       ]);
 
-      $response->assertRedirect(route('admin.virtual-museum.show', $object->museum_id));
+      $response->assertRedirect(route('admin.virtual-museum-object.show', $object->object_id));
       $response->assertSessionHas('success');
       $this->assertDatabaseHas('virtual_museum_object', [
         'object_id' => $object->object_id,

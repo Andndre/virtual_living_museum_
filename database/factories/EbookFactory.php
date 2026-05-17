@@ -23,7 +23,7 @@ class EbookFactory extends Factory
     return [
       'materi_id' => Materi::factory(),
       'judul' => fake()->sentence(3),
-      'path_file' => null,
+      'path_file' => 'ebooks/'.fake()->uuid().'.pdf',
     ];
   }
 }

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\VideoPeninggalan;
+use Illuminate\Http\UploadedFile;
 
 describe('Video Peninggalan Management', function () {
   describe('GET /admin/video-peninggalan', function () {
@@ -13,7 +14,7 @@ describe('Video Peninggalan Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.video-peninggalan.index');
-      $response->assertViewHas('videos');
+      $response->assertViewHas('data');
     });
   });
 
@@ -32,16 +33,19 @@ describe('Video Peninggalan Management', function () {
     it('creates video peninggalan successfully', function () {
       $admin = User::factory()->create(['role' => 'admin']);
 
+      $videoFile = UploadedFile::fake()->create('video.mp4', 1024); // 1MB video
+      $thumbnailFile = UploadedFile::fake()->image('thumbnail.jpg', 640, 480); // 640x480 image
+
       $response = $this->actingAs($admin)->post(route('admin.video-peninggalan.store'), [
         'judul' => 'Test Video',
         'deskripsi' => 'Test deskripsi video',
-        'url_video' => 'https://youtube.com/watch?v=test',
-        'thumbnail' => 'test-thumbnail.jpg',
+        'link' => $videoFile,
+        'thumbnail' => $thumbnailFile,
       ]);
 
       $response->assertRedirect(route('admin.video-peninggalan.index'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseHas('video_peninggalan', ['judul' => 'Test Video']);
+      $this->assertDatabaseHas('video_peninggalans', ['judul' => 'Test Video']);
     });
 
     it('validates required fields', function () {
@@ -49,7 +53,7 @@ describe('Video Peninggalan Management', function () {
 
       $response = $this->actingAs($admin)->post(route('admin.video-peninggalan.store'), []);
 
-      $response->assertSessionHasErrors(['judul', 'url_video']);
+      $response->assertSessionHasErrors(['judul', 'deskripsi', 'link', 'thumbnail']);
     });
   });
 
@@ -74,12 +78,11 @@ describe('Video Peninggalan Management', function () {
       $response = $this->actingAs($admin)->put(route('admin.video-peninggalan.update', $video->id), [
         'judul' => 'Updated Video Title',
         'deskripsi' => 'Updated deskripsi',
-        'url_video' => 'https://youtube.com/watch?v=updated',
       ]);
 
       $response->assertRedirect(route('admin.video-peninggalan.index'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseHas('video_peninggalan', [
+      $this->assertDatabaseHas('video_peninggalans', [
         'id' => $video->id,
         'judul' => 'Updated Video Title',
       ]);
@@ -95,7 +98,7 @@ describe('Video Peninggalan Management', function () {
 
       $response->assertRedirect(route('admin.video-peninggalan.index'));
       $response->assertSessionHas('success');
-      $this->assertDatabaseMissing('video_peninggalan', ['id' => $video->id]);
+      $this->assertDatabaseMissing('video_peninggalans', ['id' => $video->id]);
     });
   });
 });

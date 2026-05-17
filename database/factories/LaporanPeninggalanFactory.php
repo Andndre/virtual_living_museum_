@@ -22,13 +22,11 @@ class LaporanPeninggalanFactory extends Factory
   {
     return [
       'user_id' => User::factory(),
-      'nama' => fake()->name(),
+      'nama_peninggalan' => fake()->sentence(2),
       'alamat' => fake()->address(),
       'lat' => fake()->latitude(-8, -6),
       'lng' => fake()->longitude(110, 112),
       'deskripsi' => fake()->paragraph(),
-      'gambar' => null,
-      'status' => 'pending',
     ];
   }
 }

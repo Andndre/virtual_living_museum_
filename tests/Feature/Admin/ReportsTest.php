@@ -14,7 +14,7 @@ describe('Reports Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.reports');
-      $response->assertViewHas('laporans');
+      $response->assertViewHas('reports');
     });
   });
 
@@ -28,7 +28,7 @@ describe('Reports Management', function () {
 
       $response->assertStatus(200);
       $response->assertViewIs('admin.reports.show');
-      $response->assertViewHas('laporan');
+      $response->assertViewHas('report');
     });
   });
 

@@ -22,8 +22,8 @@ class VideoPeninggalanFactory extends Factory
     return [
       'judul' => fake()->sentence(3),
       'deskripsi' => fake()->paragraph(),
-      'url_video' => 'https://youtube.com/watch?v='.fake()->uuid(),
-      'thumbnail' => fake()->word().'.jpg',
+      'link' => 'videos/'.fake()->uuid().'.mp4',
+      'thumbnail' => 'thumbnails/'.fake()->uuid().'.jpg',
     ];
   }
 }
