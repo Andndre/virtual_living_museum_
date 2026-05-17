@@ -47,12 +47,12 @@
                 @endforeach
             </div>
         @else
-            <div class="text-center py-12">
-                <i class="fas fa-video text-gray-400 text-6xl mb-4"></i>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada video peninggalan</h3>
-                <p class="text-sm text-gray-500">
-                    Video peninggalan akan muncul di sini ketika tersedia.
-                </p>
+            <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                    <i class="fas fa-video text-2xl text-gray-400"></i>
+                </div>
+                <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Video</h3>
+                <p class="text-gray-600">Video peninggalan akan muncul di sini ketika tersedia.</p>
             </div>
         @endif
     </div>
