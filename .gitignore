@@ -24,3 +24,4 @@ yarn-error.log
 dokumen_pendukung/
 template_prompt_issue.md
 template_prompt_analisis_fitur_issue.md
+.playwright-mcp/
