@@ -57,8 +57,12 @@
                     @endforeach
                 </div>
             @else
-                <div class="bg-gray-50 rounded-lg p-6 text-center">
-                    <p class="text-gray-500">{{ __('app.no_feedback_history') }}</p>
+                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                        <i class="fas fa-comment-dots text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Feedback</h3>
+                    <p class="text-gray-600">{{ __('app.no_feedback_history') }}</p>
                 </div>
             @endif
         </div>
