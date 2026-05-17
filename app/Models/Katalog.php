@@ -2,24 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Database\Factories\KatalogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class Katalog extends Model
 {
-    /** @use HasFactory<\Database\Factories\KatalogFactory> */
+    /** @use HasFactory<KatalogFactory> */
     use HasFactory;
+
     protected $fillable = [
         'path_pdf',
     ];
 
     // Accessor biar bisa pakai $katalog->pdf_url di blade
-    public function getPdfUrlAttribute()
+    public function getPdfUrlAttribute(): ?string
     {
-        return $this->path_pdf
-            ? Storage::disk('public')->url($this->path_pdf)
-            : null;
+        if (! $this->path_pdf) {
+            return null;
+        }
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        return $disk->url($this->path_pdf);
     }
 
     // Accessor biar dapat ukuran file dengan mudah
