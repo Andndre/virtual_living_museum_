@@ -42,12 +42,9 @@ class KatalogController extends Controller
             }
 
             // Store new file
-            $filename = 'katalog-' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'katalog-'.time().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('katalog', $filename, 'public');
             $katalog->path_pdf = $path;
-        } elseif (!$katalog->exists) {
-            // Only require file for new records
-            return back()->with('error', 'Silakan unggah file PDF');
         }
 
         $katalog->save();

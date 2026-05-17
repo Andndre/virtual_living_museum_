@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property bool|mixed $is_unlocked
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class VirtualMuseum extends Model
 {
+    /** @use HasFactory<\Database\Factories\VirtualMuseumFactory> */
+    use HasFactory;
     protected $table = 'virtual_museum';
 
     protected $primaryKey = 'museum_id';

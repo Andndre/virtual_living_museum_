@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property bool|mixed $is_unlocked
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class SitusPeninggalan extends Model
 {
+    /** @use HasFactory<\Database\Factories\SitusPeninggalanFactory> */
+    use HasFactory;
     public $timestamps = false;
 
     protected $table = 'situs_peninggalan';
@@ -73,7 +76,7 @@ class SitusPeninggalan extends Model
     public function getThumbnailUrlAttribute(): string
     {
         if ($this->thumbnail) {
-            return asset('storage/' . $this->thumbnail);
+            return asset('storage/'.$this->thumbnail);
         }
 
         return asset('images/placeholder/default-situs.png');

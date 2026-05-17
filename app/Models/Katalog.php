@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 
 class Katalog extends Model
 {
+    /** @use HasFactory<\Database\Factories\KatalogFactory> */
+    use HasFactory;
     protected $fillable = [
         'path_pdf',
     ];
@@ -23,7 +26,7 @@ class Katalog extends Model
     public function getFileSizeAttribute()
     {
         if ($this->path_pdf && Storage::disk('public')->exists($this->path_pdf)) {
-            return round(Storage::disk('public')->size($this->path_pdf) / 1024 / 1024, 2) . ' MB';
+            return round(Storage::disk('public')->size($this->path_pdf) / 1024 / 1024, 2).' MB';
         }
 
         return null;
