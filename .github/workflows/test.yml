@@ -23,6 +23,11 @@ jobs:
       - name: Copy .env
         run: cp .env.example .env
 
+      - name: Set Environment Variables
+        run: |
+          echo "APP_TOKEN_SECRET=ci-test-token-secret-key-32chars" >> .env
+          echo "APP_TIMEZONE=Asia/Makassar" >> .env
+
       - name: Install Dependencies
         run: |
           composer install --no-interaction
