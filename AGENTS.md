@@ -64,10 +64,16 @@ TokenHelper::verify($token);  // returns userId or false
 
 Use `ArTokenAuth` middleware for stateless AR routes.
 
+**Token Secret Required**: `TokenHelper::generate()` uses `Config::get('app.token_secret')` but this key is NOT in `config/app.php`. Add to `.env`:
+
+```env
+APP_TOKEN_SECRET=<32+ random characters>
+```
+
+**Timezone**: Project uses `Asia/Makassar` (UTC+8), not UTC. Token expiry calculations use `Carbon::now()->timestamp` which respects this timezone.
+
 ## Common Pitfalls
 
-- Using `$table->id()` instead of `$table->id('materi_id')`
-- Bundling AR code with Vite (keep in `/public/assets/js/`)
-- Missing `onDelete('cascade')` on foreign keys
-- English naming in database
-- Assuming soft deletes exist
+- Using English table/column names instead of Indonesian
+- Assuming soft deletes exist (this project uses hard deletes only)
+- Using `migrate:rollback` on `2026_03_16_000003_reset_user_progress_levels.php` — its `down()` method is empty, previous progress values cannot be restored
