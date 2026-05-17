@@ -61,14 +61,21 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
-        // Monthly user registrations (last 6 months)
+        // Monthly user registrations (last 6 months) - compatible with MySQL and SQLite
         $monthlyUsers = User::where('role', 'user')
-            ->select(DB::raw('COUNT(*) as count'), DB::raw('MONTH(created_at) as month'), DB::raw('YEAR(created_at) as year'))
             ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('YEAR(created_at)'))
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy(function ($user) {
+                return $user->created_at->format('Y-m');
+            })
+            ->map(fn ($group) => (object) [
+                'count' => $group->count(),
+                'month' => (int) $group->first()->created_at->format('n'),
+                'year' => (int) $group->first()->created_at->format('Y'),
+            ])
+            ->sortByDesc(fn ($item) => $item->year * 100 + $item->month)
+            ->values();
 
         return view('admin.dashboard', compact(
             'stats',
