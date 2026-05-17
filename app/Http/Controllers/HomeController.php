@@ -10,8 +10,10 @@ use App\Models\Katalog;
 use App\Models\LogAktivitas;
 use App\Models\Materi;
 use App\Models\MuseumUserVisit;
+use App\Models\RiwayatPengembang;
 use App\Models\SitusPeninggalan;
 use App\Models\User;
+use App\Models\VideoPeninggalan;
 use App\Models\VirtualMuseum;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,7 +29,7 @@ class HomeController extends Controller
         $user = Auth::user();
 
         // Check if profile is complete
-        $profileComplete = !empty($user->phone_number) && !empty($user->address) && !empty($user->date_of_birth);
+        $profileComplete = ! empty($user->phone_number) && ! empty($user->address) && ! empty($user->date_of_birth);
 
         return view('guest.home', compact('greeting', 'profileComplete'));
     }
@@ -140,7 +142,7 @@ class HomeController extends Controller
 
     public function pengembang(Request $request)
     {
-        $riwayatPengembang = \App\Models\RiwayatPengembang::orderBy('tahun', 'desc')->get();
+        $riwayatPengembang = RiwayatPengembang::orderBy('tahun', 'desc')->get();
 
         return view('guest.pengembang', compact('riwayatPengembang'));
     }
@@ -268,7 +270,7 @@ class HomeController extends Controller
         $progressPercentage = $totalMateri > 0 ? round(($completedMateri / $totalMateri) * 100) : 0;
 
         $nextMateri = $materis->first(function ($materi) {
-            return $materi->is_available && !$materi->is_completed;
+            return $materi->is_available && ! $materi->is_completed;
         });
 
         $riwayatAktivitas = LogAktivitas::where('user_id', $user->id)
@@ -451,11 +453,11 @@ class HomeController extends Controller
     private function isPretestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (!$materi) {
+        if (! $materi) {
             return false;
         }
         $user = User::find($user_id);
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -522,7 +524,7 @@ class HomeController extends Controller
         // Seharusnya ini akan selalu True untuk sekarang
         // karena pretest tidak bisa diulang
         // Skip in demo mode — exploration only, no progress tracking
-        if (!env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 1)) {
+        if (! env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 1)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul}");
         }
@@ -552,7 +554,7 @@ class HomeController extends Controller
         $materi = Materi::with('posttest')->findOrFail($materi_id);
 
         // Check if pretest is completed (requirement for posttest)
-        if (!$this->isPretestCompleted($user->id, $materi_id)) {
+        if (! $this->isPretestCompleted($user->id, $materi_id)) {
             return redirect()->route('guest.elearning.materi', $materi_id)
                 ->with('error', 'Selesaikan pretest terlebih dahulu.');
         }
@@ -638,7 +640,7 @@ class HomeController extends Controller
 
         // Increment user progress if needed
         // Skip in demo mode — exploration only, no progress tracking
-        if (!env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 4)) {
+        if (! env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 4)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul}");
         }
@@ -684,7 +686,7 @@ class HomeController extends Controller
         }
 
         // Log AR activity
-        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: ' . $museum->nama . ' di ' . $situs->nama);
+        $this->logActivity($user->id, 'Memulai pengalaman AR untuk spot: '.$museum->nama.' di '.$situs->nama);
 
         // --- Museum Visit Tracking Logic ---
         // 1. Catat kunjungan user ke museum ini (jika belum ada)
@@ -715,9 +717,9 @@ class HomeController extends Controller
             // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
             // Skip in demo mode — exploration only, no progress tracking
             if (count($allMuseumIds) > 0 && count($visitedMuseumIds) === count($allMuseumIds)) {
-                if (!env('APP_DEMO_MODE', false) && $user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
+                if (! env('APP_DEMO_MODE', false) && $user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
                     $user->incrementProgressLevel();
-                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: ' . $materiId);
+                    $this->logActivity($user->id, 'Menuntaskan semua spot Virtual Living Museum pada materi ID: '.$materiId);
                 }
             }
         }
@@ -739,7 +741,7 @@ class HomeController extends Controller
         $katalog = Katalog::first();
         //      download katalog
         if ($katalog->path_pdf && Storage::disk('public')->exists($katalog->path_pdf)) {
-            return response()->download(storage_path('app/public/' . $katalog->path_pdf));
+            return response()->download(storage_path('app/public/'.$katalog->path_pdf));
         }
 
         //      not found
@@ -756,19 +758,19 @@ class HomeController extends Controller
 
         // Check if user has completed pretest for this materi
         $pretestCompleted = $this->isPretestCompleted($user->id, $ebook->materi_id);
-        if (!$pretestCompleted) {
+        if (! $pretestCompleted) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'Anda harus menyelesaikan pre-test terlebih dahulu untuk mengakses e-book ini.');
         }
 
         // Check if file exists
-        if (!$ebook->path_file || !file_exists(storage_path('app/public/' . $ebook->path_file))) {
+        if (! $ebook->path_file || ! file_exists(storage_path('app/public/'.$ebook->path_file))) {
             return redirect()->route('guest.elearning.materi', $ebook->materi_id)
                 ->with('error', 'File e-book tidak ditemukan.');
         }
 
         // Log activity with ebook_id for tracking
-        $this->logActivity($user->id, 'Telah membaca E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
+        $this->logActivity($user->id, 'Telah membaca E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
 
         // Catatan: Progress level akan diupdate via AJAX saat user membaca halaman terakhir (lihat endpoint di bawah)
 
@@ -787,13 +789,13 @@ class HomeController extends Controller
         // Cek apakah user sudah pada step EBOOK dan materi yang benar
         $materi = $ebook->materi;
         // Skip in demo mode — exploration only, no progress tracking
-        if (!env('APP_DEMO_MODE', false) && $materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
+        if (! env('APP_DEMO_MODE', false) && $materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
             // Increment progress ke EBOOK
             $user->incrementProgressLevel();
         }
 
         // Log aktivitas jika perlu
-        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: ' . $ebook->judul . ' [ebook_id:' . $ebook->ebook_id . ']');
+        $this->logActivity($user->id, 'Menuntaskan semua halaman E-Book: '.$ebook->judul.' [ebook_id:'.$ebook->ebook_id.']');
 
         return response()->json(['success' => true]);
     }
@@ -862,11 +864,11 @@ class HomeController extends Controller
     private function isPosttestCompleted($user_id, $materi_id)
     {
         $materi = Materi::find($materi_id);
-        if (!$materi) {
+        if (! $materi) {
             return false;
         }
         $user = User::find($user_id);
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -884,12 +886,12 @@ class HomeController extends Controller
      */
     private function isMateriCompleted($user_id, $materi_id)
     {
-        if (!$materi_id) {
+        if (! $materi_id) {
             return true;
         }
 
         $materi = Materi::with(['pretest', 'posttest'])->find($materi_id);
-        if (!$materi) {
+        if (! $materi) {
             return false;
         }
 
@@ -905,7 +907,8 @@ class HomeController extends Controller
      */
     public function videoPeninggalan(Request $request)
     {
-        $videos = \App\Models\VideoPeninggalan::all();
+        $videos = VideoPeninggalan::all();
+
         return view('guest.video-peninggalan.index', compact('videos'));
     }
 
@@ -914,7 +917,8 @@ class HomeController extends Controller
      */
     public function videoPeninggalanShow(Request $request, $id)
     {
-        $video = \App\Models\VideoPeninggalan::findOrFail($id);
+        $video = VideoPeninggalan::findOrFail($id);
+
         return view('guest.video-peninggalan.show', compact('video'));
     }
 }

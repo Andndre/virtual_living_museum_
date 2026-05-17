@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 class ChunkUploadController extends Controller
 {
     private const CHUNK_DIR = 'chunked-uploads';
+
     private const MAX_CHUNK_AGE_HOURS = 24;
 
     /**
@@ -51,6 +53,7 @@ class ChunkUploadController extends Controller
             $expectedTotal = $this->getExpectedTotalChunks($uuid, $fieldName);
             if ($expectedTotal !== null && $expectedTotal !== $totalChunks) {
                 $this->cleanup($uuid, $fieldName);
+
                 return response()->json(['error' => 'Chunk count mismatch.'], 422);
             }
         }
@@ -100,6 +103,7 @@ class ChunkUploadController extends Controller
                 'chunkDirFull' => $chunkDirFull,
                 'is_dir' => is_dir($chunkDirFull),
             ]);
+
             return response()->json(['error' => 'No chunks found.'], 404);
         }
 
@@ -124,6 +128,7 @@ class ChunkUploadController extends Controller
         if ($header !== 'glTF') {
             File::delete($tempMergedPath);
             $this->cleanup($uuid, $fieldName);
+
             return response()->json(['error' => 'File is not a valid GLB.'], 422);
         }
 
@@ -139,7 +144,7 @@ class ChunkUploadController extends Controller
         File::delete($tempMergedPath);
         $this->cleanup($uuid, $fieldName);
 
-        Log::info("Chunked upload finalized", [
+        Log::info('Chunked upload finalized', [
             'uuid' => $uuid,
             'fieldName' => $fieldName,
             'finalPath' => $finalPath,
@@ -229,7 +234,7 @@ class ChunkUploadController extends Controller
         return self::CHUNK_DIR.'/'.$uuid.'/'.$fieldName;
     }
 
-    private function getSortedChunks(string $uuid, string $fieldName): \Illuminate\Support\Collection
+    private function getSortedChunks(string $uuid, string $fieldName): Collection
     {
         $chunkDir = storage_path($this->getChunkDir($uuid, $fieldName));
         if (! is_dir($chunkDir)) {
@@ -246,6 +251,7 @@ class ChunkUploadController extends Controller
         $metaFile = storage_path($this->getChunkDir($uuid, $fieldName).'/meta.txt');
         if (File::exists($metaFile)) {
             $meta = json_decode(File::get($metaFile), true);
+
             return $meta['totalChunks'] ?? null;
         }
 

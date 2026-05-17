@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\User;
 
-use App\Helper\TokenHelper;
 use App\Models\SitusPeninggalan;
 use App\Models\User;
-use App\Models\VirtualMuseum;
 
 test('situs detail page renders successfully', function () {
     $user = User::factory()->create(['role' => 'user']);

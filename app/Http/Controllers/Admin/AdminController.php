@@ -15,6 +15,7 @@ use App\Models\Posttest;
 use App\Models\Pretest;
 use App\Models\RiwayatPengembang;
 use App\Models\SitusPeninggalan;
+use App\Models\Tugas;
 use App\Models\User;
 use App\Models\VirtualMuseum;
 use App\Models\VirtualMuseumObject;
@@ -438,7 +439,9 @@ class AdminController extends Controller
             // Stream-based GLB magic bytes check (reads only 4 bytes, not whole file)
             $handle = fopen($file->getRealPath(), 'rb');
             $header = $handle ? fread($handle, 4) : false;
-            if ($handle) fclose($handle);
+            if ($handle) {
+                fclose($handle);
+            }
             if ($header !== 'glTF') {
                 throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
             }
@@ -534,7 +537,9 @@ class AdminController extends Controller
                 // Stream-based GLB magic bytes check
                 $handle = fopen($file->getRealPath(), 'rb');
                 $header = $handle ? fread($handle, 4) : false;
-                if ($handle) fclose($handle);
+                if ($handle) {
+                    fclose($handle);
+                }
                 if ($header !== 'glTF') {
                     throw ValidationException::withMessages(['obj_file' => 'File model bukan GLB yang valid.']);
                 }
@@ -1520,7 +1525,7 @@ class AdminController extends Controller
             $tugasData['gambar'] = $path;
         }
 
-        $tugas = \App\Models\Tugas::create($tugasData);
+        $tugas = Tugas::create($tugasData);
 
         return redirect()->route('admin.tugas', $materi_id)
             ->with('success', 'Tugas berhasil ditambahkan');
@@ -1532,7 +1537,7 @@ class AdminController extends Controller
     public function editTugas($materi_id, $tugas_id)
     {
         $materi = Materi::findOrFail($materi_id);
-        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+        $tugas = Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
 
@@ -1544,7 +1549,7 @@ class AdminController extends Controller
      */
     public function updateTugas(Request $request, $materi_id, $tugas_id)
     {
-        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+        $tugas = Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
 
@@ -1579,7 +1584,7 @@ class AdminController extends Controller
      */
     public function destroyTugas($materi_id, $tugas_id)
     {
-        $tugas = \App\Models\Tugas::where('materi_id', $materi_id)
+        $tugas = Tugas::where('materi_id', $materi_id)
             ->where('tugas_id', $tugas_id)
             ->firstOrFail();
 

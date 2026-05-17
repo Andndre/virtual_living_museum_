@@ -3,7 +3,6 @@
 namespace Tests\Feature\User;
 
 use App\Models\Era;
-use App\Models\Materi;
 use App\Models\User;
 
 test('kunjungi peninggalan index page renders successfully', function () {

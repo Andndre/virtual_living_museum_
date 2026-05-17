@@ -7,38 +7,38 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 abstract class AdminTestCase extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
 
-  protected User $admin;
+    protected User $admin;
 
-  protected function setUp(): void
-  {
-    parent::setUp();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-    // Create admin user for authentication
-    $this->admin = User::factory()->create([
-      'role' => 'admin',
-    ]);
+        // Create admin user for authentication
+        $this->admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
 
-    // Login as admin
-    $this->actingAs($this->admin);
-  }
+        // Login as admin
+        $this->actingAs($this->admin);
+    }
 
-  /**
-   * Create a regular user for testing user-related operations
-   */
-  protected function createUser(array $attributes = []): User
-  {
-    return User::factory()->create(array_merge([
-      'role' => 'user',
-    ], $attributes));
-  }
+    /**
+     * Create a regular user for testing user-related operations
+     */
+    protected function createUser(array $attributes = []): User
+    {
+        return User::factory()->create(array_merge([
+            'role' => 'user',
+        ], $attributes));
+    }
 
-  /**
-   * Assert that the response redirects to login (unauthenticated)
-   */
-  protected function assertGuestRedirect(): void
-  {
-    $this->assertGuest();
-  }
+    /**
+     * Assert that the response redirects to login (unauthenticated)
+     */
+    protected function assertGuestRedirect(): void
+    {
+        $this->assertGuest();
+    }
 }

@@ -6,21 +6,21 @@ use App\Models\Katalog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Katalog>
+ * @extends Factory<Katalog>
  */
 class KatalogFactory extends Factory
 {
-  protected $model = Katalog::class;
+    protected $model = Katalog::class;
 
-  /**
-   * Define the model's default state.
-   *
-   * @return array<string, mixed>
-   */
-  public function definition(): array
-  {
-    return [
-      'path_pdf' => null,
-    ];
-  }
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'path_pdf' => null,
+        ];
+    }
 }

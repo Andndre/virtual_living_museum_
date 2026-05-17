@@ -5,134 +5,134 @@ use App\Models\Materi;
 use App\Models\User;
 
 describe('Materi Management', function () {
-  describe('GET /admin/materi', function () {
-    it('displays materi list to admin', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $era = Era::factory()->create();
-      Materi::factory()->count(3)->create(['era_id' => $era->era_id]);
+    describe('GET /admin/materi', function () {
+        it('displays materi list to admin', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $era = Era::factory()->create();
+            Materi::factory()->count(3)->create(['era_id' => $era->era_id]);
 
-      $response = $this->actingAs($admin)->get(route('admin.materi'));
+            $response = $this->actingAs($admin)->get(route('admin.materi'));
 
-      $response->assertStatus(200);
-      $response->assertViewIs('admin.materi.index');
-      $response->assertViewHas('materis');
-    });
-  });
-
-  describe('GET /admin/materi/create', function () {
-    it('displays materi create form', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      Era::factory()->count(2)->create();
-
-      $response = $this->actingAs($admin)->get(route('admin.materi.create'));
-
-      $response->assertStatus(200);
-      $response->assertViewIs('admin.materi.create');
-    });
-  });
-
-  describe('POST /admin/materi', function () {
-    it('creates materi successfully', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $era = Era::factory()->create();
-
-      $response = $this->actingAs($admin)->post(route('admin.materi.store'), [
-        'era_id' => $era->era_id,
-        'bab' => 1,
-        'judul' => 'Test Materi',
-        'deskripsi' => 'Test deskripsi materi',
-      ]);
-
-      $response->assertRedirect(route('admin.materi'));
-      $response->assertSessionHas('success');
-      $this->assertDatabaseHas('materi', ['judul' => 'Test Materi']);
+            $response->assertStatus(200);
+            $response->assertViewIs('admin.materi.index');
+            $response->assertViewHas('materis');
+        });
     });
 
-    it('validates required fields', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
+    describe('GET /admin/materi/create', function () {
+        it('displays materi create form', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            Era::factory()->count(2)->create();
 
-      $response = $this->actingAs($admin)->post(route('admin.materi.store'), []);
+            $response = $this->actingAs($admin)->get(route('admin.materi.create'));
 
-      $response->assertSessionHasErrors(['era_id', 'bab', 'judul', 'deskripsi']);
+            $response->assertStatus(200);
+            $response->assertViewIs('admin.materi.create');
+        });
     });
-  });
 
-  describe('GET /admin/materi/{id}', function () {
-    it('displays materi details', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $materi = Materi::factory()->create();
+    describe('POST /admin/materi', function () {
+        it('creates materi successfully', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $era = Era::factory()->create();
 
-      $response = $this->actingAs($admin)->get(route('admin.materi.show', $materi->materi_id));
+            $response = $this->actingAs($admin)->post(route('admin.materi.store'), [
+                'era_id' => $era->era_id,
+                'bab' => 1,
+                'judul' => 'Test Materi',
+                'deskripsi' => 'Test deskripsi materi',
+            ]);
 
-      $response->assertStatus(200);
-      $response->assertViewIs('admin.materi.show');
-      $response->assertViewHas('materi');
+            $response->assertRedirect(route('admin.materi'));
+            $response->assertSessionHas('success');
+            $this->assertDatabaseHas('materi', ['judul' => 'Test Materi']);
+        });
+
+        it('validates required fields', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+
+            $response = $this->actingAs($admin)->post(route('admin.materi.store'), []);
+
+            $response->assertSessionHasErrors(['era_id', 'bab', 'judul', 'deskripsi']);
+        });
     });
-  });
 
-  describe('GET /admin/materi/{id}/edit', function () {
-    it('displays materi edit form', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $materi = Materi::factory()->create();
+    describe('GET /admin/materi/{id}', function () {
+        it('displays materi details', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $materi = Materi::factory()->create();
 
-      $response = $this->actingAs($admin)->get(route('admin.materi.edit', $materi->materi_id));
+            $response = $this->actingAs($admin)->get(route('admin.materi.show', $materi->materi_id));
 
-      $response->assertStatus(200);
-      $response->assertViewIs('admin.materi.edit');
-      $response->assertViewHas('materi');
+            $response->assertStatus(200);
+            $response->assertViewIs('admin.materi.show');
+            $response->assertViewHas('materi');
+        });
     });
-  });
 
-  describe('PUT /admin/materi/{id}', function () {
-    it('updates materi successfully', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $era = Era::factory()->create();
-      $materi = Materi::factory()->create(['era_id' => $era->era_id]);
+    describe('GET /admin/materi/{id}/edit', function () {
+        it('displays materi edit form', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $materi = Materi::factory()->create();
 
-      $response = $this->actingAs($admin)->put(route('admin.materi.update', $materi->materi_id), [
-        'era_id' => $era->era_id,
-        'bab' => 1,
-        'judul' => 'Updated Judul',
-        'deskripsi' => 'Updated deskripsi',
-      ]);
+            $response = $this->actingAs($admin)->get(route('admin.materi.edit', $materi->materi_id));
 
-      $response->assertRedirect(route('admin.materi'));
-      $response->assertSessionHas('success');
-      $this->assertDatabaseHas('materi', [
-        'materi_id' => $materi->materi_id,
-        'judul' => 'Updated Judul',
-      ]);
+            $response->assertStatus(200);
+            $response->assertViewIs('admin.materi.edit');
+            $response->assertViewHas('materi');
+        });
     });
-  });
 
-  describe('DELETE /admin/materi/{id}', function () {
-    it('deletes materi successfully', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $materi = Materi::factory()->create();
+    describe('PUT /admin/materi/{id}', function () {
+        it('updates materi successfully', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $era = Era::factory()->create();
+            $materi = Materi::factory()->create(['era_id' => $era->era_id]);
 
-      $response = $this->actingAs($admin)->delete(route('admin.materi.destroy', $materi->materi_id));
+            $response = $this->actingAs($admin)->put(route('admin.materi.update', $materi->materi_id), [
+                'era_id' => $era->era_id,
+                'bab' => 1,
+                'judul' => 'Updated Judul',
+                'deskripsi' => 'Updated deskripsi',
+            ]);
 
-      $response->assertRedirect(route('admin.materi'));
-      $response->assertSessionHas('success');
-      $this->assertDatabaseMissing('materi', ['materi_id' => $materi->materi_id]);
+            $response->assertRedirect(route('admin.materi'));
+            $response->assertSessionHas('success');
+            $this->assertDatabaseHas('materi', [
+                'materi_id' => $materi->materi_id,
+                'judul' => 'Updated Judul',
+            ]);
+        });
     });
-  });
 
-  describe('POST /admin/materi/update-order', function () {
-    it('updates materi order successfully', function () {
-      $admin = User::factory()->create(['role' => 'admin']);
-      $era = Era::factory()->create();
-      $materi1 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 1]);
-      $materi2 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 2]);
+    describe('DELETE /admin/materi/{id}', function () {
+        it('deletes materi successfully', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $materi = Materi::factory()->create();
 
-      $response = $this->actingAs($admin)->post(route('admin.materi.update-order'), [
-        'items' => [
-          ['id' => $materi1->materi_id, 'position' => 2],
-          ['id' => $materi2->materi_id, 'position' => 1],
-        ],
-      ]);
+            $response = $this->actingAs($admin)->delete(route('admin.materi.destroy', $materi->materi_id));
 
-      $response->assertJson(['message' => 'Urutan materi berhasil diperbarui!']);
+            $response->assertRedirect(route('admin.materi'));
+            $response->assertSessionHas('success');
+            $this->assertDatabaseMissing('materi', ['materi_id' => $materi->materi_id]);
+        });
     });
-  });
+
+    describe('POST /admin/materi/update-order', function () {
+        it('updates materi order successfully', function () {
+            $admin = User::factory()->create(['role' => 'admin']);
+            $era = Era::factory()->create();
+            $materi1 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 1]);
+            $materi2 = Materi::factory()->create(['era_id' => $era->era_id, 'urutan' => 2]);
+
+            $response = $this->actingAs($admin)->post(route('admin.materi.update-order'), [
+                'items' => [
+                    ['id' => $materi1->materi_id, 'position' => 2],
+                    ['id' => $materi2->materi_id, 'position' => 1],
+                ],
+            ]);
+
+            $response->assertJson(['message' => 'Urutan materi berhasil diperbarui!']);
+        });
+    });
 });

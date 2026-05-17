@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\Ebook;
 use App\Models\Era;
 use App\Models\Materi;
 use App\Models\Pretest;
-use App\Models\Posttest;
 use App\Models\Tugas;
 use App\Models\User;
 

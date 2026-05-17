@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\SitusPeninggalanFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property bool|mixed $is_unlocked
@@ -13,8 +14,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class SitusPeninggalan extends Model
 {
-    /** @use HasFactory<\Database\Factories\SitusPeninggalanFactory> */
+    /** @use HasFactory<SitusPeninggalanFactory> */
     use HasFactory;
+
     public $timestamps = false;
 
     protected $table = 'situs_peninggalan';

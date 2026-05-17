@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\KritikSaran;
 use App\Models\User;
 
 test('kritik saran index page renders successfully', function () {

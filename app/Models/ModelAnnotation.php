@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModelAnnotation extends Model
 {
     use HasFactory;
+
     protected $table = 'model_annotations';
 
     protected $primaryKey = 'annotation_id';

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\EbookFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ebook extends Model
 {
-    /** @use HasFactory<\Database\Factories\EbookFactory> */
+    /** @use HasFactory<EbookFactory> */
     use HasFactory;
+
     protected $table = 'ebook';
 
     protected $primaryKey = 'ebook_id';
