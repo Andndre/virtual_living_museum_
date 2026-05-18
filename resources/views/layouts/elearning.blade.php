@@ -28,9 +28,7 @@
 
         <div class="md:ml-64 md:pl-1">
             <main class="pb-20 lg:pb-8">
-                <div class="mx-auto max-w-7xl">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </main>
         </div>
 
