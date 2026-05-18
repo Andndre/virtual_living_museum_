@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="px-6 py-6 bg-primary text-white">
+    <div class="bg-primary px-6 py-6 text-white">
         <div class="flex items-center">
             <button class="back-button mr-4">
                 <i class="fas fa-arrow-left text-xl"></i>
@@ -8,25 +8,25 @@
         </div>
     </div>
 
-    <div class="bg-gray-50 min-h-screen pt-6 px-6 pb-24">
+    <div class="min-h-screen bg-gray-50 px-6 pb-24 pt-6">
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="mb-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg">
+            <div class="mb-4 rounded-lg border border-green-200 bg-green-100 p-4 text-green-700">
                 {{ session('success') }}
             </div>
         @endif
 
         {{-- Form Section --}}
-        <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.send_feedback') }}</h2>
+        <div class="mb-6 rounded-lg bg-white p-5 shadow-sm">
+            <h2 class="mb-4 text-lg font-semibold text-gray-800">{{ __('app.send_feedback') }}</h2>
 
             <form action="{{ route('guest.kritik-saran.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
-                    <label for="pesan" class="block text-sm font-medium text-gray-700 mb-1">{{ __('app.message') }}</label>
+                    <label for="pesan"
+                        class="mb-1 block text-sm font-medium text-gray-700">{{ __('app.message') }}</label>
                     <textarea id="pesan" name="pesan" rows="4"
-                        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-primary focus:border-primary
-                        {{ $errors->has('pesan') ? 'border-red-500' : 'border-gray-300' }}"
+                        class="{{ $errors->has('pesan') ? 'border-red-500' : 'border-gray-300' }} w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-primary"
                         placeholder="{{ __('app.write_feedback_placeholder') }}">{{ old('pesan') }}</textarea>
                     @error('pesan')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -34,7 +34,8 @@
                 </div>
 
                 <div class="flex justify-end">
-                    <button type="submit" class="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-md transition-colors">
+                    <button type="submit"
+                        class="hover:bg-primary-dark rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors">
                         {{ __('app.send') }}
                     </button>
                 </div>
@@ -42,22 +43,23 @@
         </div>
 
         {{-- History Section --}}
-        <div class="bg-white rounded-lg shadow-sm p-5">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('app.feedback_history') }}</h2>
+        <div class="rounded-lg bg-white p-5 shadow-sm">
+            <h2 class="mb-4 text-lg font-semibold text-gray-800">{{ __('app.feedback_history') }}</h2>
 
             @if ($kritikSaran->count() > 0)
                 <div class="space-y-4">
                     @foreach ($kritikSaran as $item)
-                        <div class="border border-gray-200 p-4 rounded-lg">
-                            <div class="flex justify-between items-start">
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <div class="flex items-start justify-between">
                                 <p class="text-gray-800">{{ $item->pesan }}</p>
-                                <span class="text-xs text-gray-500">{{ $item->created_at->format('d M Y, H:i') }}</span>
+                                <span
+                                    class="text-xs text-gray-500">{{ $item->created_at->format('d M Y, H:i') }}</span>
                             </div>
                         </div>
                     @endforeach
                 </div>
             @else
-                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                <div class="p-12 text-center">
                     <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                         <i class="fas fa-comment-dots text-2xl text-gray-400"></i>
                     </div>
