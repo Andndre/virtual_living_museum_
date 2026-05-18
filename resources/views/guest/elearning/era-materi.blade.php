@@ -17,12 +17,12 @@
             </a>
         </div>
 
-        <p class="text-sm text-blue-100">Daftar materi pada era</p>
+        <p class="text-sm text-blue-100">{{ __('app.era_materials_list') }}</p>
         <h1 class="mt-1 text-2xl font-bold">
             @if ($era)
                 Era {{ $era->kode }}. {{ $era->nama }}
             @else
-                Materi Lainnya
+                {{ __('app.other_materials') }}
             @endif
         </h1>
 
@@ -33,7 +33,7 @@
         <div class="pt-5">
             <div class="mb-4 space-y-2.5 rounded-xl bg-white/10 px-4 py-3">
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-blue-100">Progress Era</span>
+                    <span class="text-blue-100">{{ __('app.era_progress') }}</span>
                     <span class="font-semibold text-white">{{ $progressPercentage }}%</span>
                 </div>
                 <div class="h-1.5 w-full rounded-full bg-white/30">
@@ -49,8 +49,8 @@
                 <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                     <i class="fas fa-book text-2xl text-gray-400"></i>
                 </div>
-                <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Materi</h3>
-                <p class="text-gray-600">Materi pada era ini akan segera tersedia.</p>
+                <h3 class="mb-2 text-lg font-medium text-gray-900">{{ __('app.no_materials_yet') }}</h3>
+                <p class="text-gray-600">{{ __('app.no_materials_desc') }}</p>
             </div>
         @else
             <div class="space-y-3">
@@ -72,7 +72,7 @@
                             <div class="flex-1 p-4">
                                 @if ($materi->bab)
                                     <span
-                                        class="mb-1 inline-block rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-600">Bab
+                                        class="mb-1 inline-block rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-600">{{ __('app.chapter_label') }}
                                         {{ $materi->bab }}</span>
                                 @endif
                                 <h3 class="mb-1 font-semibold text-gray-900">{{ $materi->judul }}</h3>
@@ -83,17 +83,17 @@
                                         class="inline-flex items-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-700">
                                         @if ($materi->is_completed)
                                             <i class="fas fa-redo mr-1"></i>
-                                            Lihat
+                                            {{ __('app.elearning_card_view') }}
                                         @else
                                             <i class="fas fa-play mr-1"></i>
-                                            Mulai
+                                            {{ __('app.elearning_card_start') }}
                                         @endif
                                     </a>
                                 @else
                                     <div
                                         class="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-400">
                                         <i class="fas fa-lock mr-1"></i>
-                                        Terkunci
+                                        {{ __('app.elearning_card_locked') }}
                                     </div>
                                 @endif
                             </div>

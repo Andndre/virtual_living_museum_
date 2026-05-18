@@ -27,7 +27,7 @@
                         <i class="fas fa-check-circle text-sm md:text-lg"></i>
                     </div>
                     <div>
-                        <p class="text-[10px] md:text-xs text-white/70">Selesai</p>
+                        <p class="text-[10px] md:text-xs text-white/70">{{ __('app.home_card_completed') }}</p>
                         <p class="text-sm md:text-base font-semibold">{{ $completedMateri }} materi</p>
                     </div>
                 </div>
@@ -39,15 +39,15 @@
                         <p class="text-[10px] md:text-xs text-white/70">Progress</p>
                         <p class="text-sm md:text-base font-semibold">
                             @if($userProgress == 1)
-                                Pre-test
+                                {{ __('app.home_card_progress_pretest') }}
                             @elseif($userProgress == 2)
-                                E-Book
+                                {{ __('app.home_card_progress_ebook') }}
                             @elseif($userProgress == 3)
-                                Museum
+                                {{ __('app.home_card_progress_museum') }}
                             @elseif($userProgress == 4)
-                                Post-test
+                                {{ __('app.home_card_progress_posttest') }}
                             @else
-                                Mulai
+                                {{ __('app.home_card_progress_start') }}
                             @endif
                         </p>
                     </div>
