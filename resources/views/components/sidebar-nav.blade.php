@@ -1,8 +1,8 @@
-<aside class="fixed inset-y-0 left-0 z-40 flex hidden w-64 flex-col border-r border-gray-200 bg-white shadow-lg md:flex">
+<aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-gray-200 bg-white shadow-lg md:flex">
     <div class="flex h-16 items-center justify-between border-b border-gray-200 bg-primary px-4">
         <a href="{{ route('guest.home') }}" class="flex items-center gap-3">
             <x-application-logo class="h-8 w-auto fill-current text-white" />
-            <span class="text-lg font-semibold text-white">VLM</span>
+            <span class="text-lg font-semibold text-white">{{ config('app.name', 'VLM') }}</span>
         </a>
     </div>
 
@@ -58,13 +58,14 @@
     </div>
 </aside>
 
-<aside x-data="{ open: false }" x-init="$nextTick(() => open = false)" x-cloak :class="{ 'translate-x-0': open, '-translate-x-full': !open }"
+<aside x-data="{ open: false }" x-init="$nextTick(() => open = false)" x-cloak
+    :class="{ 'translate-x-0': open, '-translate-x-full': !open }"
     class="fixed inset-y-0 left-0 z-40 flex w-64 transform flex-col border-r border-gray-200 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:hidden"
     @toggle-sidebar.window="open = !open">
     <div class="flex h-16 items-center justify-between border-b border-gray-200 bg-primary px-4">
         <a href="{{ route('guest.home') }}" class="flex items-center gap-3">
             <x-application-logo class="h-8 w-auto fill-current text-white" />
-            <span class="text-lg font-semibold text-white">VLM</span>
+            <span class="text-lg font-semibold text-white">{{ config('app.name', 'VLM') }}</span>
         </a>
         <button @click="open = false" class="text-white hover:text-gray-200">
             <i class="fas fa-times text-xl"></i>
