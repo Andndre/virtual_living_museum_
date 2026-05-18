@@ -70,14 +70,14 @@
                             </tbody>
                         </table>
                     @else
-                        <div class="text-center py-12">
-                            <i class="fas fa-video text-gray-400 text-6xl mb-4"></i>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada video peninggalan</h3>
-                            <p class="text-sm text-gray-500 mb-6">
-                                Tambahkan video peninggalan pertama.
-                            </p>
+                        <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                <i class="fas fa-video text-2xl text-gray-400"></i>
+                            </div>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Video</h3>
+                            <p class="text-gray-600 mb-4">Tambahkan video peninggalan pertama.</p>
                             <a href="{{ route('admin.video-peninggalan.create') }}"
-                               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                               class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
                                 <i class="fas fa-plus mr-2"></i>Tambah Video
                             </a>
                         </div>

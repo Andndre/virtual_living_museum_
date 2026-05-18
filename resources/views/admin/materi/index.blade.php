@@ -162,11 +162,12 @@
                                 @empty
                                     <tr>
                                         <td colspan="9" class="px-6 py-12 text-center">
-                                            <div class="text-gray-500">
-                                                <i class="fas fa-book mb-4 text-4xl"></i>
-                                                <p class="text-lg font-medium">Belum Ada Materi</p>
-                                                <p class="text-sm">Mulai dengan menambahkan materi pembelajaran pertama.
-                                                </p>
+                                            <div class="rounded-2xl bg-white p-8 text-center shadow-sm mx-auto max-w-md">
+                                                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                                    <i class="fas fa-book text-2xl text-gray-400"></i>
+                                                </div>
+                                                <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Materi</h3>
+                                                <p class="text-gray-600">Mulai dengan menambahkan materi pembelajaran pertama.</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -247,17 +248,17 @@
                                     </p>
                                 </div>
                             @empty
-                                <div class="py-12 text-center">
-                                    <div class="text-gray-500">
-                                        <i class="fas fa-book mb-4 text-4xl"></i>
-                                        <p class="text-lg font-medium">Belum Ada Materi</p>
-                                        <p class="text-sm">Mulai dengan menambahkan materi pembelajaran pertama.</p>
-                                        <a href="{{ route('admin.materi.create') }}"
-                                            class="mt-4 inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
-                                            <i class="fas fa-plus mr-2"></i>
-                                            Tambah Materi
-                                        </a>
+                                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                        <i class="fas fa-book text-2xl text-gray-400"></i>
                                     </div>
+                                    <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Materi</h3>
+                                    <p class="text-gray-600 mb-4">Mulai dengan menambahkan materi pembelajaran pertama.</p>
+                                    <a href="{{ route('admin.materi.create') }}"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                                        <i class="fas fa-plus mr-2"></i>
+                                        Tambah Materi
+                                    </a>
                                 </div>
                             @endforelse
                         </div>

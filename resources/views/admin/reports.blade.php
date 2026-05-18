@@ -318,16 +318,12 @@
                 </div>
             @else
                 <!-- Empty State -->
-                <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-12 text-center">
-                        <div class="mx-auto h-20 w-20 sm:h-24 sm:w-24 text-gray-400">
-                            <i class="fas fa-file-alt text-5xl sm:text-6xl"></i>
-                        </div>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Belum Ada Laporan</h3>
-                        <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto px-4">
-                            Belum ada laporan peninggalan dari pengguna. Laporan akan muncul di sini ketika pengguna melaporkan penemuan peninggalan baru.
-                        </p>
+                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                        <i class="fas fa-file-alt text-2xl text-gray-400"></i>
                     </div>
+                    <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Laporan</h3>
+                    <p class="text-gray-600">Belum ada laporan peninggalan dari pengguna. Laporan akan muncul di sini ketika pengguna melaporkan penemuan peninggalan baru.</p>
                 </div>
             @endif
         </div>

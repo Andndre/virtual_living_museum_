@@ -242,12 +242,12 @@
                             </div>
                         </div>
                     @empty
-                        <div class="p-8 text-center">
-                            <div class="mx-auto h-16 w-16 text-gray-400 mb-4">
-                                <i class="fas fa-users text-4xl"></i>
+                        <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                <i class="fas fa-users text-2xl text-gray-400"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak ada pengguna</h3>
-                            <p class="text-sm text-gray-500">Belum ada pengguna yang terdaftar di sistem</p>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">Tidak Ada Pengguna</h3>
+                            <p class="text-gray-600">Belum ada pengguna yang terdaftar di sistem</p>
                         </div>
                     @endforelse
                 </div>

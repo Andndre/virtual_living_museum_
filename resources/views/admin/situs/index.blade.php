@@ -361,23 +361,17 @@
                 </div>
             @else
                 <!-- Empty State -->
-                <div class="bg-white shadow-lg sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-12 text-center">
-                        <div class="mx-auto h-20 w-20 sm:h-24 sm:w-24 text-gray-400">
-                            <i class="fas fa-map-marker-alt text-5xl sm:text-6xl"></i>
-                        </div>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Belum Ada Situs Peninggalan</h3>
-                        <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto px-4">
-                            Mulai menambahkan situs peninggalan untuk memperkaya konten virtual living museum.
-                        </p>
-                        <div class="mt-6">
-                            <a href="{{ route('admin.situs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>
-                                <span class="hidden sm:inline">Tambah Situs Pertama</span>
-                                <span class="sm:hidden">Tambah Situs</span>
-                            </a>
-                        </div>
+                <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                        <i class="fas fa-map-marker-alt text-2xl text-gray-400"></i>
                     </div>
+                    <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Situs Peninggalan</h3>
+                    <p class="text-gray-600 mb-4">Mulai menambahkan situs peninggalan untuk memperkaya konten virtual living museum.</p>
+                    <a href="{{ route('admin.situs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span class="hidden sm:inline">Tambah Situs Pertama</span>
+                        <span class="sm:hidden">Tambah Situs</span>
+                    </a>
                 </div>
             @endif
         </div>
