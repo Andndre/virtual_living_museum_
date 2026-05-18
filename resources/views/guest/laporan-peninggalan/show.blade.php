@@ -187,7 +187,7 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
+    <x-bottom-nav class="md:hidden"/>
 
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

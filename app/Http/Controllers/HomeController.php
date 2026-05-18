@@ -31,7 +31,17 @@ class HomeController extends Controller
         // Check if profile is complete
         $profileComplete = ! empty($user->phone_number) && ! empty($user->address) && ! empty($user->date_of_birth);
 
-        return view('guest.home', compact('greeting', 'profileComplete'));
+        // Get user progress stats
+        $userLevel = $user->level_sekarang;
+        $userProgress = $user->progress_level_sekarang;
+
+        // Get completed materi count
+        $completedMateri = Materi::all()->filter(function ($materi) use ($user) {
+            return $materi->getLinearLevel() < $user->level_sekarang + 1;
+        })->count();
+        $totalMateri = Materi::count();
+
+        return view('guest.home', compact('greeting', 'profileComplete', 'userLevel', 'userProgress', 'completedMateri', 'totalMateri'));
     }
 
     /**

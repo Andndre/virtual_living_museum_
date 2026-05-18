@@ -131,7 +131,7 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
+    <x-bottom-nav class="md:hidden"/>
 
     @push('scripts')
         <script>

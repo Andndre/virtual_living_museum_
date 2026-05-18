@@ -6,16 +6,7 @@
                 data-fallback-url="{{ route('guest.home') }}">
                 <i class="fas fa-arrow-left text-xl"></i>
             </button>
-            <a href="{{ route('profile.edit') }}"
-                class="h-12 w-12 overflow-hidden rounded-full border-2 border-white/30 transition-colors hover:border-white/50">
-                @if (auth()->user()->profile_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture"
-                        class="h-full w-full object-cover" />
-                @else
-                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture"
-                        class="h-full w-full object-cover" />
-                @endif
-            </a>
+            <x-user-profile-navbar class="h-12 w-12"/>
         </div>
 
         <h1 class="mb-8 text-2xl font-bold">{{ __('app.elearning') }}</h1>

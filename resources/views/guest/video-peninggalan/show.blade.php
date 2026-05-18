@@ -56,7 +56,7 @@
     <div class="h-20"></div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
+    <x-bottom-nav class="md:hidden"/>
 
     <style>
         .aspect-video {

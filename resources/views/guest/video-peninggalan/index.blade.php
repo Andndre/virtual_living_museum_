@@ -58,7 +58,7 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
+    <x-bottom-nav class="md:hidden"/>
 
     <style>
         .line-clamp-2 {
