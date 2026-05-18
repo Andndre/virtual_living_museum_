@@ -6,7 +6,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </button>
-            <h1 class="text-xl font-bold">{{ __('app.virtual_living_museum') }}</h1>
+            <h1 class="text-xl font-bold">Virtual Living Museum</h1>
         </div>
 
         <!-- Search Bar -->
@@ -17,7 +17,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" name="q" type="text" value="{{ $searchQuery ?? '' }}" placeholder="{{ __('app.maps_search_placeholder') }}" class="w-full bg-transparent border-none focus:outline-none text-white placeholder-white/70">
+                <input id="search-input" name="q" type="text" value="{{ $searchQuery ?? '' }}" placeholder="Cari peninggalan, museum, atau objek..." class="w-full bg-transparent border-none focus:outline-none text-white placeholder-white/70">
                 @if(isset($searchQuery) && !empty($searchQuery))
                 <a href="{{ route('guest.maps.peninggalan') }}" class="text-white/70 hover:text-white mr-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -33,7 +33,7 @@
     <div class="bg-white border-b overflow-x-auto">
         <div class="flex p-2 min-w-max">
             <button id="filter-all" class="filter-btn active px-4 py-2 text-sm font-medium rounded-full mr-2 whitespace-nowrap">
-                {{ __('app.maps_filter_all') }}
+                Semua
             </button>
             @foreach($situs as $s)
                 <button data-situs-id="{{ $s->situs_id }}" class="filter-btn px-4 py-2 text-sm font-medium rounded-full mr-2 whitespace-nowrap">
@@ -47,17 +47,17 @@
     <div id="search-results" class="p-4 pb-24">
         @if(isset($searchQuery) && !empty($searchQuery))
             <div class="mb-6">
-                <h2 class="text-xl font-semibold text-gray-800">{{ __('app.maps_search_results_for', ['query' => $searchQuery]) }}</h2>
-                <p class="text-sm text-gray-500">{{ __('app.maps_results_count', ['count' => $objects->count()]) }}</p>
+                <h2 class="text-xl font-semibold text-gray-800">Hasil pencarian untuk "{{ $searchQuery }}"</h2>
+                <p class="text-sm text-gray-500">{{ $objects->count() }} hasil ditemukan</p>
             </div>
         @endif
 
         @php
             $groupedResults = $objects->groupBy('type');
             $sections = [
-                'situs' => ['title' => __('app.maps_filter_heritage_sites'), 'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z', 'color' => 'blue'],
-                'museum' => ['title' => __('app.virtual_museum'), 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple'],
-                'object' => ['title' => __('app.object_heritage'), 'icon' => 'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z', 'color' => 'green']
+                'situs' => ['title' => 'Situs Sejarah', 'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z', 'color' => 'blue'],
+                'museum' => ['title' => 'Virtual Museum', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple'],
+                'object' => ['title' => 'Objek Peninggalan', 'icon' => 'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z', 'color' => 'green']
             ];
         @endphp
 
@@ -72,7 +72,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">{{ $section['title'] }}</h3>
                         <span class="ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            {{ $groupedResults[$type]->count() }} {{ __('app.maps_item') }}
+                            {{ $groupedResults[$type]->count() }} item
                         </span>
                     </div>
                     
@@ -129,7 +129,7 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                                     </svg>
-                                                    {{ __('app.maps_status_open') }}
+                                                    Terbuka
                                                 </span>
                                             </div>
                                         @else
@@ -138,7 +138,7 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                                                     </svg>
-                                                    {{ __('app.maps_status_locked') }}
+                                                    Terkunci
                                                 </span>
                                             </div>
                                         @endif
@@ -162,10 +162,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-medium text-gray-900">{{ __('app.maps_no_results') }}</h3>
-                <p class="text-gray-500 mt-2">{{ __('app.maps_try_different_keyword') }}</p>
+                <h3 class="text-xl font-medium text-gray-900">Tidak ada hasil yang ditemukan</h3>
+                <p class="text-gray-500 mt-2">Coba dengan kata kunci lain atau periksa ejaan Anda</p>
                 <a href="{{ route('guest.maps.peninggalan') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    {{ __('app.maps_show_all') }}
+                    Tampilkan Semua
                 </a>
             </div>
         @endif
@@ -178,8 +178,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900">{{ __('app.maps_not_found') }}</h3>
-        <p class="text-sm text-gray-500 mt-1">{{ __('app.maps_no_matching_heritage') }}</p>
+        <h3 class="text-lg font-medium text-gray-900">Tidak ditemukan</h3>
+        <p class="text-sm text-gray-500 mt-1">Tidak ada peninggalan yang sesuai dengan pencarian Anda</p>
     </div>
 
     <!-- Object Detail Modal -->
@@ -215,7 +215,7 @@
                                 </div>
                             </div>
                             <div id="status-badge" class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2">
-                                {{ __('app.maps_status_open') }}
+                                Terbuka
                             </div>
                         </div>
                         <div class="prose prose-sm text-gray-600">
@@ -230,10 +230,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                        {{ __('app.maps_visit_site') }}
+                        Kunjungi Situs
                     </a>
                     <div id="locked-message" class="hidden mt-2 text-center text-sm text-gray-600">
-                        <span id="situs-name"></span>
+                        Selesaikan materi <span id="situs-name" class="font-medium"></span> untuk membuka peninggalan ini
                     </div>
                 </div>
                 </div>
@@ -351,13 +351,13 @@
                 const situsNameElement = document.getElementById('situs-name');
 
                 if (isUnlocked) {
-                    statusBadge.textContent = '{{ __('app.maps_status_open') }}';
+                    statusBadge.textContent = 'Terbuka';
                     statusBadge.className = 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
                     modalLink.href = "{{ route('guest.situs.detail', ['situs_id' => ':situsId']) }}".replace(':situsId', situsId);
                     modalLink.classList.remove('hidden');
                     lockedMessage.classList.add('hidden');
                 } else {
-                    statusBadge.textContent = '{{ __('app.maps_status_locked') }}';
+                    statusBadge.textContent = 'Terkunci';
                     statusBadge.className = 'bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
                     modalLink.classList.add('hidden');
                     lockedMessage.classList.remove('hidden');

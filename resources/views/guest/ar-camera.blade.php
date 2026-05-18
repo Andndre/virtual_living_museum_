@@ -285,19 +285,19 @@
 
     <div id="ar-object-nav" aria-label="Navigasi object marker">
         <button id="ar-prev-object" class="ar-nav-button" type="button" aria-label="Object sebelumnya">&#8249;</button>
-        <div id="ar-object-counter">{{ __('app.ar_object_counter_dynamic', [':index' => 1, ':total' => 1]) }}</div>
+        <div id="ar-object-counter">Object 1 dari 1</div>
         <button id="ar-next-object" class="ar-nav-button" type="button" aria-label="Object berikutnya">&#8250;</button>
     </div>
 
     <div id="ar-loading" role="status" aria-live="polite" aria-hidden="true">
         <div id="ar-loading-card" class="ar-loading-card">
             <div class="ar-loading-spinner"></div>
-            <h4 id="ar-loading-title">{{ __('app.ar_loading_objects') }}</h4>
-            <p id="ar-loading-text">{{ __('app.ar_model_preparing') }}</p>
+            <h4 id="ar-loading-title">Memuat objek AR</h4>
+            <p id="ar-loading-text">Model sedang dipersiapkan. Mohon arahkan kamera tetap ke marker.</p>
             <div class="ar-loading-progress-wrap" aria-hidden="true">
                 <div id="ar-loading-progress-bar" class="ar-loading-progress-bar"></div>
             </div>
-            <p id="ar-loading-progress-text" class="ar-loading-progress-text">{{ __('app.ar_waiting') }}</p>
+            <p id="ar-loading-progress-text" class="ar-loading-progress-text">Menunggu proses...</p>
         </div>
     </div>
 
@@ -349,21 +349,6 @@
                 KHR_materials_specular: 'Model memakai KHR_materials_specular. Untuk kompatibilitas mobile maksimal, nonaktifkan specular extension saat ekspor.',
                 KHR_materials_ior: 'Model memakai KHR_materials_ior. Untuk kompatibilitas mobile maksimal, nonaktifkan ior extension saat ekspor.',
             };
-
-            // UI-visible translation strings (used by setProgress / showLoading / showLoadingError)
-            const TR_AR_LOADING_OBJECT_NAME = "{{ __('app.ar_loading_object_name') }}";
-            const TR_AR_PREPARING_DOWNLOAD = "{{ __('app.ar_preparing_download') }}";
-            const TR_AR_SLOW_LOADING_HINT = "{{ __('app.ar_slow_loading_hint') }}";
-            const TR_AR_FAILED_LOAD_OBJECT = "{{ __('app.ar_failed_load_object') }}";
-            const TR_AR_LOAD_ERROR_DETAIL = "{{ __('app.ar_load_error_detail') }}";
-            const TR_AR_LOAD_ERROR_GENERIC = "{{ __('app.ar_load_error_generic') }}";
-            const TR_AR_DOWNLOADING_MODEL = "{{ __('app.ar_downloading_model') }}";
-            const TR_AR_MODEL_READY = "{{ __('app.ar_model_ready') }}";
-            const TR_AR_MODEL_READY_FALLBACK = "{{ __('app.ar_model_ready_fallback') }}";
-            const TR_AR_MODEL_PROCESSING_HINT = "{{ __('app.ar_model_processing_hint') }}";
-            const TR_AR_MODEL_LARGE_HINT = "{{ __('app.ar_model_large_hint') }}";
-            const TR_AR_NO_OBJECT_DESCRIPTION = "{{ __('app.ar_no_object_description') }}";
-            const TR_AR_OBJECT_COUNTER_DYNAMIC = "{{ __('app.ar_object_counter_dynamic') }}";
 
             // Audio element and helper
             const arMarkerAudio = document.getElementById('ar-marker-audio');
@@ -1014,10 +999,10 @@
             function showLoading(objectName) {
                 clearSlowLoadingTimer();
                 loadingCard.classList.remove('is-error');
-                loadingTitleElement.textContent = TR_AR_LOADING_OBJECT_NAME.replace(':name', objectName);
+                loadingTitleElement.textContent = 'Memuat ' + objectName;
                 loadingTextElement.textContent =
                     'Model belum tersedia di perangkat. Mohon tunggu sampai model selesai dimuat.';
-                setProgress(0, TR_AR_PREPARING_DOWNLOAD);
+                setProgress(0, 'Menyiapkan proses unduh...');
                 loadingOverlay.classList.add('is-visible');
                 loadingOverlay.setAttribute('aria-hidden', 'false');
                 pushDebugLog('info', 'Mulai loading object', {
@@ -1025,7 +1010,8 @@
                 });
 
                 slowLoadingTimer = setTimeout(() => {
-                    loadingTextElement.textContent = TR_AR_SLOW_LOADING_HINT;
+                    loadingTextElement.textContent =
+                        'Proses masih berlangsung. Ini biasanya terjadi jika model besar atau koneksi lambat.';
                 }, 10000);
             }
 
@@ -1038,11 +1024,11 @@
             function showLoadingError(objectName, detailMessage = null) {
                 clearSlowLoadingTimer();
                 loadingCard.classList.add('is-error');
-                loadingTitleElement.textContent = TR_AR_FAILED_LOAD_OBJECT.replace(':name', objectName);
+                loadingTitleElement.textContent = 'Gagal memuat ' + objectName;
                 loadingTextElement.textContent = detailMessage ?
-                    TR_AR_LOAD_ERROR_DETAIL.replace(':detail', detailMessage) :
+                    'Detail: ' + detailMessage :
                     'Periksa koneksi lalu arahkan ulang kamera ke marker untuk mencoba lagi.';
-                setProgress(100, TR_AR_LOAD_ERROR_GENERIC);
+                setProgress(100, 'Terjadi error saat memuat model.');
                 loadingOverlay.classList.add('is-visible');
                 loadingOverlay.setAttribute('aria-hidden', 'false');
                 pushDebugLog('error', 'Loading gagal', {
@@ -1119,7 +1105,7 @@
 
                 showLoading(objectName);
                 setupDracoForAframe();
-                setProgress(20, TR_AR_DOWNLOADING_MODEL);
+                setProgress(20, 'Mengunduh dan memproses model...');
                 if (isDebugMode) {
                     probeModelAccessibility(modelSrc);
                     inspectModelSignature(modelSrc);
@@ -1261,7 +1247,7 @@
                         clearModelTimers();
                         cleanupListeners();
 
-                        setProgress(100, TR_AR_MODEL_READY);
+                        setProgress(100, 'Model siap ditampilkan.');
                         modelStates.set(modelKey, {
                             loaded: true,
                             loadingPromise: null,
@@ -1332,7 +1318,7 @@
                                     clearModelTimers();
                                     cleanupListeners();
 
-                                    setProgress(100, TR_AR_MODEL_READY_FALLBACK);
+                                    setProgress(100, 'Model siap ditampilkan (fallback Three.js).');
                                     modelStates.set(modelKey, {
                                         loaded: true,
                                         loadingPromise: null,
@@ -1398,7 +1384,8 @@
                             return;
                         }
 
-                        setProgress(70, TR_AR_MODEL_PROCESSING_HINT);
+                        setProgress(70,
+                            'Model masih diproses. Tetap arahkan kamera ke marker.');
                         loadingTextElement.textContent =
                             'Model bertekstur/kompleks bisa butuh waktu lebih lama di perangkat mobile.';
                     }, LOADING_HINT_TIMEOUT_MS);
@@ -1408,7 +1395,9 @@
                             return;
                         }
 
-                        setProgress(88, TR_AR_MODEL_LARGE_HINT);
+                        setProgress(88,
+                            'Masih memproses model besar. Jika perlu, sederhanakan polygon/tekstur.'
+                        );
                     }, LONG_LOADING_HINT_TIMEOUT_MS);
 
                     loadingTimeoutTimer = setTimeout(() => {
@@ -1479,16 +1468,18 @@
                 const objectData = markerState.objects[index];
 
                 titleElement.textContent = objectData.nama || markerState.marker.getAttribute('data-marker-name');
-                textElement.textContent = objectData.deskripsi || TR_AR_NO_OBJECT_DESCRIPTION;
+                textElement.textContent = objectData.deskripsi || 'Tidak ada deskripsi untuk object ini.';
                 descriptionDiv.style.display = 'block';
 
-                objectCounterElement.textContent =
-                    TR_AR_OBJECT_COUNTER_DYNAMIC
-                        .replace(':index', index + 1)
-                        .replace(':total', markerState.objects.length);
-                prevObjectButton.disabled = false;
-                nextObjectButton.disabled = false;
-                objectNavElement.classList.add('is-visible');
+                if (markerState.objects.length > 1) {
+                    objectCounterElement.textContent =
+                        `Object ${index + 1} dari ${markerState.objects.length}`;
+                    prevObjectButton.disabled = false;
+                    nextObjectButton.disabled = false;
+                    objectNavElement.classList.add('is-visible');
+                } else {
+                    objectNavElement.classList.remove('is-visible');
+                }
             }
 
             function showObjectForMarker(marker, nextIndex) {

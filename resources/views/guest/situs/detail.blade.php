@@ -7,7 +7,7 @@
                     <i class="fas fa-arrow-left text-xl"></i>
                 </button>
                 <div class="flex-1">
-                    <h1 class="text-lg font-bold">{{ __('app.virtual_living_museum') }}</h1>
+                    <h1 class="text-lg font-bold">Virtual Living Museum</h1>
                     <p class="text-sm opacity-90">{{ $situs->nama }}</p>
                 </div>
             </div>
@@ -42,7 +42,7 @@
             <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-map-marked-alt text-orange-600 mr-2"></i>
-                    {{ __('app.sites_location_label') }}
+                    Lokasi
                 </h3>
 
                 <div class="space-y-3">
@@ -50,7 +50,7 @@
                         <div class="flex items-start space-x-3">
                             <i class="fas fa-location-dot text-gray-400 mt-1"></i>
                             <div>
-                                <p class="text-gray-900 font-medium">{{ __('app.address') }}</p>
+                                <p class="text-gray-900 font-medium">Alamat</p>
                                 <p class="text-gray-600">{{ $situs->alamat }}</p>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                     <div class="flex items-start space-x-3">
                         <i class="fas fa-globe text-gray-400 mt-1"></i>
                         <div>
-                            <p class="text-gray-900 font-medium">{{ __('app.sites_coordinates_label') }}</p>
+                            <p class="text-gray-900 font-medium">Koordinat</p>
                             <p class="text-gray-600">{{ $situs->lat }}, {{ $situs->lng }}</p>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
             <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                    {{ __('app.description') }}
+                    Deskripsi
                 </h3>
                 <div class="prose prose-gray max-w-none">
                     <p class="text-gray-700 leading-relaxed">{{ $situs->deskripsi }}</p>
@@ -85,7 +85,7 @@
             <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-location-dot text-purple-600 mr-2"></i>
-                    {{ __('app.sites_ar_spot_label') }}
+                    Spot AR Virtual Living Museum
                 </h3>
 
                 <div class="grid grid-cols-1 gap-4">
@@ -101,7 +101,7 @@
                                         <p class="text-sm text-gray-600">
                                             <span
                                                 class="font-medium">{{ $museum->virtualMuseumObjects->count() }}</span>
-                                            {{ __('app.sites_heritage_objects_available') }}
+                                            objek peninggalan tersedia
                                         </p>
                                     @endif
                                 </div>
@@ -111,7 +111,7 @@
                             <button onclick="launchSpotAR({{ $museum->museum_id }}, '{{ $museum->nama }}')"
                                     class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md">
                                 <i class="fas fa-vr-cardboard mr-2"></i>
-                                {{ __('app.sites_explore_ar') }}
+                                Jelajahi AR
                             </button>
                         </div>
                     @endforeach
@@ -123,7 +123,7 @@
         <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
             <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-mobile-alt text-green-600 mr-2"></i>
-                {{ __('app.how_to_use_ar') }}
+                Cara Menggunakan AR
             </h3>
 
             <div class="space-y-4">
@@ -131,23 +131,23 @@
                 <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-4">
                     <h5 class="font-semibold text-gray-900 mb-3 flex items-center">
                         <i class="fas fa-list-ol text-gray-600 mr-2"></i>
-                        {{ __('app.sites_ar_steps_label') }}
+                        Langkah-langkah:
                     </h5>
                     <ol class="text-sm text-gray-700 space-y-2 ml-4">
                         <li class="flex items-start">
                             <span
                                 class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">1</span>
-                            <span>{{ __('app.sites_select_spot') }}</span>
+                            <span>Pilih spot yang ingin dijelajahi dan klik tombol "Jelajahi AR"</span>
                         </li>
                         <li class="flex items-start">
                             <span
                                 class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">2</span>
-                            <span>{{ __('app.sites_allow_camera') }}</span>
+                            <span>Izinkan akses kamera dan arahkan ke permukaan datar</span>
                         </li>
                         <li class="flex items-start">
                             <span
                                 class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">3</span>
-                            <span>{{ __('app.sites_tap_circle_to_place') }}</span>
+                            <span>Ketuk lingkaran untuk menempatkan objek berukuran besar</span>
                         </li>
                     </ol>
                 </div>
@@ -157,8 +157,9 @@
                     <div class="flex items-start space-x-2">
                         <i class="fas fa-exclamation-triangle text-amber-600 mt-0.5"></i>
                         <div class="text-left">
-                            <p class="text-sm font-medium text-amber-800">{{ __('app.sites_requirements_label') }}</p>
-                            <p class="text-xs text-amber-700 mt-1">{{ __('app.sites_webxr_browser_required') }}</p>
+                            <p class="text-sm font-medium text-amber-800">Persyaratan:</p>
+                            <p class="text-xs text-amber-700 mt-1">Browser dengan dukungan WebXR, kamera, koneksi
+                                stabil, dan pencahayaan cukup</p>
                         </div>
                     </div>
                 </div>
@@ -167,21 +168,21 @@
 
         {{-- Navigation Actions --}}
         <div class="bg-white rounded-2xl shadow-sm p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('app.sites_navigation_label') }}</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Navigasi</h3>
 
             <div class="space-y-3">
                 @if($situs->materi)
                     <a href="{{ route('guest.elearning.materi', $situs->materi->materi_id) }}"
                        class="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        {{ __('app.sites_back_to_material') }}: {{ $situs->materi->judul }}
+                        Kembali ke Materi: {{ $situs->materi->judul }}
                     </a>
                 @endif
 
                 <a href="{{ route('guest.elearning') }}"
                    class="w-full inline-flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors">
                     <i class="fas fa-home mr-2"></i>
-                    {{ __('app.sites_back_to_elearning_home') }}
+                    Kembali ke Beranda E-Learning
                 </a>
 
                 @if($situs->lat && $situs->lng)
@@ -189,7 +190,7 @@
                        target="_blank"
                        class="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors">
                         <i class="fas fa-map-marked-alt mr-2"></i>
-                        {{ __('app.sites_view_on_google_maps') }}
+                        Lihat di Google Maps
                     </a>
                 @endif
             </div>
@@ -199,7 +200,7 @@
     {{-- AR JavaScript (Three.js WebXR implementation) --}}
     <script>
         function launchSpotAR(museumId, museumName) {
-            const confirmation = confirm(`{{ __('app.sites_ar_confirmation') }} "${museumName}"?`);
+            const confirmation = confirm(`Memulai pengalaman AR untuk spot "${museumName}"?\n\nPastikan Anda berada di tempat yang memiliki pencahayaan cukup dan permukaan datar untuk penempatan objek.`);
 
             if (confirmation) {
                 // Redirect to AR experience page using Laravel route
