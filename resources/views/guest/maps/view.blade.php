@@ -125,7 +125,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="{{ __('app.maps_search_situs_placeholder') }}"
+                <input id="search-input" type="text" placeholder="Cari situs peninggalan..."
                     class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700"
                     style="-webkit-appearance: none; border-radius: 0;">
                 <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
@@ -151,9 +151,9 @@
                 <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
                 <p id="overlay-address" class="text-gray-600 text-sm"></p>
                 <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
-                <a id="overlay-link" href="#" class="block w-full text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg mt-4 hover:bg-blue-700 transition">{{ __('app.maps_visit') }}</a>
-                <p id="locked-message" class="hidden text-orange-600 text-sm mt-4 text-center">{{ __('app.maps_site_locked') }}</p>
-                <button id="close-overlay" class="block w-full text-center bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg mt-2 hover:bg-gray-300 transition">{{ __('app.maps_close') }}</button>
+                <a id="overlay-link" href="#" class="block w-full text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg mt-4 hover:bg-blue-700 transition">Kunjungi</a>
+                <p id="locked-message" class="hidden text-orange-600 text-sm mt-4 text-center">Situs ini belum dapat dikunjungi. Selesaikan materi sebelumnya untuk membukanya.</p>
+                <button id="close-overlay" class="block w-full text-center bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg mt-2 hover:bg-gray-300 transition">Tutup</button>
             </div>
         </div>
     </div>
@@ -173,8 +173,8 @@
         // Add zoom control
         L.control.zoom({
             position: 'bottomright',
-            zoomInTitle: '{{ __('app.maps_zoom_in') }}',
-            zoomOutTitle: '{{ __('app.maps_zoom_out') }}'
+            zoomInTitle: 'Perbesar',
+            zoomOutTitle: 'Perkecil'
         }).addTo(map);
 
         // Custom control for "Lihat Peninggalan" button
@@ -183,8 +183,8 @@
                 const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
                 const link = L.DomUtil.create('a', '', container);
                 link.href = '{{ route("guest.maps.peninggalan") }}';
-                link.title = '{{ __('app.maps_view_peninggalan_list') }}';
-                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">{{ __('app.maps_view_peninggalan') }}</div>';
+                link.title = 'Lihat Daftar Peninggalan';
+                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
 
                 L.DomEvent.on(link, 'click', function(e) {
                     L.DomEvent.stopPropagation(e);
@@ -225,7 +225,7 @@
                 var lat = position.coords.latitude;
                 var lon = position.coords.longitude;
                 L.circle([lat, lon], { radius: 200, color: '#1d4ed8', fillColor: '#60a5fa', fillOpacity: 0.3 }).addTo(map);
-                L.circleMarker([lat, lon], { radius: 8, fillColor: "#1d4ed8", color: "#fff", weight: 2, opacity: 1, fillOpacity: 1 }).addTo(map).bindPopup('{{ __('app.maps_your_location') }}');
+                L.circleMarker([lat, lon], { radius: 8, fillColor: "#1d4ed8", color: "#fff", weight: 2, opacity: 1, fillOpacity: 1 }).addTo(map).bindPopup('Lokasi Anda');
                 map.setView([lat, lon], 13);
             });
         }

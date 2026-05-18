@@ -184,7 +184,7 @@
             </a>
             <div class="flex-1">
                 <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
-                <p class="text-sm opacity-90">{{ __('app.ar_explore_heritage') }}</p>
+                <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
             </div>
             <div class="flex-1">
         </div>
@@ -192,7 +192,8 @@
     <div id="overlay"
         class="pointer-events-none absolute inset-0 z-[999999] flex flex-col items-center justify-center">
         <div id="instructions"
-            class="invisible absolute top-0 z-[100000] w-full rounded-t-xl bg-primary p-4 text-center text-white">{{ __('app.ar_tap_circle_for_room') }}
+            class="invisible absolute top-0 z-[100000] w-full rounded-t-xl bg-primary p-4 text-center text-white">Tekan
+            lingkaran untuk memunculkan ruangan
         </div>
         <div id="tracking-prompt" class="invisible absolute bottom-[44] left-1/2 animate-pulse">
             <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;"
@@ -202,7 +203,7 @@
         <div id="bottom-sheet"
             class="pointer-events-auto fixed bottom-0 left-0 right-0 z-[10000000] h-16 translate-y-full transform rounded-t-2xl bg-white shadow-lg transition-transform duration-300">
             <div class="border-b p-4">
-                <h3 class="pointer-events-auto text-lg font-bold text-primary">{{ __('app.ar_heritage_objects') }}</h3>
+                <h3 class="pointer-events-auto text-lg font-bold text-primary">Objek Peninggalan</h3>
             </div>
             <div id="bottom-sheet-content"
                 class="pointer-events-auto hidden h-[80vh] overflow-y-scroll p-4 text-center text-gray-800">
@@ -226,7 +227,7 @@
         <button id="expand-bottom-sheet"
             class="fixed bottom-6 left-1/2 z-[90000] -translate-x-1/2 rounded-full border-2 border-white bg-primary px-6 py-3 font-bold text-white shadow-lg"
             style="display: none;">
-            {{ __('app.ar_view_heritage_objects') }}
+            Lihat Objek Peninggalan
         </button>
         <script>
             document.getElementById('expand-bottom-sheet').addEventListener('click', function() {
@@ -249,14 +250,14 @@
             </div>
             <h2 class="mb-2 text-center text-2xl font-bold text-primary">{{ config('app.name') }}</h2>
             <div id="ar-not-supported" class="invisible mt-8 w-full rounded-xl bg-white p-6 shadow">
-                <p class="font-semibold text-red-600">{{ __('app.ar_webxr_not_supported') }}</p>
-                <p class="text-gray-600">{{ __('app.ar_documentation_link') }} <a
+                <p class="font-semibold text-red-600">Teknologi WebXR tidak didukung di perangkat Anda.</p>
+                <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a
                         href="https://launch.variant3d.com/docs" class="underline">https://launch.variant3d.com</a>.</p>
                 <div class="mt-4 flex flex-col items-center justify-center">
                     <div id="qr-code"
                         class="mx-auto flex flex-col items-center gap-3 rounded-lg bg-white p-4 text-black shadow">
                         <span class="sr-only">Loading...</span>
-                        <p>{{ __('app.ar_error_426') }}</p>
+                        <p>Error 426: Perangkat/Browser tidak didukung</p>
                     </div>
                 </div>
             </div>
