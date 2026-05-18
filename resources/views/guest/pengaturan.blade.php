@@ -84,5 +84,5 @@
     </div>
 
     {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
+    <x-bottom-nav class="md:hidden"/>
 </x-guest-layout>

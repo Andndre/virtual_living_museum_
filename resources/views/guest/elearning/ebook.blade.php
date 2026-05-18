@@ -10,7 +10,7 @@
                 <p class="text-sm opacity-90">
                     {{ $ebook->materi->judul }}
                     @if ($ebook->materi->bab)
-                        &mdash; Bab {{ $ebook->materi->bab }}
+                        &mdash; {{ __('app.elearning_chapter', ['bab' => $ebook->materi->bab]) }}
                     @endif
                 </p>
             </div>
@@ -37,7 +37,7 @@
                 <div class="loading-container absolute inset-0 z-40 flex items-center justify-center bg-white/80">
                     <div class="text-center">
                         <div class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                        <p class="text-gray-600">Memuat e-book...</p>
+                        <p class="text-gray-600">{{ __('app.ebook_loading') }}</p>
                     </div>
                 </div>
                 {{-- Flipbook Element --}}
@@ -48,11 +48,10 @@
                             class="absolute left-0 top-0 z-50 flex h-full w-full cursor-pointer select-none flex-col items-center justify-center bg-black/60 text-center text-white"
                             style="backdrop-filter: blur(2px);">
                             <div>
-                                <div class="mb-2 text-2xl font-bold">Klik untuk mulai membaca</div>
-                                <div class="mb-4 text-base">E-book akan tampil fullscreen</div>
+                                <div class="mb-2 text-2xl font-bold">{{ __('app.ebook_click_to_start') }}</div>
+                                <div class="mb-4 text-base">{{ __('app.ebook_fullscreen_notice') }}</div>
                                 <button
-                                    class="rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-blue-700">Mulai
-                                    Membaca</button>
+                                    class="rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-blue-700">{{ __('app.ebook_start_reading') }}</button>
                             </div>
                         </div>
                         <!-- PageFlip container -->
@@ -84,21 +83,21 @@
                     class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 md:px-4 md:py-2 md:text-base"
                     disabled>
                     <i class="fas fa-chevron-left mr-1 md:mr-2"></i>
-                    <span class="hidden sm:inline">Sebelumnya</span>
-                    <span class="sm:hidden">Prev</span>
+                    <span class="hidden sm:inline">{{ __('app.ebook_previous') }}</span>
+                    <span class="sm:hidden">{{ __('app.ebook_prev') }}</span>
                 </button>
 
                 <div class="flex items-center space-x-1 md:space-x-2">
-                    <span class="text-xs text-gray-600 md:text-sm">Hal.</span>
+                    <span class="text-xs text-gray-600 md:text-sm">{{ __('app.ebook_page') }}</span>
                     <span id="current-page" class="text-sm font-semibold md:text-base">1</span>
-                    <span class="text-xs text-gray-600 md:text-sm">dari</span>
+                    <span class="text-xs text-gray-600 md:text-sm">{{ __('app.ebook_page_separator') }}</span>
                     <span id="total-pages" class="text-sm font-semibold md:text-base">-</span>
                 </div>
 
                 <button id="next-page"
                     class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors hover:bg-blue-700 md:px-4 md:py-2 md:text-base">
-                    <span class="hidden sm:inline">Selanjutnya</span>
-                    <span class="sm:hidden">Next</span>
+                    <span class="hidden sm:inline">{{ __('app.ebook_next') }}</span>
+                    <span class="sm:hidden">{{ __('app.ebook_next_en') }}</span>
                     <i class="fas fa-chevron-right ml-1 md:ml-2"></i>
                 </button>
             </div>

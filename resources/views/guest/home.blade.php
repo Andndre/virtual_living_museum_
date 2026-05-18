@@ -1,25 +1,69 @@
 <x-guest-layout>
-    {{-- Header Section --}}
-    <div class="px-6 py-6 bg-primary text-white">
-        <div class="flex justify-between items-center">
-            <x-application-logo class="w-12 h-12"/>
-            <x-user-profile-navbar/>
-        </div>
+    {{-- Hero Section --}}
+    <div class="px-4 py-6 bg-primary text-white lg:px-8 lg:py-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <x-application-logo class="w-10 h-10"/>
+                <x-user-profile-navbar class="w-10 h-10"/>
+            </div>
+            <div class="pb-2">
+                <p class="text-sm opacity-90">{{ $greeting }},</p>
+                <h1 class="text-xl font-bold">{{ auth()->user()->name }}</h1>
+            </div>
 
-        <div class="pt-8 pb-8">
-            <p class="text-sm opacity-90">{{ $greeting }},</p>
-            <h1 class="text-xl font-bold">{{ auth()->user()->name }}</h1>
+            {{-- Progress Info --}}
+            <div class="flex items-center gap-4 mt-4 md:mt-6 pt-4 border-t border-white/20 overflow-x-auto">
+                <div class="flex items-center gap-2 md:gap-3 shrink-0">
+                    <div class="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20">
+                        <i class="fas fa-layer-group text-sm md:text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] md:text-xs text-white/70">Level</p>
+                        <p class="text-sm md:text-base font-semibold">{{ $userLevel }} / {{ $totalMateri }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 md:gap-3 shrink-0">
+                    <div class="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20">
+                        <i class="fas fa-check-circle text-sm md:text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] md:text-xs text-white/70">{{ __('app.home_card_completed') }}</p>
+                        <p class="text-sm md:text-base font-semibold">{{ $completedMateri }} materi</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 md:gap-3 shrink-0">
+                    <div class="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-yellow-400">
+                        <i class="fas fa-fire text-sm md:text-lg text-gray-800"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] md:text-xs text-white/70">Progress</p>
+                        <p class="text-sm md:text-base font-semibold">
+                            @if($userProgress == 1)
+                                {{ __('app.home_card_progress_pretest') }}
+                            @elseif($userProgress == 2)
+                                {{ __('app.home_card_progress_ebook') }}
+                            @elseif($userProgress == 3)
+                                {{ __('app.home_card_progress_museum') }}
+                            @elseif($userProgress == 4)
+                                {{ __('app.home_card_progress_posttest') }}
+                            @else
+                                {{ __('app.home_card_progress_start') }}
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     {{-- Menu Grid Section --}}
-    <div class="px-6 py-8 pb-24 bg-gray-50 rounded-t-3xl -mt-6 relative">
-        <div class="grid grid-cols-3 gap-6">
+    <div class="px-4 py-8 lg:px-8 lg:py-12 bg-gray-50 min-h-screen">
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6">
             {{-- E-Learning --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.elearning') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
-                    <img src="{{ asset('images/icons/elearning.png') }}" alt="E-Learning" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                    <img src="{{ asset('images/icons/elearning.png') }}" alt="E-Learning" class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.elearning') }}</span>
             </div>
@@ -27,8 +71,8 @@
             {{-- Maps --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.maps') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
-                    <img src="{{ asset('images/icons/maps.png') }}" alt="Maps" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                    <img src="{{ asset('images/icons/maps.png') }}" alt="Maps" class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.maps') }}</span>
             </div>
@@ -36,8 +80,8 @@
             {{-- Statistik --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.statistik') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
-                    <img src="{{ asset('images/icons/statistik.png') }}" alt="Statistik" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                    <img src="{{ asset('images/icons/statistik.png') }}" alt="Statistik" class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.statistics') }}</span>
             </div>
@@ -45,9 +89,9 @@
             {{-- Lapor Peninggalan --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.laporan-peninggalan') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
                     <img src="{{ asset('images/icons/lapor-peninggalan.png') }}" alt="Lapor Peninggalan"
-                         class="w-12 h-12"/>
+                         class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.report_heritage') }}</span>
             </div>
@@ -55,9 +99,9 @@
             {{-- Video Peninggalan --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.video-peninggalan') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
                     <img src="{{ asset('images/icons/video-peninggalan.png') }}" alt="Video Peninggalan"
-                         class="w-12 h-12"/>
+                         class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.heritage_video') }}</span>
             </div>
@@ -65,8 +109,8 @@
             {{-- Kritik & Saran --}}
             <div class="flex flex-col items-center">
                 <a href="{{ route('guest.kritik-saran') }}"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
-                    <img src="{{ asset('images/icons/kritik-dan-saran.png') }}" alt="Kritik & Saran" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3">
+                    <img src="{{ asset('images/icons/kritik-dan-saran.png') }}" alt="Kritik & Saran" class="w-10 h-10 md:w-12 md:h-12"/>
                 </a>
                 <span class="text-xs font-medium text-gray-700 text-center">{{ __('app.feedback_suggestion') }}</span>
             </div>
@@ -74,10 +118,10 @@
             {{-- Tanya AI --}}
             <div class="flex flex-col items-center">
                 <a href="#"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
-                    <img src="{{ asset('images/icons/tanya-ai.png') }}" alt="Tanya AI" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
+                    <img src="{{ asset('images/icons/tanya-ai.png') }}" alt="Tanya AI" class="w-10 h-10 md:w-12 md:h-12"/>
                     <div
-                        class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                        class="absolute -bottom-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
                         <i class="fas fa-lock text-gray-800 text-xs"></i>
                     </div>
                 </a>
@@ -87,11 +131,11 @@
             {{-- Peninggalan Terdekat --}}
             <div class="flex flex-col items-center">
                 <a href="#"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
                     <img src="{{ asset('images/icons/peninggalan-terdekat.png') }}" alt="Peninggalan Terdekat"
-                         class="w-12 h-12"/>
+                         class="w-10 h-10 md:w-12 md:h-12"/>
                     <div
-                        class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                        class="absolute -bottom-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
                         <i class="fas fa-lock text-gray-800 text-xs"></i>
                     </div>
                 </a>
@@ -101,10 +145,10 @@
             {{-- Game --}}
             <div class="flex flex-col items-center">
                 <a href="#"
-                   class="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
-                    <img src="{{ asset('images/icons/game.png') }}" alt="Game" class="w-12 h-12"/>
+                   class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow mb-3 relative">
+                    <img src="{{ asset('images/icons/game.png') }}" alt="Game" class="w-10 h-10 md:w-12 md:h-12"/>
                     <div
-                        class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                        class="absolute -bottom-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
                         <i class="fas fa-lock text-gray-800 text-xs"></i>
                     </div>
                 </a>
@@ -112,9 +156,6 @@
             </div>
         </div>
     </div>
-
-    {{-- Bottom Navigation --}}
-    <x-bottom-nav/>
 
     {{-- Profile Completion Popup --}}
     @if(!auth()->user()->phone_number || !auth()->user()->address || !auth()->user()->date_of_birth)

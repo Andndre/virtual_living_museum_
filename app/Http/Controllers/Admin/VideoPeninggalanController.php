@@ -12,6 +12,7 @@ class VideoPeninggalanController extends Controller
     public function index()
     {
         $data = VideoPeninggalan::all();
+
         return view('admin.video-peninggalan.index', compact('data'));
     }
 
@@ -48,6 +49,7 @@ class VideoPeninggalanController extends Controller
     public function edit(string $id)
     {
         $video = VideoPeninggalan::findOrFail($id);
+
         return view('admin.video-peninggalan.edit', compact('video'));
     }
 

@@ -6,16 +6,7 @@
                 data-fallback-url="{{ route('guest.home') }}">
                 <i class="fas fa-arrow-left text-xl"></i>
             </button>
-            <a href="{{ route('profile.edit') }}"
-                class="h-12 w-12 overflow-hidden rounded-full border-2 border-white/30 transition-colors hover:border-white/50">
-                @if (auth()->user()->profile_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Picture"
-                        class="h-full w-full object-cover" />
-                @else
-                    <img src="{{ asset('images/placeholder/profile-picture.png') }}" alt="Profile Picture"
-                        class="h-full w-full object-cover" />
-                @endif
-            </a>
+            <x-user-profile-navbar class="h-12 w-12"/>
         </div>
 
         <h1 class="mb-8 text-2xl font-bold">{{ __('app.elearning') }}</h1>
@@ -217,13 +208,12 @@
                             @endforeach
                         </div>
                     @empty
-                        <div class="rounded-2xl border border-gray-100 bg-white p-10 text-center shadow">
-                            <div
-                                class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-500 shadow-sm">
-                                <i class="fas fa-history text-2xl"></i>
+                        <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                <i class="fas fa-history text-2xl text-gray-400"></i>
                             </div>
-                            <h3 class="mb-1 text-lg font-semibold text-gray-900">Belum Ada Riwayat</h3>
-                            <p class="text-sm text-gray-500">Aktivitas pembelajaran Anda akan muncul di sini.</p>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Riwayat</h3>
+                            <p class="text-gray-600">Aktivitas pembelajaran Anda akan muncul di sini.</p>
                         </div>
                     @endforelse
                 </div>

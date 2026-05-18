@@ -1,31 +1,41 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Styles -->
-        @stack('styles')
-        
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
-        @stack('head')
-    </head>
-    <body class="font-sans bg-black text-gray-900 antialiased">
-        <div class="w-full lg:max-w-xl mx-auto bg-gray-50 min-h-[100dvh]">
-            {{ $slot }}
+    <!-- Styles -->
+    @stack('styles')
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('head')
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-900 antialiased">
+    <div x-data="{ sidebarOpen: false }" class="min-h-screen">
+        <x-sidebar-nav />
+
+        <div class="md:ml-64">
+            <main class="pb-20 sm:pb-8 md:pb-8 md:pl-1">
+                {{ $slot }}
+            </main>
         </div>
-        
-        <!-- Scripts -->
-        @stack('scripts')
-    </body>
+
+        <x-bottom-nav class="flex md:hidden" />
+    </div>
+
+    @stack('scripts')
+</body>
+
 </html>

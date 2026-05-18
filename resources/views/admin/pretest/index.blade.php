@@ -145,11 +145,13 @@
                             </div>
                         </div>
                     @empty
-                        <div class="text-center py-12">
-                            <i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada soal pretest</h3>
-                            <p class="text-gray-500 mb-4">Mulai tambahkan soal pretest untuk materi ini.</p>
-                            <a href="{{ route('admin.pretest.create', $materi->materi_id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 hover:text-blue-500">
+                        <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                                <i class="fas fa-question-circle text-2xl text-gray-400"></i>
+                            </div>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Soal</h3>
+                            <p class="text-gray-600 mb-4">Mulai tambahkan soal pretest untuk materi ini.</p>
+                            <a href="{{ route('admin.pretest.create', $materi->materi_id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Soal Pertama
                             </a>

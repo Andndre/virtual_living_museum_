@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SitusPeninggalan;
 use App\Models\User;
+use App\Models\VirtualMuseum;
 use App\Models\VirtualMuseumObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,7 +66,7 @@ class MapsController extends Controller
                 });
 
             // Get all virtual museums with their related sites
-            $museums = \App\Models\VirtualMuseum::with('situsPeninggalan')
+            $museums = VirtualMuseum::with('situsPeninggalan')
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('nama', 'like', "%{$searchQuery}%");
                 })

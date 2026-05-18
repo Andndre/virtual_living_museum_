@@ -23,14 +23,15 @@ class ArTokenAuth
         // Debug log
         Log::debug('AR Token Middleware - Request:', [
             'url' => $request->fullUrl(),
-            'token' => $arToken
+            'token' => $arToken,
         ]);
 
         // If no token, check if user is authenticated
-        if (!$arToken) {
-            if (!Auth::check()) {
+        if (! $arToken) {
+            if (! Auth::check()) {
                 return redirect()->route('login');
             }
+
             return $next($request);
         }
 
@@ -40,7 +41,7 @@ class ArTokenAuth
 
             // Find the user
             $user = User::find($tokenData['user_id']);
-            if (!$user) {
+            if (! $user) {
                 throw new Exception('User not found');
             }
 
@@ -49,15 +50,16 @@ class ArTokenAuth
 
             Log::info('AR Token validated successfully', [
                 'user_id' => $user->id,
-                'arToken' => $arToken
+                'arToken' => $arToken,
             ]);
 
             return redirect()->to(url()->current());
         } catch (Exception $e) {
-            Log::error('AR Token validation failed: ' . $e->getMessage(), [
+            Log::error('AR Token validation failed: '.$e->getMessage(), [
                 'exception' => get_class($e),
-                'token' => $arToken
+                'token' => $arToken,
             ]);
+
             return redirect()->route('login')->with('error', 'Token AR tidak valid atau sudah kadaluarsa');
         }
     }

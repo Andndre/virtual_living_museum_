@@ -178,26 +178,16 @@
         </div>
     @else
         <!-- Empty State -->
-        <div class="text-center py-12">
-            <div class="max-w-md mx-auto">
-                <div class="mx-auto h-24 w-24 text-gray-400">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada Virtual Living Museum</h3>
-                <p class="mt-2 text-sm text-gray-500">
-                    Mulai membuat Virtual Living Museum pertama untuk situs peninggalan Anda.
-                </p>
-                <div class="mt-6">
-                    <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Tambah Virtual Living Museum
-                    </a>
-                </div>
+        <div class="rounded-2xl bg-white p-12 text-center shadow-sm">
+            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                <i class="fas fa-building text-2xl text-gray-400"></i>
             </div>
+            <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Virtual Living Museum</h3>
+            <p class="text-gray-600 mb-4">Mulai membuat Virtual Living Museum pertama untuk situs peninggalan Anda.</p>
+            <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah Virtual Living Museum
+            </a>
         </div>
     @endif
 </div>

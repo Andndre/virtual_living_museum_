@@ -1,5 +1,5 @@
 {{-- Bottom Navigation Component --}}
-<nav class="fixed bottom-0 left-0 right-0 flex justify-center z-50">
+<nav {{ $attributes->merge(['class' => 'fixed bottom-0 left-0 right-0 flex justify-center z-50']) }}>
 	<div class="flex justify-center items-start py-3 px-3 w-full lg:max-w-xl mx-auto bg-white border-t border-gray-200 relative shadow-black shadow-lg">
 		{{-- Left Navigation Items --}}
 		<div class="flex flex-1 justify-around items-start pr-8">
@@ -14,9 +14,9 @@
 		</div>
 
 		{{-- Center AR Marker Button --}}
-		<div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-8">
-			<a href="{{ route('guest.ar-marker') }}" class="flex items-center justify-center w-16 h-16 bg-primary rounded-full border-4 border-primary/30 shadow-lg hover:shadow-xl transition-shadow">
-				<img src="{{ asset('images/icons/ar-marker.svg') }}" alt="AR Marker" class="w-10 h-10 text-white" />
+		<div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-7">
+			<a href="{{ route('guest.ar-marker') }}" class="flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-primary rounded-full border-4 border-primary/30 shadow-lg hover:shadow-xl transition-shadow">
+				<img src="{{ asset('images/icons/ar-marker.svg') }}" alt="AR Marker" class="w-8 h-8 md:w-10 md:h-10" />
 			</a>
 		</div>
 

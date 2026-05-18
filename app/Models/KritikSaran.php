@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KritikSaran extends Model
 {
+    use HasFactory;
+
     protected $table = 'kritik_saran';
 
     protected $primaryKey = 'ks_id';

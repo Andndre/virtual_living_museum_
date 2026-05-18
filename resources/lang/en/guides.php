@@ -12,17 +12,17 @@ return [
         'steps' => [
             [
                 'title' => 'Open Visit Heritage Menu',
-                'description' => 'Select Visit Heritage menu from the main application page'
+                'description' => 'Select Visit Heritage menu from the main application page',
             ],
             [
                 'title' => 'Choose Material',
-                'description' => 'Choose the heritage material you want to learn about'
+                'description' => 'Choose the heritage material you want to learn about',
             ],
             [
                 'title' => 'Follow Each Step',
-                'description' => 'Follow each step: take pretest, read e-book, visit AR feature, and take posttest'
+                'description' => 'Follow each step: take pretest, read e-book, visit AR feature, and take posttest',
             ],
-        ]
+        ],
     ],
 
     'virtual_living_museum' => [
@@ -33,29 +33,29 @@ return [
         'steps' => [
             [
                 'title' => 'Visit AR Feature',
-                'description' => 'Select AR feature from Visit Heritage page'
+                'description' => 'Select AR feature from Visit Heritage page',
             ],
             [
                 'title' => 'Choose Available AR Spot',
-                'description' => 'Choose one of the available AR spots on AR feature page'
+                'description' => 'Choose one of the available AR spots on AR feature page',
             ],
             [
                 'title' => 'Allow Camera Access',
-                'description' => 'Allow the application to access your device camera'
+                'description' => 'Allow the application to access your device camera',
             ],
             [
                 'title' => 'Point Camera',
-                'description' => 'Point camera to open area until white circle appears'
+                'description' => 'Point camera to open area until white circle appears',
             ],
             [
                 'title' => 'View AR Content',
-                'description' => 'Tap screen to place AR object. You can walk around to see AR object from different angles'
+                'description' => 'Tap screen to place AR object. You can walk around to see AR object from different angles',
             ],
             [
                 'title' => 'View Heritage Information',
-                'description' => 'Use info button to see list of heritage information on AR object'
-            ]
-        ]
+                'description' => 'Use info button to see list of heritage information on AR object',
+            ],
+        ],
     ],
 
     'heritage_video' => [
@@ -66,17 +66,17 @@ return [
         'steps' => [
             [
                 'title' => 'Open Heritage Video Menu',
-                'description' => 'Select Heritage Video menu from main page'
+                'description' => 'Select Heritage Video menu from main page',
             ],
             [
                 'title' => 'Choose Video',
-                'description' => 'Select heritage video you want to watch from available list'
+                'description' => 'Select heritage video you want to watch from available list',
             ],
             [
                 'title' => 'Watch Video',
-                'description' => 'Video will play automatically. Use video controls to adjust volume and quality'
-            ]
-        ]
+                'description' => 'Video will play automatically. Use video controls to adjust volume and quality',
+            ],
+        ],
     ],
 
     'ebook' => [
@@ -87,17 +87,17 @@ return [
         'steps' => [
             [
                 'title' => 'Access E-Book',
-                'description' => 'E-book is available in learning process in Visit Heritage menu'
+                'description' => 'E-book is available in learning process in Visit Heritage menu',
             ],
             [
                 'title' => 'Read Material',
-                'description' => 'Read e-book material carefully to understand cultural heritage'
+                'description' => 'Read e-book material carefully to understand cultural heritage',
             ],
             [
                 'title' => 'Page Navigation',
-                'description' => 'Use navigation buttons to move between e-book pages'
-            ]
-        ]
+                'description' => 'Use navigation buttons to move between e-book pages',
+            ],
+        ],
     ],
 
     'pretest_posttest' => [
@@ -108,21 +108,21 @@ return [
         'steps' => [
             [
                 'title' => 'Take Pretest',
-                'description' => 'Start by taking pretest to measure your initial knowledge'
+                'description' => 'Start by taking pretest to measure your initial knowledge',
             ],
             [
                 'title' => 'Study Material',
-                'description' => 'After pretest, study e-book material and visit AR feature'
+                'description' => 'After pretest, study e-book material and visit AR feature',
             ],
             [
                 'title' => 'Take Posttest',
-                'description' => 'Complete learning process by taking posttest'
+                'description' => 'Complete learning process by taking posttest',
             ],
             [
                 'title' => 'View Results',
-                'description' => 'See your score improvement from pretest to posttest'
-            ]
-        ]
+                'description' => 'See your score improvement from pretest to posttest',
+            ],
+        ],
     ],
 
     'laporan_peninggalan' => [
@@ -133,33 +133,33 @@ return [
         'steps' => [
             [
                 'title' => 'Open Heritage Report Menu',
-                'description' => 'Select Heritage Report menu from the main application page'
+                'description' => 'Select Heritage Report menu from the main application page',
             ],
             [
                 'title' => 'Add New Report',
-                'description' => 'Click "Add Report" button to create a new heritage report'
+                'description' => 'Click "Add Report" button to create a new heritage report',
             ],
             [
                 'title' => 'Fill Heritage Data',
-                'description' => 'Enter heritage name, address, and description of the discovered heritage'
+                'description' => 'Enter heritage name, address, and description of the discovered heritage',
             ],
             [
                 'title' => 'Set Location',
-                'description' => 'Mark the heritage location on the map by clicking the correct position'
+                'description' => 'Mark the heritage location on the map by clicking the correct position',
             ],
             [
                 'title' => 'Upload Photos',
-                'description' => 'Upload photos of the heritage to complete your report'
+                'description' => 'Upload photos of the heritage to complete your report',
             ],
             [
                 'title' => 'Submit Report',
-                'description' => 'Click "Submit Report" to send your heritage report'
+                'description' => 'Click "Submit Report" to send your heritage report',
             ],
             [
                 'title' => 'Interact with Reports',
-                'description' => 'Like and comment on heritage reports from other users'
-            ]
-        ]
+                'description' => 'Like and comment on heritage reports from other users',
+            ],
+        ],
     ],
 
     'ar_marker' => [
@@ -170,32 +170,32 @@ return [
         'steps' => [
             [
                 'title' => 'Download AR Catalog',
-                'description' => 'Download the catalog file containing AR markers from the app menu'
+                'description' => 'Download the catalog file containing AR markers from the app menu',
             ],
             [
                 'title' => 'Print Marker',
-                'description' => 'Print the AR marker from the downloaded catalog. Ensure good print quality and clarity'
+                'description' => 'Print the AR marker from the downloaded catalog. Ensure good print quality and clarity',
             ],
             [
                 'title' => 'Open AR Marker Menu',
-                'description' => 'Select AR Marker menu from the main application page'
+                'description' => 'Select AR Marker menu from the main application page',
             ],
             [
                 'title' => 'Allow Camera Access',
-                'description' => 'Grant permission for the app to access your device camera'
+                'description' => 'Grant permission for the app to access your device camera',
             ],
             [
                 'title' => 'Point Camera at Marker',
-                'description' => 'Point your device camera at the printed marker. Make sure the marker is clearly visible and not cut off'
+                'description' => 'Point your device camera at the printed marker. Make sure the marker is clearly visible and not cut off',
             ],
             [
                 'title' => 'View AR Object',
-                'description' => '3D object will appear on top of the marker. Move your device to view the object from different angles'
+                'description' => '3D object will appear on top of the marker. Move your device to view the object from different angles',
             ],
             [
                 'title' => 'Interact with Object',
-                'description' => 'Tap the AR object to see detailed information or perform other interactions'
-            ]
-        ]
-    ]
+                'description' => 'Tap the AR object to see detailed information or perform other interactions',
+            ],
+        ],
+    ],
 ];
