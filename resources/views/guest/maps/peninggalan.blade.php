@@ -1,8 +1,9 @@
 <x-guest-layout>
-    <div class="bg-primary text-white p-4">
-        <div class="flex items-center mb-4">
+    <div class="bg-primary p-4 text-white">
+        <div class="mb-4 flex items-center">
             <button class="back-button mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </button>
@@ -11,32 +12,42 @@
 
         <!-- Search Bar -->
         <form id="search-form" action="{{ route('guest.maps.peninggalan') }}" method="GET" class="relative">
-            <div class="bg-white/20 rounded-full flex items-center p-2">
-                <div class="text-white mr-2 ml-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <div class="flex items-center rounded-full bg-white/20 p-2">
+                <div class="ml-2 mr-2 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" name="q" type="text" value="{{ $searchQuery ?? '' }}" placeholder="Cari peninggalan, museum, atau objek..." class="w-full bg-transparent border-none focus:outline-none text-white placeholder-white/70">
-                @if(isset($searchQuery) && !empty($searchQuery))
-                <a href="{{ route('guest.maps.peninggalan') }}" class="text-white/70 hover:text-white mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                </a>
+                <input id="search-input" name="q" type="search" inputmode="search" autocomplete="off"
+                    value="{{ $searchQuery ?? '' }}" placeholder="Cari peninggalan, museum, atau objek..."
+                    class="w-full border-none bg-transparent text-white placeholder-white/70 focus:outline-none focus:ring-0"
+                    style="touch-action: manipulation;" aria-label="Cari peninggalan">
+                @if (isset($searchQuery) && !empty($searchQuery))
+                    <a href="{{ route('guest.maps.peninggalan') }}" class="mr-2 text-white/70 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </a>
                 @endif
             </div>
         </form>
     </div>
 
     <!-- Filter Tabs -->
-    <div class="bg-white border-b overflow-x-auto">
-        <div class="flex p-2 min-w-max">
-            <button id="filter-all" class="filter-btn active px-4 py-2 text-sm font-medium rounded-full mr-2 whitespace-nowrap">
+    <div class="overflow-x-auto border-b bg-white" role="tablist" aria-label="Filter peninggalan">
+        <div class="flex min-w-max p-2">
+            <button id="filter-all"
+                class="filter-btn active mr-2 cursor-pointer whitespace-nowrap rounded-full px-4 py-3 text-sm font-medium"
+                role="tab" aria-selected="true">
                 Semua
             </button>
-            @foreach($situs as $s)
-                <button data-situs-id="{{ $s->situs_id }}" class="filter-btn px-4 py-2 text-sm font-medium rounded-full mr-2 whitespace-nowrap">
+            @foreach ($situs as $s)
+                <button data-situs-id="{{ $s->situs_id }}"
+                    class="filter-btn mr-2 cursor-pointer whitespace-nowrap rounded-full px-4 py-3 text-sm font-medium"
+                    role="tab" aria-selected="false">
                     {{ $s->nama }}
                 </button>
             @endforeach
@@ -45,7 +56,7 @@
 
     <!-- Search Results -->
     <div id="search-results" class="p-4 pb-24">
-        @if(isset($searchQuery) && !empty($searchQuery))
+        @if (isset($searchQuery) && !empty($searchQuery))
             <div class="mb-6">
                 <h2 class="text-xl font-semibold text-gray-800">Hasil pencarian untuk "{{ $searchQuery }}"</h2>
                 <p class="text-sm text-gray-500">{{ $objects->count() }} hasil ditemukan</p>
@@ -55,88 +66,123 @@
         @php
             $groupedResults = $objects->groupBy('type');
             $sections = [
-                'situs' => ['title' => 'Situs Sejarah', 'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z', 'color' => 'blue'],
-                'museum' => ['title' => 'Virtual Museum', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple'],
-                'object' => ['title' => 'Objek Peninggalan', 'icon' => 'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z', 'color' => 'green']
+                'situs' => [
+                    'title' => 'Situs Sejarah',
+                    'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z',
+                    'color' => 'blue',
+                ],
+                'museum' => [
+                    'title' => 'Virtual Museum',
+                    'icon' =>
+                        'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+                    'color' => 'purple',
+                ],
+                'object' => [
+                    'title' => 'Objek Peninggalan',
+                    'icon' =>
+                        'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z',
+                    'color' => 'green',
+                ],
             ];
         @endphp
 
-        @foreach($sections as $type => $section)
-            @if(isset($groupedResults[$type]) && $groupedResults[$type]->isNotEmpty())
+        @foreach ($sections as $type => $section)
+            @if (isset($groupedResults[$type]) && $groupedResults[$type]->isNotEmpty())
                 <div class="mb-8">
-                    <div class="flex items-center mb-4">
-                        <div class="p-2 rounded-lg bg-{{ $section['color'] }}-100 text-{{ $section['color'] }}-700 mr-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <div class="mb-4 flex items-center">
+                        <div
+                            class="bg-{{ $section['color'] }}-100 text-{{ $section['color'] }}-700 mr-3 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $section['icon'] }}" />
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">{{ $section['title'] }}</h3>
-                        <span class="ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        <span class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                             {{ $groupedResults[$type]->count() }} item
                         </span>
                     </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @foreach($groupedResults[$type] as $item)
-                            @if($type === 'situs')
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach ($groupedResults[$type] as $item)
+                            @if ($type === 'situs')
                                 <!-- Situs Card -->
-                                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                                <div
+                                    class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
                                     <a href="{{ route('guest.situs.detail', $item->situs_id) }}" class="block">
                                         <div class="relative aspect-[4/3] overflow-hidden">
-                                            <img src="{{ $item->thumbnail_url }}" 
-                                                alt="{{ $item->nama }}" 
-                                                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                            <img src="{{ $item->thumbnail_url }}" alt="{{ $item->nama }}"
+                                                class="h-full w-full object-cover transition-transform duration-300 hover:scale-105">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent">
+                                            </div>
                                             <div class="absolute bottom-0 left-0 p-4 text-white">
-                                                <h3 class="font-bold text-lg">{{ $item->nama }}</h3>
-                                                <p class="text-sm text-white/90 line-clamp-2">{{ $item->deskripsi }}</p>
+                                                <h3 class="text-lg font-bold">{{ $item->nama }}</h3>
+                                                <p class="line-clamp-2 text-sm text-white/90">{{ $item->deskripsi }}
+                                                </p>
                                             </div>
                                         </div>
                                     </a>
                                 </div>
                             @elseif($type === 'museum')
                                 <!-- Museum Card -->
-                                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                                <div
+                                    class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
                                     <a href="#" class="block">
                                         <div class="relative aspect-[4/3] overflow-hidden">
-                                            <div class="w-full h-full bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            <div
+                                                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-12 w-12 text-purple-400" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="1.5"
+                                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                                 </svg>
                                             </div>
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent">
+                                            </div>
                                             <div class="absolute bottom-0 left-0 p-4 text-white">
-                                                <h3 class="font-bold text-lg">{{ $item->nama }}</h3>
-                                                <p class="text-sm text-white/90">{{ $item->situsPeninggalan->nama }}</p>
+                                                <h3 class="text-lg font-bold">{{ $item->nama }}</h3>
+                                                <p class="text-sm text-white/90">{{ $item->situsPeninggalan->nama }}
+                                                </p>
                                             </div>
                                         </div>
                                     </a>
                                 </div>
                             @else
                                 <!-- Object Card -->
-                                <div class="object-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 border border-gray-100"
-                                    data-situs-id="{{ $item->situs_id }}"
-                                    data-name="{{ $item->nama }}"
-                                    data-description="{{ $item->deskripsi }}">
+                                <div class="object-card cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                                    data-situs-id="{{ $item->situs_id }}" data-name="{{ $item->nama }}"
+                                    data-description="{{ $item->deskripsi }}" role="button" tabindex="0"
+                                    aria-label="Lihat detail {{ $item->nama }}">
                                     <div class="relative aspect-[4/3] overflow-hidden">
                                         <img src="{{ asset('storage/' . $item->gambar_real) }}"
                                             alt="{{ $item->nama }}"
-                                            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                                            class="h-full w-full object-cover transition-transform duration-300 hover:scale-105">
 
-                                        @if($item->is_unlocked)
-                                            <div class="absolute top-2 right-2">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        @if ($item->is_unlocked)
+                                            <div class="absolute right-2 top-2">
+                                                <span
+                                                    class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
                                                     </svg>
                                                     Terbuka
                                                 </span>
                                             </div>
                                         @else
-                                            <div class="absolute top-2 right-2">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 shadow-sm">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                            <div class="absolute right-2 top-2">
+                                                <span
+                                                    class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                            clip-rule="evenodd" />
                                                     </svg>
                                                     Terkunci
                                                 </span>
@@ -144,8 +190,10 @@
                                         @endif
                                     </div>
                                     <div class="p-3">
-                                        <h3 class="font-medium text-sm text-gray-800 truncate">{{ $item->nama }}</h3>
-                                        <p class="text-xs text-gray-500 truncate">{{ $item->situsPeninggalan->nama }}</p>
+                                        <h3 class="truncate text-sm font-medium text-gray-800">{{ $item->nama }}
+                                        </h3>
+                                        <p class="truncate text-xs text-gray-500">{{ $item->situsPeninggalan->nama }}
+                                        </p>
                                     </div>
                                 </div>
                             @endif
@@ -155,16 +203,19 @@
             @endif
         @endforeach
 
-        @if($objects->isEmpty() && isset($searchQuery))
-            <div class="col-span-2 text-center py-12">
-                <div class="text-gray-400 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto w-16 h-16">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
+        @if ($objects->isEmpty() && isset($searchQuery))
+            <div class="col-span-2 py-12 text-center">
+                <div class="mb-3 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="mx-auto h-16 w-16">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
                     </svg>
                 </div>
                 <h3 class="text-xl font-medium text-gray-900">Tidak ada hasil yang ditemukan</h3>
-                <p class="text-gray-500 mt-2">Coba dengan kata kunci lain atau periksa ejaan Anda</p>
-                <a href="{{ route('guest.maps.peninggalan') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <p class="mt-2 text-gray-500">Coba dengan kata kunci lain atau periksa ejaan Anda</p>
+                <a href="{{ route('guest.maps.peninggalan') }}"
+                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Tampilkan Semua
                 </a>
             </div>
@@ -173,69 +224,86 @@
 
     <!-- No Results Message -->
     <div id="no-results" class="hidden p-8 text-center">
-        <div class="text-gray-400 mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto w-12 h-12">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        <div class="mb-3 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="mx-auto h-12 w-12">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </div>
         <h3 class="text-lg font-medium text-gray-900">Tidak ditemukan</h3>
-        <p class="text-sm text-gray-500 mt-1">Tidak ada peninggalan yang sesuai dengan pencarian Anda</p>
+        <p class="mt-1 text-sm text-gray-500">Tidak ada peninggalan yang sesuai dengan pencarian Anda</p>
     </div>
 
     <!-- Object Detail Modal -->
-    <div id="object-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300" id="modal-backdrop"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <div class="relative w-full max-w-md max-h-[90vh] flex flex-col pointer-events-auto">
-                <div class="bg-white rounded-2xl flex flex-col shadow-2xl transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
-                <!-- Image Section (Fixed Height) -->
-                <div class="relative flex-shrink-0">
-                    <div class="aspect-[4/3] w-full bg-gray-100">
-                        <img id="modal-image" src="" alt="" class="w-full h-full object-cover">
+    <div id="object-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true"
+        aria-labelledby="modal-title" aria-describedby="modal-description">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300"
+            id="modal-backdrop"></div>
+        <div class="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
+            <div class="pointer-events-auto relative flex max-h-[90vh] w-full max-w-md flex-col">
+                <div class="flex scale-95 transform flex-col rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
+                    id="modal-content">
+                    <!-- Image Section (Fixed Height) -->
+                    <div class="relative flex-shrink-0">
+                        <div class="aspect-[4/3] w-full bg-gray-100">
+                            <img id="modal-image" src="" alt="" class="h-full w-full object-cover">
+                        </div>
+                        <button id="close-modal"
+                            class="absolute right-4 top-4 rounded-full bg-white/90 p-2 text-gray-800 shadow-lg transition-all duration-200 hover:scale-110 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            aria-label="Tutup modal">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" class="h-5 w-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <button id="close-modal" class="absolute top-4 right-4 bg-white/90 text-gray-800 rounded-full p-2 shadow-lg hover:bg-white hover:scale-110 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
 
-                <!-- Content Section (Scrollable) -->
-                <div class="flex-1 overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex items-start mb-4">
-                            <div class="flex-1 min-w-0">
-                                <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-1 break-words"></h2>
-                                <div class="flex items-center text-sm text-blue-600 mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <span id="modal-location" class="truncate"></span>
+                    <!-- Content Section (Scrollable) -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="p-6">
+                            <div class="mb-4 flex items-start">
+                                <div class="min-w-0 flex-1">
+                                    <h2 id="modal-title" class="mb-1 break-words text-2xl font-bold text-gray-900">
+                                    </h2>
+                                    <div class="mt-1 flex items-center text-sm text-blue-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-4 w-4 flex-shrink-0"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span id="modal-location" class="truncate"></span>
+                                    </div>
+                                </div>
+                                <div id="status-badge"
+                                    class="ml-2 whitespace-nowrap rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                    Terbuka
                                 </div>
                             </div>
-                            <div id="status-badge" class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2">
-                                Terbuka
+                            <div class="prose prose-sm text-gray-600">
+                                <p id="modal-description" class="leading-relaxed"></p>
                             </div>
                         </div>
-                        <div class="prose prose-sm text-gray-600">
-                            <p id="modal-description" class="leading-relaxed"></p>
+                    </div>
+
+                    <!-- Action Button (Fixed at bottom) -->
+                    <div class="flex-shrink-0 border-t border-gray-100 bg-gray-50 p-4">
+                        <a id="modal-link" href="#"
+                            class="block flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-center font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                            Kunjungi Situs
+                        </a>
+                        <div id="locked-message" class="mt-2 hidden text-center text-sm text-gray-600">
+                            Selesaikan materi <span id="situs-name" class="font-medium"></span> untuk membuka
+                            peninggalan ini
                         </div>
                     </div>
-                </div>
-
-                <!-- Action Button (Fixed at bottom) -->
-                <div class="border-t border-gray-100 p-4 bg-gray-50 flex-shrink-0">
-                    <a id="modal-link" href="#" class="block w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium py-3 px-4 rounded-xl hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                        Kunjungi Situs
-                    </a>
-                    <div id="locked-message" class="hidden mt-2 text-center text-sm text-gray-600">
-                        Selesaikan materi <span id="situs-name" class="font-medium"></span> untuk membuka peninggalan ini
-                    </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -328,54 +396,66 @@
             });
         });
 
-        // Object card click
-        objectCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const img = card.querySelector('img');
-                const situsId = card.dataset.situsId;
-                const name = card.dataset.name;
-                const description = card.dataset.description;
-                const situsName = card.querySelector('p').textContent;
-                const isUnlocked = card.querySelector('.bg-green-100') !== null;
+        // Object card click and keyboard support
+        function openObjectModal(card) {
+            const img = card.querySelector('img');
+            const situsId = card.dataset.situsId;
+            const name = card.dataset.name;
+            const description = card.dataset.description;
+            const situsName = card.querySelector('p').textContent;
+            const isUnlocked = card.querySelector('.bg-green-100') !== null;
 
-                // Update modal content
-                modalImage.src = img.src;
-                modalImage.alt = name;
-                modalTitle.textContent = name;
-                modalLocation.textContent = situsName;
-                modalDescription.textContent = description;
+            // Update modal content
+            modalImage.src = img.src;
+            modalImage.alt = name;
+            modalTitle.textContent = name;
+            modalLocation.textContent = situsName;
+            modalDescription.textContent = description;
 
-                // Update status badge and action section
-                const statusBadge = document.getElementById('status-badge');
-                const lockedMessage = document.getElementById('locked-message');
-                const situsNameElement = document.getElementById('situs-name');
+            // Update status badge and action section
+            const statusBadge = document.getElementById('status-badge');
+            const lockedMessage = document.getElementById('locked-message');
+            const situsNameElement = document.getElementById('situs-name');
 
-                if (isUnlocked) {
-                    statusBadge.textContent = 'Terbuka';
-                    statusBadge.className = 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
-                    modalLink.href = "{{ route('guest.situs.detail', ['situs_id' => ':situsId']) }}".replace(':situsId', situsId);
-                    modalLink.classList.remove('hidden');
-                    lockedMessage.classList.add('hidden');
-                } else {
-                    statusBadge.textContent = 'Terkunci';
-                    statusBadge.className = 'bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
-                    modalLink.classList.add('hidden');
-                    lockedMessage.classList.remove('hidden');
-                    situsNameElement.textContent = situsName;
+            if (isUnlocked) {
+                statusBadge.textContent = 'Terbuka';
+                statusBadge.className =
+                    'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
+                modalLink.href = "{{ route('guest.situs.detail', ['situs_id' => ':situsId']) }}"
+                    .replace(':situsId', situsId);
+                modalLink.classList.remove('hidden');
+                lockedMessage.classList.add('hidden');
+            } else {
+                statusBadge.textContent = 'Terkunci';
+                statusBadge.className =
+                    'bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
+                modalLink.classList.add('hidden');
+                lockedMessage.classList.remove('hidden');
+                situsNameElement.textContent = situsName;
+            }
+
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+            // Trigger animation
+            setTimeout(() => {
+                const modalContent = document.getElementById('modal-content');
+                if (modalContent) {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
                 }
+            }, 10);
+        }
 
-                // Show modal
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-
-                // Trigger animation
-                setTimeout(() => {
-                    const modalContent = document.getElementById('modal-content');
-                    if (modalContent) {
-                        modalContent.classList.remove('scale-95', 'opacity-0');
-                        modalContent.classList.add('scale-100', 'opacity-100');
-                    }
-                }, 10);
+        // Add click and keyboard listeners to object cards
+        objectCards.forEach(card => {
+            card.addEventListener('click', () => openObjectModal(card));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openObjectModal(card);
+                }
             });
         });
 
@@ -419,11 +499,30 @@
                     transform: translateY(-1px);
                 }
 
+                .filter-btn:focus-visible {
+                    outline: 2px solid #4f46e5;
+                    outline-offset: 2px;
+                }
+
                 .filter-btn.active {
                     background: linear-gradient(135deg, #4f46e5, #6366f1);
                     color: white;
                     border-color: #4f46e5;
                     box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
+                }
+
+                /* Reduced motion */
+                @media (prefers-reduced-motion: reduce) {
+                    .filter-btn,
+                    .filter-btn:hover {
+                        transition: none;
+                        transform: none;
+                    }
+                    .modal-content,
+                    #modal-content {
+                        transition: opacity 0.01ms !important;
+                        transform: none !important;
+                    }
                 }
 
                 /* Custom scrollbar for modal */
