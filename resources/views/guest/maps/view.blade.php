@@ -215,9 +215,10 @@
                     </svg>
                 </div>
                 <input id="search-input" type="search" inputmode="search" autocomplete="off"
-                    placeholder="Cari situs peninggalan..."
+                    placeholder="{{ __('maps.search_placeholder') }}"
                     class="h-full w-full border-none bg-transparent text-gray-700 focus:border-none focus:outline-none focus:ring-0"
-                    style="-webkit-appearance: none; touch-action: manipulation;" aria-label="Cari situs peninggalan">
+                    style="-webkit-appearance: none; touch-action: manipulation;"
+                    aria-label="{{ __('maps.search_placeholder') }}">
                 <button id="search-clear" class="mx-3 hidden text-gray-400 hover:text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="h-6 w-6">
@@ -248,7 +249,7 @@
                 <p id="overlay-description" class="mt-3 line-clamp-2 text-sm text-gray-500"></p>
                 <a id="overlay-link" href="#" class="action-btn action-btn-primary mt-4 w-full" role="button"
                     style="display: none;">
-                    Kunjungi
+                    {{ __('maps.visit') }}
                 </a>
                 <p id="locked-message"
                     class="locked-message mt-4 items-center justify-center gap-2 text-center text-sm text-orange-600">
@@ -257,10 +258,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
-                    Situs ini belum dapat dikunjungi. Selesaikan materi sebelumnya untuk membukanya.
+                    {{ __('maps.site_locked_message') }}
                 </p>
                 <button id="close-overlay" class="action-btn action-btn-secondary mt-3 w-full" role="button">
-                    Tutup
+                    {{ __('maps.close') }}
                 </button>
             </div>
         </div>
@@ -281,8 +282,8 @@
         // Add zoom control
         L.control.zoom({
             position: 'bottomright',
-            zoomInTitle: 'Perbesar',
-            zoomOutTitle: 'Perkecil'
+            zoomInTitle: '{{ __('maps.zoom_in') }}',
+            zoomOutTitle: '{{ __('maps.zoom_out') }}'
         }).addTo(map);
 
         // Custom control for "Lihat Peninggalan" button
@@ -291,9 +292,9 @@
                 const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
                 const link = L.DomUtil.create('a', '', container);
                 link.href = '{{ route('guest.maps.peninggalan') }}';
-                link.title = 'Lihat Daftar Peninggalan';
+                link.title = '{{ __('maps.view_heritage_list') }}';
                 link.innerHTML =
-                    '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">Lihat Peninggalan</div>';
+                    '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">{{ __('maps.view_heritage') }}</div>';
 
                 L.DomEvent.on(link, 'click', function(e) {
                     L.DomEvent.stopPropagation(e);
@@ -348,7 +349,7 @@
                     weight: 2,
                     opacity: 1,
                     fillOpacity: 1
-                }).addTo(map).bindPopup('Lokasi Anda');
+                }).addTo(map).bindPopup('{{ __('maps.your_location') }}');
                 map.setView([lat, lon], 13);
             });
         }
