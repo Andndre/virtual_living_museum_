@@ -7,7 +7,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </button>
-            <h1 class="text-xl font-bold">Virtual Living Museum</h1>
+            <h1 class="text-xl font-bold">{{ __('maps.virtual_living_museum') }}</h1>
         </div>
 
         <!-- Search Bar -->
@@ -21,9 +21,9 @@
                     </svg>
                 </div>
                 <input id="search-input" name="q" type="search" inputmode="search" autocomplete="off"
-                    value="{{ $searchQuery ?? '' }}" placeholder="Cari peninggalan, museum, atau objek..."
+                    value="{{ $searchQuery ?? '' }}" placeholder="{{ __('maps.search_placeholder_peninggalan') }}"
                     class="w-full border-none bg-transparent text-white placeholder-white/70 focus:outline-none focus:ring-0"
-                    style="touch-action: manipulation;" aria-label="Cari peninggalan">
+                    style="touch-action: manipulation;" aria-label="{{ __('maps.search_placeholder_peninggalan') }}">
                 @if (isset($searchQuery) && !empty($searchQuery))
                     <a href="{{ route('guest.maps.peninggalan') }}" class="mr-2 text-white/70 hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -42,7 +42,7 @@
             <button id="filter-all"
                 class="filter-btn active mr-2 cursor-pointer whitespace-nowrap rounded-full px-4 py-3 text-sm font-medium"
                 role="tab" aria-selected="true">
-                Semua
+                {{ __('maps.all') }}
             </button>
             @foreach ($situs as $s)
                 <button data-situs-id="{{ $s->situs_id }}"
@@ -58,8 +58,8 @@
     <div id="search-results" class="p-4 pb-24">
         @if (isset($searchQuery) && !empty($searchQuery))
             <div class="mb-6">
-                <h2 class="text-xl font-semibold text-gray-800">Hasil pencarian untuk "{{ $searchQuery }}"</h2>
-                <p class="text-sm text-gray-500">{{ $objects->count() }} hasil ditemukan</p>
+                <h2 class="text-xl font-semibold text-gray-800">@lang('maps.search_results_for', ['query' => $searchQuery])</h2>
+                <p class="text-sm text-gray-500">{{ $objects->count() }}@lang('maps.results_found')</p>
             </div>
         @endif
 
@@ -67,18 +67,18 @@
             $groupedResults = $objects->groupBy('type');
             $sections = [
                 'situs' => [
-                    'title' => 'Situs Sejarah',
+                    'title' => __('maps.historical_sites'),
                     'icon' => 'M12 21v-8.25M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM3.75 12h.008v.008H3.75V12z',
                     'color' => 'blue',
                 ],
                 'museum' => [
-                    'title' => 'Virtual Museum',
+                    'title' => __('maps.virtual_museum'),
                     'icon' =>
                         'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
                     'color' => 'purple',
                 ],
                 'object' => [
-                    'title' => 'Objek Peninggalan',
+                    'title' => __('maps.heritage_objects'),
                     'icon' =>
                         'M2.25 12c0-2.8 2.2-5 5-5h9.5c2.8 0 5 2.2 5 5v6c0 2.8-2.2 5-5 5h-9.5c-2.8 0-5-2.2-5-5v-6z',
                     'color' => 'green',
@@ -99,7 +99,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">{{ $section['title'] }}</h3>
                         <span class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
-                            {{ $groupedResults[$type]->count() }} item
+                            {{ $groupedResults[$type]->count() }} @lang('maps.item')
                         </span>
                     </div>
 
@@ -171,7 +171,7 @@
                                                             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                             clip-rule="evenodd" />
                                                     </svg>
-                                                    Terbuka
+                                                    @lang('maps.unlocked')
                                                 </span>
                                             </div>
                                         @else
@@ -184,7 +184,7 @@
                                                             d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                                             clip-rule="evenodd" />
                                                     </svg>
-                                                    Terkunci
+                                                    @lang('maps.locked')
                                                 </span>
                                             </div>
                                         @endif
@@ -212,11 +212,11 @@
                             d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-medium text-gray-900">Tidak ada hasil yang ditemukan</h3>
-                <p class="mt-2 text-gray-500">Coba dengan kata kunci lain atau periksa ejaan Anda</p>
+                <h3 class="text-xl font-medium text-gray-900">@lang('maps.no_results_found')</h3>
+                <p class="mt-2 text-gray-500">@lang('maps.try_different_keywords')</p>
                 <a href="{{ route('guest.maps.peninggalan') }}"
                     class="mt-4 inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Tampilkan Semua
+                    @lang('maps.show_all')
                 </a>
             </div>
         @endif
@@ -231,8 +231,8 @@
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900">Tidak ditemukan</h3>
-        <p class="mt-1 text-sm text-gray-500">Tidak ada peninggalan yang sesuai dengan pencarian Anda</p>
+        <h3 class="text-lg font-medium text-gray-900">@lang('maps.not_found')</h3>
+        <p class="mt-1 text-sm text-gray-500">@lang('maps.no_heritage_matches_search')</p>
     </div>
 
     <!-- Object Detail Modal -->
@@ -251,7 +251,7 @@
                         </div>
                         <button id="close-modal"
                             class="absolute right-4 top-4 rounded-full bg-white/90 p-2 text-gray-800 shadow-lg transition-all duration-200 hover:scale-110 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            aria-label="Tutup modal">
+                            aria-label="{{ __('maps.close_modal') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="2" stroke="currentColor" class="h-5 w-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -278,8 +278,9 @@
                                     </div>
                                 </div>
                                 <div id="status-badge"
-                                    class="ml-2 whitespace-nowrap rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                                    Terbuka
+                                    class="ml-2 whitespace-nowrap rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800"
+                                    data-unlocked="{{ __('maps.unlocked') }}" data-locked="{{ __('maps.locked') }}">
+                                    @lang('maps.unlocked')
                                 </div>
                             </div>
                             <div class="prose prose-sm text-gray-600">
@@ -297,11 +298,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
-                            Kunjungi Situs
+                            @lang('maps.visit_site')
                         </a>
                         <div id="locked-message" class="mt-2 hidden text-center text-sm text-gray-600">
-                            Selesaikan materi <span id="situs-name" class="font-medium"></span> untuk membuka
-                            peninggalan ini
+                            @lang('maps.complete_material') <span id="situs-name" class="font-medium"></span> @lang('maps.to_unlock_heritage')
                         </div>
                     </div>
                 </div>
@@ -418,17 +418,17 @@
             const situsNameElement = document.getElementById('situs-name');
 
             if (isUnlocked) {
-                statusBadge.textContent = 'Terbuka';
+                statusBadge.textContent = statusBadge.dataset.unlocked;
                 statusBadge.className =
-                    'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
+                    'ml-2 whitespace-nowrap rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800';
                 modalLink.href = "{{ route('guest.situs.detail', ['situs_id' => ':situsId']) }}"
                     .replace(':situsId', situsId);
                 modalLink.classList.remove('hidden');
                 lockedMessage.classList.add('hidden');
             } else {
-                statusBadge.textContent = 'Terkunci';
+                statusBadge.textContent = statusBadge.dataset.locked;
                 statusBadge.className =
-                    'bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ml-2';
+                    'ml-2 whitespace-nowrap rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-800';
                 modalLink.classList.add('hidden');
                 lockedMessage.classList.remove('hidden');
                 situsNameElement.textContent = situsName;
