@@ -672,9 +672,18 @@ class HomeController extends Controller
     public function situsDetail(Request $request, $situs_id)
     {
         $user = Auth::user();
-        $situs = SitusPeninggalan::with(['virtualMuseum', 'materi'])->findOrFail($situs_id);
+        $situs = SitusPeninggalan::with(['virtualMuseum', 'virtualMuseumObject', 'materi'])->findOrFail($situs_id);
 
-        return view('guest.situs.detail', compact('situs'));
+        // Determine if this situs is unlocked based on user's level
+        $level = $user->level_sekarang;
+        $isUnlocked = $situs->materi_id
+            ? $situs->materi->urutan <= $level
+            : true;
+
+        return view('guest.situs.detail', [
+            'situs' => $situs,
+            'is_unlocked' => $isUnlocked
+        ]);
     }
 
     public function arMuseum(Request $request, $situs_id, $museum_id)

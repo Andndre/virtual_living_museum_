@@ -5,6 +5,16 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <style>
+            @media (prefers-reduced-motion: reduce) {
+
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+
             body {
                 overflow: hidden;
             }
@@ -30,6 +40,12 @@
                 z-index: 1000;
             }
 
+            #search-bar button,
+            #search-bar a,
+            #search-bar input {
+                cursor-pointer: pointer;
+            }
+
             #bottom-sheet {
                 position: fixed;
                 bottom: 0;
@@ -37,7 +53,7 @@
                 right: 0;
                 z-index: 1000;
                 transform: translateY(100%);
-                transition: transform 0.3s ease;
+                transition: transform 250ms ease-out;
                 visibility: hidden;
                 padding-bottom: env(safe-area-inset-bottom, 0);
             }
@@ -54,6 +70,13 @@
                 border: 3px dashed #d71818;
                 border-radius: 50%;
                 animation: spin 10s linear infinite;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .selected-marker-icon .spinning-circle-wrapper {
+                    animation: none;
+                    border-style: solid;
+                }
             }
 
             .selected-marker-icon img {
@@ -74,15 +97,20 @@
                 color: #333;
                 font-weight: bold;
                 font-size: 14px;
-                background-color: rgba(255, 255, 255, 0.85);
-                padding: 4px 8px;
-                border-radius: 5px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                background-color: rgba(255, 255, 255, 0.95);
+                padding: 6px 10px;
+                border-radius: 6px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             }
 
             @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
+                }
             }
 
             .leaflet-bottom.leaflet-left,
@@ -91,14 +119,71 @@
             }
 
             .leaflet-touch .leaflet-control-zoom a {
-                width: 36px;
-                height: 36px;
-                line-height: 36px;
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
                 font-size: 18px;
             }
 
             .leaflet-marker-icon {
-                filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
+                filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
+                transition: transform 150ms ease-out;
+            }
+
+            .leaflet-marker-icon:hover {
+                transform: scale(1.1);
+            }
+
+            /* Focus states for accessibility */
+            button:focus-visible,
+            a:focus-visible,
+            input:focus-visible {
+                outline: 2px solid #2563eb;
+                outline-offset: 2px;
+            }
+
+            /* Action button styles */
+            .action-btn {
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 12px 16px;
+                border-radius: 12px;
+                font-weight: 600;
+                transition: all 200ms ease-out;
+            }
+
+            .action-btn-primary {
+                background-color: #2563eb;
+                color: white;
+            }
+
+            .action-btn-primary:hover {
+                background-color: #1d4ed8;
+            }
+
+            .action-btn-primary:active {
+                transform: scale(0.98);
+            }
+
+            .action-btn-secondary {
+                background-color: #e5e7eb;
+                color: #374151;
+            }
+
+            .action-btn-secondary:hover {
+                background-color: #d1d5db;
+            }
+
+            .action-btn-secondary:active {
+                transform: scale(0.98);
+            }
+
+            #locked-message {
+                display: flex !important;
+                align-items: center;
+                gap: 0.5rem;
             }
         </style>
     @endpush
@@ -110,26 +195,33 @@
 
     <!-- Search Bar -->
     <div id="search-bar">
-        <div class="flex items-center gap-2 max-w-md mx-auto">
+        <div class="mx-auto flex max-w-md items-center gap-2">
             <!-- Back Button -->
-            <button class="back-button bg-white rounded-full shadow-lg flex items-center justify-center w-[48px] h-[48px] flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <button
+                class="back-button flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full bg-white shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="h-6 w-6 text-gray-700">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
             </button>
 
             <!-- Search Input -->
-            <div class="bg-white rounded-full shadow-lg flex items-center flex-grow h-[48px]">
-                <div class="text-gray-400 mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <div class="flex h-[48px] flex-grow items-center rounded-full bg-white shadow-lg">
+                <div class="mx-3 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <input id="search-input" type="text" placeholder="{{ __('app.maps_search_situs_placeholder') }}"
-                    class="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700"
-                    style="-webkit-appearance: none; border-radius: 0;">
-                <button id="search-clear" class="text-gray-400 hover:text-gray-600 hidden mx-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <input id="search-input" type="search" inputmode="search" autocomplete="off"
+                    placeholder="{{ __('maps.search_placeholder') }}"
+                    class="h-full w-full border-none bg-transparent text-gray-700 focus:border-none focus:outline-none focus:ring-0"
+                    style="-webkit-appearance: none; touch-action: manipulation;"
+                    aria-label="{{ __('maps.search_placeholder') }}">
+                <button id="search-clear" class="mx-3 hidden text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -137,23 +229,40 @@
         </div>
 
         <!-- Search Results Dropdown -->
-        <div class="max-w-md mx-auto px-4 mt-1">
-            <div id="search-results" class="max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg hidden z-50">
+        <div class="mx-auto mt-1 max-w-md px-4">
+            <div id="search-results" class="z-50 hidden max-h-60 overflow-y-auto rounded-lg bg-white shadow-lg">
                 <ul id="search-results-list" class="divide-y divide-gray-100"></ul>
             </div>
         </div>
     </div>
 
     <!-- Bottom Sheet -->
-    <div id="bottom-sheet">
-        <div class="w-full lg:max-w-xl mx-auto bg-white rounded-t-xl shadow-lg max-h-[80vh] overflow-y-auto">
-            <div class="p-4 border-t-4 border-blue-600">
-                <h2 id="overlay-title" class="text-xl font-bold mb-1"></h2>
-                <p id="overlay-address" class="text-gray-600 text-sm"></p>
-                <p id="overlay-description" class="text-gray-500 text-sm mt-2 truncate"></p>
-                <a id="overlay-link" href="#" class="block w-full text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg mt-4 hover:bg-blue-700 transition">{{ __('app.maps_visit') }}</a>
-                <p id="locked-message" class="hidden text-orange-600 text-sm mt-4 text-center">{{ __('app.maps_site_locked') }}</p>
-                <button id="close-overlay" class="block w-full text-center bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg mt-2 hover:bg-gray-300 transition">{{ __('app.maps_close') }}</button>
+    <div id="bottom-sheet" role="dialog" aria-labelledby="overlay-title" aria-describedby="overlay-description">
+        <div class="mx-auto max-h-[85vh] w-full overflow-hidden rounded-t-2xl bg-white shadow-xl lg:max-w-xl">
+            <!-- Drag Handle -->
+            <div class="flex justify-center pb-2 pt-3">
+                <div class="h-1.5 w-12 rounded-full bg-gray-300"></div>
+            </div>
+            <div class="px-5 pb-5">
+                <h2 id="overlay-title" class="mb-1 text-xl font-bold text-gray-900"></h2>
+                <p id="overlay-address" class="text-sm text-gray-600"></p>
+                <p id="overlay-description" class="mt-3 line-clamp-2 text-sm text-gray-500"></p>
+                <a id="overlay-link" href="#" class="action-btn action-btn-primary mt-4 w-full" role="button"
+                    style="display: none;">
+                    {{ __('maps.visit') }}
+                </a>
+                <p id="locked-message"
+                    class="locked-message mt-4 items-center justify-center gap-2 text-center text-sm text-orange-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    {{ __('maps.site_locked_message') }}
+                </p>
+                <button id="close-overlay" class="action-btn action-btn-secondary mt-3 w-full" role="button">
+                    {{ __('maps.close') }}
+                </button>
             </div>
         </div>
     </div>
@@ -173,8 +282,8 @@
         // Add zoom control
         L.control.zoom({
             position: 'bottomright',
-            zoomInTitle: '{{ __('app.maps_zoom_in') }}',
-            zoomOutTitle: '{{ __('app.maps_zoom_out') }}'
+            zoomInTitle: '{{ __('maps.zoom_in') }}',
+            zoomOutTitle: '{{ __('maps.zoom_out') }}'
         }).addTo(map);
 
         // Custom control for "Lihat Peninggalan" button
@@ -182,9 +291,10 @@
             onAdd: function() {
                 const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
                 const link = L.DomUtil.create('a', '', container);
-                link.href = '{{ route("guest.maps.peninggalan") }}';
-                link.title = '{{ __('app.maps_view_peninggalan_list') }}';
-                link.innerHTML = '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">{{ __('app.maps_view_peninggalan') }}</div>';
+                link.href = '{{ route('guest.maps.peninggalan') }}';
+                link.title = '{{ __('maps.view_heritage_list') }}';
+                link.innerHTML =
+                    '<div class="bg-white p-2 rounded-md shadow-md font-medium" style="width: auto; white-space: nowrap;">{{ __('maps.view_heritage') }}</div>';
 
                 L.DomEvent.on(link, 'click', function(e) {
                     L.DomEvent.stopPropagation(e);
@@ -199,7 +309,9 @@
             return new L.Control.PeninggalanButton(opts);
         }
 
-        L.control.peninggalanButton({ position: 'bottomleft' }).addTo(map);
+        L.control.peninggalanButton({
+            position: 'bottomleft'
+        }).addTo(map);
 
         // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -224,8 +336,20 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 var lat = position.coords.latitude;
                 var lon = position.coords.longitude;
-                L.circle([lat, lon], { radius: 200, color: '#1d4ed8', fillColor: '#60a5fa', fillOpacity: 0.3 }).addTo(map);
-                L.circleMarker([lat, lon], { radius: 8, fillColor: "#1d4ed8", color: "#fff", weight: 2, opacity: 1, fillOpacity: 1 }).addTo(map).bindPopup('{{ __('app.maps_your_location') }}');
+                L.circle([lat, lon], {
+                    radius: 200,
+                    color: '#1d4ed8',
+                    fillColor: '#60a5fa',
+                    fillOpacity: 0.3
+                }).addTo(map);
+                L.circleMarker([lat, lon], {
+                    radius: 8,
+                    fillColor: "#1d4ed8",
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 1
+                }).addTo(map).bindPopup('{{ __('maps.your_location') }}');
                 map.setView([lat, lon], 13);
             });
         }
@@ -242,7 +366,9 @@
         var situsNames = [];
 
         @foreach ($allSitus as $s)
-            var marker = L.marker([{{ $s->lat }}, {{ $s->lng }}], {icon: situsIcon}).addTo(map);
+            var marker = L.marker([{{ $s->lat }}, {{ $s->lng }}], {
+                icon: situsIcon
+            }).addTo(map);
 
             // Store marker info
             marker.situsInfo = {
@@ -251,7 +377,7 @@
                 alamat: '{{ $s->alamat }}',
                 deskripsi: '{{ Illuminate\Support\Str::limit($s->deskripsi, 100) }}',
                 unlocked: {{ in_array($s->situs_id, $unlockedSitusIds) ? 'true' : 'false' }},
-                url: '{{ route("guest.situs.detail", ["situs_id" => $s->situs_id]) }}'
+                url: '{{ route('guest.situs.detail', ['situs_id' => $s->situs_id]) }}'
             };
 
             allMarkers.push(marker);
@@ -327,11 +453,11 @@
             // Check if unlocked
             if (marker.situsInfo.unlocked) {
                 overlayLink.href = marker.situsInfo.url;
-                overlayLink.style.display = 'block';
+                overlayLink.style.display = 'flex';
                 lockedMessage.style.display = 'none';
             } else {
                 overlayLink.style.display = 'none';
-                lockedMessage.style.display = 'block';
+                lockedMessage.style.display = 'flex';
             }
 
             // Show bottom sheet

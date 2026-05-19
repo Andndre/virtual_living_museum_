@@ -6,7 +6,7 @@
                 <a href="{{ route('guest.home') }}" class="mr-4">
                     <i class="fas fa-arrow-left text-xl"></i>
                 </a>
-                <h1 class="text-lg font-bold">{{ __('app.heritage_video') }}</h1>
+                <h1 class="text-lg font-bold">Video Peninggalan</h1>
             </div>
             <x-user-profile-navbar/>
         </div>
@@ -51,8 +51,8 @@
                 <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                     <i class="fas fa-video text-2xl text-gray-400"></i>
                 </div>
-                <h3 class="mb-2 text-lg font-medium text-gray-900">{{ __('app.video_no_videos') }}</h3>
-                <p class="text-gray-600">{{ __('app.video_placeholder') }}</p>
+                <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Video</h3>
+                <p class="text-gray-600">Video peninggalan akan muncul di sini ketika tersedia.</p>
             </div>
         @endif
     </div>
