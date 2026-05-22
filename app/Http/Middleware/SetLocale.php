@@ -17,12 +17,20 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Get locale from session, default to 'id' (Indonesian)
-        $locale = Session::get('locale', config('app.locale', 'id'));
+        // Try getting locale from session
+        $locale = Session::get('locale');
 
-        // Validate locale
-        if (! in_array($locale, ['id', 'en'])) {
-            $locale = 'id';
+        // If not in session, try getting it from cookie
+        if (! $locale) {
+            $locale = $request->cookie('locale');
+            if ($locale && in_array($locale, ['id', 'en'])) {
+                Session::put('locale', $locale);
+            }
+        }
+
+        // Validate locale or fallback to default
+        if (! $locale || ! in_array($locale, ['id', 'en'])) {
+            $locale = config('app.locale', 'id');
         }
 
         // Set application locale

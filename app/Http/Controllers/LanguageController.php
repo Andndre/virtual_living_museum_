@@ -24,6 +24,9 @@ class LanguageController extends Controller
         // Set the application locale
         App::setLocale($locale);
 
+        // Queue a persistent cookie
+        cookie()->queue(cookie()->forever('locale', $locale));
+
         return redirect()->back()->with('success', __('Language changed successfully'));
     }
 }
