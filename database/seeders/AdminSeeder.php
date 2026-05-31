@@ -18,6 +18,8 @@ class AdminSeeder extends Seeder
                 'name' => 'Admin User',
                 'password' => bcrypt('password'),
                 'role' => 'admin',
+                'level_sekarang' => 12,
+                'progress_level_sekarang' => 3,
             ]
         );
     }

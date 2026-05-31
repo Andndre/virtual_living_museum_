@@ -22,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'user' => IsUser::class,
         ]);
 
+        // $middleware->trustProxies(at: '*');
+    
         // Add SetLocale middleware to web group
         $middleware->web(append: [
             SetLocale::class,
