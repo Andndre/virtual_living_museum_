@@ -3,6 +3,7 @@
 use App\Http\Middleware\ArTokenAuth;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,9 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'user' => IsUser::class,
         ]);
 
-        // Add SetLocale middleware to web group
+        // Add SetLocale and SecurityHeaders middleware to web group
         $middleware->web(append: [
             SetLocale::class,
+            SecurityHeaders::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
