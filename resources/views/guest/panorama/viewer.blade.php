@@ -215,9 +215,13 @@
                 class="bg-black/50 backdrop-blur-md rounded-full px-6 py-2 border border-white/20 flex gap-4 text-white">
                 <button id="btn-gyro" class="p-2 hover:text-cyan-400 transition-colors"
                     title="Sensor Gyroscope (Mobile)">
-                    <i class="fas fa-compass"></i>
+                    <i class="fas fa-mobile-screen"></i>
                 </button>
-                <div class="w-px bg-white/20 my-2"></div>
+                <button id="btn-vr-custom" class="p-2 hover:text-cyan-400 transition-colors"
+                    title="Mode VR (Google Cardboard)">
+                    <i class="fas fa-vr-cardboard"></i>
+                </button>
+                <div id="divider-controls" class="w-px bg-white/20 my-2"></div>
                 <button class="p-2 hover:text-cyan-400 transition-colors cursor-help"
                     title="Geser untuk melihat sekeliling. Klik ikon untuk berinteraksi.">
                     <i class="fas fa-info-circle"></i>
@@ -317,6 +321,33 @@
             if (!tourData.scenes || tourData.scenes.length === 0) {
                 DOM.loadingText.textContent = "Tidak ada adegan (scene) yang tersedia.";
                 return;
+            }
+
+            // Auto-enable gyro on mobile devices (except iOS which needs user interaction)
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                State.isGyroEnabled = true;
+                DOM.camera.setAttribute('look-controls', 'magicWindowTrackingEnabled: true');
+                DOM.btnGyro.classList.add('text-cyan-400');
+            } else {
+                // Hide mobile-specific buttons on desktop to avoid confusion
+                DOM.btnGyro.style.display = 'none';
+                
+                const btnVr = document.getElementById('btn-vr-custom');
+                const divider = document.getElementById('divider-controls');
+                
+                // Hide VR button on desktop unless an actual VR headset is detected
+                if (navigator.xr && navigator.xr.isSessionSupported) {
+                    navigator.xr.isSessionSupported('immersive-vr').then(supported => {
+                        if (!supported) {
+                            btnVr.style.display = 'none';
+                            if (divider) divider.style.display = 'none';
+                        }
+                    });
+                } else {
+                    btnVr.style.display = 'none';
+                    if (divider) divider.style.display = 'none';
+                }
             }
 
             // Wait for A-Frame scene to load
