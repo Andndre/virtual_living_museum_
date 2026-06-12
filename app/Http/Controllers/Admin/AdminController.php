@@ -473,8 +473,8 @@ class AdminController extends Controller
     private function safeExtensionFromMime(string $mime, string $default): string
     {
         static $map = [
-            'model/gltf-binary' => 'glb',
-            'application/octet-stream' => 'glb',
+        'model/gltf-binary' => 'glb',
+        'application/octet-stream' => 'glb',
         ];
 
         return $map[$mime] ?? $default;
