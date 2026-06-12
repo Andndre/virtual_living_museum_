@@ -378,11 +378,18 @@ class AdminController extends Controller
     /**
      * Display virtual living museum management
      */
-    public function virtualMuseum()
+    public function virtualMuseum(Request $request)
     {
-        $museums = VirtualMuseum::with(['situsPeninggalan', 'virtualMuseumObjects'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $query = VirtualMuseum::with(['situsPeninggalan', 'virtualMuseumObjects'])
+            ->orderBy('created_at', 'desc');
+
+        $selectedSitus = null;
+        if ($request->filled('situs_id')) {
+            $query->where('situs_id', $request->situs_id);
+            $selectedSitus = SitusPeninggalan::find($request->situs_id);
+        }
+
+        $museums = $query->paginate(12);
 
         $stats = [
             'total_museums' => VirtualMuseum::count(),
@@ -391,7 +398,7 @@ class AdminController extends Controller
             'total_situs_without_museum' => SitusPeninggalan::whereDoesntHave('virtualMuseum')->count(),
         ];
 
-        return view('admin.virtual-museum.index', compact('museums', 'stats'));
+        return view('admin.virtual-museum.index', compact('museums', 'stats', 'selectedSitus'));
     }
 
     /**

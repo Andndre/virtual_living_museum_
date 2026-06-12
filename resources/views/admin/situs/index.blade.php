@@ -215,7 +215,7 @@
                                                 </a>
                                             @else
                                                 <div class="flex flex-col items-center space-y-1">
-                                                    <a href="{{ route('admin.situs.show', $site->situs_id) }}" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors" title="Lihat semua museum di situs ini">
+                                                    <a href="{{ route('admin.virtual-museum') }}?situs_id={{ $site->situs_id }}" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors" title="Lihat semua museum di situs ini">
                                                         <i class="fas fa-building mr-1"></i>
                                                         {{ $site->virtualMuseum->count() }} museums
                                                     </a>
@@ -247,15 +247,9 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                        @if($site->virtualMuseum->count() > 0)
-                                            <a href="{{ route('admin.virtual-museum.show', $site->virtualMuseum->first()->museum_id) }}" class="text-emerald-600 hover:text-emerald-900" title="Kelola Museum">
-                                                <i class="fas fa-university"></i>
-                                            </a>
-                                        @else
-                                            <a href="{{ route('admin.virtual-museum.create') }}?situs_id={{ $site->situs_id }}" class="text-gray-400 hover:text-gray-600" title="Tambah Museum">
-                                                <i class="fas fa-university"></i>
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('admin.virtual-museum') }}?situs_id={{ $site->situs_id }}" class="text-emerald-600 hover:text-emerald-900" title="Daftar Museum">
+                                            <i class="fas fa-university"></i>
+                                        </a>
                                         <a href="{{ route('admin.panorama.editor', $site->situs_id) }}" class="text-cyan-600 hover:text-cyan-900" title="Editor Panorama">
                                             <i class="fas fa-street-view"></i>
                                         </a>
@@ -328,7 +322,7 @@
                                                         {{ Str::limit($site->virtualMuseum->first()->nama, 12) }}
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('admin.situs.show', $site->situs_id) }}" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors" title="Lihat semua museum di situs ini">
+                                                    <a href="{{ route('admin.virtual-museum') }}?situs_id={{ $site->situs_id }}" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors" title="Lihat semua museum di situs ini">
                                                         <i class="fas fa-building mr-1"></i>
                                                         {{ $site->virtualMuseum->count() }} museums
                                                     </a>
