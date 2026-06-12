@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\KatalogController;
 use App\Http\Controllers\Admin\PanoramaController;
 use App\Http\Controllers\Admin\VideoPeninggalanController;
 use App\Http\Controllers\ArMarkerCameraController;
+use App\Http\Controllers\AsetHotspotController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\LanguageController;
@@ -196,6 +197,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::delete('admin/video-peninggalan/{id}', [VideoPeninggalanController::class, 'destroy'])->name('admin.video-peninggalan.destroy');
 
     // Panorama / 360 VR Tour routes
+    Route::get('admin/panorama', [PanoramaController::class, 'overview'])->name('admin.panorama.overview');
     Route::prefix('admin/panorama')->name('admin.panorama.')->group(function () {
         // Scene CRUD
         Route::get('editor/{situsId}', [PanoramaController::class, 'editor'])->name('editor');
@@ -217,9 +219,9 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::delete('templates/{id}', [PanoramaController::class, 'destroyTemplate'])->name('templates.destroy');
 
         // Assets Library
-        Route::get('assets', [\App\Http\Controllers\AsetHotspotController::class, 'index'])->name('assets.index');
-        Route::post('assets', [\App\Http\Controllers\AsetHotspotController::class, 'store'])->name('assets.store');
-        Route::delete('assets/{id}', [\App\Http\Controllers\AsetHotspotController::class, 'destroy'])->name('assets.destroy');
+        Route::get('assets', [AsetHotspotController::class, 'index'])->name('assets.index');
+        Route::post('assets', [AsetHotspotController::class, 'store'])->name('assets.store');
+        Route::delete('assets/{id}', [AsetHotspotController::class, 'destroy'])->name('assets.destroy');
 
         // Image Upload
         Route::post('upload', [PanoramaController::class, 'uploadImage'])->name('upload');

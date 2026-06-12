@@ -15,11 +15,37 @@ use Illuminate\Validation\Rule;
 class PanoramaController extends Controller
 {
     /**
+     * Display an overview of all 360 Tour Panoramas.
+     */
+    public function overview()
+    {
+        $situsList = SitusPeninggalan::withCount(['scenes as panorama_count' => function ($query) {
+            $query->where('scene_type', 'panorama');
+        }])
+            ->orderBy('nama', 'asc')
+            ->paginate(12);
+
+        $stats = [
+            'total_panorama_scenes' => Scene::where('scene_type', 'panorama')->count(),
+            'total_hotspots' => Hotspot::count(),
+            'total_situs_with_panorama' => SitusPeninggalan::whereHas('scenes', function ($query) {
+                $query->where('scene_type', 'panorama');
+            })->count(),
+            'total_situs_without_panorama' => SitusPeninggalan::whereDoesntHave('scenes', function ($query) {
+                $query->where('scene_type', 'panorama');
+            })->count(),
+        ];
+
+        return view('admin.panorama.overview', compact('situsList', 'stats'));
+    }
+
+    /**
      * Display the VR Panorama Editor view.
      */
     public function editor(Request $request, int $situsId)
     {
         $situs = SitusPeninggalan::findOrFail($situsId);
+
         return view('admin.panorama.editor', compact('situs'));
     }
 

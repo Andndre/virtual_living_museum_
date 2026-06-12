@@ -247,6 +247,18 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                        @if($site->virtualMuseum->count() > 0)
+                                            <a href="{{ route('admin.virtual-museum.show', $site->virtualMuseum->first()->museum_id) }}" class="text-emerald-600 hover:text-emerald-900" title="Kelola Museum">
+                                                <i class="fas fa-university"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('admin.virtual-museum.create') }}?situs_id={{ $site->situs_id }}" class="text-gray-400 hover:text-gray-600" title="Tambah Museum">
+                                                <i class="fas fa-university"></i>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('admin.panorama.editor', $site->situs_id) }}" class="text-cyan-600 hover:text-cyan-900" title="Editor Panorama">
+                                            <i class="fas fa-street-view"></i>
+                                        </a>
                                         <a href="{{ route('admin.situs.show', $site->situs_id) }}" class="text-blue-600 hover:text-blue-900" title="Lihat Detail">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -345,6 +357,12 @@
                                         </div>
 
                                         <!-- Mobile Actions -->
+                                        <div class="flex space-x-2 mb-2">
+                                            <a href="{{ route('admin.panorama.editor', $site->situs_id) }}"
+                                               class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-cyan-300 shadow-sm text-xs font-medium rounded text-cyan-700 bg-cyan-50 hover:bg-cyan-100 transition-colors">
+                                                <i class="fas fa-street-view mr-1"></i> Editor 360
+                                            </a>
+                                        </div>
                                         <div class="flex space-x-2">
                                             <a href="{{ route('admin.situs.show', $site->situs_id) }}"
                                                class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 transition-colors">
