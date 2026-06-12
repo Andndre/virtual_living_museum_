@@ -14,7 +14,7 @@ class LanguageController extends Controller
     public function changeLanguage(Request $request, $locale)
     {
         // Check if the locale is supported
-        if (! in_array($locale, ['id', 'en'])) {
+        if (! \in_array($locale, ['id', 'en'])) {
             abort(400);
         }
 
@@ -24,6 +24,9 @@ class LanguageController extends Controller
         // Set the application locale
         App::setLocale($locale);
 
-        return redirect()->back()->with('success', __('Language changed successfully'));
+        // Queue a persistent cookie
+        cookie()->queue(cookie()->forever('locale', $locale));
+
+        return redirect()->back()->with('success', __('app.language_changed'));
     }
 }

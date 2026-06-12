@@ -26,7 +26,7 @@
                         <div class="relative h-full flex items-center" x-data="{ open: false }"
                              style="overflow: visible">
                             <button @click="open = !open"
-                                    :class="{'text-gray-900 border-b-2 border-blue-500': open || isRouteActive('/admin/users') || isRouteActive('/admin/materi') || isRouteActive('/admin/situs') || isRouteActive('/admin/virtual-living-museum') || isRouteActive('/admin/reports') || isRouteActive('/admin/feedback') || isRouteActive('/admin/riwayat-pengembang') || isRouteActive('/admin/katalog') || isRouteActive('/admin/video-peninggalan')}"
+                                    :class="{'text-gray-900 border-b-2 border-blue-500': open || isRouteActive('/admin/users') || isRouteActive('/admin/materi') || isRouteActive('/admin/situs') || isRouteActive('/admin/virtual-living-museum') || isRouteActive('/admin/panorama') || isRouteActive('/admin/reports') || isRouteActive('/admin/feedback') || isRouteActive('/admin/riwayat-pengembang') || isRouteActive('/admin/katalog') || isRouteActive('/admin/video-peninggalan')}"
                                     x-data="{ isRouteActive(path) { return window.location.pathname.startsWith(path) } }"
                                     class="inline-flex items-center px-1 pt-1 h-full text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 <span>Kelola</span>
@@ -63,6 +63,10 @@
                                     <x-dropdown-link :href="route('admin.virtual-museum')"
                                                      :active="request()->routeIs('admin.virtual-museum*')">
                                         <i class="fas fa-university mr-2 w-5 text-center"></i> Virtual Living Museum
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.panorama.overview')"
+                                                     :active="request()->routeIs('admin.panorama*')">
+                                        <i class="fas fa-street-view mr-2 w-5 text-center"></i> Tur 360&deg; Panorama
                                     </x-dropdown-link>
                                     <x-dropdown-link :href="route('admin.reports')"
                                                      :active="request()->routeIs('admin.reports*')">
@@ -177,6 +181,10 @@
                 <x-responsive-nav-link :href="route('admin.virtual-museum')"
                                        :active="request()->routeIs('admin.virtual-museum*')">
                     Virtual Living Museum
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.panorama.overview')"
+                                       :active="request()->routeIs('admin.panorama*')">
+                    Tur 360&deg; Panorama
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports*')">
                     Kelola Laporan

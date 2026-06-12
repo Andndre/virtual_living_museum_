@@ -9,7 +9,7 @@
                     <p class="mt-2 text-sm text-gray-600">Kelola Virtual Living Museum untuk Situs Peninggalan</p>
                 </div>
                 <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-2">
-                    <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                    <a href="{{ route('admin.virtual-museum.create', isset($selectedSitus) ? ['situs_id' => $selectedSitus->situs_id] : []) }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -109,6 +109,27 @@
         </div>
     </div>
 
+    <!-- Filter Active Alert -->
+    @if(isset($selectedSitus))
+        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-3">
+                    <i class="fas fa-filter text-lg"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-blue-900">Menampilkan Filtered Virtual Museum</p>
+                    <p class="text-xs text-blue-700">Hanya menampilkan museum untuk situs: <strong class="text-blue-900">"{{ $selectedSitus->nama }}"</strong></p>
+                </div>
+            </div>
+            <div>
+                <a href="{{ route('admin.virtual-museum') }}" class="inline-flex items-center justify-center px-4 py-2 border border-blue-300 rounded-lg shadow-sm text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-times mr-2"></i>
+                    <span>Hapus Filter</span>
+                </a>
+            </div>
+        </div>
+    @endif
+
     <!-- Virtual Living Museums Grid -->
     @if($museums->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -184,7 +205,7 @@
             </div>
             <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Virtual Living Museum</h3>
             <p class="text-gray-600 mb-4">Mulai membuat Virtual Living Museum pertama untuk situs peninggalan Anda.</p>
-            <a href="{{ route('admin.virtual-museum.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+            <a href="{{ route('admin.virtual-museum.create', isset($selectedSitus) ? ['situs_id' => $selectedSitus->situs_id] : []) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                 <i class="fas fa-plus mr-2"></i>
                 Tambah Virtual Living Museum
             </a>

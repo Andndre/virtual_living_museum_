@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Virtual Tour - {{ $situs->nama }} | Smart Prasada</title>
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    @vite(['resources/css/app.css'])
+
+    <style>
+        /* Base styles */
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* UI Overlays */
+        #ui-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Header bar */
+        #header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .btn-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-circle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .tour-title-box {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Modal Info */
+        #info-modal {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+
+        #info-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 28rem;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        #info-modal.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Scene Transition Overlay */
+        #transition-overlay {
+            position: absolute;
+            inset: 0;
+            background: black;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+    </style>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <h2 class="text-xl font-bold">Memuat Tur Virtual...</h2>
+        <p class="mt-2 text-sm text-gray-400" id="loading-text">Menyiapkan panorama</p>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui-layer">
+        <div id="header-bar">
+            <a href="{{ route('guest.situs.detail', $situs->situs_id) }}" class="btn-circle interactive"
+                title="Kembali ke Detail Situs">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+
+            <div class="tour-title-box">
+                <h1 class="m-0 text-sm font-bold">{{ $situs->nama }}</h1>
+                <p class="m-0 text-xs opacity-75" id="current-scene-name">Memuat...</p>
+            </div>
+
+            <button class="btn-circle interactive" id="btn-fullscreen" title="Layar Penuh">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="interactive flex justify-center">
+            <div
+                class="flex gap-4 rounded-full border border-white/20 bg-black/50 px-6 py-2 text-white backdrop-blur-md">
+                <button id="btn-gyro" class="p-2 transition-colors hover:text-cyan-400"
+                    title="Sensor Gyroscope (Mobile)">
+                    <i class="fas fa-mobile-screen"></i>
+                </button>
+                <button id="btn-vr-custom" class="p-2 transition-colors hover:text-cyan-400"
+                    title="Mode VR (Google Cardboard)">
+                    <i class="fas fa-vr-cardboard"></i>
+                </button>
+                <div id="divider-controls" class="my-2 w-px bg-white/20"></div>
+                <button class="cursor-help p-2 transition-colors hover:text-cyan-400"
+                    title="Geser untuk melihat sekeliling. Klik ikon untuk berinteraksi.">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="interactive">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="m-0 text-lg font-bold text-gray-900" id="modal-title">Info</h3>
+                <button id="btn-close-modal" class="p-1 text-gray-400 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body text-gray-700">
+                <img id="modal-image" src="" alt="" class="modal-img">
+                <div id="modal-content" class="prose prose-sm max-w-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transition Overlay -->
+    <div id="transition-overlay"></div>
+
+    <!-- A-Frame Scene -->
+    <a-scene id="panorama-scene" vr-mode-ui="enabled: true; enterVRButton: #btn-vr-custom"
+        loading-screen="enabled: false" renderer="antialias: true; colorManagement: true; sortObjects: true">
+        <a-assets id="scene-assets">
+            <!-- Assets will be dynamically loaded here -->
+            <img id="icon-door" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M320 48v416c0 26.5-21.5 48-48 48H128c-26.5 0-48-21.5-48-48V48C80 21.5 101.5 0 128 0h144c26.5 0 48 21.5 48 48zm-16 0c0-8.8-7.2-16-16-16H128c-8.8 0-16 7.2-16 16v416c0 8.8 7.2 16 16 16h144c8.8 0 16-7.2 16-16V48zm128 0v416c0 26.5-21.5 48-48 48h-16v-32h16c8.8 0 16-7.2 16-16V48c0-8.8-7.2-16-16-16h-16V0h16c26.5 0 48 21.5 48 48zm-96 240c0 13.3-10.7 24-24 24s-24-10.7-24-24 10.7-24 24-24 24 10.7 24 24z'/></svg>">
+            <img id="icon-arrow-up" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM256 127c9.4 0 18.8 3.8 26.3 11.3l112 112c14.6 14.6 14.6 38.2 0 52.7s-38.2 14.6-52.7 0L256 225 178 303c-14.6 14.6-38.2 14.6-52.7 0s-14.6-38.2 0-52.7l112-112c7.5-7.5 16.9-11.3 26.3-11.3z'/></svg>">
+            <img id="icon-arrow-down" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM256 385c-9.4 0-18.8-3.8-26.3-11.3l-112-112c-14.6-14.6-14.6-38.2 0-52.7s38.2-14.6 52.7 0L256 287 334 209c14.6-14.6 38.2-14.6 52.7 0s14.6 38.2 0 52.7l-112 112c-7.5 7.5-16.9 11.3-26.3 11.3z'/></svg>">
+            <img id="icon-arrow-right" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 256c0 9.4-3.8 18.8-11.3 26.3l-112 112c-14.6 14.6-38.2 14.6-52.7 0s-14.6-38.2 0-52.7L287 256 209 178c-14.6-14.6-14.6-38.2 0-52.7s38.2-14.6 52.7 0l112 112c7.5 7.5 11.3 16.9 11.3 26.3z'/></svg>">
+            <img id="icon-arrow-left" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM127 256c0-9.4 3.8-18.8 11.3-26.3l112-112c14.6-14.6 38.2-14.6 52.7 0s14.6 38.2 0 52.7L225 256l78 78c14.6 14.6 14.6 38.2 0 52.7s-38.2 14.6-52.7 0l-112-112c-7.5-7.5-11.3-16.9-11.3-26.3z'/></svg>">
+            <img id="icon-info" crossorigin="anonymous"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z'/></svg>">
+        </a-assets>
+
+        <!-- Sky -->
+        <a-sky id="panorama-sky" radius="500" rotation="0 -90 0" color="#fff"></a-sky>
+
+        <!-- Lighting -->
+        <a-light type="ambient" color="#fff" intensity="1"></a-light>
+
+        <!-- Camera Rig -->
+        <a-entity id="camera-rig" position="0 0 0">
+            <a-camera id="camera"
+                look-controls="pointerLockEnabled: false; magicWindowTrackingEnabled: false; reverseMouseDrag: true"
+                wasd-controls="enabled: false" fov="80">
+                <a-entity id="cursor" cursor="fuse: false; rayOrigin: mouse"
+                    raycaster="objects: .clickable; far: 500"
+                    geometry="primitive: ring; radiusInner: 0.006; radiusOuter: 0.009"
+                    material="color: #0ea5e9; shader: flat; opacity: 0.8" position="0 0 -1" visible="false"></a-entity>
+            </a-camera>
+        </a-entity>
+
+        <!-- Hotspots Container -->
+        <a-entity id="hotspots-container"></a-entity>
+    </a-scene>
+
+    <script>
+        // Tour Data Payload
+        const tourData = @json($situs->toViewerJson());
+
+        const State = {
+            currentSceneId: null,
+            isGyroEnabled: false
+        };
+
+        const DOM = {
+            scene: document.getElementById('panorama-scene'),
+            sky: document.getElementById('panorama-sky'),
+            hotspotsContainer: document.getElementById('hotspots-container'),
+            assets: document.getElementById('scene-assets'),
+            loadingOverlay: document.getElementById('loading-overlay'),
+            loadingText: document.getElementById('loading-text'),
+            transitionOverlay: document.getElementById('transition-overlay'),
+            currentSceneName: document.getElementById('current-scene-name'),
+            camera: document.getElementById('camera'),
+            modal: document.getElementById('info-modal'),
+            modalTitle: document.getElementById('modal-title'),
+            modalContent: document.getElementById('modal-content'),
+            modalImage: document.getElementById('modal-image'),
+            btnGyro: document.getElementById('btn-gyro'),
+        };
+
+        // --- Core Functions ---
+
+        function init() {
+            if (!tourData.scenes || tourData.scenes.length === 0) {
+                DOM.loadingText.textContent = "Tidak ada adegan (scene) yang tersedia.";
+                return;
+            }
+
+            // Auto-enable gyro on mobile devices (except iOS which needs user interaction)
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                State.isGyroEnabled = true;
+                DOM.camera.setAttribute('look-controls', 'magicWindowTrackingEnabled: true');
+                DOM.btnGyro.classList.add('text-cyan-400');
+            } else {
+                // Hide mobile-specific buttons on desktop to avoid confusion
+                DOM.btnGyro.style.display = 'none';
+
+                const btnVr = document.getElementById('btn-vr-custom');
+                const divider = document.getElementById('divider-controls');
+
+                // Hide VR button on desktop unless an actual VR headset is detected
+                if (navigator.xr && navigator.xr.isSessionSupported) {
+                    navigator.xr.isSessionSupported('immersive-vr').then(supported => {
+                        if (!supported) {
+                            btnVr.style.display = 'none';
+                            if (divider) divider.style.display = 'none';
+                        }
+                    });
+                } else {
+                    btnVr.style.display = 'none';
+                    if (divider) divider.style.display = 'none';
+                }
+            }
+
+            // Wait for A-Frame scene to load
+            if (DOM.scene.hasLoaded) {
+                loadInitialScene();
+            } else {
+                DOM.scene.addEventListener('loaded', loadInitialScene);
+            }
+
+            setupEventListeners();
+        }
+
+        function loadInitialScene() {
+            // Find first scene, or a specific one if needed
+            const firstScene = tourData.scenes[0];
+            loadScene(firstScene.id);
+
+            // Hide loading overlay after a short delay
+            setTimeout(() => {
+                DOM.loadingOverlay.style.opacity = '0';
+                setTimeout(() => DOM.loadingOverlay.style.display = 'none', 500);
+            }, 1000);
+        }
+
+        function getSceneById(id) {
+            return tourData.scenes.find(s => s.id === id);
+        }
+
+        function loadScene(sceneId) {
+            const scene = getSceneById(sceneId);
+            if (!scene) return;
+
+            State.currentSceneId = sceneId;
+            DOM.currentSceneName.textContent = scene.name;
+
+            // Zoom In & Blur effect
+            DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 20; dur: 400; easing: easeInQuad');
+            DOM.scene.style.transition = 'filter 0.4s ease';
+            DOM.scene.style.filter = 'blur(8px)';
+            DOM.transitionOverlay.style.transition = 'opacity 0.4s ease';
+            DOM.transitionOverlay.style.opacity = '1';
+
+            setTimeout(() => {
+                // Update Sky Image
+                DOM.sky.setAttribute('src', scene.image);
+
+                // Render Hotspots
+                renderHotspots(scene.hotspots);
+
+                // Prepare for zoom out
+                DOM.camera.removeAttribute('animation__zoom');
+                DOM.camera.setAttribute('fov', 120);
+
+                let isLoaded = false;
+                const finishTransition = () => {
+                    if (isLoaded) return;
+                    isLoaded = true;
+
+                    DOM.transitionOverlay.style.opacity = '0';
+                    DOM.scene.style.filter = 'blur(0px)';
+                    DOM.camera.setAttribute('animation__zoom',
+                        'property: fov; to: 80; dur: 600; easing: easeOutQuad');
+                };
+
+                // Wait for image to load before fading back in
+                DOM.sky.addEventListener('materialtextureloaded', function onTextureLoaded() {
+                    finishTransition();
+                    DOM.sky.removeEventListener('materialtextureloaded', onTextureLoaded);
+                });
+
+                // Fallback fade in if texture event fails or takes too long
+                setTimeout(finishTransition, 1500);
+            }, 400); // Wait for fade to black
+        }
+
+        function renderHotspots(hotspots) {
+            // Clear existing
+            while (DOM.hotspotsContainer.firstChild) {
+                DOM.hotspotsContainer.removeChild(DOM.hotspotsContainer.firstChild);
+            }
+
+            if (!hotspots) return;
+
+            hotspots.forEach(hs => {
+                const entity = document.createElement('a-entity');
+                entity.setAttribute('position', hs.position);
+                entity.setAttribute('rotation', hs.rotation || "0 0 0");
+                entity.setAttribute('look-at', '#camera');
+
+                // Icon base
+                let imgSrc = '#icon-info';
+                let isCustomVideo = false;
+                const isNav = hs.type === 'navigation';
+
+                if (hs.animation_config && hs.animation_config.icon) {
+                    if (hs.animation_config.icon === 'custom') {
+                        if (hs.animation_config.custom_url) {
+                            const url = hs.animation_config.custom_url;
+                            isCustomVideo = !!url.match(/\.(mp4|webm)$/i);
+
+                            if (isCustomVideo) {
+                                const assetId = 'video-' + hs.id;
+                                let videoEl = document.getElementById(assetId);
+                                if (!videoEl) {
+                                    videoEl = document.createElement('video');
+                                    videoEl.id = assetId;
+                                    videoEl.setAttribute('src', url);
+                                    videoEl.setAttribute('autoplay', 'true');
+                                    videoEl.setAttribute('loop', 'true');
+                                    videoEl.setAttribute('muted', 'true');
+                                    videoEl.setAttribute('playsinline', 'true');
+                                    videoEl.setAttribute('crossorigin', 'anonymous');
+                                    document.querySelector('a-assets').appendChild(videoEl);
+                                    // Attempt autoplay
+                                    videoEl.play().catch(e => console.log('Video autoplay prevented'));
+                                }
+                                imgSrc = '#' + assetId;
+                            } else {
+                                imgSrc = url;
+                            }
+                        } else {
+                            imgSrc = isNav ? '#icon-arrow-up' : '#icon-info';
+                        }
+                    } else {
+                        imgSrc = '#' + hs.animation_config.icon;
+                    }
+                } else {
+                    imgSrc = isNav ? '#icon-arrow-up' : '#icon-info';
+                }
+
+                let img;
+                let hasScaleAnimation = false;
+
+                if (isCustomVideo) {
+                    img = document.createElement('a-video');
+                    img.setAttribute('src', imgSrc);
+                    img.setAttribute('width', '1');
+                    img.setAttribute('height', '1');
+                    img.setAttribute('class', 'clickable');
+                } else {
+                    // Create clickable image plane
+                    img = document.createElement('a-image');
+                    img.setAttribute('src', imgSrc);
+                    img.setAttribute('width', '1');
+                    img.setAttribute('height', '1');
+                    img.setAttribute('class', 'clickable');
+
+                    // Apply animation if config exists
+                    if (hs.animation_config && hs.animation_config.animation) {
+                        if (hs.animation_config.animation === 'pulse') {
+                            img.setAttribute('animation__scale',
+                                'property: scale; dir: alternate; dur: 800; easing: easeInOutSine; loop: true; to: 1.2 1.2 1.2'
+                            );
+                            hasScaleAnimation = true;
+                        } else if (hs.animation_config.animation === 'bob') {
+                            img.setAttribute('animation__pos',
+                                'property: position; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 0 0.2 0'
+                            );
+                        } else if (hs.animation_config.animation === 'spin') {
+                            img.setAttribute('animation__rot',
+                                'property: rotation; dur: 2000; easing: linear; loop: true; to: 0 0 360');
+                        }
+                    }
+                }
+
+                // Hover animations (skip if pulsing to avoid conflict)
+                if (!hasScaleAnimation && !isCustomVideo) {
+                    img.setAttribute('animation__mouseenter',
+                        'property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter');
+                    img.setAttribute('animation__mouseleave',
+                        'property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave');
+                }
+
+                // Interactions
+                img.addEventListener('click', () => {
+                    if (isNav && hs.targetScene) {
+                        loadScene(hs.targetScene);
+                    } else if (!isNav) {
+                        showInfoModal(hs);
+                    }
+                });
+
+                entity.appendChild(img);
+
+                // Label
+                if (hs.label && hs.label.trim() !== '') {
+                    const label = document.createElement('a-text');
+                    label.setAttribute('value', hs.label);
+                    label.setAttribute('align', 'center');
+                    label.setAttribute('position', '0 -0.8 0');
+                    label.setAttribute('scale', '1.5 1.5 1.5');
+                    label.setAttribute('color', 'white');
+                    entity.appendChild(label);
+                }
+
+                DOM.hotspotsContainer.appendChild(entity);
+            });
+        }
+
+        // --- UI Interactions ---
+
+        function showInfoModal(hs) {
+            DOM.modalTitle.textContent = hs.modalTitle || hs.label;
+            DOM.modalContent.innerHTML = hs.modalContent || '';
+
+            if (hs.modalImage) {
+                DOM.modalImage.src = hs.modalImage;
+                DOM.modalImage.style.display = 'block';
+            } else {
+                DOM.modalImage.style.display = 'none';
+            }
+
+            DOM.modal.classList.add('active');
+        }
+
+        function closeInfoModal() {
+            DOM.modal.classList.remove('active');
+        }
+
+        function setupEventListeners() {
+            // Fullscreen
+            document.getElementById('btn-fullscreen').addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.log(err));
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            // Gyro
+            DOM.btnGyro.addEventListener('click', () => {
+                State.isGyroEnabled = !State.isGyroEnabled;
+                DOM.camera.setAttribute('look-controls', `magicWindowTrackingEnabled: ${State.isGyroEnabled}`);
+                if (State.isGyroEnabled) {
+                    DOM.btnGyro.classList.add('text-cyan-400');
+                    // Request permission on iOS
+                    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission ===
+                        'function') {
+                        DeviceMotionEvent.requestPermission()
+                            .then(permissionState => {
+                                if (permissionState !== 'granted') {
+                                    alert('Akses sensor orientasi ditolak.');
+                                    State.isGyroEnabled = false;
+                                    DOM.btnGyro.classList.remove('text-cyan-400');
+                                }
+                            })
+                            .catch(console.error);
+                    }
+                } else {
+                    DOM.btnGyro.classList.remove('text-cyan-400');
+                }
+            });
+
+            // Modal close
+            document.getElementById('btn-close-modal').addEventListener('click', closeInfoModal);
+            DOM.modal.addEventListener('click', (e) => {
+                if (e.target === DOM.modal) closeInfoModal();
+            });
+
+            // Add cursor if not touch device
+            if (!('ontouchstart' in window)) {
+                document.getElementById('cursor').setAttribute('visible', 'true');
+            }
+
+            // Scroll to zoom
+            window.addEventListener('wheel', (e) => {
+                const camera = document.getElementById('camera');
+                if (!camera) return;
+
+                let fov = parseFloat(camera.getAttribute('fov')) || 80;
+
+                // Zoom speed
+                const zoomSpeed = 3;
+                if (e.deltaY > 0) {
+                    fov += zoomSpeed; // Zoom out
+                } else if (e.deltaY < 0) {
+                    fov -= zoomSpeed; // Zoom in
+                }
+
+                // Clamp zoom level
+                fov = Math.max(30, Math.min(110, fov));
+
+                camera.setAttribute('fov', fov);
+            }, {
+                passive: true
+            });
+        }
+
+        // Boot
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

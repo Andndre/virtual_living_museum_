@@ -1,21 +1,24 @@
 <x-elearning-layout>
     {{-- Header Section --}}
     <div class="bg-primary px-6 py-6 text-white">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <button class="back-button rounded-full p-2 transition-colors hover:bg-white/10">
-                    <i class="fas fa-arrow-left text-xl"></i>
-                </button>
-                <div class="flex-1">
-                    <h1 class="text-lg font-bold">Virtual Living Museum</h1>
-                    <p class="text-sm opacity-90">{{ $situs->nama }}</p>
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button class="back-button rounded-full p-2 transition-colors hover:bg-white/10">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <div class="flex-1">
+                        <h1 class="text-lg font-bold">Virtual Living Museum</h1>
+                        <p class="text-sm opacity-90">{{ $situs->nama }}</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Content Section --}}
-    <div class="min-h-screen bg-gray-50 px-6 py-6">
+    <div class="min-h-screen bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 py-6">
         {{-- Hero Image Section --}}
         <div class="mb-6 overflow-hidden rounded-2xl bg-white shadow-sm">
             <div class="relative aspect-[16/9] bg-gradient-to-br from-orange-400 to-orange-600">
@@ -114,6 +117,36 @@
                             </button>
                         </div>
                     @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- Virtual 360 Tour Section --}}
+        @if ($situs->panoramaScenes && $situs->panoramaScenes->count() > 0)
+            <div class="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+                <h3 class="mb-4 flex items-center text-lg font-bold text-gray-900">
+                    <i class="fas fa-street-view mr-2 text-cyan-600"></i>
+                    Tur Virtual 360°
+                </h3>
+                
+                <div class="rounded-xl border border-gray-200 p-4 transition-shadow hover:shadow-md">
+                    <div class="mb-4 flex items-center space-x-3">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-100">
+                            <i class="fas fa-street-view text-cyan-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">Panorama Interaktif</h4>
+                            <p class="text-sm text-gray-600">
+                                Jelajahi situs ini melalui sudut pandang 360 derajat yang interaktif.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ route('guest.situs.panorama', $situs->situs_id) }}"
+                        class="inline-flex w-full transform items-center justify-center rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-3 font-medium text-white shadow-md transition-all duration-200 hover:scale-[1.02] hover:from-cyan-700 hover:to-blue-700">
+                        <i class="fas fa-play-circle mr-2"></i>
+                        Mulai Tur 360°
+                    </a>
                 </div>
             </div>
         @endif
@@ -247,6 +280,7 @@
                     </a>
                 @endif
             </div>
+        </div>
         </div>
     </div>
 
