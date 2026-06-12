@@ -57,8 +57,13 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/kunjungi-peninggalan/materi/{materi_id}/tugas', [HomeController::class, 'elearningTugas'])->name('guest.elearning.tugas');
 
     // Situs detail route
-    Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])->name('guest.situs.detail');
-    Route::get('/situs/{situs_id}/panorama', [HomeController::class, 'situsPanorama'])->name('guest.situs.panorama');
+    Route::get('/situs/{situs_id}', [HomeController::class, 'situsDetail'])
+        ->name('guest.situs.detail')
+        ->withoutMiddleware('user');
+
+    Route::get('/situs/{situs_id}/panorama', [HomeController::class, 'situsPanorama'])
+        ->name('guest.situs.panorama')
+        ->withoutMiddleware('user');
 
     // Kritik dan Saran routes
     Route::get('/kritik-saran', [KritikSaranController::class, 'index'])->name('guest.kritik-saran');

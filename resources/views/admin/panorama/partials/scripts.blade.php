@@ -8,6 +8,8 @@
             isLoading: false,
             isSaving: false,
             uploadingImage: false,
+            uploadingMultiple: false,
+            uploadProgress: '',
             showSceneModal: false,
             showAssetModal: false,
             uploadingAsset: false,
@@ -542,6 +544,88 @@
                 } finally {
                     this.uploadingImage = false;
                     e.target.value = null; // reset input
+                }
+            },
+
+            async handleMultipleUpload(files) {
+                if (!files || files.length === 0) return;
+                
+                this.uploadingMultiple = true;
+                let successCount = 0;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (!file.type.startsWith('image/')) continue;
+                    
+                    // Client-side size check (50MB)
+                    if(file.size > 50 * 1024 * 1024) {
+                        alert('Ukuran file ' + file.name + ' melebihi batas 50MB dan akan dilewati.');
+                        continue;
+                    }
+                    
+                    this.uploadProgress = `${i + 1}/${files.length}`;
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        const uploadRes = await fetch('/admin/panorama/upload', {
+                            method: 'POST',
+                            headers: { 
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            },
+                            body: formData
+                        });
+                        
+                        if (uploadRes.ok) {
+                            const uploadData = await uploadRes.json();
+                            const imageUrl = uploadData.url;
+                            
+                            let sceneName = file.name.replace(/\.[^/.]+$/, "");
+                            
+                            const scenePayload = {
+                                id: null,
+                                name: sceneName,
+                                image: imageUrl,
+                                situs_id: this.situsId,
+                                scene_type: 'panorama'
+                            };
+                            
+                            const saveRes = await fetch('/admin/panorama/scenes', {
+                                method: 'POST',
+                                headers: { 
+                                    'Content-Type': 'application/json', 
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                                },
+                                body: JSON.stringify(scenePayload)
+                            });
+                            
+                            if (saveRes.ok) {
+                                successCount++;
+                            } else {
+                                console.error('Failed to save scene for', file.name);
+                            }
+                        } else {
+                            console.error('Failed to upload file', file.name);
+                        }
+                    } catch (e) {
+                        console.error('Network error during upload of', file.name, e);
+                    }
+                }
+                
+                this.uploadingMultiple = false;
+                this.uploadProgress = '';
+                
+                if (successCount > 0) {
+                    await this.loadScenes();
+                    // Select the last added scene if none active
+                    if (this.scenes.length > 0 && !this.state.activeSceneId) {
+                        this.selectScene(this.scenes[this.scenes.length - 1].id);
+                    }
+                } else {
+                    alert('Gagal mengunggah file. Pastikan format dan ukuran sesuai.');
                 }
             },
 

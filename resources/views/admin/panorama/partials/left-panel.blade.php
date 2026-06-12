@@ -34,4 +34,23 @@
             </div>
         </template>
     </div>
+    
+    <!-- Drag and Drop Multiple Images -->
+    <div class="p-4 border-t border-gray-200 bg-gray-50 shrink-0" 
+         x-data="{ isDragging: false }"
+         @dragover.prevent="isDragging = true"
+         @dragleave.prevent="isDragging = false"
+         @drop.prevent="isDragging = false; handleMultipleUpload($event.dataTransfer.files)">
+        <label for="multiple-upload" class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors"
+               :class="isDragging ? 'border-cyan-500 bg-cyan-100' : 'border-gray-300 hover:bg-gray-100'">
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <i class="fas fa-cloud-upload-alt text-gray-400 mb-2 text-xl" :class="isDragging ? 'text-cyan-500' : ''"></i>
+                <p class="text-[10px] text-gray-500 text-center px-2">Drag & Drop / Klik untuk banyak gambar</p>
+            </div>
+            <input id="multiple-upload" type="file" class="hidden" multiple accept="image/*" @change="handleMultipleUpload($event.target.files)" />
+        </label>
+        <div x-show="uploadingMultiple" class="mt-2 text-xs text-center text-cyan-600 font-medium">
+            <i class="fas fa-spinner fa-spin mr-1"></i> Mengunggah <span x-text="uploadProgress"></span>...
+        </div>
+    </div>
 </div>
