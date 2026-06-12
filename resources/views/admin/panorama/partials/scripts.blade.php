@@ -13,15 +13,39 @@
             showSceneModal: false,
             showAssetModal: false,
             uploadingAsset: false,
-            
+
             state: {
                 activeSceneId: null,
                 activeHotspotId: null
             },
-            
-            assetForm: { nama: '', file: null },
-            sceneForm: { id: null, name: '', image: '', situs_id: situsId },
-            hotspotForm: { id: null, label: '', type: 'navigation', position_x: 0, position_y: 0, position_z: 0, target_scene_id: '', modal_title: '', modal_content: '', modal_image: '', animation_config: { icon: 'icon-info', animation: 'none', custom_url: '' } },
+
+            assetForm: {
+                nama: '',
+                file: null
+            },
+            sceneForm: {
+                id: null,
+                name: '',
+                image: '',
+                situs_id: situsId
+            },
+            hotspotForm: {
+                id: null,
+                label: '',
+                type: 'navigation',
+                position_x: 0,
+                position_y: 0,
+                position_z: 0,
+                target_scene_id: '',
+                modal_title: '',
+                modal_content: '',
+                modal_image: '',
+                animation_config: {
+                    icon: 'icon-info',
+                    animation: 'none',
+                    custom_url: ''
+                }
+            },
 
             get activeScene() {
                 return this.scenes.find(s => s.id === this.state.activeSceneId);
@@ -30,20 +54,21 @@
             init() {
                 this.loadScenes();
                 this.loadAssets();
-                
+
                 // Setup A-Frame click listener for placing hotspots
                 const sceneEl = document.getElementById('editor-scene');
                 sceneEl.addEventListener('click', (e) => {
-                    if(!this.state.activeSceneId) return;
-                    
+                    if (!this.state.activeSceneId) return;
+
                     // We only want clicks on sky or floor
-                    if (!e.target.id || (e.target.id !== 'editor-sky' && e.target.id !== 'editor-floor')) return;
-                    
+                    if (!e.target.id || (e.target.id !== 'editor-sky' && e.target.id !==
+                            'editor-floor')) return;
+
                     const intersection = e.detail.intersection;
-                    if(intersection) {
+                    if (intersection) {
                         const p = intersection.point;
                         let x, y, z;
-                        
+
                         if (e.target.id === 'editor-floor') {
                             // If clicked exactly on the floor, place it exactly there
                             x = parseFloat(p.x.toFixed(2));
@@ -52,13 +77,13 @@
                         } else {
                             // If clicked on the sky, calculate direction in XZ plane
                             // and place it at a fixed distance on the floor
-                            const len = Math.sqrt(p.x*p.x + p.z*p.z);
+                            const len = Math.sqrt(p.x * p.x + p.z * p.z);
                             const dist = 4.0;
                             x = parseFloat(((p.x / len) * dist).toFixed(2));
                             y = -1.6; // Floor level
                             z = parseFloat(((p.z / len) * dist).toFixed(2));
                         }
-                        
+
                         this.createNewHotspotAt(x, y, z);
                     }
                 });
@@ -67,14 +92,15 @@
             async loadScenes() {
                 this.isLoading = true;
                 try {
-                    const res = await fetch(`/admin/panorama/scenes/${this.situsId}?t=${new Date().getTime()}`);
+                    const res = await fetch(
+                        `/admin/panorama/scenes/${this.situsId}?t=${new Date().getTime()}`);
                     const data = await res.json();
                     this.scenes = data.scenes || [];
-                    
+
                     // Auto select first scene if available and none selected
-                    if(this.scenes.length > 0 && !this.state.activeSceneId) {
+                    if (this.scenes.length > 0 && !this.state.activeSceneId) {
                         this.selectScene(this.scenes[0].id);
-                    } else if(this.state.activeSceneId) {
+                    } else if (this.state.activeSceneId) {
                         // Re-select to trigger render
                         this.selectScene(this.state.activeSceneId);
                     }
@@ -108,7 +134,8 @@
                     const res = await fetch(`/admin/panorama/assets`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: formData
                     });
@@ -141,7 +168,8 @@
                     const res = await fetch(`/admin/panorama/assets`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: formData
                     });
@@ -170,7 +198,8 @@
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         }
                     });
 
@@ -188,10 +217,10 @@
                 this.state.activeSceneId = id;
                 this.state.activeHotspotId = null;
                 const scene = this.activeScene;
-                
+
                 // Set Sky
                 document.getElementById('editor-sky').setAttribute('src', scene.image);
-                
+
                 this.renderAframeHotspots();
             },
 
@@ -201,42 +230,44 @@
                 while (container.firstChild) {
                     container.removeChild(container.firstChild);
                 }
-                
+
                 const scene = this.activeScene;
-                if(!scene) return;
-                
-                if(scene.hotspots) {
+                if (!scene) return;
+
+                if (scene.hotspots) {
                     scene.hotspots.forEach(hs => {
                         // skip rendering the saved one if it is currently active, 
                         // because we will render it from the form!
                         if (this.state.activeHotspotId === hs.id) return;
-                        
+
                         const el = this.buildHotspotEntity(hs, hs.id);
                         container.appendChild(el);
                     });
                 }
-                
+
                 // Now render the active hotspot from the form, so it always reflects the latest state!
                 if (this.state.activeHotspotId && this.hotspotForm) {
-                    const el = this.buildHotspotEntity(this.hotspotForm, this.state.activeHotspotId);
+                    const el = this.buildHotspotEntity(this.hotspotForm, this.state
+                    .activeHotspotId);
                     container.appendChild(el);
                 }
             },
 
             buildHotspotEntity(hs, entityId) {
                 const el = document.createElement('a-entity');
-                el.setAttribute('position', hs.position || `${hs.position_x} ${hs.position_y} ${hs.position_z}`);
+                el.setAttribute('position', hs.position ||
+                    `${hs.position_x} ${hs.position_y} ${hs.position_z}`);
                 el.setAttribute('look-at', '#editor-camera');
-                
+
                 let srcId = '#icon-info';
                 let isCustomVideo = false;
-                
-                if(hs.animation_config && hs.animation_config.icon) {
+
+                if (hs.animation_config && hs.animation_config.icon) {
                     if (hs.animation_config.icon === 'custom') {
                         if (hs.animation_config.custom_url) {
                             const url = hs.animation_config.custom_url;
                             isCustomVideo = !!url.match(/\.(mp4|webm)$/i);
-                            
+
                             if (isCustomVideo) {
                                 const assetId = 'video-' + entityId;
                                 let videoEl = document.getElementById(assetId);
@@ -251,7 +282,8 @@
                                     videoEl.setAttribute('crossorigin', 'anonymous');
                                     document.querySelector('a-assets').appendChild(videoEl);
                                     // Attempt autoplay
-                                    videoEl.play().catch(e => console.log('Video autoplay prevented'));
+                                    videoEl.play().catch(e => console.log(
+                                        'Video autoplay prevented'));
                                 }
                                 srcId = '#' + assetId;
                             } else {
@@ -266,7 +298,7 @@
                 } else {
                     srcId = hs.type === 'navigation' ? '#icon-arrow-up' : '#icon-info';
                 }
-                
+
                 let img;
                 if (isCustomVideo) {
                     img = document.createElement('a-video');
@@ -279,26 +311,32 @@
                     img = document.createElement('a-image');
                     img.setAttribute('src', srcId);
                     img.setAttribute('class', 'clickable');
-                    
+
                     // Apply predefined animation if config exists (only for flat images)
                     if (hs.animation_config && hs.animation_config.animation) {
                         if (hs.animation_config.animation === 'pulse') {
-                            img.setAttribute('animation__scale', 'property: scale; dir: alternate; dur: 800; easing: easeInOutSine; loop: true; to: 1.2 1.2 1.2');
+                            img.setAttribute('animation__scale',
+                                'property: scale; dir: alternate; dur: 800; easing: easeInOutSine; loop: true; to: 1.2 1.2 1.2'
+                                );
                         } else if (hs.animation_config.animation === 'bob') {
-                            img.setAttribute('animation__pos', 'property: position; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 0 0.2 0');
+                            img.setAttribute('animation__pos',
+                                'property: position; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 0 0.2 0'
+                                );
                         } else if (hs.animation_config.animation === 'spin') {
-                            img.setAttribute('animation__rot', 'property: rotation; dur: 2000; easing: linear; loop: true; to: 0 0 360');
+                            img.setAttribute('animation__rot',
+                                'property: rotation; dur: 2000; easing: linear; loop: true; to: 0 0 360'
+                                );
                         }
                     }
                 }
-                
+
                 // Add selection glow if active
-                if(this.state.activeHotspotId === entityId) {
+                if (this.state.activeHotspotId === entityId) {
                     img.setAttribute('scale', '1.3 1.3 1.3');
                 }
 
                 el.appendChild(img);
-                
+
                 if (hs.label && hs.label.trim() !== '') {
                     const text = document.createElement('a-text');
                     text.setAttribute('value', hs.label);
@@ -308,25 +346,26 @@
                     text.setAttribute('scale', '1.5 1.5 1.5');
                     el.appendChild(text);
                 }
-                
+
                 // Add click event for selection
                 img.addEventListener('click', (e) => {
                     e.stopPropagation(); // Prevent sky click
                     this.selectHotspot(entityId);
                 });
-                
+
                 // Set ID for updating visual later
                 el.id = `hs-entity-${entityId}`;
                 return el;
             },
 
             selectHotspot(hsId) {
-                if (hsId === 'new') return; // Do not reload from state if it's the temporary new hotspot
-                
+                if (hsId === 'new')
+            return; // Do not reload from state if it's the temporary new hotspot
+
                 this.state.activeHotspotId = hsId;
                 const hs = this.activeScene.hotspots.find(h => h.id === hsId);
                 if (!hs) return;
-                
+
                 // Fill form
                 this.hotspotForm = {
                     id: hs.id,
@@ -339,9 +378,13 @@
                     modal_title: hs.modal_title || '',
                     modal_content: hs.modal_content || '',
                     modal_image: hs.modal_image || '',
-                    animation_config: hs.animation_config || { icon: hs.type === 'navigation' ? 'icon-arrow-up' : 'icon-info', animation: 'none', custom_url: '' },
+                    animation_config: hs.animation_config || {
+                        icon: hs.type === 'navigation' ? 'icon-arrow-up' : 'icon-info',
+                        animation: 'none',
+                        custom_url: ''
+                    },
                 };
-                
+
                 this.renderAframeHotspots(); // Re-render to show active state
             },
 
@@ -353,7 +396,7 @@
             createNewHotspotAt(x, y, z) {
                 this.hotspotForm = {
                     id: null, // null so that the backend treats it as new on save
-                    label: 'Hotspot Baru',
+                    label: '',
                     type: 'navigation',
                     position_x: x,
                     position_y: y,
@@ -362,7 +405,11 @@
                     modal_title: '',
                     modal_content: '',
                     modal_image: '',
-                    animation_config: { icon: 'icon-arrow-up', animation: 'none', custom_url: '' },
+                    animation_config: {
+                        icon: 'icon-arrow-up',
+                        animation: 'none',
+                        custom_url: ''
+                    },
                 };
                 this.state.activeHotspotId = 'new';
                 this.renderAframeHotspots(); // This will instantly preview the new hotspot!
@@ -374,34 +421,40 @@
                 this.isSaving = true;
                 try {
                     const isEdit = !!this.sceneForm.id;
-                    const url = isEdit ? `/admin/panorama/scenes/${this.sceneForm.id}` : `/admin/panorama/scenes`;
+                    const url = isEdit ? `/admin/panorama/scenes/${this.sceneForm.id}` :
+                        `/admin/panorama/scenes`;
                     const method = isEdit ? 'PUT' : 'POST';
-                    
-                    const payload = { ...this.sceneForm, scene_type: 'panorama' };
-                    
+
+                    const payload = {
+                        ...this.sceneForm,
+                        scene_type: 'panorama'
+                    };
+
                     const res = await fetch(url, {
                         method: method,
-                        headers: { 
-                            'Content-Type': 'application/json', 
+                        headers: {
+                            'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: JSON.stringify(payload)
                     });
-                    
-                    if(res.ok) {
+
+                    if (res.ok) {
                         this.showSceneModal = false;
                         await this.loadScenes();
                         // Select new scene if added
-                        if(!isEdit) {
-                            const newScene = this.scenes[this.scenes.length-1];
+                        if (!isEdit) {
+                            const newScene = this.scenes[this.scenes.length - 1];
                             this.selectScene(newScene.id);
                         }
                     } else {
                         const err = await res.text();
-                        alert('Gagal menyimpan adegan: ' + (res.status === 406 ? 'Expected JSON' : err));
+                        alert('Gagal menyimpan adegan: ' + (res.status === 406 ?
+                            'Expected JSON' : err));
                     }
-                } catch(e) {
+                } catch (e) {
                     alert('Error koneksi');
                 } finally {
                     this.isSaving = false;
@@ -409,54 +462,59 @@
             },
 
             async deleteScene(id) {
-                if(!confirm('Yakin ingin menghapus adegan ini? Semua hotspot didalamnya akan ikut terhapus.')) return;
-                
+                if (!confirm(
+                        'Yakin ingin menghapus adegan ini? Semua hotspot didalamnya akan ikut terhapus.'
+                        )) return;
+
                 try {
                     const res = await fetch(`/admin/panorama/scenes/${id}`, {
                         method: 'DELETE',
-                        headers: { 
+                        headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         }
                     });
-                    
-                    if(res.ok) {
-                        if(this.state.activeSceneId === id) {
+
+                    if (res.ok) {
+                        if (this.state.activeSceneId === id) {
                             this.state.activeSceneId = null;
                             document.getElementById('editor-scene').style.display = 'none';
                         }
                         await this.loadScenes();
                     }
-                } catch(e) {}
+                } catch (e) {}
             },
 
             async saveHotspot() {
                 this.isSaving = true;
                 try {
                     const isEdit = !!this.hotspotForm.id;
-                    const url = isEdit ? `/admin/panorama/hotspots/${this.hotspotForm.id}` : `/admin/panorama/hotspots`;
+                    const url = isEdit ? `/admin/panorama/hotspots/${this.hotspotForm.id}` :
+                        `/admin/panorama/hotspots`;
                     const method = isEdit ? 'PUT' : 'POST';
-                    
-                    const payload = { 
-                        ...this.hotspotForm, 
+
+                    const payload = {
+                        ...this.hotspotForm,
                         scene_id: this.state.activeSceneId,
                         adegan_id: this.state.activeSceneId // for backend naming matching
                     };
-                    
+
                     // Clean empty strings
-                    if(payload.target_scene_id === '') payload.target_scene_id = null;
-                    
+                    if (payload.target_scene_id === '') payload.target_scene_id = null;
+
                     const res = await fetch(url, {
                         method: method,
-                        headers: { 
-                            'Content-Type': 'application/json', 
+                        headers: {
+                            'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: JSON.stringify(payload)
                     });
-                    
-                    if(res.ok) {
+
+                    if (res.ok) {
                         await this.loadScenes();
                         const newHs = await res.json();
                         this.selectHotspot(newHs.id);
@@ -465,7 +523,7 @@
                         const err = await res.text();
                         alert('Gagal menyimpan hotspot: ' + err);
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error(e);
                     alert('Error koneksi');
                 } finally {
@@ -474,72 +532,78 @@
             },
 
             async deleteHotspot() {
-                if(!this.hotspotForm.id) {
+                if (!this.hotspotForm.id) {
                     this.state.activeHotspotId = null;
                     return;
                 }
-                if(!confirm('Hapus hotspot ini?')) return;
-                
+                if (!confirm('Hapus hotspot ini?')) return;
+
                 try {
                     const res = await fetch(`/admin/panorama/hotspots/${this.hotspotForm.id}`, {
                         method: 'DELETE',
-                        headers: { 
+                        headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         }
                     });
-                    
-                    if(res.ok) {
+
+                    if (res.ok) {
                         this.state.activeHotspotId = null;
                         await this.loadScenes();
                     }
-                } catch(e) {}
+                } catch (e) {}
             },
 
             async uploadImage(e) {
                 const file = e.target.files[0];
-                if(!file) return;
-                
+                if (!file) return;
+
                 // Client-side size check (50MB)
-                if(file.size > 50 * 1024 * 1024) {
+                if (file.size > 50 * 1024 * 1024) {
                     alert('Ukuran file melebihi batas 50MB.');
                     e.target.value = null;
                     return;
                 }
-                
+
                 this.uploadingImage = true;
                 const formData = new FormData();
                 formData.append('file', file);
-                
+
                 try {
                     const res = await fetch('/admin/panorama/upload', {
                         method: 'POST',
-                        headers: { 
+                        headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content')
                         },
                         body: formData
                     });
-                    
-                    if(res.ok) {
+
+                    if (res.ok) {
                         const data = await res.json();
                         this.sceneForm.image = data.url;
                     } else {
-                        if(res.status === 413) {
-                            alert('Gagal unggah: File terlalu besar untuk server. (Error 413 Payload Too Large)');
-                        } else if(res.status === 422) {
+                        if (res.status === 413) {
+                            alert(
+                                'Gagal unggah: File terlalu besar untuk server. (Error 413 Payload Too Large)');
+                        } else if (res.status === 422) {
                             const errData = await res.json();
                             // if validation fails, it might be due to php.ini dropping the file
-                            if(errData.errors && errData.errors.file) {
-                                alert('Gagal unggah: ' + errData.errors.file[0] + '\n\n(Catatan: Jika ukuran file < 50MB, mungkin dibatasi oleh upload_max_filesize/post_max_size di php.ini server Anda yang defaultnya 2MB)');
+                            if (errData.errors && errData.errors.file) {
+                                alert('Gagal unggah: ' + errData.errors.file[0] +
+                                    '\n\n(Catatan: Jika ukuran file < 50MB, mungkin dibatasi oleh upload_max_filesize/post_max_size di php.ini server Anda yang defaultnya 2MB)'
+                                    );
                             } else {
                                 alert('Gagal unggah gambar. Pastikan format sesuai.');
                             }
                         } else {
-                            alert('Gagal unggah gambar. Kemungkinan ukuran melebihi batas konfigurasi server (php.ini).');
+                            alert(
+                                'Gagal unggah gambar. Kemungkinan ukuran melebihi batas konfigurasi server (php.ini).');
                         }
                     }
-                } catch(e) {
+                } catch (e) {
                     alert('Error koneksi saat mengunggah');
                 } finally {
                     this.uploadingImage = false;
@@ -549,41 +613,44 @@
 
             async handleMultipleUpload(files) {
                 if (!files || files.length === 0) return;
-                
+
                 this.uploadingMultiple = true;
                 let successCount = 0;
-                
+
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     if (!file.type.startsWith('image/')) continue;
-                    
+
                     // Client-side size check (50MB)
-                    if(file.size > 50 * 1024 * 1024) {
-                        alert('Ukuran file ' + file.name + ' melebihi batas 50MB dan akan dilewati.');
+                    if (file.size > 50 * 1024 * 1024) {
+                        alert('Ukuran file ' + file.name +
+                            ' melebihi batas 50MB dan akan dilewati.');
                         continue;
                     }
-                    
+
                     this.uploadProgress = `${i + 1}/${files.length}`;
-                    
+
                     try {
                         const formData = new FormData();
                         formData.append('file', file);
-                        
+
                         const uploadRes = await fetch('/admin/panorama/upload', {
                             method: 'POST',
-                            headers: { 
+                            headers: {
                                 'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').getAttribute(
+                                    'content')
                             },
                             body: formData
                         });
-                        
+
                         if (uploadRes.ok) {
                             const uploadData = await uploadRes.json();
                             const imageUrl = uploadData.url;
-                            
+
                             let sceneName = file.name.replace(/\.[^/.]+$/, "");
-                            
+
                             const scenePayload = {
                                 id: null,
                                 name: sceneName,
@@ -591,17 +658,19 @@
                                 situs_id: this.situsId,
                                 scene_type: 'panorama'
                             };
-                            
+
                             const saveRes = await fetch('/admin/panorama/scenes', {
                                 method: 'POST',
-                                headers: { 
-                                    'Content-Type': 'application/json', 
+                                headers: {
+                                    'Content-Type': 'application/json',
                                     'Accept': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute(
+                                        'content')
                                 },
                                 body: JSON.stringify(scenePayload)
                             });
-                            
+
                             if (saveRes.ok) {
                                 successCount++;
                             } else {
@@ -614,10 +683,10 @@
                         console.error('Network error during upload of', file.name, e);
                     }
                 }
-                
+
                 this.uploadingMultiple = false;
                 this.uploadProgress = '';
-                
+
                 if (successCount > 0) {
                     await this.loadScenes();
                     // Select the last added scene if none active
@@ -630,10 +699,20 @@
             },
 
             openSceneModal(scene = null) {
-                if(scene) {
-                    this.sceneForm = { id: scene.id, name: scene.name, image: scene.image, situs_id: this.situsId };
+                if (scene) {
+                    this.sceneForm = {
+                        id: scene.id,
+                        name: scene.name,
+                        image: scene.image,
+                        situs_id: this.situsId
+                    };
                 } else {
-                    this.sceneForm = { id: null, name: '', image: '', situs_id: this.situsId };
+                    this.sceneForm = {
+                        id: null,
+                        name: '',
+                        image: '',
+                        situs_id: this.situsId
+                    };
                 }
                 this.showSceneModal = true;
             }
