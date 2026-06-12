@@ -188,7 +188,7 @@
     <div id="loading-overlay">
         <div class="spinner"></div>
         <h2 class="text-xl font-bold">Memuat Tur Virtual...</h2>
-        <p class="text-sm text-gray-400 mt-2" id="loading-text">Menyiapkan panorama</p>
+        <p class="mt-2 text-sm text-gray-400" id="loading-text">Menyiapkan panorama</p>
     </div>
 
     <!-- UI Overlay -->
@@ -200,8 +200,8 @@
             </a>
 
             <div class="tour-title-box">
-                <h1 class="text-sm font-bold m-0">{{ $situs->nama }}</h1>
-                <p class="text-xs opacity-75 m-0" id="current-scene-name">Memuat...</p>
+                <h1 class="m-0 text-sm font-bold">{{ $situs->nama }}</h1>
+                <p class="m-0 text-xs opacity-75" id="current-scene-name">Memuat...</p>
             </div>
 
             <button class="btn-circle interactive" id="btn-fullscreen" title="Layar Penuh">
@@ -210,19 +210,19 @@
         </div>
 
         <!-- Bottom Controls -->
-        <div class="flex justify-center interactive">
+        <div class="interactive flex justify-center">
             <div
-                class="bg-black/50 backdrop-blur-md rounded-full px-6 py-2 border border-white/20 flex gap-4 text-white">
-                <button id="btn-gyro" class="p-2 hover:text-cyan-400 transition-colors"
+                class="flex gap-4 rounded-full border border-white/20 bg-black/50 px-6 py-2 text-white backdrop-blur-md">
+                <button id="btn-gyro" class="p-2 transition-colors hover:text-cyan-400"
                     title="Sensor Gyroscope (Mobile)">
                     <i class="fas fa-mobile-screen"></i>
                 </button>
-                <button id="btn-vr-custom" class="p-2 hover:text-cyan-400 transition-colors"
+                <button id="btn-vr-custom" class="p-2 transition-colors hover:text-cyan-400"
                     title="Mode VR (Google Cardboard)">
                     <i class="fas fa-vr-cardboard"></i>
                 </button>
-                <div id="divider-controls" class="w-px bg-white/20 my-2"></div>
-                <button class="p-2 hover:text-cyan-400 transition-colors cursor-help"
+                <div id="divider-controls" class="my-2 w-px bg-white/20"></div>
+                <button class="cursor-help p-2 transition-colors hover:text-cyan-400"
                     title="Geser untuk melihat sekeliling. Klik ikon untuk berinteraksi.">
                     <i class="fas fa-info-circle"></i>
                 </button>
@@ -234,8 +234,8 @@
     <div id="info-modal" class="interactive">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="text-lg font-bold text-gray-900 m-0" id="modal-title">Info</h3>
-                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-700 p-1">
+                <h3 class="m-0 text-lg font-bold text-gray-900" id="modal-title">Info</h3>
+                <button id="btn-close-modal" class="p-1 text-gray-400 hover:text-gray-700">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -279,7 +279,8 @@
             <a-camera id="camera"
                 look-controls="pointerLockEnabled: false; magicWindowTrackingEnabled: false; reverseMouseDrag: true"
                 wasd-controls="enabled: false" fov="80">
-                <a-entity id="cursor" cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable; far: 500"
+                <a-entity id="cursor" cursor="fuse: false; rayOrigin: mouse"
+                    raycaster="objects: .clickable; far: 500"
                     geometry="primitive: ring; radiusInner: 0.006; radiusOuter: 0.009"
                     material="color: #0ea5e9; shader: flat; opacity: 0.8" position="0 0 -1" visible="false"></a-entity>
             </a-camera>
@@ -332,10 +333,10 @@
             } else {
                 // Hide mobile-specific buttons on desktop to avoid confusion
                 DOM.btnGyro.style.display = 'none';
-                
+
                 const btnVr = document.getElementById('btn-vr-custom');
                 const divider = document.getElementById('divider-controls');
-                
+
                 // Hide VR button on desktop unless an actual VR headset is detected
                 if (navigator.xr && navigator.xr.isSessionSupported) {
                     navigator.xr.isSessionSupported('immersive-vr').then(supported => {
@@ -408,7 +409,8 @@
 
                     DOM.transitionOverlay.style.opacity = '0';
                     DOM.scene.style.filter = 'blur(0px)';
-                    DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 80; dur: 600; easing: easeOutQuad');
+                    DOM.camera.setAttribute('animation__zoom',
+                        'property: fov; to: 80; dur: 600; easing: easeOutQuad');
                 };
 
                 // Wait for image to load before fading back in
@@ -497,20 +499,27 @@
                     // Apply animation if config exists
                     if (hs.animation_config && hs.animation_config.animation) {
                         if (hs.animation_config.animation === 'pulse') {
-                            img.setAttribute('animation__scale', 'property: scale; dir: alternate; dur: 800; easing: easeInOutSine; loop: true; to: 1.2 1.2 1.2');
+                            img.setAttribute('animation__scale',
+                                'property: scale; dir: alternate; dur: 800; easing: easeInOutSine; loop: true; to: 1.2 1.2 1.2'
+                            );
                             hasScaleAnimation = true;
                         } else if (hs.animation_config.animation === 'bob') {
-                            img.setAttribute('animation__pos', 'property: position; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 0 0.2 0');
+                            img.setAttribute('animation__pos',
+                                'property: position; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 0 0.2 0'
+                            );
                         } else if (hs.animation_config.animation === 'spin') {
-                            img.setAttribute('animation__rot', 'property: rotation; dur: 2000; easing: linear; loop: true; to: 0 0 360');
+                            img.setAttribute('animation__rot',
+                                'property: rotation; dur: 2000; easing: linear; loop: true; to: 0 0 360');
                         }
                     }
                 }
 
                 // Hover animations (skip if pulsing to avoid conflict)
                 if (!hasScaleAnimation && !isCustomVideo) {
-                    img.setAttribute('animation__mouseenter', 'property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter');
-                    img.setAttribute('animation__mouseleave', 'property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave');
+                    img.setAttribute('animation__mouseenter',
+                        'property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter');
+                    img.setAttribute('animation__mouseleave',
+                        'property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave');
                 }
 
                 // Interactions
@@ -576,7 +585,8 @@
                 if (State.isGyroEnabled) {
                     DOM.btnGyro.classList.add('text-cyan-400');
                     // Request permission on iOS
-                    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission ===
+                        'function') {
                         DeviceMotionEvent.requestPermission()
                             .then(permissionState => {
                                 if (permissionState !== 'granted') {
@@ -622,7 +632,9 @@
                 fov = Math.max(30, Math.min(110, fov));
 
                 camera.setAttribute('fov', fov);
-            }, { passive: true });
+            }, {
+                passive: true
+            });
         }
 
         // Boot
