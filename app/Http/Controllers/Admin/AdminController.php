@@ -145,7 +145,7 @@ class AdminController extends Controller
             $data['profile_photo'] = $photoPath;
         }
 
-        $user->update($data);
+        $user->fill($data)->save();
 
         return redirect()->route('admin.users')
             ->with('success', 'Pengguna berhasil diperbarui!');
