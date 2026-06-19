@@ -4,7 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Virtual Living Museum** is an AR-enhanced heritage education platform built with Laravel 11 (PHP 8.2+). It provides gamified e-learning (Pre-test → E-book → Virtual Museum → Post-test), dual AR experiences (marker-based + WebXR), and heritage site mapping.
+**Smart Prasada** is an AR-enhanced heritage education platform built with Laravel 11 (PHP 8.2+). It provides gamified e-learning (Pre-test → E-book → Virtual Museum → Post-test), dual AR experiences (marker-based + WebXR), 360° VR panorama tours, heritage site mapping, and assignment/report management.
+
+---
+
+## Environment Setup
+
+**Required .env variables:**
+
+```env
+APP_TOKEN_SECRET=your_32_character_random_secret  # REQUIRED for AR token auth
+APP_DEMO_MODE=false                                # Toggle demo mode
+DB_CONNECTION=sqlite                               # Default (or mysql)
+QUEUE_CONNECTION=database                          # Queue driver
+```
+
+**Test Users** (seeded automatically):
+- Admin: `admin@gmail.com` / `password`
+- Students: `siswa@example.com` / `password` or `test@example.com` / `password`
+
+**Default Database:** SQLite (`database/database.sqlite`). Can switch to MySQL via .env.
 
 ---
 
@@ -18,7 +37,21 @@ php artisan migrate --seed           # Fresh db with seed data
 php artisan migrate:fresh --seed      # Rebuild everything
 
 # Development
-composer run dev                     # Laravel server + Vite (concurrent)
+composer run dev                     # Runs 4 concurrent services:
+                                     # 1. php artisan serve (Laravel server)
+                                     # 2. php artisan queue:listen --tries=1 (Queue worker)
+                                     # 3. php artisan pail --timeout=0 (Log viewer)
+                                     # 4. npm run dev (Vite HMR)
+
+# Individual services (if needed)
+php artisan serve                    # Laravel server only
+php artisan queue:listen             # Queue worker only
+php artisan pail                     # Log viewer only
+npm run dev                          # Vite only
+
+# Frontend
+npm run prepare                      # Setup Husky git hooks
+npx prettier --write .               # Format with Prettier (Tailwind plugin)
 
 # Production build
 npm run build
@@ -66,6 +99,13 @@ Key methods: `User::incrementLevel()`, `User::incrementProgressLevel()`, `Materi
 
 AR code in `/public/assets/js/` is served directly (not bundled via Vite). Heavy libs (Three.js, A-Frame, PDF.js) loaded via CDN.
 
+### 360° Panorama System
+
+- **Viewer:** Three.js-based panorama renderer at `/panorama/{situsId}`
+- **Hotspot Templates:** Navigation points, info modals, text labels configurable per scene
+- **Integration:** Linked to `SitusPeninggalan` via `situs_id` FK
+- **Public Access:** No authentication required (unlike AR routes)
+
 ### Token Authentication
 
 `app/Helper/TokenHelper.php` generates HMAC-SHA256 tokens for stateless AR access:
@@ -112,6 +152,10 @@ $table->unique(['user_id', 'situs_id']);
 | `JawabanUser`          | Pivot: `user_id`, `materi_id`, `jenis` ('pretest'/'posttest'), `benar`, `poin`              |
 | `SitusPeninggalan`     | `situs_id` PK, `lat`, `lng`, `path_patt`, `path_obj`                                        |
 | `VirtualMuseum`        | `museum_id` PK, `situs_id` FK, `path_obj` for 3D scenes                                     |
+| `Panorama`             | `panorama_id` PK, `situs_id` FK, hotspot templates and 360° scene data                      |
+| `VideoPeninggalan`     | `video_id` PK, heritage video content management                                            |
+| `LaporanPeninggalan`   | `laporan_id` PK, user-submitted heritage site reports with likes/comments                   |
+| `KritikSaran`          | `kritik_id` PK, feedback submissions (rate-limited to 10 per minute)                        |
 
 ---
 
@@ -144,11 +188,26 @@ Use case: shareable demo accounts where anyone can browse all content without a 
 | `HomeController::arMuseum()`                         | Skips museum visit progress tracking                  |
 | `Materi::shouldIncrementProgress()`                  | Returns `true` (safety net for any future call sites) |
 
-Three separate bundles in `vite.config.js`:
+---
 
-- `resources/css/app.css` — Tailwind
+## Frontend Tooling
+
+### Vite Bundles
+
+Three separate entry points in `vite.config.js`:
+- `resources/css/app.css` — Tailwind base styles
 - `resources/js/app.js` — Alpine.js + utilities
 - `resources/js/ebook.js` — PDF.js + page-flip flipbook (standalone)
+
+### Code Formatting
+
+- **Prettier** with Tailwind CSS plugin (`.prettierrc.json`)
+- **Husky pre-commit hook** automatically runs `npm run build` and stages `public/build` assets
+
+### Module Strategy
+
+- **Bundled via Vite:** Alpine.js, Tailwind, core app logic
+- **Direct-served (NOT bundled):** AR modules (`/public/assets/js/`), heavy CDN libs (Three.js, A-Frame, PDF.js)
 
 ---
 
@@ -160,6 +219,9 @@ Three separate bundles in `vite.config.js`:
 - ❌ Bundling AR modules with Vite — keep in `/public/assets/js/`
 - ❌ English naming in DB — use Indonesian throughout
 - ❌ Assuming soft deletes exist — all deletions are permanent
+- ❌ Forgetting `APP_TOKEN_SECRET` in .env — AR routes will fail silently
+- ❌ Not running `npm run prepare` after clone — pre-commit hooks won't be installed
+- ❌ Using MySQL commands when default DB is SQLite — check .env first
 
 ===
 
