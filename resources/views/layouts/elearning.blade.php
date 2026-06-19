@@ -19,6 +19,9 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Livewire Styles -->
+    @livewireStyles
+
     @stack('head')
 </head>
 
@@ -34,6 +37,9 @@
 
         <x-bottom-nav class="md:hidden" />
     </div>
+
+    <!-- Livewire Scripts -->
+    @livewireScripts
 
     @stack('scripts')
 </body>

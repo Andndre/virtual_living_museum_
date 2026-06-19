@@ -21,7 +21,6 @@ use App\Models\VirtualMuseum;
 use App\Models\VirtualMuseumObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -473,8 +472,8 @@ class AdminController extends Controller
     private function safeExtensionFromMime(string $mime, string $default): string
     {
         static $map = [
-        'model/gltf-binary' => 'glb',
-        'application/octet-stream' => 'glb',
+            'model/gltf-binary' => 'glb',
+            'application/octet-stream' => 'glb',
         ];
 
         return $map[$mime] ?? $default;
