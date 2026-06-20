@@ -367,8 +367,19 @@ class PanoramaController extends Controller
         $type = $request->input('type', 'panorama');
         $directory = $type === 'panorama' ? 'panoramas' : 'hotspot-images';
 
-        // Generate UUID filename
-        $extension = $request->file('file')->getClientOriginalExtension();
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension();
+
+        // Fallback if no extension: detect from MIME type
+        if (empty($extension)) {
+            $extension = $file->extension(); // uses MIME type detection
+        }
+
+        // Final fallback: default to jpg
+        if (empty($extension)) {
+            $extension = 'jpg';
+        }
+
         $filename = Str::uuid().'.'.$extension;
 
         $path = $request->file('file')->storeAs($directory, $filename, 'public');
