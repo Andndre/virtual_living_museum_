@@ -61,26 +61,46 @@
     }
 
     function loadInitialScene() {
-        // Skip transition — loading screen already covers this
         const scene = getSceneById(tourData.scenes[0].id);
         if (!scene) return;
         State.currentSceneId = scene.id;
         DOM.currentSceneName.textContent = scene.name;
-        DOM.sky.setAttribute('src', scene.image);
-        renderHotspots(scene.hotspots);
 
-        setTimeout(() => {
+        // Hide loading only after first texture is actually on the GPU
+        DOM.sky.addEventListener('materialtextureloaded', function onFirst() {
+            DOM.sky.removeEventListener('materialtextureloaded', onFirst);
             DOM.loadingOverlay.style.opacity = '0';
             setTimeout(() => {
                 DOM.loadingOverlay.style.display = 'none';
-                preloadScenes();
+                preloadAdjacent(scene.id); // preload neighbours AFTER first scene renders
             }, 500);
-        }, 1000);
+        });
+
+        DOM.sky.setAttribute('src', scene.image);
+        renderHotspots(scene.hotspots);
     }
 
-    function preloadScenes() {
-        tourData.scenes.forEach(scene => {
-            if (scene.id !== State.currentSceneId) new Image().src = scene.image;
+    function getAdjacentIds(sceneId) {
+        const idx = tourData.scenes.findIndex(s => s.id === sceneId);
+        const ids = [];
+        if (idx > 0) ids.push(tourData.scenes[idx - 1].id);
+        if (idx < tourData.scenes.length - 1) ids.push(tourData.scenes[idx + 1].id);
+        // Also include navigation hotspot targets from current scene
+        const scene = getSceneById(sceneId);
+        if (scene && scene.hotspots) {
+            scene.hotspots.forEach(hs => {
+                if (hs.type === 'navigation' && hs.targetScene && !ids.includes(hs.targetScene)) {
+                    ids.push(hs.targetScene);
+                }
+            });
+        }
+        return ids;
+    }
+
+    function preloadAdjacent(sceneId) {
+        getAdjacentIds(sceneId).forEach(id => {
+            const s = getSceneById(id);
+            if (s) new Image().src = s.image;
         });
     }
 
@@ -110,6 +130,7 @@
                 DOM.blurOverlay.classList.remove('active');
                 DOM.camera.setAttribute('animation__zoom',
                     'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+                preloadAdjacent(sceneId);
             };
 
             // Attach listener BEFORE setting src to avoid missing the event on cached images
@@ -120,7 +141,7 @@
 
             DOM.sky.setAttribute('src', scene.image);
             renderHotspots(scene.hotspots);
-            setTimeout(finishTransition, 6000); // fallback for very slow images
+            setTimeout(finishTransition, 6000);
         }, 250);
     }
 
