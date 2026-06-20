@@ -48,14 +48,18 @@ class FixPanoramaExtensions extends Command
             if (rename($fullPath, $newFullPath)) {
                 $this->line("✓ Renamed: {$path} → {$newPath}");
 
-                // Update database references
+                // Update database references in scenes table
                 $oldUrl = "/storage/{$path}";
                 $newUrl = "/storage/{$newPath}";
 
-                $updated = Scene::where('image', $oldUrl)->update(['image' => $newUrl]);
+                $sceneUpdated = Scene::where('image', $oldUrl)->update(['image' => $newUrl]);
 
-                if ($updated > 0) {
-                    $this->line("  Updated {$updated} scene(s) in database");
+                // Also update hotspot modal_image references
+                $hotspotUpdated = \DB::table('hotspot')->where('modal_image', $oldUrl)->update(['modal_image' => $newUrl]);
+
+                $totalUpdated = $sceneUpdated + $hotspotUpdated;
+                if ($totalUpdated > 0) {
+                    $this->line("  Updated {$sceneUpdated} scene(s) + {$hotspotUpdated} hotspot(s)");
                 }
 
                 $fixed++;
