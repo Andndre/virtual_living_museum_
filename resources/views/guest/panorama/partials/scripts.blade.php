@@ -61,7 +61,14 @@
     }
 
     function loadInitialScene() {
-        loadScene(tourData.scenes[0].id);
+        // Skip transition — loading screen already covers this
+        const scene = getSceneById(tourData.scenes[0].id);
+        if (!scene) return;
+        State.currentSceneId = scene.id;
+        DOM.currentSceneName.textContent = scene.name;
+        DOM.sky.setAttribute('src', scene.image);
+        renderHotspots(scene.hotspots);
+
         setTimeout(() => {
             DOM.loadingOverlay.style.opacity = '0';
             setTimeout(() => {
@@ -93,31 +100,27 @@
         DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 28; dur: 250; easing: easeInQuad');
 
         setTimeout(() => {
-            // Swap sky — near-instant if browser-cached from preload
-            DOM.sky.setAttribute('src', scene.image);
-            renderHotspots(scene.hotspots);
             DOM.camera.removeAttribute('animation__zoom');
             DOM.camera.setAttribute('fov', 28);
 
-            const finishTransition = (() => {
-                let done = false;
-                return () => {
-                    if (done) return;
-                    done = true;
-                    DOM.blurOverlay.style.transition = 'opacity 0.45s ease';
-                    DOM.blurOverlay.classList.remove('active');
-                    DOM.camera.setAttribute('animation__zoom',
-                        'property: fov; to: 80; dur: 450; easing: easeOutQuad');
-                    // Reset transition so next enter is snappy
-                    setTimeout(() => DOM.blurOverlay.style.transition = '', 450);
-                };
-            })();
+            let done = false;
+            const finishTransition = () => {
+                if (done) return;
+                done = true;
+                DOM.blurOverlay.classList.remove('active');
+                DOM.camera.setAttribute('animation__zoom',
+                    'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+            };
 
+            // Attach listener BEFORE setting src to avoid missing the event on cached images
             DOM.sky.addEventListener('materialtextureloaded', function onLoaded() {
                 DOM.sky.removeEventListener('materialtextureloaded', onLoaded);
                 finishTransition();
             });
-            setTimeout(finishTransition, 8000);
+
+            DOM.sky.setAttribute('src', scene.image);
+            renderHotspots(scene.hotspots);
+            setTimeout(finishTransition, 6000); // fallback for very slow images
         }, 250);
     }
 
