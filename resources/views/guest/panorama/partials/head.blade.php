@@ -70,9 +70,15 @@
         #blur-overlay {
             position: absolute; inset: 0; z-index: 5;
             opacity: 0; pointer-events: none;
-            background: rgba(0,0,0,0.55);
-            transition: opacity 0.25s ease;
+            background: rgba(0,0,0,0.2);
+            -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
         }
-        #blur-overlay.active { opacity: 1; }
+        #blur-overlay.active {
+            opacity: 1;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
     </style>
 </head>

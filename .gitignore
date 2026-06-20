@@ -23,6 +23,7 @@ dokumen_pendukung/
 template_prompt_issue.md
 template_prompt_analisis_fitur_issue.md
 .playwright-mcp/
+.sisyphus/
 
 # Laravel IDE Helper
 _ide_helper.php

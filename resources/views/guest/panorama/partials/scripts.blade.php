@@ -119,12 +119,27 @@
     function preloadAdjacent(sceneId) {
         getAdjacentIds(sceneId).forEach(id => {
             const s = getSceneById(id);
-            if (s) new Image().src = s.image;
+            if (s) ensureSceneAsset(s);
         });
     }
 
     function getSceneById(id) {
         return tourData.scenes.find(s => s.id === id);
+    }
+
+    // Create (idempotent) a real <a-assets> <img> element so A-Frame decodes and
+    // GPU-uploads the texture ahead of time, avoiding a first-time black flash.
+    function ensureSceneAsset(scene) {
+        const imgId = 'pano-img-' + scene.id;
+        let imgEl = document.getElementById(imgId);
+        if (!imgEl) {
+            imgEl = document.createElement('img');
+            imgEl.id = imgId;
+            imgEl.setAttribute('crossorigin', 'anonymous');
+            imgEl.src = scene.image;
+            DOM.assets.appendChild(imgEl);
+        }
+        return imgId;
     }
 
     function loadScene(sceneId) {
@@ -134,32 +149,31 @@
         State.currentSceneId = sceneId;
         DOM.currentSceneName.textContent = scene.name;
 
-        // Phase 1: zoom in + show blur overlay (never touch the WebGL canvas/filter)
+        // Phase 1: push forward into the current image — zoom in + blur overlay
         DOM.blurOverlay.classList.add('active');
-        DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 28; dur: 250; easing: easeInQuad');
+        DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 30; dur: 300; easing: easeInQuad');
 
         setTimeout(() => {
             DOM.camera.removeAttribute('animation__zoom');
-            DOM.camera.setAttribute('fov', 28);
 
-            // Preload image via <a-assets> for reliable texture loading
-            const imgId = 'pano-img-' + sceneId;
-            let imgEl = document.getElementById(imgId);
-            if (!imgEl) {
-                imgEl = document.createElement('img');
-                imgEl.id = imgId;
-                imgEl.setAttribute('crossorigin', 'anonymous');
-                imgEl.src = scene.image;
-                DOM.assets.appendChild(imgEl);
-            }
+            // Ensure the asset element exists (decoded + GPU-uploaded) before swapping
+            const imgId = ensureSceneAsset(scene);
 
             let done = false;
             const finishTransition = () => {
                 if (done) return;
                 done = true;
+
+                // New scene starts zoomed OUT (wide fov) while still hidden behind blur,
+                // then dolly forward to the normal fov so it feels like stepping into it.
+                DOM.camera.removeAttribute('animation__zoom');
+                DOM.camera.setAttribute('fov', 100);
                 DOM.blurOverlay.classList.remove('active');
-                DOM.camera.setAttribute('animation__zoom',
-                    'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+
+                requestAnimationFrame(() => {
+                    DOM.camera.setAttribute('animation__zoom',
+                        'property: fov; to: 80; dur: 600; easing: easeOutCubic');
+                });
                 preloadAdjacent(sceneId);
             };
 
@@ -173,7 +187,7 @@
             DOM.sky.setAttribute('src', '#' + imgId);
             renderHotspots(scene.hotspots);
             setTimeout(finishTransition, 6000);
-        }, 250);
+        }, 300);
     }
 
     function renderHotspots(hotspots) {
