@@ -8,3 +8,21 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* ── Tiptap editor prose styles ─────────────────────────── */
+#tiptap-editor .tiptap {
+    @apply p-3 min-h-[120px] text-sm text-gray-800 focus:outline-none;
+}
+#tiptap-editor .tiptap p { @apply my-1; }
+#tiptap-editor .tiptap strong { @apply font-semibold; }
+#tiptap-editor .tiptap em { @apply italic; }
+#tiptap-editor .tiptap u { @apply underline; }
+#tiptap-editor .tiptap s { @apply line-through; }
+#tiptap-editor .tiptap ul { @apply list-disc pl-5 my-1; }
+#tiptap-editor .tiptap ol { @apply list-decimal pl-5 my-1; }
+#tiptap-editor .tiptap a { @apply text-cyan-600 underline hover:text-cyan-800; }
+#tiptap-editor .tiptap img { @apply max-w-full rounded my-1; }
+#tiptap-editor .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-gray-400 pointer-events-none float-left h-0;
+}

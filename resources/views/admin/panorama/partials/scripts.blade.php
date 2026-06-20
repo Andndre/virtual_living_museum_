@@ -12,6 +12,7 @@
             uploadingModalImage: false,
             uploadProgress: '',
             isDraggingModalImage: false,
+            uploadingTiptapImage: false,
             showSceneModal: false,
             showAssetModal: false,
             uploadingAsset: false,
@@ -56,6 +57,9 @@
             init() {
                 this.loadScenes();
                 this.loadAssets();
+
+                // Tiptap is initialized when a hotspot is selected (selectHotspot / createNewHotspotAt)
+                // because #tiptap-editor is inside x-show and may not be in DOM yet here.
 
                 // Setup A-Frame click listener for placing hotspots
                 const sceneEl = document.getElementById('editor-scene');
@@ -265,6 +269,45 @@
                 }
             },
 
+            async uploadTiptapImage(event) {
+                const file = event.target?.files?.[0];
+                event.target.value = '';
+                if (!file || !file.type.startsWith('image/')) return;
+
+                this.uploadingTiptapImage = true;
+                try {
+                    const compressed = await imageCompression(file, {
+                        maxSizeMB: 5,
+                        maxWidthOrHeight: 2048,
+                        useWebWorker: true,
+                        fileType: file.type
+                    });
+
+                    const formData = new FormData();
+                    formData.append('file', compressed);
+
+                    const res = await fetch('/admin/panorama/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        window.PanoramaTiptapEditor.insertImageUrl(data.url);
+                    } else {
+                        alert('Gagal mengunggah gambar ke konten');
+                    }
+                } catch (err) {
+                    alert('Error saat mengunggah: ' + err.message);
+                } finally {
+                    this.uploadingTiptapImage = false;
+                }
+            },
+
             selectScene(id) {
                 this.state.activeSceneId = id;
                 this.state.activeHotspotId = null;
@@ -411,8 +454,7 @@
             },
 
             selectHotspot(hsId) {
-                if (hsId === 'new')
-            return; // Do not reload from state if it's the temporary new hotspot
+                if (hsId === 'new') return;
 
                 this.state.activeHotspotId = hsId;
                 const hs = this.activeScene.hotspots.find(h => h.id === hsId);
@@ -437,7 +479,13 @@
                     },
                 };
 
-                this.renderAframeHotspots(); // Re-render to show active state
+                // Sync Tiptap editor with selected hotspot's content
+                if (window.PanoramaTiptapEditor) {
+                    const content = hs.modal_content || '';
+                    setTimeout(() => window.PanoramaTiptapEditor.init(content), 0);
+                }
+
+                this.renderAframeHotspots();
             },
 
             updateHotspotVisual() {
@@ -464,7 +512,13 @@
                     },
                 };
                 this.state.activeHotspotId = 'new';
-                this.renderAframeHotspots(); // This will instantly preview the new hotspot!
+
+                // Reset Tiptap editor for new hotspot
+                if (window.PanoramaTiptapEditor) {
+                    setTimeout(() => window.PanoramaTiptapEditor.init(''), 0);
+                }
+
+                this.renderAframeHotspots();
             },
 
             // --- API Calls ---

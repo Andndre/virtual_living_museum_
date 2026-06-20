@@ -1,13 +1,10 @@
 import './bootstrap';
-import Alpine from 'alpinejs';
 import { initBackButton } from './back-button';
+import './tiptap-editor';
 
-// Initialize Alpine.js
-window.Alpine = Alpine;
-Alpine.start();
+// Alpine is provided and started by @livewireScripts — don't import it here.
+// We only expose PanoramaTiptapEditor (set in tiptap-editor.js) on window.
 
-// Initialize back buttons
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize back buttons with default selector '.back-button' and fallback to home
     initBackButton('.back-button', window.location.origin);
 });

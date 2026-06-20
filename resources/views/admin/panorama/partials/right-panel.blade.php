@@ -84,8 +84,50 @@
                         <input type="text" x-model="hotspotForm.modal_title" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Konten (Mendukung HTML)</label>
-                        <textarea x-model="hotspotForm.modal_content" rows="4" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500"></textarea>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Konten</label>
+
+                        <!-- Tiptap Toolbar -->
+                        <div class="flex flex-wrap items-center gap-0.5 px-1.5 py-1 bg-gray-50 border border-gray-300 rounded-t-md">
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleBold()" title="Bold (Ctrl+B)" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-bold text-xs"></i>
+                            </button>
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleItalic()" title="Italic (Ctrl+I)" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-italic text-xs"></i>
+                            </button>
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleUnderline()" title="Underline" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-underline text-xs"></i>
+                            </button>
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleStrike()" title="Strikethrough" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-strikethrough text-xs"></i>
+                            </button>
+                            <span class="w-px h-4 bg-gray-300 mx-0.5"></span>
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleBulletList()" title="Bullet List" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-list-ul text-xs"></i>
+                            </button>
+                            <button type="button" @click="window.PanoramaTiptapEditor.toggleOrderedList()" title="Numbered List" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-list-ol text-xs"></i>
+                            </button>
+                            <span class="w-px h-4 bg-gray-300 mx-0.5"></span>
+                            <button type="button" @click="window.PanoramaTiptapEditor.setLink()" title="Insert Link" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600">
+                                <i class="fas fa-link text-xs"></i>
+                            </button>
+                            <!-- Image button triggers hidden file input -->
+                            <button type="button" @click="$refs.tiptapImageInput.click()" title="Insert Image" class="p-1.5 rounded hover:bg-cyan-100 hover:text-cyan-700 transition text-gray-600" :class="uploadingTiptapImage ? 'opacity-50 pointer-events-none' : ''">
+                                <i class="fas fa-spinner fa-spin text-xs" x-show="uploadingTiptapImage"></i>
+                                <i class="fas fa-image text-xs" x-show="!uploadingTiptapImage"></i>
+                            </button>
+                            <input type="file" accept="image/*" class="hidden" x-ref="tiptapImageInput" @change="uploadTiptapImage($event)">
+                            <button type="button" @click="window.PanoramaTiptapEditor.clearFormat()" title="Clear Formatting" class="p-1.5 rounded hover:bg-red-100 hover:text-red-700 transition text-gray-600 ml-auto">
+                                <i class="fas fa-eraser text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Tiptap Editor Mount Point -->
+                        <div
+                            id="tiptap-editor"
+                            class="border-x border-b border-gray-300 rounded-b-md bg-white overflow-y-auto max-h-48 focus-within:ring-1 focus-within:ring-cyan-500 focus-within:border-cyan-500"
+                            @tiptap-update.window="hotspotForm.modal_content = $event.detail.html"
+                        ></div>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Gambar Modal (Opsional)</label>
