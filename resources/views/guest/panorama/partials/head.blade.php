@@ -70,8 +70,7 @@
         #blur-overlay {
             position: absolute; inset: 0; z-index: 5;
             opacity: 0; pointer-events: none;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.55);
             transition: opacity 0.25s ease;
         }
         #blur-overlay.active { opacity: 1; }
