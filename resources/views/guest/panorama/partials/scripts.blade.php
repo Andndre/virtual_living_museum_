@@ -117,7 +117,7 @@
                 DOM.sky.removeEventListener('materialtextureloaded', onLoaded);
                 finishTransition();
             });
-            setTimeout(finishTransition, 1200);
+            setTimeout(finishTransition, 8000);
         }, 250);
     }
 
