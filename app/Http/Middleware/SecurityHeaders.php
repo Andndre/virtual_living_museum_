@@ -42,7 +42,8 @@ class SecurityHeaders
                    "img-src 'self' data: blob: https:; ".
                    $fontSrc.'; '.
                    $connectSrc.'; '.
-                   "frame-src 'self' https:;";
+                   "frame-src 'self' https:; ".
+                   "worker-src 'self' blob:;";
             $response->headers->set('Content-Security-Policy', $csp);
 
             // Remove X-Powered-By headers

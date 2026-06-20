@@ -5,6 +5,8 @@
     <!-- A-Frame and its dependencies must be loaded before the scene is initialized -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <!-- Image compression library -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.min.js"></script>
 
     <div class="h-[calc(100vh-4rem)] flex flex-col bg-gray-100 overflow-hidden" x-data="panoramaEditor({{ $situs->situs_id }})" x-init="init()">
         @include('admin.panorama.partials.header')

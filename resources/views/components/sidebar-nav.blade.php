@@ -1,6 +1,6 @@
 <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-gray-200 bg-white shadow-lg md:flex">
     <div class="flex h-16 items-center justify-between border-b border-gray-200 bg-primary px-4">
-        <a href="{{ route('guest.home') }}" class="flex items-center gap-3">
+        <a wire:navigate href="{{ route('guest.home') }}" class="flex items-center gap-3">
             <x-application-logo class="h-8 w-auto fill-current text-white" />
             <span class="text-lg font-semibold text-white">{{ config('app.name', 'VLM') }}</span>
         </a>
@@ -8,22 +8,22 @@
 
     <nav class="flex-1 overflow-y-auto py-4">
         <div class="space-y-1 px-3">
-            <a href="{{ route('guest.home') }}"
+            <a wire:navigate href="{{ route('guest.home') }}"
                 class="{{ request()->routeIs('guest.home') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
                 <i class="fas fa-home w-5 text-center"></i>
                 <span>{{ __('app.home') }}</span>
             </a>
-            <a href="{{ route('guest.panduan') }}"
+            <a wire:navigate href="{{ route('guest.panduan') }}"
                 class="{{ request()->routeIs('guest.panduan') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
                 <i class="fas fa-book w-5 text-center"></i>
                 <span>{{ __('app.guide') }}</span>
             </a>
-            <a href="{{ route('guest.pengembang') }}"
+            <a wire:navigate href="{{ route('guest.pengembang') }}"
                 class="{{ request()->routeIs('guest.pengembang') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
                 <i class="fas fa-code w-5 text-center"></i>
                 <span>{{ __('app.developer_info') }}</span>
             </a>
-            <a href="{{ route('guest.pengaturan') }}"
+            <a wire:navigate href="{{ route('guest.pengaturan') }}"
                 class="{{ request()->routeIs('guest.pengaturan') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
                 <i class="fas fa-cog w-5 text-center"></i>
                 <span>{{ __('app.settings') }}</span>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="mt-6 space-y-1 px-3">
-            <a href="{{ route('guest.ar-marker') }}"
+            <a wire:navigate href="{{ route('guest.ar-marker') }}"
                 class="hover:bg-primary-dark flex items-center gap-3 rounded-lg bg-primary px-4 py-3 font-medium text-white shadow-lg transition-colors">
                 <img src="{{ asset('images/icons/ar-marker.svg') }}" alt="AR Marker" class="h-5 w-5" />
                 <span>AR Marker</span>
@@ -63,7 +63,7 @@
     class="fixed inset-y-0 left-0 z-40 flex w-64 transform flex-col border-r border-gray-200 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:hidden"
     @toggle-sidebar.window="open = !open">
     <div class="flex h-16 items-center justify-between border-b border-gray-200 bg-primary px-4">
-        <a href="{{ route('guest.home') }}" class="flex items-center gap-3">
+        <a wire:navigate href="{{ route('guest.home') }}" class="flex items-center gap-3">
             <x-application-logo class="h-8 w-auto fill-current text-white" />
             <span class="text-lg font-semibold text-white">{{ config('app.name', 'VLM') }}</span>
         </a>
@@ -74,25 +74,25 @@
 
     <nav class="flex-1 overflow-y-auto py-4">
         <div class="space-y-1 px-3">
-            <a href="{{ route('guest.home') }}"
+            <a wire:navigate href="{{ route('guest.home') }}"
                 class="{{ request()->routeIs('guest.home') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                 @click="open = false">
                 <i class="fas fa-home w-5 text-center"></i>
                 <span>{{ __('app.home') }}</span>
             </a>
-            <a href="{{ route('guest.panduan') }}"
+            <a wire:navigate href="{{ route('guest.panduan') }}"
                 class="{{ request()->routeIs('guest.panduan') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                 @click="open = false">
                 <i class="fas fa-book w-5 text-center"></i>
                 <span>{{ __('app.guide') }}</span>
             </a>
-            <a href="{{ route('guest.pengembang') }}"
+            <a wire:navigate href="{{ route('guest.pengembang') }}"
                 class="{{ request()->routeIs('guest.pengembang') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                 @click="open = false">
                 <i class="fas fa-code w-5 text-center"></i>
                 <span>{{ __('app.developer_info') }}</span>
             </a>
-            <a href="{{ route('guest.pengaturan') }}"
+            <a wire:navigate href="{{ route('guest.pengaturan') }}"
                 class="{{ request()->routeIs('guest.pengaturan') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }} flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                 @click="open = false">
                 <i class="fas fa-cog w-5 text-center"></i>
@@ -101,7 +101,7 @@
         </div>
 
         <div class="mt-6 space-y-1 px-3">
-            <a href="{{ route('guest.ar-marker') }}"
+            <a wire:navigate href="{{ route('guest.ar-marker') }}"
                 class="hover:bg-primary-dark flex items-center gap-3 rounded-lg bg-primary px-4 py-3 font-medium text-white shadow-lg transition-colors"
                 @click="open = false">
                 <img src="{{ asset('images/icons/ar-marker.svg') }}" alt="AR Marker" class="h-5 w-5" />
