@@ -67,9 +67,5 @@
             width: 100%; height: auto; max-height: 200px; object-fit: cover;
             border-radius: 0.5rem; margin-bottom: 1rem; display: none;
         }
-        #transition-overlay {
-            position: absolute; inset: 0; background: black; z-index: 5;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        }
     </style>
 </head>

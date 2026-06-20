@@ -57,5 +57,3 @@
     </div>
 </div>
 
-<!-- Transition Overlay -->
-<div id="transition-overlay"></div>

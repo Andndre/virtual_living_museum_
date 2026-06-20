@@ -13,7 +13,6 @@
         assets: document.getElementById('scene-assets'),
         loadingOverlay: document.getElementById('loading-overlay'),
         loadingText: document.getElementById('loading-text'),
-        transitionOverlay: document.getElementById('transition-overlay'),
         currentSceneName: document.getElementById('current-scene-name'),
         camera: document.getElementById('camera'),
         modal: document.getElementById('info-modal'),
@@ -64,8 +63,17 @@
         loadScene(tourData.scenes[0].id);
         setTimeout(() => {
             DOM.loadingOverlay.style.opacity = '0';
-            setTimeout(() => DOM.loadingOverlay.style.display = 'none', 500);
+            setTimeout(() => {
+                DOM.loadingOverlay.style.display = 'none';
+                preloadScenes();
+            }, 500);
         }, 1000);
+    }
+
+    function preloadScenes() {
+        tourData.scenes.forEach(scene => {
+            if (scene.id !== State.currentSceneId) new Image().src = scene.image;
+        });
     }
 
     function getSceneById(id) {
@@ -74,39 +82,29 @@
 
     function loadScene(sceneId) {
         const scene = getSceneById(sceneId);
-        if (!scene) return;
+        if (!scene || sceneId === State.currentSceneId) return;
 
         State.currentSceneId = sceneId;
         DOM.currentSceneName.textContent = scene.name;
 
-        DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 20; dur: 400; easing: easeInQuad');
-        DOM.scene.style.transition = 'filter 0.4s ease';
-        DOM.scene.style.filter = 'blur(8px)';
-        DOM.transitionOverlay.style.transition = 'opacity 0.4s ease';
-        DOM.transitionOverlay.style.opacity = '1';
+        // Phase 1: zoom in + blur (Street View style)
+        DOM.scene.style.transition = 'filter 0.25s ease';
+        DOM.scene.style.filter = 'blur(14px) brightness(0.75)';
+        DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 28; dur: 250; easing: easeInQuad');
 
         setTimeout(() => {
+            // Swap — near-instant if preloaded from browser cache
             DOM.sky.setAttribute('src', scene.image);
             renderHotspots(scene.hotspots);
             DOM.camera.removeAttribute('animation__zoom');
-            DOM.camera.setAttribute('fov', 120);
+            DOM.camera.setAttribute('fov', 28);
 
-            let isLoaded = false;
-            const finishTransition = () => {
-                if (isLoaded) return;
-                isLoaded = true;
-                DOM.transitionOverlay.style.opacity = '0';
-                DOM.scene.style.filter = 'blur(0px)';
-                DOM.camera.setAttribute('animation__zoom',
-                    'property: fov; to: 80; dur: 600; easing: easeOutQuad');
-            };
-
-            DOM.sky.addEventListener('materialtextureloaded', function onTextureLoaded() {
-                finishTransition();
-                DOM.sky.removeEventListener('materialtextureloaded', onTextureLoaded);
-            });
-            setTimeout(finishTransition, 1500);
-        }, 400);
+            // Phase 2: zoom out + unblur
+            DOM.scene.style.transition = 'filter 0.45s ease';
+            DOM.scene.style.filter = 'blur(0px) brightness(1)';
+            DOM.camera.setAttribute('animation__zoom',
+                'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+        }, 250);
     }
 
     function renderHotspots(hotspots) {
