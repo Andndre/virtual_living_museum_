@@ -67,5 +67,13 @@
             width: 100%; height: auto; max-height: 200px; object-fit: cover;
             border-radius: 0.5rem; margin-bottom: 1rem; display: none;
         }
+        #blur-overlay {
+            position: absolute; inset: 0; z-index: 5;
+            opacity: 0; pointer-events: none;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(12px);
+            transition: opacity 0.25s ease;
+        }
+        #blur-overlay.active { opacity: 1; }
     </style>
 </head>

@@ -20,6 +20,7 @@
         modalContent: document.getElementById('modal-content'),
         modalImage: document.getElementById('modal-image'),
         btnGyro: document.getElementById('btn-gyro'),
+        blurOverlay: document.getElementById('blur-overlay'),
     };
 
     function init() {
@@ -87,23 +88,36 @@
         State.currentSceneId = sceneId;
         DOM.currentSceneName.textContent = scene.name;
 
-        // Phase 1: zoom in + blur (Street View style)
-        DOM.scene.style.transition = 'filter 0.25s ease';
-        DOM.scene.style.filter = 'blur(14px) brightness(0.75)';
+        // Phase 1: zoom in + show blur overlay (never touch the WebGL canvas/filter)
+        DOM.blurOverlay.classList.add('active');
         DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 28; dur: 250; easing: easeInQuad');
 
         setTimeout(() => {
-            // Swap — near-instant if preloaded from browser cache
+            // Swap sky — near-instant if browser-cached from preload
             DOM.sky.setAttribute('src', scene.image);
             renderHotspots(scene.hotspots);
             DOM.camera.removeAttribute('animation__zoom');
             DOM.camera.setAttribute('fov', 28);
 
-            // Phase 2: zoom out + unblur
-            DOM.scene.style.transition = 'filter 0.45s ease';
-            DOM.scene.style.filter = 'blur(0px) brightness(1)';
-            DOM.camera.setAttribute('animation__zoom',
-                'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+            const finishTransition = (() => {
+                let done = false;
+                return () => {
+                    if (done) return;
+                    done = true;
+                    DOM.blurOverlay.style.transition = 'opacity 0.45s ease';
+                    DOM.blurOverlay.classList.remove('active');
+                    DOM.camera.setAttribute('animation__zoom',
+                        'property: fov; to: 80; dur: 450; easing: easeOutQuad');
+                    // Reset transition so next enter is snappy
+                    setTimeout(() => DOM.blurOverlay.style.transition = '', 450);
+                };
+            })();
+
+            DOM.sky.addEventListener('materialtextureloaded', function onLoaded() {
+                DOM.sky.removeEventListener('materialtextureloaded', onLoaded);
+                finishTransition();
+            });
+            setTimeout(finishTransition, 1200);
         }, 250);
     }
 

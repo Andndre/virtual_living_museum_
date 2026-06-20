@@ -1,3 +1,6 @@
+<!-- Scene Transition Blur Overlay -->
+<div id="blur-overlay"></div>
+
 <!-- Loading Screen -->
 <div id="loading-overlay">
     <div class="spinner"></div>
