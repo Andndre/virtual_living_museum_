@@ -16,7 +16,7 @@ window.PanoramaTiptapEditor = {
         this._editor = new Editor({
             element: el,
             extensions: [
-                StarterKit.configure({ codeBlock: false }),
+                StarterKit.configure({ codeBlock: false, link: false, underline: false }),
                 Underline,
                 Link.configure({ openOnClick: false }),
                 Image.configure({ inline: false }),

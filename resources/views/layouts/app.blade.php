@@ -16,6 +16,8 @@
 
         <!-- Livewire Styles -->
         @livewireStyles
+
+        @stack('head-scripts')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
