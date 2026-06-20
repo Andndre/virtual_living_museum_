@@ -60,23 +60,42 @@
         setupEventListeners();
     }
 
+    function hideLoadingOverlay(sceneId) {
+        DOM.loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            DOM.loadingOverlay.style.display = 'none';
+            preloadAdjacent(sceneId);
+        }, 500);
+    }
+
     function loadInitialScene() {
         const scene = getSceneById(tourData.scenes[0].id);
         if (!scene) return;
         State.currentSceneId = scene.id;
         DOM.currentSceneName.textContent = scene.name;
 
-        // Hide loading only after first texture is actually on the GPU
+        // Preload image via <a-assets> for reliable texture loading & materialtextureloaded event
+        const imgId = 'pano-img-' + scene.id;
+        let imgEl = document.getElementById(imgId);
+        if (!imgEl) {
+            imgEl = document.createElement('img');
+            imgEl.id = imgId;
+            imgEl.setAttribute('crossorigin', 'anonymous');
+            imgEl.src = scene.image;
+            DOM.assets.appendChild(imgEl);
+        }
+
+        // Fallback: if materialtextureloaded never fires (e.g. network error), still hide overlay
+        const fallbackTimer = setTimeout(() => hideLoadingOverlay(scene.id), 8000);
+
         DOM.sky.addEventListener('materialtextureloaded', function onFirst() {
             DOM.sky.removeEventListener('materialtextureloaded', onFirst);
-            DOM.loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                DOM.loadingOverlay.style.display = 'none';
-                preloadAdjacent(scene.id); // preload neighbours AFTER first scene renders
-            }, 500);
+            clearTimeout(fallbackTimer);
+            hideLoadingOverlay(scene.id);
         });
 
-        DOM.sky.setAttribute('src', scene.image);
+        // Use asset selector so A-Frame manages color space & fires events reliably
+        DOM.sky.setAttribute('src', '#' + imgId);
         renderHotspots(scene.hotspots);
     }
 
@@ -123,6 +142,17 @@
             DOM.camera.removeAttribute('animation__zoom');
             DOM.camera.setAttribute('fov', 28);
 
+            // Preload image via <a-assets> for reliable texture loading
+            const imgId = 'pano-img-' + sceneId;
+            let imgEl = document.getElementById(imgId);
+            if (!imgEl) {
+                imgEl = document.createElement('img');
+                imgEl.id = imgId;
+                imgEl.setAttribute('crossorigin', 'anonymous');
+                imgEl.src = scene.image;
+                DOM.assets.appendChild(imgEl);
+            }
+
             let done = false;
             const finishTransition = () => {
                 if (done) return;
@@ -139,7 +169,8 @@
                 finishTransition();
             });
 
-            DOM.sky.setAttribute('src', scene.image);
+            // Use asset selector so A-Frame manages color space & fires events reliably
+            DOM.sky.setAttribute('src', '#' + imgId);
             renderHotspots(scene.hotspots);
             setTimeout(finishTransition, 6000);
         }, 250);

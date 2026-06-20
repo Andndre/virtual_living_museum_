@@ -1,6 +1,6 @@
 <!-- A-Frame Scene -->
 <a-scene id="panorama-scene" vr-mode-ui="enabled: true; enterVRButton: #btn-vr-custom"
-    loading-screen="enabled: false" renderer="antialias: true; colorManagement: true; sortObjects: true">
+    loading-screen="enabled: false" renderer="antialias: true; sortObjects: true">
     <a-assets id="scene-assets">
         <img id="icon-door" crossorigin="anonymous"
             src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M320 48v416c0 26.5-21.5 48-48 48H128c-26.5 0-48-21.5-48-48V48C80 21.5 101.5 0 128 0h144c26.5 0 48 21.5 48 48zm-16 0c0-8.8-7.2-16-16-16H128c-8.8 0-16 7.2-16 16v416c0 8.8 7.2 16 16 16h144c8.8 0 16-7.2 16-16V48zm128 0v416c0 26.5-21.5 48-48 48h-16v-32h16c8.8 0 16-7.2 16-16V48c0-8.8-7.2-16-16-16h-16V0h16c26.5 0 48 21.5 48 48zm-96 240c0 13.3-10.7 24-24 24s-24-10.7-24-24 10.7-24 24-24 24 10.7 24 24z'/></svg>">
@@ -16,7 +16,7 @@
             src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z'/></svg>">
     </a-assets>
 
-    <a-sky id="panorama-sky" radius="500" rotation="0 -90 0" color="#000"></a-sky>
+    <a-sky id="panorama-sky" radius="500" rotation="0 -90 0"></a-sky>
     <a-light type="ambient" color="#fff" intensity="1"></a-light>
 
     <a-entity id="camera-rig" position="0 0 0">
