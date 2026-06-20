@@ -9,7 +9,9 @@
             isSaving: false,
             uploadingImage: false,
             uploadingMultiple: false,
+            uploadingModalImage: false,
             uploadProgress: '',
+            isDraggingModalImage: false,
             showSceneModal: false,
             showAssetModal: false,
             uploadingAsset: false,
@@ -210,6 +212,56 @@
                     }
                 } catch (err) {
                     alert('Error koneksi');
+                }
+            },
+
+            async uploadModalImage(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    alert('Harap pilih file gambar yang valid');
+                    return;
+                }
+
+                this.uploadingModalImage = true;
+
+                try {
+                    const options = {
+                        maxSizeMB: 5,
+                        maxWidthOrHeight: 2048,
+                        useWebWorker: true,
+                        fileType: file.type
+                    };
+
+                    const compressedFile = await imageCompression(file, options);
+
+                    const formData = new FormData();
+                    formData.append('file', compressedFile);
+
+                    const uploadRes = await fetch('/admin/panorama/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: formData
+                    });
+
+                    if (uploadRes.ok) {
+                        const uploadData = await uploadRes.json();
+                        this.hotspotForm.modal_image = uploadData.url;
+                    } else {
+                        alert('Gagal mengunggah gambar');
+                    }
+                } catch (err) {
+                    alert('Error saat mengunggah: ' + err.message);
+                } finally {
+                    this.uploadingModalImage = false;
+                }
+            },
+
+            handleModalImageDrop(event) {
+                const files = event.dataTransfer?.files || event.target?.files;
+                if (files && files.length > 0) {
+                    this.uploadModalImage(files[0]);
                 }
             },
 

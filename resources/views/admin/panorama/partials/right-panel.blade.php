@@ -88,8 +88,35 @@
                         <textarea x-model="hotspotForm.modal_content" rows="4" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500"></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">URL Gambar (Opsional)</label>
-                        <input type="url" x-model="hotspotForm.modal_image" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Gambar Modal (Opsional)</label>
+
+                        <!-- Drag and Drop Upload Zone -->
+                        <div
+                            @dragover.prevent="isDraggingModalImage = true"
+                            @dragleave.prevent="isDraggingModalImage = false"
+                            @drop.prevent="isDraggingModalImage = false; handleModalImageDrop($event)"
+                            class="mb-2">
+                            <label for="modal-image-upload" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-colors"
+                                :class="isDraggingModalImage ? 'border-cyan-500 bg-cyan-50' : 'border-gray-300 hover:border-cyan-400 bg-gray-50 hover:bg-gray-100'">
+                                <div class="flex flex-col items-center justify-center py-2">
+                                    <i class="fas fa-image text-gray-400 mb-1 text-lg" :class="isDraggingModalImage ? 'text-cyan-500' : ''"></i>
+                                    <p class="text-xs text-gray-500" x-show="!uploadingModalImage"><span class="font-semibold">Klik untuk upload</span> atau drag & drop</p>
+                                </div>
+                                <input id="modal-image-upload" type="file" class="hidden" accept="image/*" @change="handleModalImageDrop($event)" />
+                            </label>
+                            <div x-show="uploadingModalImage" class="mt-2 text-xs text-center text-cyan-600 font-medium">
+                                <i class="fas fa-spinner fa-spin mr-1"></i> Mengunggah gambar...
+                            </div>
+                        </div>
+
+                        <!-- URL Input Alternative -->
+                        <div class="text-xs text-gray-500 mb-1">Atau masukkan URL:</div>
+                        <input type="text" x-model="hotspotForm.modal_image" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500" placeholder="https://... atau /storage/...">
+
+                        <!-- Preview -->
+                        <div x-show="hotspotForm.modal_image" class="mt-2">
+                            <img :src="hotspotForm.modal_image" class="w-full h-24 object-cover rounded border border-gray-200" alt="Preview">
+                        </div>
                     </div>
                 </div>
 
