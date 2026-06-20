@@ -616,23 +616,33 @@
 
                 this.uploadingMultiple = true;
                 let successCount = 0;
+                const totalFiles = files.length;
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     if (!file.type.startsWith('image/')) continue;
 
-                    // Client-side size check (50MB)
-                    if (file.size > 50 * 1024 * 1024) {
-                        alert('Ukuran file ' + file.name +
-                            ' melebihi batas 50MB dan akan dilewati.');
-                        continue;
-                    }
-
-                    this.uploadProgress = `${i + 1}/${files.length}`;
+                    const fileName = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
 
                     try {
+                        // Step 1: Compress image
+                        this.uploadProgress = `[${i + 1}/${totalFiles}] Mengompress ${fileName}...`;
+
+                        const options = {
+                            maxSizeMB: 5,
+                            maxWidthOrHeight: 8192,
+                            useWebWorker: true,
+                            fileType: file.type
+                        };
+
+                        const compressedFile = await imageCompression(file, options);
+                        const compressionRatio = ((1 - compressedFile.size / file.size) * 100).toFixed(0);
+
+                        // Step 2: Upload compressed image
+                        this.uploadProgress = `[${i + 1}/${totalFiles}] Mengunggah ${fileName} (-${compressionRatio}%)...`;
+
                         const formData = new FormData();
-                        formData.append('file', file);
+                        formData.append('file', compressedFile);
 
                         const uploadRes = await fetch('/admin/panorama/upload', {
                             method: 'POST',
@@ -672,7 +682,16 @@
                             });
 
                             if (saveRes.ok) {
+                                const newScene = await saveRes.json();
+
+                                // Add scene immediately to the list
+                                this.scenes.push(newScene);
                                 successCount++;
+
+                                // Auto-select first uploaded scene so user can start editing immediately
+                                if (successCount === 1 && !this.state.activeSceneId) {
+                                    this.selectScene(newScene.id);
+                                }
                             } else {
                                 console.error('Failed to save scene for', file.name);
                             }
@@ -680,20 +699,15 @@
                             console.error('Failed to upload file', file.name);
                         }
                     } catch (e) {
-                        console.error('Network error during upload of', file.name, e);
+                        console.error('Error processing', file.name, e);
+                        alert(`Gagal memproses ${file.name}: ${e.message}`);
                     }
                 }
 
                 this.uploadingMultiple = false;
                 this.uploadProgress = '';
 
-                if (successCount > 0) {
-                    await this.loadScenes();
-                    // Select the last added scene if none active
-                    if (this.scenes.length > 0 && !this.state.activeSceneId) {
-                        this.selectScene(this.scenes[this.scenes.length - 1].id);
-                    }
-                } else {
+                if (successCount === 0) {
                     alert('Gagal mengunggah file. Pastikan format dan ukuran sesuai.');
                 }
             },

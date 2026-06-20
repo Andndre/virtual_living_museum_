@@ -50,7 +50,7 @@
             <input id="multiple-upload" type="file" class="hidden" multiple accept="image/*" @change="handleMultipleUpload($event.target.files)" />
         </label>
         <div x-show="uploadingMultiple" class="mt-2 text-xs text-center text-cyan-600 font-medium">
-            <i class="fas fa-spinner fa-spin mr-1"></i> Mengunggah <span x-text="uploadProgress"></span>...
+            <i class="fas fa-spinner fa-spin mr-1"></i> <span x-text="uploadProgress"></span>
         </div>
     </div>
 </div>
