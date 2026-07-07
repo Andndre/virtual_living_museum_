@@ -3,7 +3,8 @@
 
     const State = {
         currentSceneId: null,
-        isGyroEnabled: false
+        isGyroEnabled: false,
+        isVR: false
     };
 
     const DOM = {
@@ -15,12 +16,18 @@
         loadingText: document.getElementById('loading-text'),
         currentSceneName: document.getElementById('current-scene-name'),
         camera: document.getElementById('camera'),
+        cursor: document.getElementById('cursor'),
         modal: document.getElementById('info-modal'),
         modalTitle: document.getElementById('modal-title'),
         modalContent: document.getElementById('modal-content'),
         modalImage: document.getElementById('modal-image'),
         btnGyro: document.getElementById('btn-gyro'),
         blurOverlay: document.getElementById('blur-overlay'),
+        vrFade: document.getElementById('vr-fade'),
+        vrInfoPanel: document.getElementById('vr-info-panel'),
+        vrInfoTitle: document.getElementById('vr-info-title'),
+        vrInfoBody: document.getElementById('vr-info-body'),
+        vrInfoClose: document.getElementById('vr-info-close'),
     };
 
     function init() {
@@ -57,7 +64,27 @@
             DOM.scene.addEventListener('loaded', loadInitialScene);
         }
 
+        setupVRListeners();
         setupEventListeners();
+    }
+
+    // Mouse-driven cursor/modal don't work inside an immersive WebXR session, so we
+    // swap to a gaze cursor and an in-world info panel while VR is active.
+    function setupVRListeners() {
+        DOM.scene.addEventListener('enter-vr', () => {
+            State.isVR = true;
+            DOM.cursor.setAttribute('cursor', 'fuse: true; fuseTimeout: 1200; rayOrigin: entity');
+            DOM.cursor.setAttribute('visible', 'true');
+        });
+
+        DOM.scene.addEventListener('exit-vr', () => {
+            State.isVR = false;
+            DOM.cursor.setAttribute('cursor', 'fuse: false; rayOrigin: mouse');
+            DOM.cursor.setAttribute('visible', String(!('ontouchstart' in window)));
+            DOM.vrInfoPanel.setAttribute('visible', 'false');
+        });
+
+        DOM.vrInfoClose.addEventListener('click', closeInfoModal);
     }
 
     function hideLoadingOverlay(sceneId) {
@@ -149,6 +176,11 @@
         State.currentSceneId = sceneId;
         DOM.currentSceneName.textContent = scene.name;
 
+        if (State.isVR) {
+            loadSceneVR(scene);
+            return;
+        }
+
         // Phase 1: push forward into the current image — zoom in + blur overlay
         DOM.blurOverlay.classList.add('active');
         DOM.camera.setAttribute('animation__zoom', 'property: fov; to: 30; dur: 300; easing: easeInQuad');
@@ -187,6 +219,23 @@
             DOM.sky.setAttribute('src', '#' + imgId);
             renderHotspots(scene.hotspots);
             setTimeout(finishTransition, 6000);
+        }, 300);
+    }
+
+    // FOV is driven by the headset in an immersive session, so the desktop zoom
+    // transition above has no effect — swap the scene behind a simple fade instead.
+    function loadSceneVR(scene) {
+        DOM.vrFade.setAttribute('visible', 'true');
+        DOM.vrFade.setAttribute('animation__fade', 'property: material.opacity; to: 1; dur: 300; easing: easeInQuad');
+
+        setTimeout(() => {
+            const imgId = ensureSceneAsset(scene);
+            DOM.sky.setAttribute('src', '#' + imgId);
+            renderHotspots(scene.hotspots);
+            preloadAdjacent(scene.id);
+
+            DOM.vrFade.setAttribute('animation__fade', 'property: material.opacity; to: 0; dur: 300; easing: easeOutQuad');
+            setTimeout(() => DOM.vrFade.setAttribute('visible', 'false'), 300);
         }, 300);
     }
 
@@ -303,6 +352,17 @@
     }
 
     function showInfoModal(hs) {
+        if (State.isVR) {
+            // ponytail: plain text only in VR — no image/rich formatting support (a-text
+            // can't render HTML/images); add if a real in-VR reading need shows up.
+            const plainText = document.createElement('div');
+            plainText.innerHTML = hs.modalContent || '';
+            DOM.vrInfoTitle.setAttribute('value', hs.modalTitle || hs.label || 'Info');
+            DOM.vrInfoBody.setAttribute('value', plainText.textContent || '');
+            DOM.vrInfoPanel.setAttribute('visible', 'true');
+            return;
+        }
+
         DOM.modalTitle.textContent = hs.modalTitle || hs.label;
         DOM.modalContent.innerHTML = hs.modalContent || '';
         if (hs.modalImage) {
@@ -315,6 +375,7 @@
     }
 
     function closeInfoModal() {
+        DOM.vrInfoPanel.setAttribute('visible', 'false');
         DOM.modal.classList.remove('active');
     }
 

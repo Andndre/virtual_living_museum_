@@ -26,7 +26,22 @@
             <a-entity id="cursor" cursor="fuse: false; rayOrigin: mouse"
                 raycaster="objects: .clickable; far: 500"
                 geometry="primitive: ring; radiusInner: 0.006; radiusOuter: 0.009"
-                material="color: #0ea5e9; shader: flat; opacity: 0.8" position="0 0 -1" visible="false"></a-entity>
+                material="color: #0ea5e9; shader: flat; opacity: 0.8" position="0 0 -1" visible="false"
+                animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1200; from: 1 1 1; to: 0.2 0.2 0.2"
+                animation__fuseleave="property: scale; startEvents: mouseleave; dur: 200; to: 1 1 1"></a-entity>
+
+            <!-- VR-only fade plane, covers the view during scene transitions inside immersive sessions -->
+            <a-plane id="vr-fade" position="0 0 -1" width="4" height="4" material="color: #000; shader: flat; opacity: 0; transparent: true" visible="false"></a-plane>
+
+            <!-- VR-only in-world info panel, replaces the DOM modal inside immersive sessions -->
+            <a-entity id="vr-info-panel" position="0 0 -1.5" visible="false">
+                <a-plane width="1.6" height="1" color="#111827" opacity="0.9"></a-plane>
+                <a-text id="vr-info-title" value="" align="center" width="1.4" position="0 0.38 0.01" color="#38bdf8"></a-text>
+                <a-text id="vr-info-body" value="" align="center" width="1.4" wrap-count="34" position="0 0.05 0.01" color="#fff"></a-text>
+                <a-plane id="vr-info-close" class="clickable" width="0.4" height="0.14" color="#0ea5e9" position="0 -0.38 0.01">
+                    <a-text value="Tutup" align="center" width="2.2" position="0 0 0.01" color="#fff"></a-text>
+                </a-plane>
+            </a-entity>
         </a-camera>
     </a-entity>
 
