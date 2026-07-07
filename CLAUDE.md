@@ -19,11 +19,11 @@ DB_CONNECTION=sqlite                               # Default (or mysql)
 QUEUE_CONNECTION=database                          # Queue driver
 ```
 
-**Test Users** (seeded automatically):
+**Test Users** (seeded via `AdminSeeder` / `TestUserSeeder`):
 - Admin: `admin@gmail.com` / `password`
 - Students: `siswa@example.com` / `password` or `test@example.com` / `password`
 
-**Default Database:** SQLite (`database/database.sqlite`). Can switch to MySQL via .env.
+**Default Database:** SQLite via `DB_CONNECTION=sqlite` (`.env.example`, `config/database.php`). `database/database.sqlite` is not checked in — create it (`touch database/database.sqlite`) before the first `migrate`. Can switch to MySQL via `.env`.
 
 ---
 
@@ -33,6 +33,7 @@ QUEUE_CONNECTION=database                          # Queue driver
 # Setup
 composer install && npm install
 php artisan key:generate
+touch database/database.sqlite       # if using sqlite and the file doesn't exist yet
 php artisan migrate --seed           # Fresh db with seed data
 php artisan migrate:fresh --seed      # Rebuild everything
 
@@ -72,14 +73,16 @@ php artisan cache:clear && php artisan config:clear && php artisan route:clear &
 
 ## Architecture
 
-### Route Middleware Stacks (routes/web.php)
+### Route Middleware Stacks
 
-| Stack    | Middleware       | Purpose                                          |
-| -------- | ---------------- | ------------------------------------------------ |
-| Guest    | `guest`          | Auth flows (login, register, password reset)     |
-| User     | `auth` + `user`  | E-learning, AR, maps, reports                    |
-| Admin    | `auth` + `admin` | Content management dashboard                     |
-| AR Token | `ar.token`       | Stateless HMAC auth for AR routes (cross-device) |
+| Stack    | Middleware       | Defined in         | Purpose                                          |
+| -------- | ---------------- | ------------------ | ------------------------------------------------ |
+| Guest    | `guest`          | `routes/auth.php`  | Auth flows (login, register, password reset)     |
+| User     | `auth` + `user`  | `routes/web.php`   | E-learning, AR, maps, reports                    |
+| Admin    | `auth` + `admin` | `routes/web.php`   | Content management dashboard                     |
+| AR Token | `ar.token`       | `routes/web.php`   | Stateless HMAC auth for AR routes (cross-device) |
+
+`user`/`admin`/`ar.token` aliases map to `IsUser` / `IsAdmin` / `ArTokenAuth` middleware, registered in `bootstrap/app.php`.
 
 ### Progressive Learning Flow
 
@@ -95,16 +98,18 @@ Key methods: `User::incrementLevel()`, `User::incrementProgressLevel()`, `Materi
 ### Dual AR Implementation
 
 1. **Marker-Based (AR.js + A-Frame)**: Pattern files in `/storage/{path_patt}`, touch gestures via `public/js/gesture-detector.js` / `gesture-handler.js`
-2. **WebXR (Three.js)**: Class-based architecture in `public/assets/js/ar-museum-3.js` — `SceneManager`, `RendererManager`, `ModelLoader`; DRACO compression, HDRI skybox, PCFSoftShadowMap
+2. **WebXR (Three.js)**: `public/assets/js/ar-museum.js` — DRACO compression, HDRI skybox, PCFSoftShadowMap
 
 AR code in `/public/assets/js/` is served directly (not bundled via Vite). Heavy libs (Three.js, A-Frame, PDF.js) loaded via CDN.
 
-### 360° Panorama System
+### 360° Panorama & Virtual Museum System
 
-- **Viewer:** Three.js-based panorama renderer at `/panorama/{situsId}`
-- **Hotspot Templates:** Navigation points, info modals, text labels configurable per scene
-- **Integration:** Linked to `SitusPeninggalan` via `situs_id` FK
-- **Public Access:** No authentication required (unlike AR routes)
+Both the 360° panorama tours and the 3D virtual museum scenes share the same `Scene`/`Hotspot` model pair (Alpine.js editor UI under `resources/views/admin/panorama/`):
+
+- **`Scene`** (table `adegan`, PK `adegan_id`) — belongs to `SitusPeninggalan` via `situs_id`; `type` distinguishes `Scene::TYPE_PANORAMA` vs virtual-museum scenes; `hasMany` ordered `hotspots()`.
+- **`Hotspot`** (table `hotspot`, PK `hotspot_id`) — belongs to a `Scene` via `adegan_id`; `type` enum `navigation|info|text`; navigation hotspots reference `target_adegan_id` (another `Scene`); optionally reuses a `HotspotTemplate` (table `templat_hotspot`) for default icon/animation.
+- **Editor:** `App\Http\Controllers\Admin\PanoramaController` (admin CRUD for scenes/hotspots/templates, ~30 routes).
+- **Viewer:** Public route `/panorama/{situsId}`, no authentication required (unlike AR routes).
 
 ### Token Authentication
 
@@ -119,14 +124,14 @@ TokenHelper::verify($token); // returns userId or false
 
 ## Database Conventions
 
-**Custom primary keys** — always `{table_singular}_id` (NOT standard `id`):
+**Custom primary keys** — most domain tables use `{table_singular}_id` (NOT standard `id`); a few tables (`users`, `jobs`, `museum_user_visits`, `katalogs`, `riwayat_pengembangs`, `video_peninggalans`) keep the default `id`. Check the migration/model before assuming:
 
 ```php
-$table->id('materi_id');                        // Primary key
+$table->id('materi_id');                        // Custom primary key
 $table->foreignId('materi_id')->constrained('materi', 'materi_id')->onDelete('cascade');
 ```
 
-**Always `onDelete('cascade')`** — no soft deletes in this project.
+**`onDelete('cascade')` is the norm** on foreign keys (no soft deletes in this project), but it's not universal — verify the migration rather than assuming.
 
 **Composite uniques** on pivot tables to prevent duplicates:
 
@@ -134,7 +139,7 @@ $table->foreignId('materi_id')->constrained('materi', 'materi_id')->onDelete('ca
 $table->unique(['user_id', 'situs_id']);
 ```
 
-**Indonesian naming** for all tables/columns: `situs_peninggalan`, `pertanyaan`, `jawaban_benar`, `jawaban_benar` enum `['A','B','C','D']`.
+**Indonesian naming** for all tables/columns: `situs_peninggalan`, `pertanyaan`, `jawaban_benar` enum `['A','B','C','D']`, `adegan` (scene), `hotspot`.
 
 **Geo-coordinates**: `decimal('lat', 10, 8)`, `decimal('lng', 11, 8)`.
 
@@ -151,8 +156,8 @@ $table->unique(['user_id', 'situs_id']);
 | `Pretest` / `Posttest` | `materi_id` FK, `pertanyaan`, `pilihan_a/b/c/d`, `jawaban_benar`                            |
 | `JawabanUser`          | Pivot: `user_id`, `materi_id`, `jenis` ('pretest'/'posttest'), `benar`, `poin`              |
 | `SitusPeninggalan`     | `situs_id` PK, `lat`, `lng`, `path_patt`, `path_obj`                                        |
-| `VirtualMuseum`        | `museum_id` PK, `situs_id` FK, `path_obj` for 3D scenes                                     |
-| `Panorama`             | `panorama_id` PK, `situs_id` FK, hotspot templates and 360° scene data                      |
+| `Scene`                | Table `adegan`, PK `adegan_id`; `situs_id` FK; panorama & virtual-museum scenes; `hotspots()` |
+| `Hotspot`              | Table `hotspot`, PK `hotspot_id`; `adegan_id` FK; `type` enum navigation/info/text; optional `templat_hotspot_id` |
 | `VideoPeninggalan`     | `video_id` PK, heritage video content management                                            |
 | `LaporanPeninggalan`   | `laporan_id` PK, user-submitted heritage site reports with likes/comments                   |
 | `KritikSaran`          | `kritik_id` PK, feedback submissions (rate-limited to 10 per minute)                        |
@@ -175,6 +180,8 @@ When enabled:
 - User can explore all content freely without affecting their `level_sekarang` or `progress_level_sekarang`
 
 Use case: shareable demo accounts where anyone can browse all content without a linear progression gate.
+
+> Note: existing demo-mode checks call `env('APP_DEMO_MODE', false)` directly inside controllers/models rather than `config()`. This deviates from the `config()`-only convention below — match existing call sites here, don't "fix" it mid-task unless asked.
 
 ### Files that respect `APP_DEMO_MODE`
 
@@ -213,7 +220,7 @@ Three separate entry points in `vite.config.js`:
 
 ## Common Pitfalls
 
-- ❌ Using `id()` instead of `id('materi_id')` in migrations — models expect custom PK names
+- ❌ Using `id()` instead of `id('{table}_id')` on a new migration for a table that follows the custom-PK convention — check sibling migrations first
 - ❌ Forgetting `onDelete('cascade')` on foreign keys
 - ❌ Missing composite unique constraints on pivot tables
 - ❌ Bundling AR modules with Vite — keep in `/public/assets/js/`
@@ -222,6 +229,8 @@ Three separate entry points in `vite.config.js`:
 - ❌ Forgetting `APP_TOKEN_SECRET` in .env — AR routes will fail silently
 - ❌ Not running `npm run prepare` after clone — pre-commit hooks won't be installed
 - ❌ Using MySQL commands when default DB is SQLite — check .env first
+- ❌ Assuming `database/database.sqlite` exists — it's gitignored, create it before first `migrate`
+- ❌ Calling the panorama/museum data model `Panorama` — it's `Scene` (table `adegan`) and `Hotspot` (table `hotspot`)
 
 ===
 
