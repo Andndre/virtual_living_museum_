@@ -1,5 +1,5 @@
 <!-- A-Frame Scene -->
-<a-scene id="panorama-scene" vr-mode-ui="enabled: true; enterVRButton: #btn-vr-custom"
+<a-scene id="panorama-scene" xr-mode-ui="enabled: true; enterVRButton: #btn-vr-custom"
     loading-screen="enabled: false" renderer="antialias: true; sortObjects: true">
     <a-assets id="scene-assets">
         <img id="icon-door" crossorigin="anonymous"

@@ -17,7 +17,7 @@
     </div>
 
     <!-- A-Frame Scene -->
-    <a-scene embedded vr-mode-ui="enabled: false" class="w-full h-full" id="editor-scene" cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+    <a-scene embedded xr-mode-ui="enabled: false" class="w-full h-full" id="editor-scene" cursor="rayOrigin: mouse" raycaster="objects: .clickable">
         <a-assets>
             <img id="icon-door" crossorigin="anonymous" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M320 48v416c0 26.5-21.5 48-48 48H128c-26.5 0-48-21.5-48-48V48C80 21.5 101.5 0 128 0h144c26.5 0 48 21.5 48 48zm-16 0c0-8.8-7.2-16-16-16H128c-8.8 0-16 7.2-16 16v416c0 8.8 7.2 16 16 16h144c8.8 0 16-7.2 16-16V48zm128 0v416c0 26.5-21.5 48-48 48h-16v-32h16c8.8 0 16-7.2 16-16V48c0-8.8-7.2-16-16-16h-16V0h16c26.5 0 48 21.5 48 48zm-96 240c0 13.3-10.7 24-24 24s-24-10.7-24-24 10.7-24 24-24 24 10.7 24 24z'/></svg>">
             <img id="icon-arrow-up" crossorigin="anonymous" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='%23ffffff' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM256 127c9.4 0 18.8 3.8 26.3 11.3l112 112c14.6 14.6 14.6 38.2 0 52.7s-38.2 14.6-52.7 0L256 225 178 303c-14.6 14.6-38.2 14.6-52.7 0s-14.6-38.2 0-52.7l112-112c7.5-7.5 16.9-11.3 26.3-11.3z'/></svg>">
