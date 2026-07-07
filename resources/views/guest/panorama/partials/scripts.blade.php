@@ -4,7 +4,9 @@
     const State = {
         currentSceneId: null,
         isGyroEnabled: false,
-        isVR: false
+        isVR: false,
+        vrPages: [],
+        vrCurrentPage: 0
     };
 
     const DOM = {
@@ -24,10 +26,15 @@
         btnGyro: document.getElementById('btn-gyro'),
         blurOverlay: document.getElementById('blur-overlay'),
         vrFade: document.getElementById('vr-fade'),
+        vrInfoContainer: document.getElementById('vr-info-container'),
         vrInfoPanel: document.getElementById('vr-info-panel'),
         vrInfoTitle: document.getElementById('vr-info-title'),
         vrInfoBody: document.getElementById('vr-info-body'),
+        vrInfoPage: document.getElementById('vr-info-page'),
+        vrInfoPrev: document.getElementById('vr-info-prev'),
+        vrInfoNext: document.getElementById('vr-info-next'),
         vrInfoClose: document.getElementById('vr-info-close'),
+        vrInfoDismiss: document.getElementById('vr-info-dismiss'),
     };
 
     function init() {
@@ -80,10 +87,26 @@
         DOM.scene.addEventListener('exit-vr', () => {
             State.isVR = false;
             DOM.cursor.setAttribute('cursor', 'fuse: false; rayOrigin: mouse');
+            DOM.cursor.setAttribute('raycaster', 'objects: .clickable; far: 500');
             DOM.cursor.setAttribute('visible', String(!('ontouchstart' in window)));
-            DOM.vrInfoPanel.setAttribute('visible', 'false');
+            DOM.vrInfoContainer.setAttribute('visible', 'false');
         });
 
+        DOM.vrInfoPrev.addEventListener('click', () => {
+            if (State.vrCurrentPage > 0) {
+                State.vrCurrentPage--;
+                updateVRPagination();
+            }
+        });
+        
+        DOM.vrInfoNext.addEventListener('click', () => {
+            if (State.vrCurrentPage < State.vrPages.length - 1) {
+                State.vrCurrentPage++;
+                updateVRPagination();
+            }
+        });
+
+        DOM.vrInfoDismiss.addEventListener('click', closeInfoModal);
         DOM.vrInfoClose.addEventListener('click', closeInfoModal);
     }
 
@@ -351,15 +374,78 @@
         });
     }
 
+    function paginateText(text, maxChars) {
+        if (!text) return [""];
+        const words = text.trim().split(/\s+/);
+        const pages = [];
+        let currentPage = "";
+        
+        words.forEach(word => {
+            if (currentPage.length + word.length + 1 > maxChars && currentPage.length > 0) {
+                pages.push(currentPage);
+                currentPage = word;
+            } else {
+                currentPage = currentPage ? currentPage + " " + word : word;
+            }
+        });
+        if (currentPage) pages.push(currentPage);
+        
+        return pages.length > 0 ? pages : [""];
+    }
+
+    function updateVRPagination() {
+        DOM.vrInfoBody.setAttribute('value', State.vrPages[State.vrCurrentPage] || '');
+        DOM.vrInfoPage.setAttribute('value', `hal. ${State.vrCurrentPage + 1}/${State.vrPages.length}`);
+        
+        if (State.vrCurrentPage > 0) {
+            DOM.vrInfoPrev.setAttribute('visible', 'true');
+            DOM.vrInfoPrev.classList.add('vr-ui-clickable');
+        } else {
+            DOM.vrInfoPrev.setAttribute('visible', 'false');
+            DOM.vrInfoPrev.classList.remove('vr-ui-clickable');
+        }
+        
+        if (State.vrCurrentPage < State.vrPages.length - 1) {
+            DOM.vrInfoNext.setAttribute('visible', 'true');
+            DOM.vrInfoNext.classList.add('vr-ui-clickable');
+        } else {
+            DOM.vrInfoNext.setAttribute('visible', 'false');
+            DOM.vrInfoNext.classList.remove('vr-ui-clickable');
+        }
+    }
+
     function showInfoModal(hs) {
         if (State.isVR) {
-            // ponytail: plain text only in VR — no image/rich formatting support (a-text
-            // can't render HTML/images); add if a real in-VR reading need shows up.
+            // Swap raycaster guard
+            DOM.cursor.setAttribute('raycaster', 'objects: .vr-ui-clickable; far: 500');
+
             const plainText = document.createElement('div');
             plainText.innerHTML = hs.modalContent || '';
-            DOM.vrInfoTitle.setAttribute('value', hs.modalTitle || hs.label || 'Info');
-            DOM.vrInfoBody.setAttribute('value', plainText.textContent || '');
-            DOM.vrInfoPanel.setAttribute('visible', 'true');
+            const textContent = (plainText.textContent || '').trim();
+
+            State.vrPages = paginateText(textContent, 300);
+            State.vrCurrentPage = 0;
+
+            const titleText = hs.modalTitle || hs.label || 'Info';
+            // Truncate title
+            DOM.vrInfoTitle.setAttribute('value', titleText.length > 30 ? titleText.substring(0, 27) + '...' : titleText);
+            
+            updateVRPagination();
+
+            // Calculate spawn position in front of user
+            const cameraObj = DOM.camera.object3D;
+            const camWorldPos = new THREE.Vector3();
+            cameraObj.getWorldPosition(camWorldPos);
+
+            const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(cameraObj.getWorldQuaternion(new THREE.Quaternion()));
+            forward.y = 0;
+            forward.normalize();
+            
+            const spawnPos = camWorldPos.clone().add(forward.multiplyScalar(2));
+            spawnPos.y = 0; // Lock height around y=0
+
+            DOM.vrInfoContainer.setAttribute('position', `${spawnPos.x} ${spawnPos.y} ${spawnPos.z}`);
+            DOM.vrInfoContainer.setAttribute('visible', 'true');
             return;
         }
 
@@ -375,7 +461,8 @@
     }
 
     function closeInfoModal() {
-        DOM.vrInfoPanel.setAttribute('visible', 'false');
+        DOM.vrInfoContainer.setAttribute('visible', 'false');
+        DOM.cursor.setAttribute('raycaster', 'objects: .clickable; far: 500');
         DOM.modal.classList.remove('active');
     }
 

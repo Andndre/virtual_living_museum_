@@ -32,18 +32,34 @@
 
             <!-- VR-only fade plane, covers the view during scene transitions inside immersive sessions -->
             <a-plane id="vr-fade" position="0 0 -1" width="4" height="4" material="color: #000; shader: flat; opacity: 0; transparent: true" visible="false"></a-plane>
-
-            <!-- VR-only in-world info panel, replaces the DOM modal inside immersive sessions -->
-            <a-entity id="vr-info-panel" position="0 0 -1.5" visible="false">
-                <a-plane width="1.6" height="1" color="#111827" opacity="0.9"></a-plane>
-                <a-text id="vr-info-title" value="" align="center" width="1.4" position="0 0.38 0.01" color="#38bdf8"></a-text>
-                <a-text id="vr-info-body" value="" align="center" width="1.4" wrap-count="34" position="0 0.05 0.01" color="#fff"></a-text>
-                <a-plane id="vr-info-close" class="clickable" width="0.4" height="0.14" color="#0ea5e9" position="0 -0.38 0.01">
-                    <a-text value="Tutup" align="center" width="2.2" position="0 0 0.01" color="#fff"></a-text>
-                </a-plane>
-            </a-entity>
         </a-camera>
     </a-entity>
 
     <a-entity id="hotspots-container"></a-entity>
+
+    <!-- VR-only in-world info panel, replaces the DOM modal inside immersive sessions -->
+    <a-entity id="vr-info-container" visible="false" look-at="#camera">
+        <!-- Invisible dismiss layer to close panel when looking away -->
+        <a-plane id="vr-info-dismiss" class="vr-ui-clickable" position="0 0 -0.05" width="20" height="20" opacity="0" transparent="true"></a-plane>
+        
+        <a-entity id="vr-info-panel" position="0 0 0">
+            <a-plane id="vr-info-bg" class="vr-ui-clickable" width="1.6" height="1.2" color="#111827" opacity="0.9"></a-plane>
+            <a-text id="vr-info-title" value="" align="center" width="1.4" position="0 0.5 0.01" color="#38bdf8" baseline="top"></a-text>
+            <a-text id="vr-info-body" value="" align="center" width="1.4" wrap-count="34" position="0 0.35 0.01" color="#fff" baseline="top"></a-text>
+            
+            <a-text id="vr-info-page" value="hal. 1/1" align="center" width="1" position="0 -0.28 0.01" color="#94a3b8"></a-text>
+            
+            <a-plane id="vr-info-prev" class="vr-ui-clickable" width="0.35" height="0.14" color="#475569" position="-0.45 -0.45 0.01" visible="false">
+                <a-text value="< Kembali" align="center" width="1.8" position="0 0 0.01" color="#fff"></a-text>
+            </a-plane>
+            
+            <a-plane id="vr-info-close" class="vr-ui-clickable" width="0.4" height="0.14" color="#0ea5e9" position="0 -0.45 0.01">
+                <a-text value="Tutup" align="center" width="2.2" position="0 0 0.01" color="#fff"></a-text>
+            </a-plane>
+
+            <a-plane id="vr-info-next" class="vr-ui-clickable" width="0.35" height="0.14" color="#475569" position="0.45 -0.45 0.01" visible="false">
+                <a-text value="Lanjut >" align="center" width="1.8" position="0 0 0.01" color="#fff"></a-text>
+            </a-plane>
+        </a-entity>
+    </a-entity>
 </a-scene>
