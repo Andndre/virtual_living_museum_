@@ -26,11 +26,17 @@
                     <div class="space-y-2">
                         <template x-for="hs in (activeScene?.hotspots || [])" :key="hs.id">
                             <div class="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-200 hover:border-cyan-300 cursor-pointer transition" @click="selectHotspot(hs.id)">
-                                <div class="flex items-center space-x-2 truncate">
-                                    <div class="w-3 h-3 rounded-full" :style="`background-color: ${hs.color || '#0ea5e9'}`"></div>
-                                    <span class="text-sm font-medium text-gray-700 truncate" x-text="hs.label"></span>
+                                <div class="flex items-center space-x-2 truncate min-w-0">
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                                         :class="hs.type === 'navigation' ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600'">
+                                        <i class="fas text-[10px]" :class="hotspotIcon(hs)"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-medium text-gray-700 truncate" x-text="hs.label || (hs.type === 'navigation' ? 'Navigasi' : 'Info')"></p>
+                                        <p class="text-[11px] text-gray-400 truncate" x-text="hotspotSubtitle(hs)"></p>
+                                    </div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                <i class="fas fa-chevron-right text-gray-400 text-xs shrink-0"></i>
                             </div>
                         </template>
                         <template x-if="!(activeScene?.hotspots?.length > 0)">

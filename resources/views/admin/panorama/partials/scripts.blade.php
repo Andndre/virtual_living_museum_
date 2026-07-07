@@ -453,6 +453,26 @@
                 return el;
             },
 
+            hotspotIcon(hs) {
+                const iconMap = {
+                    'icon-arrow-up': 'fa-arrow-up',
+                    'icon-arrow-down': 'fa-arrow-down',
+                    'icon-arrow-left': 'fa-arrow-left',
+                    'icon-arrow-right': 'fa-arrow-right',
+                    'icon-info': 'fa-info',
+                    'custom': 'fa-photo-film',
+                };
+                return iconMap[hs.animation_config?.icon] || (hs.type === 'navigation' ? 'fa-arrow-right' : 'fa-info');
+            },
+
+            hotspotSubtitle(hs) {
+                if (hs.type === 'navigation') {
+                    const target = this.scenes.find(s => s.id === hs.target_scene_id);
+                    return '→ ' + (target ? target.name : 'Belum diatur');
+                }
+                return hs.modal_title || 'Tanpa judul info';
+            },
+
             selectHotspot(hsId) {
                 if (hsId === 'new') return;
 
