@@ -96,7 +96,13 @@
     <div id="scanner-view" class="absolute inset-0 flex flex-col justify-between z-20">
         <!-- Scanner Top Bar -->
         <div class="relative z-30 flex items-center justify-between px-4 pt-12 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
-            <a href="{{ route('guest.ar-marker') }}" id="btn-back"
+            @php
+                $backUrl = url('/');
+                if (auth()->check()) {
+                    $backUrl = auth()->user()->role === 'admin' ? route('admin.dashboard') : route('guest.ar-marker');
+                }
+            @endphp
+            <a href="{{ $backUrl }}" id="btn-back"
                class="flex items-center justify-center w-11 h-11 rounded-full bg-white/20 backdrop-blur-md text-white transition active:scale-95 hover:bg-white/30 shadow-lg">
                 <i class="fas fa-arrow-left text-lg"></i>
             </a>

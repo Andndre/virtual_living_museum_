@@ -103,3 +103,19 @@ test('scan redirect route forwards to ar camera with marker param', function () 
 
     $response->assertRedirect(route('ar-marker.camera', ['marker' => '42']));
 });
+
+test('admin can access ar scan redirect and camera without being booted to admin dashboard', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $redirectResponse = $this->actingAs($admin)->get(route('ar.scan.redirect', ['markerId' => '99']));
+    $redirectResponse->assertRedirect(route('ar-marker.camera', ['marker' => '99']));
+
+    $cameraResponse = $this->actingAs($admin)->get(route('ar-marker.camera', ['marker' => '99']));
+    $cameraResponse->assertOk();
+    $cameraResponse->assertSee('AR Scanner');
+});
+
+test('unauthenticated guest is redirected to login when accessing ar scan or camera', function () {
+    $this->get(route('ar.scan.redirect', ['markerId' => '100']))->assertRedirect('/login');
+    $this->get(route('ar-marker.camera', ['marker' => '100']))->assertRedirect('/login');
+});
