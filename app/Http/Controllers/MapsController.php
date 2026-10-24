@@ -23,9 +23,15 @@ class MapsController extends Controller
             $allSitus = SitusPeninggalan::all();
 
             // Mengidentifikasi situs yang telah dibuka oleh user
-            $unlockedSitusIds = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
-                $query->where('urutan', '<=', $level);
-            })->pluck('situs_id')->toArray();
+            if (config('app.demo_mode', false)) {
+                $unlockedSitusIds = $allSitus->pluck('situs_id')->toArray();
+            } else {
+                $unlockedSitusIds = SitusPeninggalan::where(function ($query) use ($level) {
+                    $query->whereHas('materi', function ($subQuery) use ($level) {
+                        $subQuery->where('urutan', '<=', $level);
+                    })->orWhereNull('materi_id');
+                })->pluck('situs_id')->toArray();
+            }
 
             return view('guest.maps.view', compact('allSitus', 'unlockedSitusIds'));
         } catch (\Exception $e) {
@@ -43,10 +49,16 @@ class MapsController extends Controller
 
             $level = $user->level_sekarang ?? 0;
 
-            // Get unlocked situs IDs (based on materi sequence)
-            $unlockedSitusIds = SitusPeninggalan::whereHas('materi', function ($query) use ($level) {
-                $query->where('urutan', '<=', $level);
-            })->pluck('situs_id')->toArray();
+            // Get unlocked situs IDs (based on materi sequence or demo mode)
+            if (config('app.demo_mode', false)) {
+                $unlockedSitusIds = SitusPeninggalan::pluck('situs_id')->toArray();
+            } else {
+                $unlockedSitusIds = SitusPeninggalan::where(function ($query) use ($level) {
+                    $query->whereHas('materi', function ($subQuery) use ($level) {
+                        $subQuery->where('urutan', '<=', $level);
+                    })->orWhereNull('materi_id');
+                })->pluck('situs_id')->toArray();
+            }
 
             // Get all situs that have museums OR objects
             $situsQuery = SitusPeninggalan::where(function ($query) {

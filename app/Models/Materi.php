@@ -45,7 +45,7 @@ class Materi extends Model
 
     public function shouldIncrementProgress(User $user, int $progress): bool
     {
-        if (env('APP_DEMO_MODE', false)) {
+        if (config('app.demo_mode', false)) {
             return true;
         }
 

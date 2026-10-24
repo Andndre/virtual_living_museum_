@@ -269,7 +269,7 @@ class HomeController extends Controller
                 $materi->is_available = true;
             } else {
                 $materi->is_completed = false;
-                $materi->is_available = env('APP_DEMO_MODE', false) ? true : false;
+                $materi->is_available = config('app.demo_mode', false) ? true : false;
             }
 
             return $materi;
@@ -360,7 +360,7 @@ class HomeController extends Controller
                 $materi->is_available = true;
             } else {
                 $materi->is_completed = false;
-                $materi->is_available = env('APP_DEMO_MODE', false) ? true : false;
+                $materi->is_available = config('app.demo_mode', false) ? true : false;
             }
 
             return $materi;
@@ -396,7 +396,7 @@ class HomeController extends Controller
         $progress = $user->progress_level_sekarang;
 
         // In demo mode, all tabs are open for exploration without tracking progress
-        if (env('APP_DEMO_MODE', false)) {
+        if (config('app.demo_mode', false)) {
             $pretest_completed = false;
             $ebook_available = true;
             $all_ebooks_read = false;
@@ -541,7 +541,7 @@ class HomeController extends Controller
         // Seharusnya ini akan selalu True untuk sekarang
         // karena pretest tidak bisa diulang
         // Skip in demo mode — exploration only, no progress tracking
-        if (! env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 1)) {
+        if (! config('app.demo_mode', false) && $materi->shouldIncrementProgress($user, 1)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan pretest {$materi->judul}");
         }
@@ -657,7 +657,7 @@ class HomeController extends Controller
 
         // Increment user progress if needed
         // Skip in demo mode — exploration only, no progress tracking
-        if (! env('APP_DEMO_MODE', false) && $materi->shouldIncrementProgress($user, 4)) {
+        if (! config('app.demo_mode', false) && $materi->shouldIncrementProgress($user, 4)) {
             $user->incrementProgressLevel();
             $this->logActivity($user->id, "Menyelesaikan posttest {$materi->judul}");
         }
@@ -681,11 +681,11 @@ class HomeController extends Controller
         $user = Auth::user();
         $situs = SitusPeninggalan::with(['virtualMuseum', 'virtualMuseumObject', 'materi'])->findOrFail($situs_id);
 
-        // Determine if this situs is unlocked based on user's level
+        // Determine if this situs is unlocked based on user's level or demo mode
         $level = $user->level_sekarang;
-        $isUnlocked = $situs->materi_id
+        $isUnlocked = config('app.demo_mode', false) || ($situs->materi_id
             ? $situs->materi->urutan <= $level
-            : true;
+            : true);
 
         return view('guest.situs.detail', [
             'situs' => $situs,
@@ -755,7 +755,7 @@ class HomeController extends Controller
             // Jika semua museum sudah dikunjungi dan user progress di step museum, increment progress
             // Skip in demo mode — exploration only, no progress tracking
             if (\count($allMuseumIds) > 0 && \count($visitedMuseumIds) === \count($allMuseumIds)) {
-                if (! env('APP_DEMO_MODE', false) && $user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
+                if (! config('app.demo_mode', false) && $user->progress_level_sekarang == User::EBOOK && $user->level_sekarang + 1 == $materi->getLinearLevel()) {
                     $user->incrementProgressLevel();
                     $this->logActivity($user->id, "Menuntaskan semua spot Virtual Living Museum pada materi ID: {$materiId}");
                 }
@@ -827,7 +827,7 @@ class HomeController extends Controller
         // Cek apakah user sudah pada step EBOOK dan materi yang benar
         $materi = $ebook->materi;
         // Skip in demo mode — exploration only, no progress tracking
-        if (! env('APP_DEMO_MODE', false) && $materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
+        if (! config('app.demo_mode', false) && $materi && $materi->getLinearLevel() == $user->level_sekarang + 1 && $user->progress_level_sekarang == User::PRE_TEST) {
             // Increment progress ke EBOOK
             $user->incrementProgressLevel();
         }
