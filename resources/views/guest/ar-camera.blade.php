@@ -282,9 +282,16 @@
     <!-- ========================================== -->
     <!-- 3. LOADING OVERLAY                         -->
     <!-- ========================================== -->
-    <div id="loading-overlay" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md text-white">
-        <div class="w-14 h-14 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-        <p id="loading-text" class="text-sm font-semibold tracking-wide">Mengunduh Model 3D...</p>
+    <div id="loading-overlay" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/85 backdrop-blur-md text-white px-6">
+        <div class="relative w-16 h-16 mb-4 flex items-center justify-center">
+            <div class="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+            <i class="fas fa-cube text-blue-400 text-xl absolute"></i>
+        </div>
+        <p id="loading-text" class="text-base font-semibold tracking-wide text-center">Memuat Data Objek AR...</p>
+        <div id="loading-progress-container" class="w-56 h-2 bg-white/10 rounded-full overflow-hidden mt-3 hidden">
+            <div id="loading-progress-bar" class="h-full bg-blue-500 rounded-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <p id="loading-subtext" class="text-xs text-gray-400 mt-2 font-mono hidden">0%</p>
     </div>
 
     <!-- ========================================== -->
@@ -411,6 +418,25 @@
                         iconPause.classList.add('hidden');
                     });
                 }
+
+                // Model Viewer Load & Progress Events
+                const viewer = document.getElementById('ar-model-viewer');
+                if (viewer) {
+                    viewer.addEventListener('progress', function(event) {
+                        if (event.detail && typeof event.detail.totalProgress === 'number') {
+                            updateLoadingProgress(event.detail.totalProgress);
+                        }
+                    });
+
+                    viewer.addEventListener('load', function() {
+                        hideLoading();
+                    });
+
+                    viewer.addEventListener('error', function(err) {
+                        console.error('Error loading 3D model:', err);
+                        hideLoading();
+                    });
+                }
             }
 
             // Start QR Scanner via html5-qrcode
@@ -481,7 +507,7 @@
 
             // Fetch Model Data from API
             function fetchModel(target) {
-                showLoading('Memuat Data Objek AR...');
+                showLoading('Memvalidasi QR Marker...', false);
 
                 const params = new URLSearchParams();
                 if (typeof target === 'object' && target !== null) {
@@ -504,10 +530,11 @@
                     return res.json();
                 })
                 .then(data => {
-                    hideLoading();
                     if (data.success && data.model_url) {
+                        showLoading('Mengunduh Model 3D...', true);
                         displayModel(data);
                     } else {
+                        hideLoading();
                         throw new Error(data.error || 'Model tidak tersedia.');
                     }
                 })
@@ -546,7 +573,12 @@
                 const viewer = document.getElementById('ar-model-viewer');
 
                 // Set 3D sources
-                viewer.setAttribute('src', data.model_url);
+                const currentSrc = viewer.getAttribute('src');
+                if (currentSrc === data.model_url) {
+                    hideLoading();
+                } else {
+                    viewer.setAttribute('src', data.model_url);
+                }
 
                 const arButton = document.getElementById('custom-ar-button');
                 const arButtonText = document.getElementById('ar-button-text');
@@ -665,6 +697,7 @@
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         if (obj.id !== currentActiveObjectId) {
+                            showLoading('Mengunduh Objek 3D...', true);
                             loadObjectIntoViewer(obj);
                             renderObjectSwitcher(currentMarkerObjects, obj.id);
                         }
@@ -693,8 +726,13 @@
                 const audioPlayer = document.getElementById('ar-audio');
                 const switcher = document.getElementById('multi-object-switcher');
 
+                hideLoading();
                 if (audioPlayer) audioPlayer.pause();
-                if (viewer) viewer.removeAttribute('src');
+                if (viewer) {
+                    viewer.removeAttribute('src');
+                    viewer.removeAttribute('ios-src');
+                }
+                currentActiveObjectId = null;
                 if (switcher) switcher.classList.add('hidden');
 
                 if (modelView) modelView.classList.add('hidden');
@@ -703,14 +741,57 @@
                 startScanner();
             }
 
-            function showLoading(text) {
+            let loadingTimeout = null;
+
+            function showLoading(text, showProgress = false) {
                 const overlay = document.getElementById('loading-overlay');
                 const loadingText = document.getElementById('loading-text');
-                if (loadingText) loadingText.innerText = text || 'Mengunduh Model 3D...';
+                const progressContainer = document.getElementById('loading-progress-container');
+                const progressBar = document.getElementById('loading-progress-bar');
+                const subtext = document.getElementById('loading-subtext');
+
+                if (loadingTimeout) clearTimeout(loadingTimeout);
+                // Safety fallback: auto hide after 25s if network or model fails silently
+                loadingTimeout = setTimeout(() => {
+                    hideLoading();
+                }, 25000);
+
+                if (loadingText) loadingText.innerText = text || 'Memuat Objek AR...';
+                if (progressContainer) {
+                    if (showProgress) {
+                        progressContainer.classList.remove('hidden');
+                        if (progressBar) progressBar.style.width = '0%';
+                        if (subtext) {
+                            subtext.innerText = '0%';
+                            subtext.classList.remove('hidden');
+                        }
+                    } else {
+                        progressContainer.classList.add('hidden');
+                        if (subtext) subtext.classList.add('hidden');
+                    }
+                }
                 if (overlay) overlay.classList.remove('hidden');
             }
 
+            function updateLoadingProgress(progressRatio) {
+                const progressBar = document.getElementById('loading-progress-bar');
+                const subtext = document.getElementById('loading-subtext');
+                const progressContainer = document.getElementById('loading-progress-container');
+                const percent = Math.min(100, Math.max(0, Math.round(progressRatio * 100)));
+
+                if (progressContainer) progressContainer.classList.remove('hidden');
+                if (progressBar) progressBar.style.width = percent + '%';
+                if (subtext) {
+                    subtext.innerText = percent + '%';
+                    subtext.classList.remove('hidden');
+                }
+            }
+
             function hideLoading() {
+                if (loadingTimeout) {
+                    clearTimeout(loadingTimeout);
+                    loadingTimeout = null;
+                }
                 const overlay = document.getElementById('loading-overlay');
                 if (overlay) overlay.classList.add('hidden');
             }
