@@ -14,6 +14,9 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- Application Styles & Scripts (Tailwind CSS via Vite) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!-- Google model-viewer & HTML5 QR Code Scanner -->
     <script>
         self.ModelViewerElement = self.ModelViewerElement || {};
@@ -35,6 +38,10 @@
             background-color: #0b0f19;
             font-family: 'Figtree', sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         #reader {
