@@ -207,7 +207,7 @@
                                         {{ $object->arMarker ? ($object->arMarker->nama ?: 'Marker #' . $object->arMarker->marker_id) : 'Preview QR Marker' }}
                                     </h4>
                                     <p id="qr-url-text" class="text-[11px] text-gray-500 font-mono truncate mt-0.5">
-                                        {{ $object->marker_id ? url('/ar/scan/' . $object->marker_id) : url('/ar-marker/camera') }}
+                                        {{ $object->marker_id ? url('/ar/scan/' . $object->marker_id . '?object=' . $object->object_id) : url('/ar-marker/camera') }}
                                     </p>
                                     <div class="mt-2.5 flex flex-wrap gap-2 justify-center sm:justify-start">
                                         <button type="button" onclick="downloadQrPng()"
@@ -218,7 +218,7 @@
                                             <span>Unduh QR (.png)</span>
                                         </button>
                                         @if($object->marker_id)
-                                            <a href="{{ url('/ar/scan/' . $object->marker_id) }}" target="_blank"
+                                            <a id="qr-test-link" href="{{ url('/ar/scan/' . $object->marker_id . '?object=' . $object->object_id) }}" target="_blank"
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition">
                                                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" style="width: 14px; height: 14px; min-width: 14px; min-height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -651,10 +651,12 @@
             if (markerId) {
                 if (newMarkerContainer) newMarkerContainer.classList.add('hidden');
                 const markerName = selectedOption.getAttribute('data-name') || ('Marker #' + markerId);
-                const scanUrl = '{{ url('/ar/scan') }}/' + markerId;
+                const scanUrl = '{{ url('/ar/scan') }}/' + markerId + '?object={{ $object->object_id }}';
 
                 if (qrLabel) qrLabel.textContent = markerName;
                 if (qrUrlText) qrUrlText.textContent = scanUrl;
+                const testLink = document.getElementById('qr-test-link');
+                if (testLink) testLink.href = scanUrl;
 
                 updateQrCode(scanUrl);
             } else {

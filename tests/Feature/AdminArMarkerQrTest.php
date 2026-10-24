@@ -102,3 +102,48 @@ test('admin can update object marker to an existing marker or detach it', functi
     $object->refresh();
     expect($object->marker_id)->toBe($marker2->marker_id);
 });
+
+test('scan redirect preserves object query parameter', function () {
+    $user = User::factory()->create(['role' => 'user']);
+    $response = $this->actingAs($user)->get('/ar/scan/10?object=8');
+    $response->assertRedirect(route('ar-marker.camera', ['marker' => 10, 'object' => 8]));
+});
+
+test('get model api prioritizes target object id when marker url contains object param', function () {
+    $user = User::factory()->create(['role' => 'user']);
+    $situs = SitusPeninggalan::factory()->create();
+    $museum = VirtualMuseum::factory()->create(['situs_id' => $situs->situs_id]);
+    $marker = ArMarker::create([
+        'situs_id' => $situs->situs_id,
+        'museum_id' => $museum->museum_id,
+        'nama' => 'Marker Multi Objek',
+    ]);
+
+    $obj1 = VirtualMuseumObject::factory()->create([
+        'situs_id' => $situs->situs_id,
+        'museum_id' => $museum->museum_id,
+        'marker_id' => $marker->marker_id,
+        'nama' => 'Objek Pertama',
+        'path_obj' => 'virtual-museum/objects/models/obj1.glb',
+        'gambar_real' => 'images/sample1.jpg',
+    ]);
+
+    $obj2 = VirtualMuseumObject::factory()->create([
+        'situs_id' => $situs->situs_id,
+        'museum_id' => $museum->museum_id,
+        'marker_id' => $marker->marker_id,
+        'nama' => 'Objek Kedua',
+        'path_obj' => 'virtual-museum/objects/models/obj2.glb',
+        'gambar_real' => 'images/sample2.jpg',
+    ]);
+
+    // When requested with URL having ?object={id2}
+    $url = url('/ar/scan/'.$marker->marker_id.'?object='.$obj2->object_id);
+    $response = $this->actingAs($user)->getJson(route('api.ar.model', ['marker' => $url]));
+
+    $response->assertOk();
+    $data = $response->json();
+    expect($data['id'])->toBe($obj2->object_id);
+    expect($data['name'])->toBe('Objek Kedua');
+    expect(count($data['marker_objects']))->toBe(2);
+});

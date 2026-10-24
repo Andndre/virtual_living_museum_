@@ -310,8 +310,10 @@
             document.addEventListener('DOMContentLoaded', function() {
                 initUI();
 
-                if (initialMarker || initialObject) {
-                    fetchModelByIdOrMarker(initialObject || initialMarker);
+                if (initialObject) {
+                    fetchModel({ id: initialObject, marker: initialMarker });
+                } else if (initialMarker) {
+                    fetchModel({ marker: initialMarker });
                 } else {
                     startScanner();
                 }
@@ -366,7 +368,7 @@
                 if (selectManual) {
                     selectManual.addEventListener('change', function() {
                         if (this.value) {
-                            fetchModelByIdOrMarker(this.value);
+                            fetchModel({ id: this.value });
                         }
                     });
                 }
@@ -470,7 +472,7 @@
             function onQrCodeSuccess(decodedText) {
                 console.log("QR Terdeteksi:", decodedText);
                 stopScanner();
-                fetchModelByIdOrMarker(decodedText);
+                fetchModel(decodedText);
             }
 
             function onQrCodeFailure(error) {
@@ -478,14 +480,20 @@
             }
 
             // Fetch Model Data from API
-            function fetchModelByIdOrMarker(identifier) {
+            function fetchModel(target) {
                 showLoading('Memuat Data Objek AR...');
 
                 const params = new URLSearchParams();
-                if (/^\d+$/.test(identifier.trim())) {
-                    params.append('id', identifier.trim());
+                if (typeof target === 'object' && target !== null) {
+                    if (target.id) params.append('id', target.id);
+                    if (target.marker) params.append('marker', target.marker);
                 } else {
-                    params.append('marker', identifier.trim());
+                    const text = String(target || '').trim();
+                    const objMatch = text.match(/[?&]object=(\d+)/i);
+                    if (objMatch) {
+                        params.append('id', objMatch[1]);
+                    }
+                    params.append('marker', text);
                 }
 
                 fetch('/api/ar/model?' + params.toString(), {

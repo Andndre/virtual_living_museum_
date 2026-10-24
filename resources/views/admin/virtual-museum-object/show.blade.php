@@ -278,7 +278,7 @@
                             @php
                                 $markerId = $activeMarker ? $activeMarker->marker_id : $object->marker_id;
                                 $markerName = $activeMarker ? ($activeMarker->nama ?: 'Marker #' . $markerId) : ('Marker #' . $markerId);
-                                $scanUrl = url('/ar/scan/' . $markerId);
+                                $scanUrl = url('/ar/scan/' . $markerId . '?object=' . $object->object_id);
                             @endphp
                             <div>
                                 <h3 class="mb-2 text-sm font-medium text-gray-700">Marker AR (QR Code)</h3>

@@ -49,28 +49,42 @@ class ArMarkerCameraController extends Controller
         if (! $object && $request->filled('marker')) {
             $rawMarker = trim((string) $request->marker);
 
-            // Handle URL format: extract marker id if scanned as URL
-            if (preg_match('/(?:ar\/scan\/|marker[=\/])(\d+)/i', $rawMarker, $matches)) {
-                $markerId = (int) $matches[1];
-            } elseif (is_numeric($rawMarker)) {
-                $markerId = (int) $rawMarker;
-            } else {
-                $markerId = null;
-            }
-
-            if ($markerId) {
-                // Find first object tied to this marker
-                $object = VirtualMuseumObject::with('arMarker')
-                    ->where('marker_id', $markerId)
+            // 1. Check if URL specifies a target object (e.g. ?object=8 or &object=8)
+            if (preg_match('/[?&]object=(\d+)/i', $rawMarker, $objMatches)) {
+                $specificObjectId = (int) $objMatches[1];
+                $candidate = VirtualMuseumObject::with('arMarker')
+                    ->where('object_id', $specificObjectId)
                     ->whereNotNull('path_obj')
                     ->first();
+                if ($candidate) {
+                    $object = $candidate;
+                }
+            }
 
-                // If not found by marker_id directly, try by object_id
-                if (! $object) {
+            if (! $object) {
+                // 2. Handle URL format: extract marker id if scanned as URL
+                if (preg_match('/(?:ar\/scan\/|marker[=\/])(\d+)/i', $rawMarker, $matches)) {
+                    $markerId = (int) $matches[1];
+                } elseif (is_numeric($rawMarker)) {
+                    $markerId = (int) $rawMarker;
+                } else {
+                    $markerId = null;
+                }
+
+                if ($markerId) {
+                    // Find first object tied to this marker
                     $object = VirtualMuseumObject::with('arMarker')
-                        ->where('object_id', $markerId)
+                        ->where('marker_id', $markerId)
                         ->whereNotNull('path_obj')
                         ->first();
+
+                    // If not found by marker_id directly, try by object_id
+                    if (! $object) {
+                        $object = VirtualMuseumObject::with('arMarker')
+                            ->where('object_id', $markerId)
+                            ->whereNotNull('path_obj')
+                            ->first();
+                    }
                 }
             }
         }
@@ -164,8 +178,13 @@ class ArMarkerCameraController extends Controller
     /**
      * Smart redirect for scanned QR code URLs (e.g. from native iOS camera).
      */
-    public function scanRedirect(string $markerId): RedirectResponse
+    public function scanRedirect(Request $request, string $markerId): RedirectResponse
     {
-        return redirect()->route('ar-marker.camera', ['marker' => $markerId]);
+        $params = ['marker' => $markerId];
+        if ($request->filled('object')) {
+            $params['object'] = $request->query('object');
+        }
+
+        return redirect()->route('ar-marker.camera', $params);
     }
 }
