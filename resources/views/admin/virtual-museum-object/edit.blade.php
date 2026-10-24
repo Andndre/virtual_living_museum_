@@ -567,19 +567,80 @@
             });
         }
 
-        // QRious live preview logic
-        let qrGenerator = null;
+        // QRious live preview logic with centered logo
+        const qrLogo = new Image();
+        qrLogo.src = '{{ asset('images/logo/logo.png') }}';
+        let qrLogoLoaded = false;
+        qrLogo.onload = function() {
+            qrLogoLoaded = true;
+            drawLogoOnCanvas(document.getElementById('qr-canvas'));
+        };
 
-        function initQrGenerator() {
+        function drawLogoOnCanvas(canvas) {
+            if (!canvas || !qrLogoLoaded) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const size = canvas.width;
+            const logoSize = Math.round(size * 0.22);
+            const bgPadding = 5;
+            const bgSize = logoSize + (bgPadding * 2);
+            const bgX = (size - bgSize) / 2;
+            const bgY = (size - bgSize) / 2;
+
+            ctx.save();
+            ctx.fillStyle = '#ffffff';
+            const radius = 8;
+            ctx.beginPath();
+            ctx.moveTo(bgX + radius, bgY);
+            ctx.lineTo(bgX + bgSize - radius, bgY);
+            ctx.quadraticCurveTo(bgX + bgSize, bgY, bgX + bgSize, bgY + radius);
+            ctx.lineTo(bgX + bgSize, bgY + bgSize - radius);
+            ctx.quadraticCurveTo(bgX + bgSize, bgY + bgSize, bgX + bgSize - radius, bgY + bgSize);
+            ctx.lineTo(bgX + radius, bgY + bgSize);
+            ctx.quadraticCurveTo(bgX, bgY + bgSize, bgX, bgY + bgSize - radius);
+            ctx.lineTo(bgX, bgY + radius);
+            ctx.quadraticCurveTo(bgX, bgY + radius, bgX, bgY);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            let drawW = logoSize;
+            let drawH = logoSize;
+            if (qrLogo.naturalWidth && qrLogo.naturalHeight) {
+                const aspect = qrLogo.naturalWidth / qrLogo.naturalHeight;
+                if (aspect > 1) {
+                    drawH = logoSize / aspect;
+                } else {
+                    drawW = logoSize * aspect;
+                }
+            }
+            const drawX = (size - drawW) / 2;
+            const drawY = (size - drawH) / 2;
+            ctx.drawImage(qrLogo, drawX, drawY, drawW, drawH);
+            ctx.restore();
+        }
+
+        function updateQrCode(url) {
             const canvas = document.getElementById('qr-canvas');
-            if (!canvas) return;
+            if (!canvas || typeof QRious === 'undefined') return;
 
-            qrGenerator = new QRious({
+            new QRious({
                 element: canvas,
-                size: 200,
-                level: 'M'
+                size: 400,
+                value: url,
+                level: 'H'
             });
 
+            if (qrLogoLoaded) {
+                drawLogoOnCanvas(canvas);
+            }
+        }
+
+        function initQrGenerator() {
             handleMarkerSelectionChange();
         }
 
@@ -602,9 +663,7 @@
                 if (qrLabel) qrLabel.textContent = markerName;
                 if (qrUrlText) qrUrlText.textContent = scanUrl;
 
-                if (qrGenerator) {
-                    qrGenerator.value = scanUrl;
-                }
+                updateQrCode(scanUrl);
             } else {
                 if (newMarkerContainer) newMarkerContainer.classList.remove('hidden');
                 updateQrPreview();
@@ -621,9 +680,7 @@
             const sampleUrl = '{{ url('/ar-marker/camera') }}';
             if (qrUrlText) qrUrlText.textContent = sampleUrl;
 
-            if (qrGenerator) {
-                qrGenerator.value = sampleUrl;
-            }
+            updateQrCode(sampleUrl);
         }
 
         function downloadQrPng() {

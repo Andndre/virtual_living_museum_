@@ -402,15 +402,76 @@
     @if ($activeMarker || $object->marker_id)
         <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
         <script>
+            const qrLogo = new Image();
+            qrLogo.src = '{{ asset('images/logo/logo.png') }}';
+            let qrLogoLoaded = false;
+
+            function drawLogoOnCanvas(canvas) {
+                if (!canvas || !qrLogoLoaded) return;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+
+                const size = canvas.width;
+                const logoSize = Math.round(size * 0.22);
+                const bgPadding = 5;
+                const bgSize = logoSize + (bgPadding * 2);
+                const bgX = (size - bgSize) / 2;
+                const bgY = (size - bgSize) / 2;
+
+                ctx.save();
+                ctx.fillStyle = '#ffffff';
+                const radius = 8;
+                ctx.beginPath();
+                ctx.moveTo(bgX + radius, bgY);
+                ctx.lineTo(bgX + bgSize - radius, bgY);
+                ctx.quadraticCurveTo(bgX + bgSize, bgY, bgX + bgSize, bgY + radius);
+                ctx.lineTo(bgX + bgSize, bgY + bgSize - radius);
+                ctx.quadraticCurveTo(bgX + bgSize, bgY + bgSize, bgX + bgSize - radius, bgY + bgSize);
+                ctx.lineTo(bgX + radius, bgY + bgSize);
+                ctx.quadraticCurveTo(bgX, bgY + bgSize, bgX, bgY + bgSize - radius);
+                ctx.lineTo(bgX, bgY + radius);
+                ctx.quadraticCurveTo(bgX, bgY + radius, bgX, bgY);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                let drawW = logoSize;
+                let drawH = logoSize;
+                if (qrLogo.naturalWidth && qrLogo.naturalHeight) {
+                    const aspect = qrLogo.naturalWidth / qrLogo.naturalHeight;
+                    if (aspect > 1) {
+                        drawH = logoSize / aspect;
+                    } else {
+                        drawW = logoSize * aspect;
+                    }
+                }
+                const drawX = (size - drawW) / 2;
+                const drawY = (size - drawH) / 2;
+                ctx.drawImage(qrLogo, drawX, drawY, drawW, drawH);
+                ctx.restore();
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
                 const canvas = document.getElementById('qr-canvas-show');
-                if (canvas && canvas.dataset.url) {
-                    new QRious({
-                        element: canvas,
-                        value: canvas.dataset.url,
-                        size: 240,
-                        level: 'M'
-                    });
+                if (!canvas || !canvas.dataset.url || typeof QRious === 'undefined') return;
+
+                new QRious({
+                    element: canvas,
+                    value: canvas.dataset.url,
+                    size: 400,
+                    level: 'H'
+                });
+
+                qrLogo.onload = function() {
+                    qrLogoLoaded = true;
+                    drawLogoOnCanvas(canvas);
+                };
+                if (qrLogo.complete && qrLogo.naturalWidth !== 0) {
+                    qrLogoLoaded = true;
+                    drawLogoOnCanvas(canvas);
                 }
             });
 
