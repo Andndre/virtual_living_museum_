@@ -175,7 +175,12 @@
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                     @foreach ($allObjects as $object)
                         <div class="group cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-gray-50 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                            onclick="showObjectModal({{ $object->object_id }}, '{{ addslashes($object->nama) }}', '{{ addslashes($object->deskripsi ?? '') }}', '{{ $object->gambar_real ? asset('storage/' . $object->gambar_real) : asset('images/placeholder/object.png') }}', '{{ $object->museum_name }}')">
+                            data-object-id="{{ $object->object_id }}"
+                            data-name="{{ $object->nama }}"
+                            data-description="{{ $object->deskripsi ?? '' }}"
+                            data-image="{{ $object->gambar_real ? asset('storage/' . $object->gambar_real) : asset('images/placeholder/object.png') }}"
+                            data-museum="{{ $object->museum_name }}"
+                            onclick="openObjectModalFromCard(this)">
                             <div class="relative aspect-square overflow-hidden bg-gray-200">
                                 @if ($object->gambar_real)
                                     <img src="{{ asset('storage/' . $object->gambar_real) }}"
@@ -284,39 +289,48 @@
     </div>
 
     {{-- Object Modal --}}
-    <div id="object-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" id="modal-backdrop"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4">
-            <div class="relative w-full max-w-md scale-95 transform overflow-hidden rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300"
+    <div id="object-modal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true">
+        {{-- Backdrop --}}
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300" id="modal-backdrop"></div>
+
+        {{-- Wrapper for Centering & Padding --}}
+        <div class="fixed inset-0 flex items-center justify-center p-3 sm:p-4" id="modal-wrapper">
+            {{-- Modal Dialog Card --}}
+            <div class="relative flex flex-col w-full max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-hidden rounded-2xl bg-white shadow-2xl scale-95 opacity-0 transform transition-all duration-300"
                 id="modal-content">
-                <button onclick="closeObjectModal()"
-                    class="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 text-gray-800 shadow-lg transition-all hover:scale-110 hover:bg-white">
-                    <i class="fas fa-times"></i>
+                
+                {{-- Floating Close Button (always visible & clickable at top right) --}}
+                <button onclick="closeObjectModal()" type="button" aria-label="Close"
+                    class="absolute right-3.5 top-3.5 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white shadow-md backdrop-blur-md transition-all hover:bg-black/80 hover:scale-105 active:scale-95 focus:outline-none">
+                    <i class="fas fa-times text-sm"></i>
                 </button>
-                <div class="aspect-[4/3] w-full bg-gray-100">
-                    <img id="modal-object-image" src="" alt="" class="h-full w-full object-cover">
-                </div>
-                <div class="p-6">
-                    <div class="mb-4 flex items-start">
-                        <div class="flex-1">
-                            <h2 id="modal-object-title" class="text-xl font-bold text-gray-900"></h2>
-                            <p id="modal-object-museum" class="text-sm text-purple-600"></p>
-                        </div>
+
+                {{-- Scrollable Body (image, headers, full description) --}}
+                <div class="flex-1 overflow-y-auto overscroll-contain" id="modal-scrollable-body">
+                    <div class="aspect-[16/10] sm:aspect-[4/3] w-full bg-gray-100 relative flex-shrink-0">
+                        <img id="modal-object-image" src="" alt="" class="h-full w-full object-cover">
                     </div>
-                    <p id="modal-object-description" class="text-sm leading-relaxed text-gray-600"></p>
+                    <div class="p-5 sm:p-6 text-left">
+                        <div class="mb-3">
+                            <p id="modal-object-museum" class="text-xs font-semibold uppercase tracking-wider text-purple-600 mb-1"></p>
+                            <h2 id="modal-object-title" class="text-xl sm:text-2xl font-bold text-gray-900 leading-snug"></h2>
+                        </div>
+                        <p id="modal-object-description" class="text-sm sm:text-base leading-relaxed text-gray-600 whitespace-pre-line"></p>
+                    </div>
                 </div>
-                <div class="flex gap-3 border-t border-gray-100 bg-gray-50 p-4">
+
+                {{-- Pinned Footer Action Bar (always visible at the bottom) --}}
+                <div class="flex-shrink-0 border-t border-gray-100 bg-gray-50/95 backdrop-blur-sm p-4">
                     @if ($is_unlocked)
                         <button id="modal-ar-btn" onclick="launchARFromModal()"
-                            class="inline-flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 text-center font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-lg">
-                            <i class="fas fa-vr-cardboard mr-2"></i>
-                            {{ __('situs.explore_ar') }}
+                            class="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-3 text-center font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0">
+                            <i class="fas fa-vr-cardboard mr-2 text-lg"></i>
+                            <span>{{ __('situs.explore_ar') }}</span>
                         </button>
                     @else
-                        <div class="flex-1 text-center">
-                            <div
-                                class="mb-2 inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600">
-                                <i class="fas fa-lock mr-2"></i>
+                        <div class="w-full text-center py-1">
+                            <div class="mb-1.5 inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-medium text-amber-800">
+                                <i class="fas fa-lock mr-1.5 text-amber-600"></i>
                                 {{ __('maps.locked') }}
                             </div>
                             <p class="text-xs text-gray-500">{{ __('maps.complete_material_to_unlock') }}</p>
@@ -340,6 +354,16 @@
             }
         }
 
+        function openObjectModalFromCard(card) {
+            showObjectModal(
+                card.dataset.objectId,
+                card.dataset.name,
+                card.dataset.description,
+                card.dataset.image,
+                card.dataset.museum
+            );
+        }
+
         function showObjectModal(objectId, name, description, imageUrl, museumName) {
             currentObjectId = objectId;
 
@@ -359,6 +383,12 @@
 
             const modal = document.getElementById('object-modal');
             const modalContent = document.getElementById('modal-content');
+            const scrollBody = document.getElementById('modal-scrollable-body');
+
+            if (scrollBody) {
+                scrollBody.scrollTop = 0;
+            }
+
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
@@ -371,12 +401,15 @@
         function closeObjectModal() {
             const modal = document.getElementById('object-modal');
             const modalContent = document.getElementById('modal-content');
+
+            if (!modalContent || !modal) return;
+
             modalContent.classList.remove('scale-100', 'opacity-100');
             modalContent.classList.add('scale-95', 'opacity-0');
 
             setTimeout(() => {
                 modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
+                document.body.style.overflow = '';
                 currentObjectId = null;
                 currentMuseumId = null;
             }, 200);
@@ -390,6 +423,11 @@
         }
 
         document.getElementById('modal-backdrop')?.addEventListener('click', closeObjectModal);
+        document.getElementById('modal-wrapper')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeObjectModal();
+            }
+        });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeObjectModal();
         });
