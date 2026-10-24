@@ -27,7 +27,7 @@ class SecurityHeaders
             $scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://aframe.io https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://code.jquery.com https://launchar.app https://ajax.googleapis.com";
             $styleSrc = "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com https://cdnjs.cloudflare.com";
             $fontSrc = "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com";
-            $connectSrc = "connect-src 'self' https:";
+            $connectSrc = "connect-src 'self' https: data: blob:";
 
             if (app()->environment('local')) {
                 $scriptSrc .= ' http://127.0.0.1:5173 http://localhost:5173';
@@ -40,10 +40,11 @@ class SecurityHeaders
                    $scriptSrc.'; '.
                    $styleSrc.'; '.
                    "img-src 'self' data: blob: https:; ".
+                   "media-src 'self' https: data: blob:; ".
                    $fontSrc.'; '.
                    $connectSrc.'; '.
                    "frame-src 'self' https:; ".
-                   "worker-src 'self' blob:;";
+                   "worker-src 'self' blob: data: https:;";
             $response->headers->set('Content-Security-Policy', $csp);
 
             // Remove X-Powered-By headers
