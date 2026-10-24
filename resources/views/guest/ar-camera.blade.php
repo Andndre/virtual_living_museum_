@@ -210,26 +210,21 @@
 
             <!-- Multi-Object Thumbnail Switcher (Visible only when marker has >= 2 objects) -->
             <div id="multi-object-switcher" class="hidden absolute bottom-44 left-0 right-0 z-40 flex flex-col items-center pointer-events-none px-4">
-                <div class="pointer-events-auto flex items-center max-w-full overflow-x-auto py-1.5 px-2 rounded-2xl bg-black/60 backdrop-blur-lg border border-white/15 shadow-2xl scrollbar-none">
-                    <div id="switcher-items-container" class="flex items-center gap-2"></div>
+                <div class="pointer-events-auto flex items-center max-w-full overflow-x-auto py-1.5 px-2.5 rounded-2xl bg-black/65 backdrop-blur-xl border border-white/15 shadow-2xl scrollbar-none">
+                    <div id="switcher-items-container" class="flex items-center gap-2.5"></div>
                 </div>
             </div>
 
             <!-- Custom AR Launch Button -->
             <button slot="ar-button" id="custom-ar-button" type="button"
-                    class="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-2xl transition active:scale-95 border border-blue-400/30">
+                    class="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-2xl transition active:scale-95 border border-blue-400/30 whitespace-nowrap">
                 <i class="fas fa-cube text-base"></i>
                 <span id="ar-button-text">Tampilkan di Ruang Nyata (AR)</span>
             </button>
         </model-viewer>
 
-        <!-- Audio Player & Toggle -->
+        <!-- Audio Player -->
         <audio id="ar-audio" preload="none" class="hidden"></audio>
-        <button id="btn-audio-toggle" type="button" aria-label="Toggle Audio Narasi"
-                class="hidden absolute bottom-32 left-5 z-40 w-12 h-12 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center shadow-lg border border-white/20 active:scale-90 transition">
-            <i id="audio-icon-play" class="fas fa-volume-up text-lg"></i>
-            <i id="audio-icon-pause" class="fas fa-pause text-lg hidden"></i>
-        </button>
 
         <!-- Top Navigation inside 3D View -->
         <div class="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-4 pt-12 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none">
@@ -253,14 +248,25 @@
                  class="pointer-events-auto relative z-10 flex h-[65vh] w-full translate-y-[calc(100%-86px)] flex-col rounded-t-3xl bg-white text-gray-900 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-in-out">
 
                 <!-- Header / Handle (Always Visible) -->
-                <div id="sheet-header" class="flex flex-col items-center px-6 pt-3 pb-3 cursor-pointer select-none">
+                <div id="sheet-header" class="flex flex-col items-center px-5 pt-3 pb-3 cursor-pointer select-none">
                     <div class="w-12 h-1.5 bg-gray-300 rounded-full mb-2"></div>
-                    <div class="w-full flex items-center justify-between">
-                        <div class="min-w-0 pr-2">
+                    <div class="w-full flex items-center justify-between gap-3">
+                        <div class="min-w-0 flex-1">
                             <h2 id="model-title" class="text-base sm:text-lg font-bold text-gray-900 truncate">Memuat...</h2>
                             <p id="model-marker-badge" class="text-xs text-blue-600 font-semibold"></p>
                         </div>
-                        <i id="sheet-arrow" class="fas fa-chevron-up text-gray-400 text-sm transition-transform duration-300"></i>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <!-- Audio Narasi Button in Sheet Header -->
+                            <button id="btn-audio-toggle" type="button" aria-label="Toggle Audio Narasi"
+                                    class="hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-semibold border border-blue-200 transition active:scale-95 shadow-sm">
+                                <i id="audio-icon-play" class="fas fa-volume-up text-xs"></i>
+                                <i id="audio-icon-pause" class="fas fa-pause text-xs hidden"></i>
+                                <span>Audio</span>
+                            </button>
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                <i id="sheet-arrow" class="fas fa-chevron-up text-xs transition-transform duration-300"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -326,7 +332,8 @@
                 const arrow = document.getElementById('sheet-arrow');
 
                 if (sheetHeader) {
-                    sheetHeader.addEventListener('click', function() {
+                    sheetHeader.addEventListener('click', function(e) {
+                        if (e.target.closest('#btn-audio-toggle')) return;
                         isSheetExpanded = !isSheetExpanded;
                         if (isSheetExpanded) {
                             sheet.style.transform = 'translateY(0)';
@@ -383,7 +390,8 @@
                 const iconPause = document.getElementById('audio-icon-pause');
 
                 if (btnAudio && audioPlayer) {
-                    btnAudio.addEventListener('click', function() {
+                    btnAudio.addEventListener('click', function(e) {
+                        e.stopPropagation();
                         if (audioPlayer.paused) {
                             audioPlayer.play();
                             iconPlay.classList.add('hidden');
@@ -619,26 +627,33 @@
 
                 objectsList.forEach((obj, idx) => {
                     const isActive = (obj.id === activeId);
-                    const pill = document.createElement('button');
-                    pill.type = 'button';
-                    pill.className = `object-pill flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all duration-200 select-none ${
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.setAttribute('aria-label', escapeHtml(obj.name));
+                    btn.className = `group relative shrink-0 rounded-2xl p-0.5 transition-all duration-200 select-none ${
                         isActive
-                            ? 'bg-blue-600 text-white shadow-lg ring-2 ring-blue-400/60 scale-105'
-                            : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                            ? 'scale-105'
+                            : 'opacity-65 hover:opacity-100 scale-95'
                     }`;
 
                     const visualBox = obj.gambar_real
-                        ? `<img src="${obj.gambar_real}" alt="${escapeHtml(obj.name)}" class="w-full h-full object-cover">`
-                        : `<div class="flex items-center justify-center w-full h-full"><i class="fas fa-cube text-[11px] ${isActive ? 'text-white' : 'text-blue-400'}"></i></div>`;
+                        ? `<img src="${obj.gambar_real}" alt="${escapeHtml(obj.name)}" class="w-12 h-12 rounded-xl object-cover">`
+                        : `<div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-800 text-blue-400"><i class="fas fa-cube text-sm"></i></div>`;
 
-                    pill.innerHTML = `
-                        <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-white/20 ${isActive ? 'bg-white/20' : 'bg-black/40'}">
+                    btn.innerHTML = `
+                        <div class="relative w-12 h-12 rounded-xl overflow-hidden transition-all duration-200 ${
+                            isActive
+                                ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0b0f19] shadow-lg shadow-blue-500/50'
+                                : 'border border-white/20'
+                        }">
                             ${visualBox}
+                            <span class="absolute bottom-0 right-0 px-1.5 py-0.5 rounded-tl-md text-[10px] font-bold leading-none ${
+                                isActive ? 'bg-blue-600 text-white' : 'bg-black/80 text-gray-200'
+                            }">${idx + 1}</span>
                         </div>
-                        <span class="text-xs font-semibold whitespace-nowrap pr-1">${escapeHtml(obj.short_name || obj.name)}</span>
                     `;
 
-                    pill.addEventListener('click', function(e) {
+                    btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         if (obj.id !== currentActiveObjectId) {
                             loadObjectIntoViewer(obj);
@@ -646,7 +661,7 @@
                         }
                     });
 
-                    container.appendChild(pill);
+                    container.appendChild(btn);
                 });
             }
 
