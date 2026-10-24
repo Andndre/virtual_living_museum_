@@ -197,4 +197,8 @@ return [
     'please_enter_your_job' => 'Mohon masukkan pekerjaan Anda',
     'job' => 'Pekerjaan',
     'date_of_birth' => 'Tanggal Lahir',
+    'no_data' => 'Belum Ada Data',
+    'no_leaderboard_data' => 'Belum ada data leaderboard',
+    'no_report_data' => 'Belum ada data rapor yang tersedia',
+    'no_feedback_title' => 'Belum Ada Feedback',
 ];

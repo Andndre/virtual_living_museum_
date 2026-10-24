@@ -124,8 +124,8 @@
                         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                             <i class="fas fa-trophy text-2xl text-gray-400"></i>
                         </div>
-                        <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Data</h3>
-                        <p class="text-gray-600">Belum ada data leaderboard</p>
+                        <h3 class="mb-2 text-lg font-medium text-gray-900">{{ __('app.no_data') }}</h3>
+                        <p class="text-gray-600">{{ __('app.no_leaderboard_data') }}</p>
                     </div>
                 @endif
             </div>

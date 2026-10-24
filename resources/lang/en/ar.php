@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'scanner_title' => 'AR Scanner',
+    'scan_qr_marker' => 'Scan QR Marker',
+    'point_camera_qr' => 'Aim camera at the QR Code Marker',
+    'align_qr_frame' => 'Align QR code within the frame to load interactive 3D model',
+    'manual_select_toggle' => 'Select Object Manually (If Camera Issue)',
+    'select_object_placeholder' => '-- Select Heritage Object --',
+    'ios_warning_title' => 'iOS Browser Notice',
+    'ios_warning_desc' => 'Augmented Reality features require Safari',
+    'open_in_safari' => 'Open in Safari',
+    'continue_in_web' => 'Continue in Web Only',
+    'show_in_real_space' => 'Display in Real Space (AR)',
+    'view_in_apple_ar' => 'View in Apple AR (Quick Look)',
+    'preview_3d_no_usdz' => '3D Preview (USDZ Unavailable)',
+    'scan_again' => 'Scan Again',
+    'about_this_artifact' => 'About This Artifact',
+    'loading_marker' => 'Validating QR Marker...',
+    'loading_model' => 'Downloading 3D Model...',
+    'loading_object' => 'Loading 3D Object...',
+    'object_not_found' => 'Object Not Found',
+    'camera_access_required' => 'Camera Access Required',
+    'camera_access_desc' => 'Allow camera access in your browser to scan AR QR Markers.',
+    'try_again' => 'Try Again',
+    'no_detail_desc' => 'No detailed description available for this object.',
+    'object_count' => 'Object :current of :total',
+
+    // Virtual Living Museum WebXR (museum.blade.php)
+    'museum_explore' => 'Explore Heritage Objects',
+    'floor_instruction' => 'Point camera at floor & tap the circle to place the room',
+    'move_phone_slowly' => 'Move phone slowly',
+    'view_heritage_objects' => 'View Heritage Objects',
+    'objects_in_site' => 'Heritage Objects in This Site',
+    'objects_in_site_desc' => 'Tap or examine historical artifacts present in this virtual environment.',
+    'no_objects_in_spot' => 'No heritage objects registered for this spot yet.',
+    'start_ar' => 'START AR',
+];

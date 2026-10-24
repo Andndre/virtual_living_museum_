@@ -66,7 +66,7 @@
                         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                             <i class="fas fa-comment-dots text-2xl text-gray-400"></i>
                         </div>
-                        <h3 class="mb-2 text-lg font-medium text-gray-900">Belum Ada Feedback</h3>
+                        <h3 class="mb-2 text-lg font-medium text-gray-900">{{ __('app.no_feedback_title') }}</h3>
                         <p class="text-gray-600">{{ __('app.no_feedback_history') }}</p>
                     </div>
                 @endif

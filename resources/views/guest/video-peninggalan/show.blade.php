@@ -7,7 +7,7 @@
                     <a href="{{ route('guest.video-peninggalan') }}" class="mr-4">
                         <i class="fas fa-arrow-left text-xl"></i>
                     </a>
-                    <h1 class="text-lg font-bold">Video Peninggalan</h1>
+                    <h1 class="text-lg font-bold">{{ __('video.title') }}</h1>
                 </div>
                 <x-user-profile-navbar/>
             </div>
@@ -22,13 +22,13 @@
                     <source src="{{ asset('storage/' . $video->link) }}" type="video/mp4">
                     <source src="{{ asset('storage/' . $video->link) }}" type="video/webm">
                     <source src="{{ asset('storage/' . $video->link) }}" type="video/mov">
-                    Browser Anda tidak mendukung pemutar video.
+                    {{ __('video.unsupported_browser') }}
                 </video>
             @else
                 <div class="w-full aspect-video bg-gray-800 flex items-center justify-center">
                     <div class="text-center text-white">
                         <i class="fas fa-video text-4xl mb-4 opacity-50"></i>
-                        <p>Video tidak tersedia</p>
+                        <p>{{ __('video.video_not_available') }}</p>
                     </div>
                 </div>
             @endif
@@ -51,10 +51,10 @@
             <div class="bg-white rounded-xl p-4 shadow-sm">
                 <h3 class="font-semibold text-gray-900 mb-2">
                     <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                    Tentang Video Ini
+                    {{ __('video.about_this_video') }}
                 </h3>
                 <p class="text-sm text-gray-600">
-                    Video ini merupakan bagian dari koleksi warisan budaya yang bertujuan untuk melestarikan dan memperkenalkan kekayaan peninggalan Indonesia.
+                    {{ __('video.about_description') }}
                 </p>
             </div>
         </div>

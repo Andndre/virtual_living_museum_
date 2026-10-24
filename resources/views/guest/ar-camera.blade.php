@@ -118,8 +118,8 @@
             </a>
 
             <div class="flex flex-col items-center">
-                <span class="text-xs font-semibold tracking-wider uppercase text-blue-400">AR Scanner</span>
-                <span class="text-base font-bold text-white">Pindai QR Marker</span>
+                <span class="text-xs font-semibold tracking-wider uppercase text-blue-400">{{ __('ar.scanner_title') }}</span>
+                <span class="text-base font-bold text-white">{{ __('ar.scan_qr_marker') }}</span>
             </div>
 
             <!-- Torch / Flash Toggle -->
@@ -150,18 +150,18 @@
         <!-- Scanner Bottom Bar -->
         <div class="relative z-30 px-6 pb-12 pt-4 bg-gradient-to-t from-black/85 via-black/50 to-transparent flex flex-col items-center gap-3">
             <div id="status-badge" class="px-5 py-2.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs sm:text-sm font-medium text-center text-gray-200 shadow-md">
-                <i class="fas fa-camera text-blue-400 mr-2"></i>Arahkan kamera ke QR Code Marker AR
+                <i class="fas fa-camera text-blue-400 mr-2"></i>{{ __('ar.point_camera_qr') }}
             </div>
 
             <!-- Manual Marker Picker Dropdown (Fallback if Camera can't scan or for testing) -->
             <div class="w-full max-w-xs mt-1">
                 <button id="btn-toggle-manual" type="button" class="w-full text-xs text-gray-400 hover:text-white underline text-center py-1">
-                    Atau pilih objek secara manual &darr;
+                    {{ __('ar.manual_select_toggle') }} &darr;
                 </button>
                 <div id="manual-picker-container" class="hidden mt-2 bg-gray-900/90 backdrop-blur-lg border border-gray-700 rounded-2xl p-3 shadow-2xl">
-                    <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Pilih Objek AR:</label>
+                    <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">{{ __('ar.select_object_placeholder') }}</label>
                     <select id="select-manual-object" class="w-full bg-gray-800 border border-gray-600 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Objek --</option>
+                        <option value="">{{ __('ar.select_object_placeholder') }}</option>
                         @foreach ($arMarkers as $marker)
                             @foreach ($marker->virtualMuseumObjects as $obj)
                                 <option value="{{ $obj->object_id }}">{{ $obj->nama }} (Marker #{{ $marker->marker_id }})</option>
@@ -183,13 +183,13 @@
             <div class="mb-4 rounded-full bg-yellow-500/20 p-4 text-yellow-400">
                 <i class="fas fa-exclamation-triangle text-3xl"></i>
             </div>
-            <h3 class="text-xl font-bold text-yellow-400 mb-2">Buka di Browser Safari</h3>
+            <h3 class="text-xl font-bold text-yellow-400 mb-2">{{ __('ar.ios_warning_title') }}</h3>
             <p class="text-sm text-gray-300 max-w-sm mb-6 leading-relaxed">
-                Fitur Apple AR Quick Look membutuhkan browser sistem Safari. Silakan ketuk tombol menu di pojok dan pilih <strong>"Buka di Safari"</strong>.
+                {{ __('ar.ios_warning_desc') }}. Silakan ketuk tombol menu di pojok dan pilih <strong>"{{ __('ar.open_in_safari') }}"</strong>.
             </p>
             <button type="button" onclick="document.getElementById('iab-warning').classList.add('hidden'); document.getElementById('iab-warning').classList.remove('flex');"
                     class="px-6 py-2.5 rounded-full border border-gray-600 text-sm font-medium hover:bg-gray-800 text-gray-300">
-                Lanjutkan di Web Saja
+                {{ __('ar.continue_in_web') }}
             </button>
         </div>
 
@@ -220,7 +220,7 @@
             <button slot="ar-button" id="custom-ar-button" type="button"
                     class="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-2xl transition active:scale-95 border border-blue-400/30 whitespace-nowrap">
                 <i class="fas fa-cube text-base"></i>
-                <span id="ar-button-text">Tampilkan di Ruang Nyata (AR)</span>
+                <span id="ar-button-text">{{ __('ar.show_in_real_space') }}</span>
             </button>
         </model-viewer>
 
@@ -238,7 +238,7 @@
             <button id="btn-scan-again" type="button"
                     class="pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-lg active:scale-95 transition">
                 <i class="fas fa-qrcode"></i>
-                <span>Pindai Ulang</span>
+                <span>{{ __('ar.scan_again') }}</span>
             </button>
         </div>
 
@@ -299,6 +299,22 @@
     <!-- ========================================== -->
     <script>
         (function() {
+            const i18n = {
+                loadingMarker: "{{ __('ar.loading_marker') }}",
+                loadingModel: "{{ __('ar.loading_model') }}",
+                loadingObject: "{{ __('ar.loading_object') }}",
+                objectNotFound: "{{ __('ar.object_not_found') }}",
+                scanAgain: "{{ __('ar.scan_again') }}",
+                showInRealSpace: "{{ __('ar.show_in_real_space') }}",
+                viewInAppleAr: "{{ __('ar.view_in_apple_ar') }}",
+                previewNoUsdz: "{{ __('ar.preview_3d_no_usdz') }}",
+                noDetailDesc: "{{ __('ar.no_detail_desc') }}",
+                cameraReqTitle: "{{ __('ar.camera_access_required') }}",
+                cameraReqDesc: "{{ __('ar.camera_access_desc') }}",
+                tryAgain: "{{ __('ar.try_again') }}",
+                objectCount: "{{ __('ar.object_count') }}"
+            };
+
             let html5QrCode = null;
             let isScanning = false;
             let currentTorchState = false;
@@ -476,10 +492,10 @@
                     console.error("Camera access error:", err);
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Akses Kamera Dibutuhkan',
-                        text: 'Izinkan akses kamera pada browser Anda untuk memindai QR Marker AR.',
+                        title: i18n.cameraReqTitle,
+                        text: i18n.cameraReqDesc,
                         confirmButtonColor: '#2D8BEB',
-                        confirmButtonText: 'Coba Lagi'
+                        confirmButtonText: i18n.tryAgain
                     }).then(() => {
                         location.reload();
                     });
@@ -507,7 +523,7 @@
 
             // Fetch Model Data from API
             function fetchModel(target) {
-                showLoading('Memvalidasi QR Marker...', false);
+                showLoading(i18n.loadingMarker, false);
 
                 const params = new URLSearchParams();
                 if (typeof target === 'object' && target !== null) {
@@ -526,26 +542,26 @@
                     headers: { 'Accept': 'application/json' }
                 })
                 .then(res => {
-                    if (!res.ok) throw new Error('Objek 3D tidak ditemukan untuk QR ini.');
+                    if (!res.ok) throw new Error(i18n.objectNotFound);
                     return res.json();
                 })
                 .then(data => {
                     if (data.success && data.model_url) {
-                        showLoading('Mengunduh Model 3D...', true);
+                        showLoading(i18n.loadingModel, true);
                         displayModel(data);
                     } else {
                         hideLoading();
-                        throw new Error(data.error || 'Model tidak tersedia.');
+                        throw new Error(data.error || i18n.objectNotFound);
                     }
                 })
                 .catch(err => {
                     hideLoading();
                     Swal.fire({
                         icon: 'error',
-                        title: 'Objek Tidak Ditemukan',
+                        title: i18n.objectNotFound,
                         text: err.message,
                         confirmButtonColor: '#2D8BEB',
-                        confirmButtonText: 'Pindai Ulang'
+                        confirmButtonText: i18n.scanAgain
                     }).then(() => {
                         showScanner();
                     });
@@ -588,15 +604,15 @@
                     const absoluteUsdz = new URL(data.usdz_url, window.location.href).href;
                     viewer.setAttribute('ios-src', absoluteUsdz);
                     if (arButton) arButton.classList.remove('hidden');
-                    if (arButtonText) arButtonText.innerText = isIOS ? 'Lihat di Apple AR (Quick Look)' : 'Tampilkan di Ruang Nyata (AR)';
+                    if (arButtonText) arButtonText.innerText = isIOS ? i18n.viewInAppleAr : i18n.showInRealSpace;
                 } else {
                     viewer.removeAttribute('ios-src');
                     if (isIOS) {
                         // On iOS without USDZ, native Quick Look cannot run
-                        if (arButtonText) arButtonText.innerText = 'Preview 3D (USDZ Tidak Tersedia)';
+                        if (arButtonText) arButtonText.innerText = i18n.previewNoUsdz;
                     } else {
                         if (arButton) arButton.classList.remove('hidden');
-                        if (arButtonText) arButtonText.innerText = 'Tampilkan di Ruang Nyata (AR)';
+                        if (arButtonText) arButtonText.innerText = i18n.showInRealSpace;
                     }
                 }
 
@@ -611,10 +627,11 @@
                 const currentIndex = currentMarkerObjects.findIndex(o => o.id === data.id);
                 let badgeText = data.marker_id ? 'Marker #' + data.marker_id : '';
                 if (totalObj > 1 && currentIndex !== -1) {
-                    badgeText += (badgeText ? ' • ' : '') + `Objek ${currentIndex + 1} dari ${totalObj}`;
+                    const countStr = i18n.objectCount.replace(':current', currentIndex + 1).replace(':total', totalObj);
+                    badgeText += (badgeText ? ' • ' : '') + countStr;
                 }
                 if (badgeEl) badgeEl.innerText = badgeText;
-                if (descEl) descEl.innerText = data.description || 'Tidak ada deskripsi detail untuk objek ini.';
+                if (descEl) descEl.innerText = data.description || i18n.noDetailDesc;
 
                 // Reset Bottom Sheet to collapsed state
                 const sheet = document.getElementById('desc-bottom-sheet');
@@ -697,7 +714,7 @@
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         if (obj.id !== currentActiveObjectId) {
-                            showLoading('Mengunduh Objek 3D...', true);
+                            showLoading(i18n.loadingObject, true);
                             loadObjectIntoViewer(obj);
                             renderObjectSwitcher(currentMarkerObjects, obj.id);
                         }
@@ -756,7 +773,7 @@
                     hideLoading();
                 }, 25000);
 
-                if (loadingText) loadingText.innerText = text || 'Memuat Objek AR...';
+                if (loadingText) loadingText.innerText = text || i18n.loadingObject;
                 if (progressContainer) {
                     if (showProgress) {
                         progressContainer.classList.remove('hidden');

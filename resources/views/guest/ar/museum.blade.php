@@ -181,7 +181,7 @@
             </a>
             <div class="flex-1">
                 <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
-                <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
+                <p class="text-sm opacity-90">{{ __('ar.museum_explore') }}</p>
             </div>
         </div>
     </div>
@@ -189,12 +189,12 @@
         class="pointer-events-none absolute inset-0 z-[999999]">
         <div id="instructions"
             class="invisible pointer-events-none absolute top-4 inset-x-4 mx-auto max-w-sm rounded-xl bg-black/70 backdrop-blur-md px-4 py-3 text-center text-sm font-medium text-white shadow-lg">
-            Arahkan kamera ke lantai & ketuk lingkaran untuk memunculkan ruangan
+            {{ __('ar.floor_instruction') }}
         </div>
         <div id="tracking-prompt" class="invisible pointer-events-none absolute bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <img src="{{ asset('images/icons/hand.png') }}" class="w-20" style="animation: circle 4s linear infinite;"
                 alt="" />
-            <p class="mt-2 text-xs font-semibold text-white/90 bg-black/40 px-3 py-1 rounded-full">Gerakkan ponsel perlahan</p>
+            <p class="mt-2 text-xs font-semibold text-white/90 bg-black/40 px-3 py-1 rounded-full">{{ __('ar.move_phone_slowly') }}</p>
         </div>
         <div id="toaster-container" class="fixed bottom-0 right-0 z-[99999] m-4"></div>
 
@@ -203,7 +203,7 @@
             type="button"
             class="pointer-events-auto fixed bottom-6 left-1/2 z-[10000000] -translate-x-1/2 hidden items-center gap-2 rounded-full border-2 border-white bg-primary px-6 py-3 font-bold text-white shadow-2xl active:scale-95 transition-all">
             <i class="fas fa-landmark"></i>
-            <span>Lihat Objek Peninggalan</span>
+            <span>{{ __('ar.view_heritage_objects') }}</span>
         </button>
 
         <!-- Bottom Sheet Objek Peninggalan -->
@@ -212,7 +212,7 @@
             <div class="flex items-center justify-between border-b px-6 py-4">
                 <div class="flex items-center gap-2">
                     <div class="h-2 w-2 rounded-full bg-primary"></div>
-                    <h3 class="text-base font-bold text-gray-900">Objek Peninggalan ({{ $museum->virtualMuseumObjects->count() }})</h3>
+                    <h3 class="text-base font-bold text-gray-900">{{ __('ar.objects_in_site') }} ({{ $museum->virtualMuseumObjects->count() }})</h3>
                 </div>
                 <button id="close-bottom-sheet" type="button" class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition">
                     <i class="fas fa-times text-lg"></i>
@@ -234,7 +234,7 @@
                 @empty
                     <div class="py-12 text-center text-gray-500">
                         <i class="fas fa-box-open text-4xl mb-2 text-gray-300"></i>
-                        <p class="text-sm">Belum ada objek peninggalan yang terdaftar untuk situs ini.</p>
+                        <p class="text-sm">{{ __('ar.no_objects_in_spot') }}</p>
                     </div>
                 @endforelse
                 <div class="pb-6"></div>

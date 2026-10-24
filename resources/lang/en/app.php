@@ -197,4 +197,8 @@ return [
     'please_enter_your_job' => 'Please enter your job',
     'job' => 'Job',
     'date_of_birth' => 'Date of Birth',
+    'no_data' => 'No Data Available',
+    'no_leaderboard_data' => 'No leaderboard data available',
+    'no_report_data' => 'No report card data available',
+    'no_feedback_title' => 'No Feedback Yet',
 ];

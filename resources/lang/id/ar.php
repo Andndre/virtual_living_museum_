@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'scanner_title' => 'AR Scanner',
+    'scan_qr_marker' => 'Pindai QR Marker',
+    'point_camera_qr' => 'Arahkan kamera ke QR Code Marker',
+    'align_qr_frame' => 'Posisikan QR di dalam bingkai kotak untuk memuat objek 3D interaktif',
+    'manual_select_toggle' => 'Pilih Objek Manual (Jika Kamera Bermasalah)',
+    'select_object_placeholder' => '-- Pilih Objek Peninggalan --',
+    'ios_warning_title' => 'Perhatian Browser iOS',
+    'ios_warning_desc' => 'Fitur Augmented Reality membutuhkan Safari',
+    'open_in_safari' => 'Buka di Safari',
+    'continue_in_web' => 'Lanjutkan di Web Saja',
+    'show_in_real_space' => 'Tampilkan di Ruang Nyata (AR)',
+    'view_in_apple_ar' => 'Lihat di Apple AR (Quick Look)',
+    'preview_3d_no_usdz' => 'Preview 3D (USDZ Tidak Tersedia)',
+    'scan_again' => 'Pindai Ulang',
+    'about_this_artifact' => 'Tentang Artefak Ini',
+    'loading_marker' => 'Memvalidasi QR Marker...',
+    'loading_model' => 'Mengunduh Model 3D...',
+    'loading_object' => 'Memuat Objek 3D...',
+    'object_not_found' => 'Objek Tidak Ditemukan',
+    'camera_access_required' => 'Akses Kamera Dibutuhkan',
+    'camera_access_desc' => 'Izinkan akses kamera pada browser Anda untuk memindai QR Marker AR.',
+    'try_again' => 'Coba Lagi',
+    'no_detail_desc' => 'Tidak ada deskripsi detail untuk objek ini.',
+    'object_count' => 'Objek :current dari :total',
+
+    // Virtual Living Museum WebXR (museum.blade.php)
+    'museum_explore' => 'Eksplorasi Objek Peninggalan',
+    'floor_instruction' => 'Arahkan kamera ke lantai & ketuk lingkaran untuk memunculkan ruangan',
+    'move_phone_slowly' => 'Gerakkan ponsel perlahan',
+    'view_heritage_objects' => 'Lihat Objek Peninggalan',
+    'objects_in_site' => 'Objek Peninggalan di Situs Ini',
+    'objects_in_site_desc' => 'Ketuk atau amati artefak sejarah yang ada di lingkungan virtual ini.',
+    'no_objects_in_spot' => 'Belum ada objek peninggalan yang terdaftar pada spot ini.',
+    'start_ar' => 'START AR',
+];
