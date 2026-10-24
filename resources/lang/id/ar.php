@@ -35,4 +35,11 @@ return [
     'objects_in_site_desc' => 'Ketuk atau amati artefak sejarah yang ada di lingkungan virtual ini.',
     'no_objects_in_spot' => 'Belum ada objek peninggalan yang terdaftar pada spot ini.',
     'start_ar' => 'START AR',
+    'webxr_not_supported_title' => 'Perangkat Belum Mendukung WebXR',
+    'webxr_not_supported_desc' => 'Fitur Virtual Living Museum berbasis WebXR membutuhkan kamera AR dan dukungan browser (seperti Google Chrome di ponsel Android dengan Google Play Services for AR).',
+    'webxr_scan_qr' => 'Pindai Kode QR dengan Smartphone',
+    'webxr_scan_qr_desc' => 'Buka kamera smartphone yang mendukung AR untuk langsung menjelajahi spot virtual ini:',
+    'copy_link' => 'Salin Tautan',
+    'link_copied' => 'Tautan berhasil disalin!',
+    'back_to_situs' => 'Kembali ke Situs Peninggalan',
 ];

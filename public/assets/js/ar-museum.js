@@ -3,38 +3,21 @@ import { GLTFLoader } from "three/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/jsm/webxr/ARButton.js";
 
-let initialized = false;
-
-//If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
-window.addEventListener("vlaunch-initialized", (e) => {
-    initialized = true;
-    document.getElementById("qr-code").innerHTML = "";
-    generateLaunchCode();
-});
-
-if (VLaunch.initialized) {
-    generateLaunchCode(); // generate a Launch Code for this url
-} else {
-    setTimeout(() => {
-        if (!initialized) {
-            showToaster("Variant Launch tidak terinisialisasi");
-            document.getElementById("qr-code").innerHTML =
-                "Web XR tidak didukung di Variant Launch Anda";
-            generateQRCode(window.location.href);
-        }
-    }, 10000);
-}
+let qrGenerated = false;
 
 function hideElement(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.style.visibility = "hidden";
+    el.classList.add("hidden");
+    el.style.display = "none";
     el.style.pointerEvents = "none";
 }
 
 function showElement(id) {
     const el = document.getElementById(id);
     if (!el) return;
+    el.classList.remove("hidden", "invisible");
+    el.style.display = "";
     el.style.visibility = "visible";
     el.style.pointerEvents = "auto";
 }
@@ -49,34 +32,131 @@ function getActiveCamera(renderer, fallbackCamera) {
 }
 
 async function generateQRCode(text) {
-    new QRCode("qr-code", {
-        text: text,
-        width: 128,
-        height: 128,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H,
-    });
-}
+    const container = document.getElementById("qr-code");
+    if (!container) return;
+    container.innerHTML = "";
 
-async function generateLaunchCode() {
-    let cleanUrl = window.location.origin + window.location.pathname;
-    let url = await VLaunch.getLaunchUrl(cleanUrl + "?arToken=" + arToken);
-    console.log(url);
+    const copyInput = document.getElementById("ar-share-url");
+    if (copyInput) {
+        copyInput.value = text;
+    }
 
-    await generateQRCode(url);
+    if (typeof QRCode !== "undefined") {
+        new QRCode(container, {
+            text: text,
+            width: 160,
+            height: 160,
+            colorDark: "#111827",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M,
+        });
+    } else {
+        container.innerHTML = `<a href="${text}" target="_blank" class="text-xs text-primary underline break-all">${text}</a>`;
+    }
+    qrGenerated = true;
     showToaster("QR berhasil dibuat");
 }
 
-if ("xr" in navigator) {
-    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
-        if (supported) {
-            //hide "ar-not-supported"
-            hideElement("ar-not-supported");
-            main();
+async function generateLaunchCode() {
+    if (qrGenerated) return;
+
+    let cleanUrl = window.location.origin + window.location.pathname;
+    let targetUrl = cleanUrl + (typeof arToken !== "undefined" && arToken ? "?arToken=" + arToken : "");
+    let launchUrl = targetUrl;
+
+    if (typeof VLaunch !== "undefined" && typeof VLaunch.getLaunchUrl === "function") {
+        try {
+            launchUrl = await VLaunch.getLaunchUrl(targetUrl);
+            console.log("VLaunch Launch URL:", launchUrl);
+        } catch (err) {
+            console.warn("VLaunch getLaunchUrl error, fallback ke target URL:", err);
+            launchUrl = targetUrl;
         }
-    });
+    }
+
+    await generateQRCode(launchUrl);
 }
+
+// Inisialisasi QR Code / Launch Code
+window.addEventListener("vlaunch-initialized", () => {
+    generateLaunchCode();
+});
+
+if (typeof VLaunch !== "undefined" && VLaunch.initialized) {
+    generateLaunchCode();
+} else {
+    // Fallback cepat jika VLaunch tidak terinisialisasi dalam 2.5 detik
+    setTimeout(() => {
+        if (!qrGenerated) {
+            let cleanUrl = window.location.origin + window.location.pathname;
+            let targetUrl = cleanUrl + (typeof arToken !== "undefined" && arToken ? "?arToken=" + arToken : "");
+            generateQRCode(targetUrl);
+        }
+    }, 2500);
+}
+
+// WebXR Support Check
+async function checkWebXRSupport() {
+    if (!("xr" in navigator) || !navigator.xr) {
+        return false;
+    }
+    if (typeof navigator.xr.isSessionSupported !== "function") {
+        return false;
+    }
+    try {
+        return await navigator.xr.isSessionSupported("immersive-ar");
+    } catch (err) {
+        console.warn("WebXR isSessionSupported error:", err);
+        return false;
+    }
+}
+
+function arNotSupported() {
+    showElement("ar-not-supported");
+    hideElement("ar-button-container");
+    hideElement("instructions");
+    hideElement("expand-bottom-sheet");
+    hideElement("loading-container");
+}
+
+checkWebXRSupport().then((supported) => {
+    if (supported) {
+        hideElement("ar-not-supported");
+        main();
+    } else {
+        arNotSupported();
+    }
+});
+
+// Setup tombol salin tautan
+document.addEventListener("DOMContentLoaded", () => {
+    const btnCopy = document.getElementById("btn-copy-ar-link");
+    const inputUrl = document.getElementById("ar-share-url");
+    const copyLabel = document.getElementById("copy-btn-label");
+
+    if (btnCopy && inputUrl) {
+        btnCopy.addEventListener("click", async () => {
+            const url = inputUrl.value || window.location.href;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(url);
+                } else {
+                    inputUrl.select();
+                    document.execCommand("copy");
+                }
+                if (copyLabel) {
+                    const original = copyLabel.textContent;
+                    copyLabel.textContent = "✓ Disalin!";
+                    setTimeout(() => {
+                        copyLabel.textContent = original;
+                    }, 2000);
+                }
+            } catch (err) {
+                console.warn("Gagal menyalin tautan:", err);
+            }
+        });
+    }
+});
 
 class SceneManager {
     constructor(renderer) {
@@ -588,22 +668,24 @@ async function main() {
     showToaster(
         "File size: " + (museum.file_size / 1024 / 1024).toFixed(2) + " MB",
     );
+    const percentEl = document.getElementById("loading-percentage");
     const model = await ModelLoader.loadModel(
         "/storage/" + museum.path_obj,
         (event) => {
             const fileSize = event.total || museum.file_size || 43445936; // Use server-provided size as fallback
             let progress = (event.loaded / fileSize) * 100;
-            // console.log(event.loaded, fileSize, progress);
             progress = Math.min(progress, 100); // Ensure progress does not exceed 100%
-            // document.getElementById("loading-container").style.display =
-            //     "block";
             showElement("loading-container");
-            document.getElementById("loading-bar").style.width = `${progress}%`;
-            // showToaster(`Loading progress: ${progress}%`);
+            const loadingBar = document.getElementById("loading-bar");
+            if (loadingBar) {
+                loadingBar.style.width = `${progress}%`;
+            }
+            if (percentEl) {
+                percentEl.textContent = `${Math.round(progress)}%`;
+            }
         },
     );
 
-    // document.getElementById("loading-container").style.display = "none";
     hideElement("loading-container");
 
     showToaster("Model loaded, creating AR button");
@@ -694,12 +776,4 @@ async function main() {
     showToaster("Starting animation loop");
 
     rendererManager.animate(sceneManager);
-}
-
-function arNotSupported() {
-    showElement("ar-not-supported");
-    hideElement("ar-button-container");
-    hideElement("instructions");
-    hideElement("expand-bottom-sheet");
-    hideElement("loading-container");
 }

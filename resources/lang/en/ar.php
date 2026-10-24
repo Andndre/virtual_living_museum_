@@ -35,4 +35,11 @@ return [
     'objects_in_site_desc' => 'Tap or examine historical artifacts present in this virtual environment.',
     'no_objects_in_spot' => 'No heritage objects registered for this spot yet.',
     'start_ar' => 'START AR',
+    'webxr_not_supported_title' => 'Device Does Not Support WebXR',
+    'webxr_not_supported_desc' => 'This WebXR Virtual Living Museum feature requires an AR camera and browser support (such as Google Chrome on an Android phone with Google Play Services for AR).',
+    'webxr_scan_qr' => 'Scan QR Code with Smartphone',
+    'webxr_scan_qr_desc' => 'Open your AR-capable smartphone camera to explore this virtual spot directly:',
+    'copy_link' => 'Copy Link',
+    'link_copied' => 'Link copied to clipboard!',
+    'back_to_situs' => 'Back to Heritage Site',
 ];

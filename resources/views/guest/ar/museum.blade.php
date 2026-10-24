@@ -174,14 +174,14 @@
         var popupVisible = false;
         var arToken = '{{ $arToken }}';
     </script>
-    <div class="pointer-events-auto z-[10000000] rounded-b-3xl bg-primary px-6 py-6 text-white">
+    <div class="pointer-events-auto z-[10000000] rounded-b-3xl bg-primary px-6 py-6 text-white shadow-md">
         <div class="flex items-center space-x-4">
-            <a href="{{ route('guest.home') }}" class="rounded-full p-2 transition-colors hover:bg-white/10">
+            <a href="{{ route('guest.situs.detail', $situs->situs_id) }}" class="rounded-full p-2 transition-colors hover:bg-white/10" title="{{ __('ar.back_to_situs') }}">
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>
             <div class="flex-1">
                 <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
-                <p class="text-sm opacity-90">{{ __('ar.museum_explore') }}</p>
+                <p class="text-sm opacity-90">{{ $museum->nama ?? __('ar.museum_explore') }}</p>
             </div>
         </div>
     </div>
@@ -268,40 +268,74 @@
             }
         });
     </script>
-    <div id="app">
-        <div
-            class="pointer-events-none absolute inset-0 z-[15] mx-auto flex min-h-[80vh] min-w-[320px] max-w-5xl flex-col items-center gap-4 p-8 pt-36 text-center">
-            <div class="mb-2 flex justify-center">
-                <x-application-logo class="h-12 w-12" />
+    <div id="app" class="relative z-[15] mx-auto flex min-h-[calc(100vh-100px)] w-full max-w-xl flex-col items-center justify-start px-4 py-8 text-center overflow-y-auto">
+        <div class="mb-2 flex justify-center">
+            <x-application-logo class="h-12 w-12" />
+        </div>
+        <h2 class="text-xl md:text-2xl font-bold text-primary">{{ config('app.name') }}</h2>
+        <p class="mt-1 text-sm font-semibold text-gray-800">{{ $museum->nama }}</p>
+        <p class="text-xs text-gray-500">{{ $situs->nama }}</p>
+
+        <!-- Pesan WebXR Tidak Didukung & QR Code -->
+        <div id="ar-not-supported" class="hidden mt-6 w-full rounded-2xl bg-white p-5 md:p-6 shadow-xl border border-gray-100 text-center pointer-events-auto">
+            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                <i class="fas fa-vr-cardboard text-xl"></i>
             </div>
-            <h2 class="mb-2 text-center text-2xl font-bold text-primary">{{ config('app.name') }}</h2>
-            <div id="ar-not-supported" class="invisible mt-8 w-full rounded-xl bg-white p-6 shadow">
-                <p class="font-semibold text-red-600">Teknologi WebXR tidak didukung di perangkat Anda.</p>
-                <p class="text-gray-600">Untuk dokumentasi selengkapnya, kunjungi <a
-                        href="https://launch.variant3d.com/docs" class="underline">https://launch.variant3d.com</a>.</p>
-                <div class="mt-4 flex flex-col items-center justify-center">
-                    <div id="qr-code"
-                        class="mx-auto flex flex-col items-center gap-3 rounded-lg bg-white p-4 text-black shadow">
-                        <span class="sr-only">Loading...</span>
-                        <p>Error 426: Perangkat/Browser tidak didukung</p>
+            <h3 class="text-base md:text-lg font-bold text-gray-900">{{ __('ar.webxr_not_supported_title') }}</h3>
+            <p class="mt-2 text-xs md:text-sm text-gray-600 leading-relaxed">{{ __('ar.webxr_not_supported_desc') }}</p>
+
+            <div class="mt-5 flex flex-col items-center justify-center rounded-xl bg-gray-50 border border-gray-200/80 p-4">
+                <p class="mb-3 text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                    <i class="fas fa-qrcode text-primary"></i>
+                    <span>{{ __('ar.webxr_scan_qr') }}</span>
+                </p>
+                <div id="qr-code" class="flex items-center justify-center min-h-[160px] min-w-[160px] bg-white p-2.5 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex flex-col items-center gap-2 text-gray-400 py-6">
+                        <i class="fas fa-circle-notch fa-spin text-2xl text-primary"></i>
+                        <span class="text-xs">{{ __('ar.loading_marker') }}</span>
                     </div>
                 </div>
+                <p class="mt-3 text-[11px] text-gray-500 max-w-xs">{{ __('ar.webxr_scan_qr_desc') }}</p>
             </div>
 
-            <div id="loading-container" class="mx-auto my-8 h-2 w-4/5 max-w-xl rounded-full bg-gray-300">
-                <div id="loading-bar" class="h-full rounded-full bg-orange-400 transition-all duration-200"
-                    style="width:0"></div>
+            <div class="mt-4 flex w-full flex-col gap-2">
+                <div class="flex items-center gap-2">
+                    <input id="ar-share-url" type="text" readonly value="{{ url()->full() }}"
+                        class="w-full flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600 select-all focus:outline-none" />
+                    <button id="btn-copy-ar-link" type="button"
+                        class="flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-primary px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-hover active:scale-95">
+                        <i class="fas fa-copy"></i>
+                        <span id="copy-btn-label">{{ __('ar.copy_link') }}</span>
+                    </button>
+                </div>
+                <a href="{{ route('guest.situs.detail', $situs->situs_id) }}"
+                    class="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>{{ __('ar.back_to_situs') }}</span>
+                </a>
             </div>
         </div>
-        <div id="ar-button-container"></div>
 
-        <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-        <script>
-            var museum = @json($museum);
-            console.log(museum);
-        </script>
+        <!-- Loading Model Bar (Hanya saat WebXR didukung dan sedang load 3D model) -->
+        <div id="loading-container" class="w-full max-w-md my-8">
+            <div class="flex justify-between items-center mb-1.5 text-xs text-gray-600 font-medium">
+                <span>{{ __('ar.loading_model') }}</span>
+                <span id="loading-percentage">0%</span>
+            </div>
+            <div class="h-2.5 w-full rounded-full bg-gray-200 overflow-hidden shadow-inner">
+                <div id="loading-bar" class="h-full rounded-full bg-primary transition-all duration-200" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    <div id="ar-button-container"></div>
 
-        <script src="{{ asset('assets/js/ar-museum.js') }}?v={{ filemtime(public_path('assets/js/ar-museum.js')) }}" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script>
+        var museum = @json($museum);
+        console.log(museum);
+    </script>
+
+    <script src="{{ asset('assets/js/ar-museum.js') }}?v={{ filemtime(public_path('assets/js/ar-museum.js')) }}" type="module"></script>
     </div>
 </body>
 
