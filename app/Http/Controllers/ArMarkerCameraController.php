@@ -82,6 +82,33 @@ class ArMarkerCameraController extends Controller
             ], 404);
         }
 
+        $allObjects = collect();
+        if ($object->marker_id) {
+            $allObjects = VirtualMuseumObject::where('marker_id', $object->marker_id)
+                ->whereNotNull('path_obj')
+                ->orderBy('object_id')
+                ->get();
+        }
+
+        if ($allObjects->isEmpty()) {
+            $allObjects = collect([$object]);
+        }
+
+        $markerObjects = $allObjects->map(function ($item) {
+            return [
+                'id' => $item->object_id,
+                'marker_id' => $item->marker_id,
+                'name' => $item->nama,
+                'short_name' => Str::limit($item->nama, 20),
+                'description' => $item->deskripsi ?? '',
+                'short_description' => Str::limit(strip_tags($item->deskripsi ?? ''), 120),
+                'model_url' => asset('storage/'.$item->path_obj),
+                'usdz_url' => $item->path_usdz ? route('usdz.serve', ['path' => basename($item->path_usdz)]) : null,
+                'audio_url' => $item->path_audio ? asset('storage/'.$item->path_audio) : null,
+                'gambar_real' => $item->gambar_real ? asset('storage/'.$item->gambar_real) : null,
+            ];
+        })->values();
+
         $usdzUrl = null;
         if ($object->path_usdz) {
             $usdzUrl = route('usdz.serve', ['path' => basename($object->path_usdz)]);
@@ -98,6 +125,7 @@ class ArMarkerCameraController extends Controller
             'usdz_url' => $usdzUrl,
             'audio_url' => $object->path_audio ? asset('storage/'.$object->path_audio) : null,
             'gambar_real' => $object->gambar_real ? asset('storage/'.$object->gambar_real) : null,
+            'marker_objects' => $markerObjects,
         ]);
     }
 

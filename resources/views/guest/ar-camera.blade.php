@@ -85,6 +85,15 @@
         model-viewer::part(default-progress-bar) {
             display: none;
         }
+
+        /* Hide scrollbars */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 
@@ -199,6 +208,13 @@
                       exposure="1"
                       shadow-intensity="1">
 
+            <!-- Multi-Object Thumbnail Switcher (Visible only when marker has >= 2 objects) -->
+            <div id="multi-object-switcher" class="hidden absolute bottom-44 left-0 right-0 z-40 flex flex-col items-center pointer-events-none px-4">
+                <div class="pointer-events-auto flex items-center max-w-full overflow-x-auto py-1.5 px-2 rounded-2xl bg-black/60 backdrop-blur-lg border border-white/15 shadow-2xl scrollbar-none">
+                    <div id="switcher-items-container" class="flex items-center gap-2"></div>
+                </div>
+            </div>
+
             <!-- Custom AR Launch Button -->
             <button slot="ar-button" id="custom-ar-button" type="button"
                     class="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-2xl transition active:scale-95 border border-blue-400/30">
@@ -273,6 +289,8 @@
             let isScanning = false;
             let currentTorchState = false;
             let isSheetExpanded = false;
+            let currentMarkerObjects = [];
+            let currentActiveObjectId = null;
 
             const initialMarker = "{{ $initialMarker ?? '' }}";
             const initialObject = "{{ $initialObject ?? '' }}";
@@ -494,10 +512,21 @@
             function displayModel(data) {
                 const scannerView = document.getElementById('scanner-view');
                 const modelView = document.getElementById('model-view');
-                const viewer = document.getElementById('ar-model-viewer');
 
                 if (scannerView) scannerView.classList.add('hidden');
                 if (modelView) modelView.classList.remove('hidden');
+
+                currentMarkerObjects = (data.marker_objects && data.marker_objects.length > 0)
+                    ? data.marker_objects
+                    : [data];
+
+                loadObjectIntoViewer(data);
+                renderObjectSwitcher(currentMarkerObjects, data.id);
+            }
+
+            function loadObjectIntoViewer(data) {
+                currentActiveObjectId = data.id;
+                const viewer = document.getElementById('ar-model-viewer');
 
                 // Set 3D sources
                 viewer.setAttribute('src', data.model_url);
@@ -528,7 +557,14 @@
                 const descEl = document.getElementById('model-desc-full');
 
                 if (titleEl) titleEl.innerText = data.name || 'Objek AR';
-                if (badgeEl) badgeEl.innerText = data.marker_id ? 'Marker #' + data.marker_id : '';
+
+                const totalObj = currentMarkerObjects.length;
+                const currentIndex = currentMarkerObjects.findIndex(o => o.id === data.id);
+                let badgeText = data.marker_id ? 'Marker #' + data.marker_id : '';
+                if (totalObj > 1 && currentIndex !== -1) {
+                    badgeText += (badgeText ? ' • ' : '') + `Objek ${currentIndex + 1} dari ${totalObj}`;
+                }
+                if (badgeEl) badgeEl.innerText = badgeText;
                 if (descEl) descEl.innerText = data.description || 'Tidak ada deskripsi detail untuk objek ini.';
 
                 // Reset Bottom Sheet to collapsed state
@@ -538,24 +574,92 @@
                 if (arrow) arrow.style.transform = 'rotate(0deg)';
                 isSheetExpanded = false;
 
-                // Setup Audio Narasi
+                // Setup Audio Narasi (Stop previous, prepare new)
                 const btnAudio = document.getElementById('btn-audio-toggle');
                 const audioPlayer = document.getElementById('ar-audio');
                 const iconPlay = document.getElementById('audio-icon-play');
                 const iconPause = document.getElementById('audio-icon-pause');
 
                 if (btnAudio && audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
                     if (data.audio_url) {
                         audioPlayer.src = data.audio_url;
                         btnAudio.classList.remove('hidden');
                         iconPlay.classList.remove('hidden');
                         iconPause.classList.add('hidden');
                     } else {
-                        audioPlayer.pause();
                         audioPlayer.src = '';
                         btnAudio.classList.add('hidden');
                     }
                 }
+
+                // Update URL parameter dynamically via replaceState
+                if (window.history && window.history.replaceState) {
+                    const newUrl = new URL(window.location.href);
+                    if (data.id) newUrl.searchParams.set('object', data.id);
+                    if (data.marker_id) newUrl.searchParams.set('marker', data.marker_id);
+                    window.history.replaceState(null, '', newUrl.toString());
+                }
+            }
+
+            function renderObjectSwitcher(objectsList, activeId) {
+                const switcher = document.getElementById('multi-object-switcher');
+                const container = document.getElementById('switcher-items-container');
+                if (!switcher || !container) return;
+
+                if (!objectsList || objectsList.length <= 1) {
+                    switcher.classList.add('hidden');
+                    container.innerHTML = '';
+                    return;
+                }
+
+                switcher.classList.remove('hidden');
+                container.innerHTML = '';
+
+                objectsList.forEach((obj, idx) => {
+                    const isActive = (obj.id === activeId);
+                    const pill = document.createElement('button');
+                    pill.type = 'button';
+                    pill.className = `object-pill flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all duration-200 select-none ${
+                        isActive
+                            ? 'bg-blue-600 text-white shadow-lg ring-2 ring-blue-400/60 scale-105'
+                            : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                    }`;
+
+                    const visualBox = obj.gambar_real
+                        ? `<img src="${obj.gambar_real}" alt="${escapeHtml(obj.name)}" class="w-full h-full object-cover">`
+                        : `<div class="flex items-center justify-center w-full h-full"><i class="fas fa-cube text-[11px] ${isActive ? 'text-white' : 'text-blue-400'}"></i></div>`;
+
+                    pill.innerHTML = `
+                        <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-white/20 ${isActive ? 'bg-white/20' : 'bg-black/40'}">
+                            ${visualBox}
+                        </div>
+                        <span class="text-xs font-semibold whitespace-nowrap pr-1">${escapeHtml(obj.short_name || obj.name)}</span>
+                    `;
+
+                    pill.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (obj.id !== currentActiveObjectId) {
+                            loadObjectIntoViewer(obj);
+                            renderObjectSwitcher(currentMarkerObjects, obj.id);
+                        }
+                    });
+
+                    container.appendChild(pill);
+                });
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, m => map[m]);
             }
 
             function showScanner() {
@@ -563,9 +667,11 @@
                 const modelView = document.getElementById('model-view');
                 const viewer = document.getElementById('ar-model-viewer');
                 const audioPlayer = document.getElementById('ar-audio');
+                const switcher = document.getElementById('multi-object-switcher');
 
                 if (audioPlayer) audioPlayer.pause();
                 if (viewer) viewer.removeAttribute('src');
+                if (switcher) switcher.classList.add('hidden');
 
                 if (modelView) modelView.classList.add('hidden');
                 if (scannerView) scannerView.classList.remove('hidden');

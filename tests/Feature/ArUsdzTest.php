@@ -71,6 +71,19 @@ test('api returns correct model metadata including usdz url', function () {
         'path_usdz' => 'virtual-museum/objects/models_usdz/prasasti.usdz',
     ]);
 
+    $object2 = VirtualMuseumObject::create([
+        'situs_id' => $situs->situs_id,
+        'museum_id' => $museum->museum_id,
+        'marker_id' => $marker->marker_id,
+        'nama' => 'Arca Pendamping',
+        'gambar_real' => 'virtual-museum/objects/images/arca.jpg',
+        'path_patt' => null,
+        'path_gambar_marker' => null,
+        'deskripsi' => 'Deskripsi arca pendamping.',
+        'path_obj' => 'virtual-museum/objects/models/arca.glb',
+        'path_usdz' => null,
+    ]);
+
     $response = $this->actingAs($user)->getJson(route('api.ar.model', ['marker' => $marker->marker_id]));
 
     $response->assertStatus(200)
@@ -83,6 +96,9 @@ test('api returns correct model metadata including usdz url', function () {
     $data = $response->json();
     expect($data['usdz_url'])->toContain('/usdz-file/prasasti.usdz');
     expect($data['model_url'])->toContain('/storage/virtual-museum/objects/models/prasasti.glb');
+    expect($data['marker_objects'])->toHaveCount(2);
+    expect($data['marker_objects'][0]['name'])->toBe('Prasasti Kuno');
+    expect($data['marker_objects'][1]['name'])->toBe('Arca Pendamping');
 });
 
 test('serves usdz file with strict apple quick look mime type', function () {
