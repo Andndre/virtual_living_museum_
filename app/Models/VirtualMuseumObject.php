@@ -27,6 +27,7 @@ class VirtualMuseumObject extends Model
         'nama',
         'gambar_real',
         'path_obj',
+        'path_usdz',
         'path_gambar_marker',
         'path_patt',
         'deskripsi',

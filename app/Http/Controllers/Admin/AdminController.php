@@ -633,8 +633,8 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
+            'path_usdz' => 'nullable|file|max:102400', // 100MB (iOS Quick Look)
             'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
-            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'marker_id' => [
                 'nullable',
                 'integer',
@@ -665,6 +665,16 @@ class AdminController extends Controller
             $filename = time().'_obj_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
             $path = $file->storeAs('virtual-museum/objects/models', $filename, 'public');
             $data['path_obj'] = $path;
+        }
+
+        if ($request->hasFile('path_usdz')) {
+            $file = $request->file('path_usdz');
+            $filename = time().'_usdz_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            if (! str_ends_with(strtolower($filename), '.usdz')) {
+                $filename .= '.usdz';
+            }
+            $path = $file->storeAs('virtual-museum/objects/models_usdz', $filename, 'public');
+            $data['path_usdz'] = $path;
         }
 
         if ($request->hasFile('audio_file')) {
@@ -726,8 +736,8 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'gambar_real' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'path_obj' => 'nullable|file|max:307200', // 300MB
+            'path_usdz' => 'nullable|file|max:102400', // 100MB (iOS Quick Look)
             'audio_file' => 'nullable|file|mimes:mp3,wav,ogg,aac|max:10240', // 10MB
-            'path_gambar_marker' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB
             'marker_id' => [
                 'nullable',
                 'integer',
@@ -740,7 +750,7 @@ class AdminController extends Controller
 
         $data = [
             'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi' => $request->input('deskripsi', $object->deskripsi ?? ''),
         ];
 
         if ($request->boolean('remove_audio')) {
@@ -748,6 +758,13 @@ class AdminController extends Controller
                 Storage::disk('public')->delete($object->path_audio);
             }
             $data['path_audio'] = null;
+        }
+
+        if ($request->boolean('remove_usdz')) {
+            if ($object->path_usdz && Storage::disk('public')->exists($object->path_usdz)) {
+                Storage::disk('public')->delete($object->path_usdz);
+            }
+            $data['path_usdz'] = null;
         }
 
         // Handle file uploads
@@ -775,6 +792,20 @@ class AdminController extends Controller
             $data['path_obj'] = $path;
         }
 
+        if ($request->hasFile('path_usdz')) {
+            if ($object->path_usdz && Storage::disk('public')->exists($object->path_usdz)) {
+                Storage::disk('public')->delete($object->path_usdz);
+            }
+
+            $file = $request->file('path_usdz');
+            $filename = time().'_usdz_'.preg_replace('/[^a-zA-Z0-9\._-]/', '', $file->getClientOriginalName());
+            if (! str_ends_with(strtolower($filename), '.usdz')) {
+                $filename .= '.usdz';
+            }
+            $path = $file->storeAs('virtual-museum/objects/models_usdz', $filename, 'public');
+            $data['path_usdz'] = $path;
+        }
+
         if ($request->hasFile('audio_file')) {
             if ($object->path_audio && Storage::disk('public')->exists($object->path_audio)) {
                 Storage::disk('public')->delete($object->path_audio);
@@ -792,6 +823,10 @@ class AdminController extends Controller
             $data['marker_id'] = $marker->marker_id;
             $data['path_gambar_marker'] = $marker->path_gambar_marker;
             $data['path_patt'] = $marker->path_patt;
+        } elseif ($request->has('marker_id') && empty($request->input('marker_id')) && ! $request->filled('nama_marker')) {
+            $data['marker_id'] = null;
+            $data['path_gambar_marker'] = null;
+            $data['path_patt'] = null;
         }
 
         $object->update($data);
@@ -815,7 +850,7 @@ class AdminController extends Controller
         $oldMarker = $object->arMarker;
 
         // Delete associated files
-        $files = ['gambar_real', 'path_obj', 'path_audio'];
+        $files = ['gambar_real', 'path_obj', 'path_usdz', 'path_audio'];
         foreach ($files as $fileField) {
             if ($object->$fileField && Storage::disk('public')->exists($object->$fileField)) {
                 Storage::disk('public')->delete($object->$fileField);
@@ -885,11 +920,27 @@ class AdminController extends Controller
     {
         $selectedMarkerId = $request->input('marker_id');
 
+        // 1. If an existing marker was selected
+        if ($selectedMarkerId) {
+            return ArMarker::where('museum_id', $museum->museum_id)
+                ->findOrFail($selectedMarkerId);
+        }
+
+        // 2. If admin wants to create a new marker by name / label
+        if ($request->filled('nama_marker')) {
+            $markerName = trim($request->input('nama_marker'));
+
+            return ArMarker::create([
+                'situs_id' => $museum->situs_id,
+                'museum_id' => $museum->museum_id,
+                'nama' => $markerName,
+            ]);
+        }
+
+        // 3. Fallback to legacy image upload if provided
         if ($request->hasFile('path_gambar_marker')) {
             $assets = $this->storeMarkerAssets($request->file('path_gambar_marker'));
-            $markerName = $request->filled('nama_marker')
-                ? $request->input('nama_marker')
-                : ('Marker '.$request->input('nama', 'AR'));
+            $markerName = 'Marker '.$request->input('nama', 'AR');
 
             return ArMarker::create([
                 'situs_id' => $museum->situs_id,
@@ -898,11 +949,6 @@ class AdminController extends Controller
                 'path_gambar_marker' => $assets['path_gambar_marker'],
                 'path_patt' => $assets['path_patt'],
             ]);
-        }
-
-        if ($selectedMarkerId) {
-            return ArMarker::where('museum_id', $museum->museum_id)
-                ->findOrFail($selectedMarkerId);
         }
 
         return $currentObject?->arMarker;

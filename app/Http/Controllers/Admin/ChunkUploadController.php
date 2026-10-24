@@ -27,7 +27,7 @@ class ChunkUploadController extends Controller
             'chunkIndex' => 'required|integer|min:0',
             'totalChunks' => 'required|integer|min:1',
             'uuid' => 'required|string|size:36',
-            'fieldName' => 'required|string|in:path_obj,obj_file',
+            'fieldName' => 'required|string|in:path_obj,obj_file,path_usdz',
             'museum_id' => 'nullable|integer',
         ]);
 
@@ -74,7 +74,7 @@ class ChunkUploadController extends Controller
     {
         $request->validate([
             'uuid' => 'required|string|size:36',
-            'fieldName' => 'required|string|in:path_obj,obj_file',
+            'fieldName' => 'required|string|in:path_obj,obj_file,path_usdz',
             'museum_id' => 'nullable|integer',
             'target_path' => 'nullable|string', // e.g. 'virtual-museum/models' or 'virtual-museum/objects/models'
             'original_filename' => 'nullable|string',
@@ -113,12 +113,19 @@ class ChunkUploadController extends Controller
         }
         fclose($out);
 
-        // Validate GLB magic bytes: first 4 bytes must be "glTF" (0x46546C67)
+        // Validate magic bytes: GLB starts with "glTF" (0x46546C67), USDZ starts with zip "PK\x03\x04"
         $handle = fopen($tempMergedFullPath, 'rb');
         $header = fread($handle, 4);
         fclose($handle);
 
-        if ($header !== 'glTF') {
+        if ($fieldName === 'path_usdz') {
+            if (! str_starts_with($header, "PK\x03\x04")) {
+                Storage::disk('local')->delete($tempMergedPath);
+                $this->cleanup($uuid, $fieldName);
+
+                return response()->json(['error' => 'File is not a valid USDZ package.'], 422);
+            }
+        } elseif ($header !== 'glTF') {
             Storage::disk('local')->delete($tempMergedPath);
             $this->cleanup($uuid, $fieldName);
 
@@ -158,7 +165,7 @@ class ChunkUploadController extends Controller
     {
         $request->validate([
             'uuid' => 'required|string|size:36',
-            'fieldName' => 'required|string|in:path_obj,obj_file',
+            'fieldName' => 'required|string|in:path_obj,obj_file,path_usdz',
             'totalChunks' => 'required|integer|min:1',
         ]);
 
@@ -185,7 +192,7 @@ class ChunkUploadController extends Controller
     {
         $request->validate([
             'uuid' => 'required|string|size:36',
-            'fieldName' => 'required|string|in:path_obj,obj_file',
+            'fieldName' => 'required|string|in:path_obj,obj_file,path_usdz',
         ]);
 
         $this->cleanup($request->uuid, $request->fieldName);
