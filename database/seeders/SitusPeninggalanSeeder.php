@@ -20,7 +20,7 @@ class SitusPeninggalanSeeder extends Seeder
     {
         // 1. Dapatkan atau buat user admin sebagai pemilik/pengunggah situs
         $admin = User::where('email', 'admin@gmail.com')->first();
-        if (!$admin) {
+        if (! $admin) {
             $admin = User::create([
                 'name' => 'Admin User',
                 'email' => 'admin@gmail.com',
@@ -53,8 +53,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Arca batu pengapit gapura Candi Bentar Pura Penataran Agung Besakih.',
                         'path_obj' => 'virtual-museum/objects/models/arca_pengapit.glb',
                         'gambar_real' => 'images/objects/arca_pengapit.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Candi Gunung Kawi',
@@ -70,8 +70,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Representasi 3D detail struktur pahatan candi tebing Gunung Kawi Tampaksiring.',
                         'path_obj' => 'virtual-museum/objects/models/candi_tebing.glb',
                         'gambar_real' => 'images/objects/candi_tebing.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Goa Gajah Bedulu',
@@ -87,8 +87,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Arca Dewa Ganesha sebagai perlambang kebijaksanaan dan penghalau rintangan yang berada di dalam relung Goa Gajah.',
                         'path_obj' => 'virtual-museum/objects/models/ganesha_goagajah.glb',
                         'gambar_real' => 'images/objects/ganesha_goagajah.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Situs Sarkofagus Manuaba',
@@ -104,8 +104,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Peti mati batu megalitik lengkap dengan ukiran penutup kepala topeng pelindung jasad.',
                         'path_obj' => 'virtual-museum/objects/models/sarkofagus_manuaba.glb',
                         'gambar_real' => 'images/objects/sarkofagus_manuaba.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Situs Megalitik Punden Berundak Lempuyang',
@@ -121,8 +121,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Visualisasi arsitektur prasejarah teras batu bertingkat sebagai media pemujaan roh leluhur.',
                         'path_obj' => 'virtual-museum/objects/models/punden_berundak.glb',
                         'gambar_real' => 'images/objects/punden_berundak.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Kerta Gosa Semarapura',
@@ -138,8 +138,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Panel lukisan langit-langit Kerta Gosa yang legendaris, menceritakan kisah perjalanan Bima Swarga.',
                         'path_obj' => 'virtual-museum/objects/models/wayang_kamasan.glb',
                         'gambar_real' => 'images/objects/wayang_kamasan.jpg',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'nama' => 'Situs Prasasti Blanjong Sanur',
@@ -155,20 +155,20 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => 'Pilar batu silinder bersejarah tinggi bertuliskan silsilah keturunan raja dinasti Warmadewa.',
                         'path_obj' => 'virtual-museum/objects/models/prasasti_blanjong.glb',
                         'gambar_real' => 'images/objects/prasasti_blanjong.jpg',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         foreach ($situsData as $data) {
             // Dapatkan Materi ID berdasarkan judul materi
             $materi = Materi::where('judul', $data['materi_judul'])->first();
-            if (!$materi) {
+            if (! $materi) {
                 // Jika materi tidak ditemukan, ambil materi pertama yang ada
                 $materi = Materi::first();
             }
 
-            if (!$materi) {
+            if (! $materi) {
                 continue; // Skip jika tidak ada materi sama sekali di database
             }
 
@@ -190,17 +190,17 @@ class SitusPeninggalanSeeder extends Seeder
             $museum = VirtualMuseum::updateOrCreate(
                 ['situs_id' => $situs->situs_id],
                 [
-                    'nama' => 'Museum Virtual ' . $situs->nama,
-                    'path_obj' => 'virtual-museum/models/' . Str::slug($situs->nama) . '.glb',
+                    'nama' => 'Museum Virtual '.$situs->nama,
+                    'path_obj' => 'virtual-museum/models/'.Str::slug($situs->nama).'.glb',
                 ]
             );
 
             // Create atau update Virtual Museum Objects dan AR Markers
             foreach ($data['objects'] as $obj) {
                 // 1. Buat ArMarker terlebih dahulu
-                $markerName = 'Marker ' . $obj['nama'];
+                $markerName = 'Marker '.$obj['nama'];
                 $slug = Str::slug($obj['nama']);
-                
+
                 $marker = ArMarker::updateOrCreate(
                     [
                         'situs_id' => $situs->situs_id,
@@ -208,8 +208,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'nama' => $markerName,
                     ],
                     [
-                        'path_gambar_marker' => 'markers/' . $slug . '.png',
-                        'path_patt' => 'patterns/' . $slug . '.patt',
+                        'path_gambar_marker' => 'markers/'.$slug.'.png',
+                        'path_patt' => 'patterns/'.$slug.'.patt',
                     ]
                 );
 
@@ -225,8 +225,8 @@ class SitusPeninggalanSeeder extends Seeder
                         'deskripsi' => $obj['deskripsi'],
                         'path_obj' => $obj['path_obj'],
                         'gambar_real' => $obj['gambar_real'],
-                        'path_gambar_marker' => 'markers/' . $slug . '.png',
-                        'path_patt' => 'patterns/' . $slug . '.patt',
+                        'path_gambar_marker' => 'markers/'.$slug.'.png',
+                        'path_patt' => 'patterns/'.$slug.'.patt',
                         'path_audio' => null,
                     ]
                 );

@@ -122,41 +122,71 @@
                         <div id="audio-file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
                     </div>
 
-                    <!-- Pengaturan Marker -->
-                    <div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
-                        <h3 class="text-sm font-semibold text-blue-900">Pengaturan Marker AR</h3>
-                        <p class="mt-1 text-xs text-blue-700">Pilih marker yang sudah ada agar satu marker bisa
-                            memuat lebih dari satu object, atau upload marker baru.</p>
+                    <!-- Pengaturan Marker AR (QR Code) -->
+                    <div class="rounded-xl border border-blue-100 bg-blue-50/70 p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-bold text-blue-900 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                                </svg>
+                                Pengaturan Marker QR AR
+                            </h3>
+                            <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">QR Based</span>
+                        </div>
+                        <p class="text-xs text-blue-700 leading-relaxed mb-4">
+                            Gunakan marker QR yang sudah ada untuk berbagi 1 marker ke banyak objek, atau buat marker baru. QR Code di-generate otomatis untuk dipindai melalui kamera AR.
+                        </p>
 
-                        <div class="mt-4 space-y-4">
+                        <div class="space-y-4">
                             <div>
-                                <label for="marker_id" class="mb-2 block text-sm font-medium text-gray-700">
-                                    Gunakan Marker Yang Sudah Ada
+                                <label for="marker_id" class="mb-1.5 block text-xs font-semibold text-gray-700">
+                                    Pilih Marker AR
                                 </label>
-                                <select id="marker_id" name="marker_id"
-                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">-- Buat marker baru / tanpa marker --</option>
+                                <select id="marker_id" name="marker_id" onchange="handleMarkerSelectionChange()"
+                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- Buat Marker Baru --</option>
                                     @foreach ($museum->arMarkers as $marker)
-                                        <option value="{{ $marker->marker_id }}" @selected(old('marker_id') == $marker->marker_id)>
+                                        <option value="{{ $marker->marker_id }}"
+                                                data-name="{{ $marker->nama ?: 'Marker #' . $marker->marker_id }}"
+                                                @selected(old('marker_id') == $marker->marker_id)>
                                             {{ $marker->nama ?: 'Marker #' . $marker->marker_id }}
                                             @if ($marker->virtualMuseumObjects->count() > 0)
-                                                ({{ $marker->virtualMuseumObjects->count() }} object)
+                                                ({{ $marker->virtualMuseumObjects->count() }} objek)
                                             @endif
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div>
-                                <label for="nama_marker" class="mb-2 block text-sm font-medium text-gray-700">
-                                    Nama Marker Baru
+                            <div id="new-marker-container">
+                                <label for="nama_marker" class="mb-1.5 block text-xs font-semibold text-gray-700">
+                                    Nama / Label Marker Baru
                                 </label>
                                 <input type="text" id="nama_marker" name="nama_marker"
-                                    value="{{ old('nama_marker') }}"
-                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value="{{ old('nama_marker') }}" oninput="updateQrPreview()"
+                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Contoh: Marker Candi Utama">
-                                <p class="mt-1 text-xs text-gray-500">Digunakan saat Anda upload gambar marker baru.
-                                </p>
+                                <p class="mt-1 text-[11px] text-gray-500">Nama referensi untuk marker baru ini.</p>
+                            </div>
+
+                            <!-- Live QR Code Preview Box -->
+                            <div id="qr-preview-wrapper" class="rounded-xl border border-blue-200 bg-white p-4 shadow-sm flex flex-col sm:flex-row items-center gap-4">
+                                <div class="bg-white p-2 rounded-lg border border-gray-100 shadow-inner flex items-center justify-center shrink-0">
+                                    <canvas id="qr-canvas" class="w-28 h-28"></canvas>
+                                </div>
+                                <div class="flex-1 text-center sm:text-left min-w-0">
+                                    <h4 id="qr-label" class="text-xs font-bold text-gray-900 truncate">Preview QR Marker</h4>
+                                    <p id="qr-url-text" class="text-[11px] text-gray-500 font-mono truncate mt-0.5"></p>
+                                    <div class="mt-2.5 flex flex-wrap gap-2 justify-center sm:justify-start">
+                                        <button type="button" onclick="downloadQrPng()"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition active:scale-95">
+                                            <svg class="w-3.5 h-3.5 shrink-0" style="width: 14px; height: 14px; min-width: 14px; min-height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            </svg>
+                                            <span>Unduh QR (.png)</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -233,12 +263,12 @@
                             Museum</p>
                     </div>
 
-                    <!-- AR Marker Image -->
+                    <!-- File 3D Object (iOS USDZ) -->
                     <div>
-                        <label for="path_gambar_marker" class="mb-2 block text-sm font-medium text-gray-700">
-                            Gambar Marker AR (Baru)
+                        <label for="path_usdz" class="mb-2 block text-sm font-medium text-gray-700">
+                            File 3D Object iOS (.usdz) <span class="text-gray-400 font-normal">(Opsional untuk Apple AR Quick Look)</span>
                         </label>
-                        <div id="path_gambar_marker_dropzone"
+                        <div id="path_usdz_dropzone"
                             class="mt-1 flex cursor-pointer justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pb-6 pt-5 transition-colors hover:border-gray-400">
                             <div class="space-y-1 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
@@ -248,21 +278,18 @@
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="path_gambar_marker"
+                                    <label for="path_usdz"
                                         class="relative cursor-pointer rounded-md bg-white font-medium text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:text-blue-500">
-                                        <span id="path_gambar_marker_text">Upload gambar marker</span>
-                                        <input id="path_gambar_marker" name="path_gambar_marker" type="file"
-                                            class="sr-only" accept="image/*"
-                                            onchange="handleFileSelect('path_gambar_marker')">
+                                        <span id="path_usdz_text">Upload file USDZ</span>
+                                        <input id="path_usdz" name="path_usdz" type="file" class="sr-only"
+                                            accept=".usdz" onchange="handleFileSelect('path_usdz')">
                                     </label>
                                     <p class="pl-1">atau drag and drop</p>
                                 </div>
-                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                <p class="text-xs text-gray-500">USDZ hingga 100MB</p>
                             </div>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Gambar marker yang akan digunakan untuk mendeteksi AR.
-                            File pattern `.patt` akan dibuat otomatis dan marker baru akan dibagikan ke object lain
-                            jika dipilih di form berikutnya.</p>
+                        <p class="mt-1 text-xs text-gray-500">Format USDZ dibutuhkan agar model 3D dapat dibuka langsung di aplikasi AR bawaan perangkat iOS / iPadOS.</p>
                     </div>
 
                 </div>
@@ -288,6 +315,9 @@
             </div>
         </form>
     </div>
+
+    <!-- QRious Library for Client-side QR Code Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
     <script>
         // File upload handling
@@ -324,8 +354,8 @@
                 case 'path_obj':
                     textElement.textContent = 'Upload file 3D';
                     break;
-                case 'path_gambar_marker':
-                    textElement.textContent = 'Upload gambar marker';
+                case 'path_usdz':
+                    textElement.textContent = 'Upload file USDZ';
                     break;
             }
         }
@@ -426,12 +456,86 @@
             });
         }
 
-        // Initialize drag and drop for all file inputs
+        // Initialize drag and drop for file inputs
         document.addEventListener('DOMContentLoaded', function() {
             setupDragAndDrop('gambar_real');
             setupDragAndDrop('path_obj');
-            setupDragAndDrop('path_gambar_marker');
+            setupDragAndDrop('path_usdz');
+
+            // Initialize QR Code Generator
+            initQrGenerator();
         });
+
+        let qrGenerator = null;
+
+        function initQrGenerator() {
+            const canvas = document.getElementById('qr-canvas');
+            if (canvas && typeof QRious !== 'undefined') {
+                qrGenerator = new QRious({
+                    element: canvas,
+                    size: 260,
+                    value: '{{ url('/ar-marker/camera') }}',
+                    level: 'H'
+                });
+                handleMarkerSelectionChange();
+            }
+        }
+
+        function handleMarkerSelectionChange() {
+            const markerSelect = document.getElementById('marker_id');
+            const newMarkerContainer = document.getElementById('new-marker-container');
+            const qrLabel = document.getElementById('qr-label');
+            const qrUrlText = document.getElementById('qr-url-text');
+
+            if (!markerSelect) return;
+
+            const selectedOption = markerSelect.options[markerSelect.selectedIndex];
+            const markerId = markerSelect.value;
+
+            if (markerId) {
+                if (newMarkerContainer) newMarkerContainer.classList.add('hidden');
+                const markerName = selectedOption.getAttribute('data-name') || 'Marker #' + markerId;
+                if (qrLabel) qrLabel.textContent = markerName;
+                const scanUrl = '{{ url('/ar/scan') }}/' + markerId;
+                if (qrUrlText) qrUrlText.textContent = scanUrl;
+
+                if (qrGenerator) {
+                    qrGenerator.value = scanUrl;
+                }
+            } else {
+                if (newMarkerContainer) newMarkerContainer.classList.remove('hidden');
+                updateQrPreview();
+            }
+        }
+
+        function updateQrPreview() {
+            const namaMarkerInput = document.getElementById('nama_marker');
+            const qrLabel = document.getElementById('qr-label');
+            const qrUrlText = document.getElementById('qr-url-text');
+
+            const markerName = (namaMarkerInput && namaMarkerInput.value.trim()) ? namaMarkerInput.value.trim() : 'Marker Baru';
+            if (qrLabel) qrLabel.textContent = markerName + ' (Dibuat Saat Simpan)';
+            const sampleUrl = '{{ url('/ar-marker/camera') }}';
+            if (qrUrlText) qrUrlText.textContent = 'URL Scan AR';
+
+            if (qrGenerator) {
+                qrGenerator.value = sampleUrl;
+            }
+        }
+
+        function downloadQrPng() {
+            const canvas = document.getElementById('qr-canvas');
+            const qrLabel = document.getElementById('qr-label');
+            if (!canvas) return;
+
+            const fileName = (qrLabel ? qrLabel.textContent.replace(/[^a-zA-Z0-9_-]/g, '_') : 'qr_marker') + '.png';
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         // Form validation
         document.querySelector('form').addEventListener('submit', function(e) {

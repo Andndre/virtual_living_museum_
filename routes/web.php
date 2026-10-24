@@ -32,6 +32,8 @@ Route::group(['middleware' => ['auth', 'user']], function () {
     Route::get('/marker', [HomeController::class, 'arMarker'])->name('guest.ar-marker');
     Route::get('/ar-marker/camera', [ArMarkerCameraController::class, 'index'])->name('ar-marker.camera');
     Route::get('/ar-marker/katalog', [HomeController::class, 'arMarkerKatalog'])->name('ar-marker.katalog');
+    Route::get('/ar/scan/{markerId}', [ArMarkerCameraController::class, 'scanRedirect'])->name('ar.scan.redirect');
+    Route::get('/api/ar/model', [ArMarkerCameraController::class, 'getModel'])->name('api.ar.model');
 
     // Maps routes
     Route::get('/maps', [HomeController::class, 'maps'])->name('guest.maps');
@@ -88,6 +90,9 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
 // AR routes - Using token-based authentication
 Route::middleware('ar.token')->get('/situs/{situs_id}/ar/{museum_id}', [HomeController::class, 'arMuseum'])->name('ar.museum');
+
+// Public USDZ Streaming Route (for Apple iOS AR Quick Look)
+Route::get('/usdz-file/{path}', [ArMarkerCameraController::class, 'serveUsdz'])->name('usdz.serve');
 
 // Public 360 Panorama Viewer routes (no auth required)
 Route::get('/panorama/{situsId}', [HomeController::class, 'panoramaViewer'])->name('panorama.viewer');

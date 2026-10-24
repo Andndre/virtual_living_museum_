@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SitusPeninggalan;
 use App\Models\User;
-use App\Models\VirtualMuseum;
-use App\Models\VirtualMuseumObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -69,6 +67,7 @@ class MapsController extends Controller
                 // Count museums and objects for display
                 $s->museum_count = $s->virtualMuseum->count();
                 $s->object_count = $s->virtualMuseumObject->count();
+
                 return $s;
             });
 
