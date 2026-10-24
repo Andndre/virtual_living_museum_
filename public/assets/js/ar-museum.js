@@ -61,9 +61,7 @@ async function generateQRCode(text) {
 
 async function generateLaunchCode() {
     let cleanUrl = window.location.origin + window.location.pathname;
-    let url = await VLaunch.getLaunchUrl(
-        cleanUrl + "?arToken=" + arToken,
-    );
+    let url = await VLaunch.getLaunchUrl(cleanUrl + "?arToken=" + arToken);
     console.log(url);
 
     await generateQRCode(url);
@@ -209,7 +207,6 @@ function showToaster(message) {
     //     }
     // }, 5000);
 }
-
 
 /**
  * Manages the rendering process and XR session for the application.
