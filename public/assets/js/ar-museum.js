@@ -85,7 +85,7 @@ class SceneManager {
             70,
             window.innerWidth / window.innerHeight,
             0.01,
-            999,
+            1000,
         );
 
         this.reticle = new THREE.Mesh(
@@ -163,8 +163,9 @@ class SceneManager {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         texture.colorSpace = THREE.SRGBColorSpace;
 
-        // Create a large sphere for the skybox
-        const skyGeometry = new THREE.SphereGeometry(1000, 64, 48);
+        // Create a sphere for the skybox
+        // Radius 50 is safely within camera far frustum (1000), eliminating the clipping hole/leak
+        const skyGeometry = new THREE.SphereGeometry(50, 36, 24);
 
         const skyMaterial = new THREE.MeshBasicMaterial({
             map: texture,
@@ -175,6 +176,7 @@ class SceneManager {
 
         this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
         this.skybox.frustumCulled = false;
+        this.skybox.renderOrder = -1;
         this.skybox.visible = false; // Initially hidden
         this.scene.add(this.skybox);
 
@@ -296,19 +298,23 @@ class RendererManager {
             const referenceSpace = this.renderer.xr.getReferenceSpace();
             const session = this.renderer.xr.getSession();
 
-            if (!this.hitTestSourceRequested) {
-                this.requestHitTestSource(session, referenceSpace);
-            }
+            if (!sceneManager.placed) {
+                if (!this.hitTestSourceRequested) {
+                    this.requestHitTestSource(session, referenceSpace);
+                }
 
-            if (this.hitTestSource) {
-                const hitTestResults = frame.getHitTestResults(
-                    this.hitTestSource,
-                );
-                this.handleHitTestResults(
-                    hitTestResults,
-                    referenceSpace,
-                    sceneManager,
-                );
+                if (this.hitTestSource) {
+                    const hitTestResults = frame.getHitTestResults(
+                        this.hitTestSource,
+                    );
+                    this.handleHitTestResults(
+                        hitTestResults,
+                        referenceSpace,
+                        sceneManager,
+                    );
+                }
+            } else if (this.hitTestSource) {
+                this.stopHitTestSource();
             }
 
             // Update skybox position to follow the camera if it exists and is visible
@@ -332,20 +338,37 @@ class RendererManager {
      * @param {XRReferenceSpace} referenceSpace - The reference space for the XR session.
      */
     requestHitTestSource(session, referenceSpace) {
-        session.requestReferenceSpace("viewer").then((viewerSpace) => {
-            session
-                .requestHitTestSource({ space: viewerSpace })
-                .then((source) => {
-                    this.hitTestSource = source;
-                });
-        });
+        if (!session) return;
+        session
+            .requestReferenceSpace("viewer")
+            .then((viewerSpace) => {
+                return session.requestHitTestSource({ space: viewerSpace });
+            })
+            .then((source) => {
+                this.hitTestSource = source;
+            })
+            .catch((err) => {
+                console.warn("Hit test request error:", err);
+            });
 
         session.addEventListener("end", () => {
-            this.hitTestSourceRequested = false;
-            this.hitTestSource = null;
+            this.stopHitTestSource();
         });
 
         this.hitTestSourceRequested = true;
+    }
+
+    /**
+     * Cancels the active hit test source to save resources once placement is complete.
+     */
+    stopHitTestSource() {
+        if (this.hitTestSource) {
+            if (typeof this.hitTestSource.cancel === "function") {
+                this.hitTestSource.cancel();
+            }
+            this.hitTestSource = null;
+        }
+        this.hitTestSourceRequested = false;
     }
 
     /**
@@ -357,15 +380,13 @@ class RendererManager {
      */
     handleHitTestResults(hitTestResults, referenceSpace, sceneManager) {
         if (sceneManager.placed) {
+            sceneManager.reticle.visible = false;
             return;
         }
         if (hitTestResults.length > 0) {
             if (!sceneManager.planeFound) {
-                sceneManager.reticle.visible = false;
-                // document.getElementById("tracking-prompt").style.display =
-                //     "none";
+                sceneManager.planeFound = true;
                 hideElement("tracking-prompt");
-                // document.getElementById("instructions").style.display = "block";
                 showElement("instructions");
             }
 
@@ -594,7 +615,9 @@ async function main() {
             showToaster("Sunlight positioned");
         }
 
+        sceneManager.reticle.visible = false;
         sceneManager.placed = true;
+        rendererManager.stopHitTestSource();
     });
 
     showToaster("Starting animation loop");
