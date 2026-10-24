@@ -183,62 +183,91 @@
                 <h1 class="text-lg font-bold">{{ config('app.name') }} AR</h1>
                 <p class="text-sm opacity-90">Eksplorasi Objek Peninggalan</p>
             </div>
-            <div class="flex-1">
         </div>
     </div>
     <div id="overlay"
-        class="pointer-events-none absolute inset-0 z-[999999] flex flex-col items-center justify-center">
+        class="pointer-events-none absolute inset-0 z-[999999]">
         <div id="instructions"
-            class="invisible absolute top-0 z-[100000] w-full rounded-t-xl bg-primary p-4 text-center text-white">Tekan
-            lingkaran untuk memunculkan ruangan
+            class="invisible pointer-events-none absolute top-4 inset-x-4 mx-auto max-w-sm rounded-xl bg-black/70 backdrop-blur-md px-4 py-3 text-center text-sm font-medium text-white shadow-lg">
+            Arahkan kamera ke lantai & ketuk lingkaran untuk memunculkan ruangan
         </div>
-        <div id="tracking-prompt" class="invisible absolute bottom-[44] left-1/2 animate-pulse">
-            <img src="{{ asset('images/icons/hand.png') }}" class="w-24" style="animation: circle 4s linear infinite;"
+        <div id="tracking-prompt" class="invisible pointer-events-none absolute bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <img src="{{ asset('images/icons/hand.png') }}" class="w-20" style="animation: circle 4s linear infinite;"
                 alt="" />
+            <p class="mt-2 text-xs font-semibold text-white/90 bg-black/40 px-3 py-1 rounded-full">Gerakkan ponsel perlahan</p>
         </div>
         <div id="toaster-container" class="fixed bottom-0 right-0 z-[99999] m-4"></div>
+
+        <!-- Tombol Buka Objek Peninggalan (Didalam DOM Overlay WebXR) -->
+        <button id="expand-bottom-sheet"
+            type="button"
+            class="pointer-events-auto fixed bottom-6 left-1/2 z-[10000000] -translate-x-1/2 hidden items-center gap-2 rounded-full border-2 border-white bg-primary px-6 py-3 font-bold text-white shadow-2xl active:scale-95 transition-all">
+            <i class="fas fa-landmark"></i>
+            <span>Lihat Objek Peninggalan</span>
+        </button>
+
+        <!-- Bottom Sheet Objek Peninggalan -->
         <div id="bottom-sheet"
-            class="pointer-events-auto fixed bottom-0 left-0 right-0 z-[10000000] h-16 translate-y-full transform rounded-t-2xl bg-white shadow-lg transition-transform duration-300">
-            <div class="border-b p-4">
-                <h3 class="pointer-events-auto text-lg font-bold text-primary">Objek Peninggalan</h3>
+            class="pointer-events-auto fixed inset-x-0 bottom-0 z-[10000001] max-h-[85vh] translate-y-full transform rounded-t-3xl bg-white shadow-2xl transition-transform duration-300 flex flex-col">
+            <div class="flex items-center justify-between border-b px-6 py-4">
+                <div class="flex items-center gap-2">
+                    <div class="h-2 w-2 rounded-full bg-primary"></div>
+                    <h3 class="text-base font-bold text-gray-900">Objek Peninggalan ({{ $museum->virtualMuseumObjects->count() }})</h3>
+                </div>
+                <button id="close-bottom-sheet" type="button" class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
             </div>
             <div id="bottom-sheet-content"
-                class="pointer-events-auto hidden h-[80vh] overflow-y-scroll p-4 text-center text-gray-800">
-                <ul id="lukisan-list" class="flex flex-col gap-6 py-2">
-                    @foreach ($museum->virtualMuseumObjects as $i => $object)
-                        <li>
-                            <img class="mx-auto w-60 max-w-full rounded-xl shadow"
-                                src="{{ asset('/storage/' . $object->gambar_real) }}" alt="">
-                            <p class="mt-2">{{ $object->deskripsi }}</p>
-                        </li>
-                    @endforeach
-                    <li>
-                        <div class="pt-8"></div>
-                    </li>
-                </ul>
-                <button id="close-bottom-sheet" class="absolute right-2 top-2 text-2xl text-gray-600">&times;</button>
+                class="overflow-y-auto p-6 space-y-6">
+                @forelse ($museum->virtualMuseumObjects as $i => $object)
+                    <div class="rounded-2xl border border-gray-100 bg-gray-50/80 p-4 shadow-sm text-center">
+                        @if ($object->gambar_real)
+                            <img class="mx-auto w-64 max-w-full rounded-xl shadow-md object-cover max-h-56"
+                                src="{{ asset('/storage/' . $object->gambar_real) }}" alt="{{ $object->nama }}">
+                        @endif
+                        <h4 class="mt-3 font-bold text-gray-900 text-base">{{ $object->nama }}</h4>
+                        @if ($object->deskripsi)
+                            <p class="mt-1 text-sm text-gray-600 leading-relaxed text-left">{{ $object->deskripsi }}</p>
+                        @endif
+                    </div>
+                @empty
+                    <div class="py-12 text-center text-gray-500">
+                        <i class="fas fa-box-open text-4xl mb-2 text-gray-300"></i>
+                        <p class="text-sm">Belum ada objek peninggalan yang terdaftar untuk situs ini.</p>
+                    </div>
+                @endforelse
+                <div class="pb-6"></div>
             </div>
         </div>
     </div>
-    <div>
-        <button id="expand-bottom-sheet"
-            class="fixed bottom-6 left-1/2 z-[90000] -translate-x-1/2 rounded-full border-2 border-white bg-primary px-6 py-3 font-bold text-white shadow-lg"
-            style="display: none;">
-            Lihat Objek Peninggalan
-        </button>
-        <script>
-            document.getElementById('expand-bottom-sheet').addEventListener('click', function() {
-                document.getElementById('bottom-sheet').style.transform = 'translateY(0)';
-                document.getElementById('bottom-sheet').style.height = '80vh';
-                document.getElementById('bottom-sheet-content').style.display = 'block';
-            });
-            document.getElementById('close-bottom-sheet').addEventListener('click', function() {
-                document.getElementById('bottom-sheet').style.transform = 'translateY(100%)';
-                document.getElementById('bottom-sheet').style.height = '16px';
-                document.getElementById('bottom-sheet-content').style.display = 'none';
-            });
-        </script>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const expandBtn = document.getElementById('expand-bottom-sheet');
+            const closeBtn = document.getElementById('close-bottom-sheet');
+            const bottomSheet = document.getElementById('bottom-sheet');
+
+            if (expandBtn && bottomSheet) {
+                expandBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    bottomSheet.classList.remove('translate-y-full');
+                    bottomSheet.classList.add('translate-y-0');
+                    expandBtn.classList.add('opacity-0', 'pointer-events-none');
+                });
+            }
+
+            if (closeBtn && bottomSheet) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    bottomSheet.classList.add('translate-y-full');
+                    bottomSheet.classList.remove('translate-y-0');
+                    if (expandBtn) {
+                        expandBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    }
+                });
+            }
+        });
+    </script>
     <div id="app">
         <div
             class="pointer-events-none absolute inset-0 z-[15] mx-auto flex min-h-[80vh] min-w-[320px] max-w-5xl flex-col items-center gap-4 p-8 pt-36 text-center">
@@ -272,7 +301,7 @@
             console.log(museum);
         </script>
 
-        <script src="{{ asset('assets/js/ar-museum.js') }}" type="module"></script>
+        <script src="{{ asset('assets/js/ar-museum.js') }}?v={{ filemtime(public_path('assets/js/ar-museum.js')) }}" type="module"></script>
     </div>
 </body>
 

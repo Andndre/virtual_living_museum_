@@ -241,6 +241,10 @@ class RendererManager {
             "sessionstart",
             this.onSessionStart.bind(this),
         );
+        this.renderer.xr.addEventListener(
+            "sessionend",
+            this.onSessionEnd.bind(this),
+        );
     }
 
     /**
@@ -257,10 +261,12 @@ class RendererManager {
         );
 
         if (trackingPrompt) {
-            trackingPrompt.style.display = "block";
+            trackingPrompt.style.display = "flex";
+            trackingPrompt.classList.remove("invisible");
         }
         if (expandBottomSheet) {
-            expandBottomSheet.style.display = "block";
+            expandBottomSheet.classList.add("hidden");
+            expandBottomSheet.style.display = "none";
         }
         if (arButtonContainer) {
             arButtonContainer.style.display = "none";
@@ -272,10 +278,59 @@ class RendererManager {
     }
 
     /**
+     * Handles the end of an XR session (e.g. back button pressed).
+     * Resets UI and scene state.
+     */
+    onSessionEnd() {
+        this.stopHitTestSource();
+
+        hideElement("instructions");
+        hideElement("tracking-prompt");
+
+        const expandBottomSheet = document.getElementById("expand-bottom-sheet");
+        if (expandBottomSheet) {
+            expandBottomSheet.classList.add("hidden");
+            expandBottomSheet.style.display = "none";
+            expandBottomSheet.classList.remove("opacity-0", "pointer-events-none");
+        }
+
+        const bottomSheet = document.getElementById("bottom-sheet");
+        if (bottomSheet) {
+            bottomSheet.classList.add("translate-y-full");
+            bottomSheet.classList.remove("translate-y-0");
+        }
+
+        showElement("app");
+
+        const arButtonContainer = document.getElementById("ar-button-container");
+        if (arButtonContainer) {
+            arButtonContainer.style.display = "block";
+        }
+
+        if (this.sceneManager) {
+            this.sceneManager.placed = false;
+            this.sceneManager.planeFound = false;
+            if (this.sceneManager.model) {
+                this.sceneManager.model.visible = false;
+            }
+            if (this.sceneManager.skybox) {
+                this.sceneManager.skybox.visible = false;
+            }
+            if (this.sceneManager.reticle) {
+                this.sceneManager.reticle.visible = false;
+                if (!this.sceneManager.scene.children.includes(this.sceneManager.reticle)) {
+                    this.sceneManager.scene.add(this.sceneManager.reticle);
+                }
+            }
+        }
+    }
+
+    /**
      * Starts the animation loop for rendering.
      * @param {Object} sceneManager - The scene manager containing the scene and camera.
      */
     animate(sceneManager) {
+        this.sceneManager = sceneManager;
         this.renderer.setAnimationLoop((timestamp, frame) =>
             this.render(timestamp, frame, sceneManager),
         );
@@ -381,6 +436,9 @@ class RendererManager {
     handleHitTestResults(hitTestResults, referenceSpace, sceneManager) {
         if (sceneManager.placed) {
             sceneManager.reticle.visible = false;
+            if (sceneManager.scene.children.includes(sceneManager.reticle)) {
+                sceneManager.scene.remove(sceneManager.reticle);
+            }
             return;
         }
         if (hitTestResults.length > 0) {
@@ -615,9 +673,22 @@ async function main() {
             showToaster("Sunlight positioned");
         }
 
+        // Hide reticle and completely remove it from the scene graph
         sceneManager.reticle.visible = false;
+        if (sceneManager.scene.children.includes(sceneManager.reticle)) {
+            sceneManager.scene.remove(sceneManager.reticle);
+        }
         sceneManager.placed = true;
         rendererManager.stopHitTestSource();
+
+        // Reveal the "Lihat Objek Peninggalan" button in AR
+        const expandBottomSheet = document.getElementById("expand-bottom-sheet");
+        if (expandBottomSheet) {
+            expandBottomSheet.classList.remove("hidden");
+            expandBottomSheet.style.display = "inline-flex";
+            expandBottomSheet.style.visibility = "visible";
+            expandBottomSheet.style.pointerEvents = "auto";
+        }
     });
 
     showToaster("Starting animation loop");
