@@ -24,7 +24,7 @@ class SecurityHeaders
             $response->headers->set('Permissions-Policy', 'camera=(self), geolocation=(self), microphone=()');
 
             // Content Security Policy permitting required CDNs and scripts
-            $scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://aframe.io https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://code.jquery.com https://launchar.app https://ajax.googleapis.com";
+            $scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://aframe.io https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://code.jquery.com https://launchar.app https://ajax.googleapis.com https://www.gstatic.com";
             $styleSrc = "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com https://cdnjs.cloudflare.com";
             $fontSrc = "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com";
             $connectSrc = "connect-src 'self' https: data: blob:";

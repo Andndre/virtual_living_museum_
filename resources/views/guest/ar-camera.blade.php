@@ -21,6 +21,7 @@
     <script>
         self.ModelViewerElement = self.ModelViewerElement || {};
         self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer@0.21.0/meshopt_decoder.js';
+        self.ModelViewerElement.dracoDecoderLocation = 'https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/libs/draco/';
     </script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -202,7 +203,7 @@
                       ar-scale="auto"
                       ar-placement="floor"
                       bounds="tight"
-                      ar-modes="scene-viewer quick-look webxr"
+                      ar-modes="webxr scene-viewer quick-look"
                       quick-look-browsers="safari chrome"
                       environment-image="neutral"
                       exposure="1"
