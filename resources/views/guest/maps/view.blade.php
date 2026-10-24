@@ -279,7 +279,6 @@
             }
 
             #locked-message {
-                display: flex !important;
                 align-items: center;
                 gap: 0.5rem;
             }
@@ -350,7 +349,8 @@
                     {{ __('maps.visit') }}
                 </a>
                 <p id="locked-message"
-                    class="locked-message mt-4 items-center justify-center gap-2 text-center text-sm text-orange-600">
+                    class="locked-message mt-4 items-center justify-center gap-2 text-center text-sm text-orange-600"
+                    style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
