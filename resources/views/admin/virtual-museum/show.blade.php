@@ -125,19 +125,64 @@
                         <h2 class="text-lg font-medium text-gray-900">File 3D Museum</h2>
                     </div>
                     <div class="px-6 py-6">
-                        <div class="flex items-center space-x-3 rounded-lg bg-gray-50 p-4">
-                            <div class="flex-shrink-0">
-                                <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+                        @if ($museum->path_obj)
+                            @php
+                                $is3D = preg_match('/\.(glb|gltf)$/i', $museum->path_obj);
+                            @endphp
+                            @if ($is3D)
+                                <div class="relative w-full h-80 rounded-xl overflow-hidden bg-slate-900 border border-gray-200 shadow-inner mb-4">
+                                    <model-viewer
+                                        src="{{ asset('storage/' . $museum->path_obj) }}"
+                                        alt="Model 3D Museum {{ $museum->nama }}"
+                                        camera-controls
+                                        auto-rotate
+                                        shadow-intensity="1"
+                                        environment-image="neutral"
+                                        exposure="1"
+                                        class="w-full h-full"
+                                        style="width: 100%; height: 100%; background-color: #0f172a;"
+                                    >
+                                        <div slot="poster" class="flex items-center justify-center w-full h-full text-gray-400 text-xs">
+                                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span>Memuat Model 3D Museum...</span>
+                                        </div>
+                                    </model-viewer>
+                                </div>
+                            @endif
+
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg bg-gray-50 p-4 border border-gray-200">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <div class="flex-shrink-0">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium text-gray-900">File Model 3D Museum</p>
+                                        <p class="break-all text-xs font-mono text-gray-500">{{ basename($museum->path_obj) }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ asset('storage/' . $museum->path_obj) }}" target="_blank" download
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition">
+                                        <svg class="w-3.5 h-3.5 text-gray-500" style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        <span>Unduh File</span>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">File OBJ Model</p>
-                                <p class="break-all text-sm text-gray-500">{{ $museum->path_obj }}</p>
+                        @else
+                            <div class="py-6 text-center text-sm text-gray-500">
+                                Belum ada file 3D model museum yang diunggah.
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -165,111 +210,107 @@
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 @foreach ($museum->virtualMuseumObjects as $object)
                                     <div
-                                        class="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50">
-                                        <div class="flex items-start justify-between">
-                                            <div class="flex items-start space-x-3">
-                                                <!-- Object Icon -->
-                                                <div class="flex-shrink-0">
-                                                    <div
-                                                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500">
-                                                        <svg class="h-5 w-5 text-white" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Object Details -->
+                                        class="rounded-xl border border-gray-200 bg-white p-4 transition-all hover:shadow-md flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-start justify-between gap-2">
                                                 <div class="min-w-0 flex-1">
-                                                    <h4 class="text-sm font-medium text-gray-900">{{ $object->nama }}
-                                                    </h4>
+                                                    <h4 class="text-sm font-bold text-gray-900 truncate">{{ $object->nama }}</h4>
                                                     @if ($object->deskripsi)
-                                                        <p class="mt-1 line-clamp-2 text-xs text-gray-500">
-                                                            {{ Str::limit($object->deskripsi, 80) }}</p>
+                                                        <p class="mt-1 line-clamp-2 text-xs text-gray-500">{{ Str::limit($object->deskripsi, 80) }}</p>
                                                     @endif
-                                                    <div
-                                                        class="mt-2 flex items-center space-x-4 text-xs text-gray-400">
-                                                        @if ($object->path_obj)
-                                                            <span class="flex items-center">
-                                                                <svg class="mr-1 h-3 w-3" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round" stroke-width="2"
-                                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                                </svg>
-                                                                OBJ
-                                                            </span>
-                                                        @endif
-                                                        @if ($object->path_patt)
-                                                            <span class="flex items-center">
-                                                                <svg class="mr-1 h-3 w-3" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round" stroke-width="2"
-                                                                        d="M7 4V2a1 1 0 011-1h4a1 1 0 011 1v2m-6 0h8m-8 0a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2" />
-                                                                </svg>
-                                                                AR
-                                                            </span>
-                                                        @endif
-                                                        @if ($object->gambar_real)
-                                                            <span class="flex items-center">
-                                                                <svg class="mr-1 h-3 w-3" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round" stroke-width="2"
-                                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                </svg>
-                                                                IMG
-                                                            </span>
-                                                        @endif
-                                                    </div>
+                                                </div>
+
+                                                <!-- Actions -->
+                                                <div class="flex items-center space-x-1 shrink-0">
+                                                    <a href="{{ route('admin.virtual-museum-object.show', $object->object_id) }}"
+                                                        class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                                        title="Lihat Detail">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                    </a>
+                                                    <a href="{{ route('admin.virtual-museum-object.edit', $object->object_id) }}"
+                                                        class="p-1.5 rounded-lg text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 transition-colors"
+                                                        title="Edit">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                    </a>
+                                                    <form method="POST"
+                                                        action="{{ route('admin.virtual-museum-object.destroy', $object->object_id) }}"
+                                                        class="inline"
+                                                        onsubmit="return confirm('Yakin ingin menghapus object ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                                            title="Hapus">
+                                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
 
-                                            <!-- Actions -->
-                                            <div class="flex items-center space-x-1">
-                                                <a href="{{ route('admin.virtual-museum-object.show', $object->object_id) }}"
-                                                    class="p-1 text-gray-400 transition-colors hover:text-blue-500"
-                                                    title="Lihat Detail">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                </a>
-                                                <a href="{{ route('admin.virtual-museum-object.edit', $object->object_id) }}"
-                                                    class="p-1 text-gray-400 transition-colors hover:text-yellow-500"
-                                                    title="Edit">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                </a>
-                                                <form method="POST"
-                                                    action="{{ route('admin.virtual-museum-object.destroy', $object->object_id) }}"
-                                                    class="inline"
-                                                    onsubmit="return confirm('Yakin ingin menghapus object ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="p-1 text-gray-400 transition-colors hover:text-red-500"
-                                                        title="Hapus">
-                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                            </div>
+                                            <!-- 3D Preview Container -->
+                                            @if ($object->path_obj)
+                                                <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-900 border border-gray-200 shadow-inner my-3">
+                                                    <model-viewer
+                                                        src="{{ asset('storage/' . $object->path_obj) }}"
+                                                        alt="{{ $object->nama }}"
+                                                        camera-controls
+                                                        auto-rotate
+                                                        shadow-intensity="1"
+                                                        environment-image="neutral"
+                                                        exposure="1"
+                                                        loading="lazy"
+                                                        class="w-full h-full"
+                                                        style="width: 100%; height: 100%; background-color: #0f172a;"
+                                                    >
+                                                        <div slot="poster" class="flex items-center justify-center w-full h-full text-gray-400 text-xs">
+                                                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                            <span>Memuat 3D...</span>
+                                                        </div>
+                                                    </model-viewer>
+                                                </div>
+                                            @elseif ($object->gambar_real)
+                                                <div class="relative w-full h-48 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 my-3 flex items-center justify-center">
+                                                    <img src="{{ asset('storage/' . $object->gambar_real) }}" alt="{{ $object->nama }}" class="w-full h-full object-cover">
+                                                </div>
+                                            @else
+                                                <div class="w-full h-28 rounded-xl bg-gray-50 border border-dashed border-gray-200 my-3 flex items-center justify-center text-gray-400 text-xs">
+                                                    <span>Belum ada model 3D atau gambar</span>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Badges at bottom -->
+                                        <div class="mt-2 pt-2 border-t border-gray-100 flex flex-wrap items-center gap-1.5 text-[11px]">
+                                            @if ($object->path_obj)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                    <i class="fas fa-cube text-[10px]"></i> GLB
+                                                </span>
+                                            @endif
+                                            @if ($object->path_usdz)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                                                    <i class="fab fa-apple text-[10px]"></i> USDZ
+                                                </span>
+                                            @endif
+                                            @if ($object->marker_id)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    <i class="fas fa-qrcode text-[10px]"></i> QR #{{ $object->marker_id }}
+                                                </span>
+                                            @endif
+                                            @if ($object->path_audio)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                                    <i class="fas fa-volume-up text-[10px]"></i> Audio
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -379,4 +420,15 @@
             </div>
         </div>
     </div>
+
+    @push('head-scripts')
+        <script>
+            self.ModelViewerElement = self.ModelViewerElement || {};
+            self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer@0.21.0/meshopt_decoder.js';
+        </script>
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    @endpush
+
+    <!-- Fallback direct script load in case head-scripts stack is omitted -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 </x-app-layout>

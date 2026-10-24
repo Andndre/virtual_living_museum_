@@ -169,22 +169,55 @@
                         @if ($object->path_obj)
                             <div>
                                 <h3 class="mb-2 text-sm font-medium text-gray-700">File 3D Object (GLB/GLTF)</h3>
+                                @php
+                                    $is3DObj = preg_match('/\.(glb|gltf)$/i', $object->path_obj);
+                                @endphp
+                                @if ($is3DObj)
+                                    <div class="relative w-full h-80 rounded-xl overflow-hidden bg-slate-900 border border-gray-200 shadow-inner mb-3">
+                                        <model-viewer
+                                            src="{{ asset('storage/' . $object->path_obj) }}"
+                                            alt="{{ $object->nama }}"
+                                            camera-controls
+                                            auto-rotate
+                                            shadow-intensity="1"
+                                            environment-image="neutral"
+                                            exposure="1"
+                                            class="w-full h-full"
+                                            style="width: 100%; height: 100%; background-color: #0f172a;"
+                                        >
+                                            <div slot="poster" class="flex items-center justify-center w-full h-full text-gray-400 text-xs">
+                                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                <span>Memuat 3D Model...</span>
+                                            </div>
+                                        </model-viewer>
+                                    </div>
+                                @endif
                                 <div
-                                    class="flex items-center space-x-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
-                                    <div class="flex-shrink-0">
-                                        <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4">
+                                    <div class="flex items-center space-x-3 min-w-0">
+                                        <div class="flex-shrink-0">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-sm font-medium text-gray-900">Model 3D (Web & Android)</p>
+                                            <p class="break-all text-xs font-mono text-gray-500">{{ basename($object->path_obj) }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ asset('storage/' . $object->path_obj) }}" target="_blank" download
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition">
+                                        <svg class="w-3.5 h-3.5 text-gray-500" style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                         </svg>
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-medium text-gray-900">Model 3D (Web & Android)</p>
-                                        <p class="break-all text-sm text-gray-500">{{ basename($object->path_obj) }}
-                                        </p>
-                                        <a href="{{ asset('storage/' . $object->path_obj) }}" target="_blank"
-                                            class="text-xs text-blue-600 hover:text-blue-800">Download File</a>
-                                    </div>
+                                        <span>Unduh File</span>
+                                    </a>
                                 </div>
                             </div>
                         @endif
@@ -487,4 +520,13 @@
             }
         </script>
     @endif
+
+    @push('head-scripts')
+        <script>
+            self.ModelViewerElement = self.ModelViewerElement || {};
+            self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer@0.21.0/meshopt_decoder.js';
+        </script>
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    @endpush
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 </x-app-layout>
