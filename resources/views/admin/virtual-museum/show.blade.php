@@ -352,7 +352,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600">Objek dengan AR</span>
                             <span
-                                class="text-sm font-semibold text-gray-900">{{ $museum->virtualMuseumObjects->whereNotNull('path_patt')->count() }}</span>
+                                class="text-sm font-semibold text-gray-900">{{ $museum->virtualMuseumObjects->filter(fn($o) => !empty($o->marker_id) || !empty($o->path_obj))->count() }}</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600">Objek dengan Gambar</span>

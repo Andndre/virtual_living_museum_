@@ -63,8 +63,6 @@
 
         @php
             $activeMarker = $object->arMarker;
-            $markerPathPatt = $activeMarker->path_patt ?? $object->path_patt;
-            $markerImagePath = $activeMarker->path_gambar_marker ?? $object->path_gambar_marker;
         @endphp
 
         @if (session('success'))
@@ -315,19 +313,7 @@
                             </div>
                         @endif
 
-                        <!-- Legacy AR Marker Image (Bila ada) -->
-                        @if ($markerImagePath)
-                            <div>
-                                <h3 class="mb-2 text-sm font-medium text-gray-700">Gambar Marker Pendukung</h3>
-                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                                    <img src="{{ asset('storage/' . $markerImagePath) }}"
-                                        alt="Gambar Marker AR {{ $object->nama }}"
-                                        class="h-auto max-h-48 max-w-full rounded-lg bg-white object-contain shadow-sm">
-                                    <p class="mt-2 break-all text-xs text-gray-500">
-                                        {{ basename($markerImagePath) }}</p>
-                                </div>
-                            </div>
-                        @endif
+
 
                         @if (!$object->gambar_real && !$object->path_obj && !$object->path_usdz && !$object->path_audio && !$activeMarker && !$object->marker_id)
                             <div class="py-8 text-center">

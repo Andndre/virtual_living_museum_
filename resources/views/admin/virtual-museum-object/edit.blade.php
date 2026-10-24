@@ -236,7 +236,7 @@
             </div>
 
             <!-- Current Files Section -->
-            @if ($object->gambar_real || $object->path_obj || $object->path_usdz || $object->path_audio || $object->path_gambar_marker)
+            @if ($object->gambar_real || $object->path_obj || $object->path_usdz || $object->path_audio)
                 <div class="mt-6 rounded-lg border border-gray-200 bg-white shadow-sm">
                     <div class="border-b border-gray-200 px-6 py-4">
                         <h2 class="text-lg font-medium text-gray-900">File Saat Ini</h2>
@@ -298,14 +298,7 @@
                             </div>
                         @endif
 
-                        @if ($object->path_gambar_marker)
-                            <div class="rounded-lg border border-gray-200 p-3">
-                                <h4 class="mb-2 text-sm font-medium text-gray-700">Gambar Marker AR</h4>
-                                <img src="{{ asset('storage/' . $object->path_gambar_marker) }}"
-                                    alt="Current AR Marker" class="h-24 w-full rounded object-cover">
-                                <p class="mt-1 text-xs text-gray-500">{{ basename($object->path_gambar_marker) }}</p>
-                            </div>
-                        @endif
+
 
                     </div>
                 </div>
