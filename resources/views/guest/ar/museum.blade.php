@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <title>AR</title>
@@ -172,7 +172,7 @@
 <body>
     <script>
         var popupVisible = false;
-        var arToken = '{{ $arToken }}' + 'wow';
+        var arToken = '{{ $arToken }}';
     </script>
     <div class="pointer-events-auto z-[10000000] rounded-b-3xl bg-primary px-6 py-6 text-white">
         <div class="flex items-center space-x-4">

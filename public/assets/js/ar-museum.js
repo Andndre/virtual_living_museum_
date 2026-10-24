@@ -60,8 +60,9 @@ async function generateQRCode(text) {
 }
 
 async function generateLaunchCode() {
+    let cleanUrl = window.location.origin + window.location.pathname;
     let url = await VLaunch.getLaunchUrl(
-        window.location.href + "?arToken=" + arToken,
+        cleanUrl + "?arToken=" + arToken,
     );
     console.log(url);
 
