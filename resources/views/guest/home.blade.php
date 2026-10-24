@@ -167,7 +167,7 @@
     @if(!auth()->user()->phone_number || !auth()->user()->address || !auth()->user()->date_of_birth)
         <div id="profile-reminder"
             x-data="{ show: !localStorage.getItem('profile_reminder_dismissed') || localStorage.getItem('profile_reminder_dismissed') !== '{{ date('Y-m-d') }}' }"
-            x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+            x-show="show" x-cloak class="fixed inset-0 z-[70] overflow-y-auto" aria-labelledby="modal-title" role="dialog"
             aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"

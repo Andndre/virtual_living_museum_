@@ -299,7 +299,7 @@
 
     {{-- Bottom Notification --}}
     <div id="answer-notification"
-        class="fixed bottom-0 left-0 right-0 z-50 translate-y-full transform transition-transform duration-300">
+        class="fixed bottom-16 md:bottom-0 left-0 right-0 z-[60] translate-y-full transform transition-transform duration-300">
         <div class="mx-auto w-full lg:max-w-xl">
             <div id="notification-content" class="mx-6 mb-6 rounded-xl p-4 shadow-lg">
                 <div class="flex items-center justify-between">

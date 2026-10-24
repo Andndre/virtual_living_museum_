@@ -110,7 +110,8 @@
                             </div>
 
                             {{-- AR Launch Button for this specific spot --}}
-                            <button onclick="launchSpotAR({{ $museum->museum_id }}, '{{ $museum->nama }}')"
+                            <button data-spot-name="{{ $museum->nama }}"
+                                onclick="launchSpotAR({{ $museum->museum_id }}, this.dataset.spotName)"
                                 class="inline-flex w-full transform items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 font-medium text-white shadow-md transition-all duration-200 hover:scale-[1.02] hover:from-purple-700 hover:to-blue-700">
                                 <i class="fas fa-vr-cardboard mr-2"></i>
                                 {{ __('situs.explore_ar') }}
@@ -345,10 +346,12 @@
     <script>
         let currentObjectId = null;
         let currentMuseumId = null;
+        let currentMuseumName = '';
 
         function launchSpotAR(museumId, museumName) {
-            const promptTemplate = "{{ __('situs.ar_confirm_prompt') }}";
-            const confirmation = confirm(promptTemplate.replace(':name', museumName));
+            const promptTemplate = {!! json_encode(__('situs.ar_confirm_prompt')) !!};
+            const spotName = museumName || {!! json_encode($situs->nama) !!};
+            const confirmation = confirm(promptTemplate.replace(':name', spotName));
             if (confirmation) {
                 window.location.href = `{{ url('/situs') }}/{{ $situs->situs_id }}/ar/${museumId}`;
             }
@@ -366,6 +369,7 @@
 
         function showObjectModal(objectId, name, description, imageUrl, museumName) {
             currentObjectId = objectId;
+            currentMuseumName = museumName || '';
 
             // Find museum for this object
             @foreach ($situs->virtualMuseum as $museum)
@@ -412,13 +416,16 @@
                 document.body.style.overflow = '';
                 currentObjectId = null;
                 currentMuseumId = null;
+                currentMuseumName = '';
             }, 200);
         }
 
         function launchARFromModal() {
             if (currentMuseumId) {
+                const targetId = currentMuseumId;
+                const targetName = currentMuseumName;
                 closeObjectModal();
-                launchSpotAR(currentMuseumId, '');
+                launchSpotAR(targetId, targetName);
             }
         }
 

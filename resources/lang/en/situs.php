@@ -26,7 +26,7 @@ return [
     'back_to_elearning' => 'Back to E-Learning Home',
     'view_on_google_maps' => 'View on Google Maps',
     'no_description' => 'No description',
-    'ar_confirm_prompt' => 'Start AR experience for spot ":name"?\\n\\nEnsure you are in a well-lit area with a flat surface for object placement.',
+    'ar_confirm_prompt' => "Start AR experience for spot \":name\"?\n\nEnsure you are in a well-lit area with a flat surface for object placement.",
     'loading_tour' => 'Loading Virtual Tour...',
     'preparing_panorama' => 'Preparing panorama',
     'back_to_site_detail' => 'Back to Site Detail',

@@ -26,7 +26,7 @@ return [
     'back_to_elearning' => 'Kembali ke Beranda E-Learning',
     'view_on_google_maps' => 'Lihat di Google Maps',
     'no_description' => 'Tidak ada deskripsi',
-    'ar_confirm_prompt' => 'Memulai pengalaman AR untuk spot ":name"?\\n\\nPastikan Anda berada di tempat yang memiliki pencahayaan cukup dan permukaan datar untuk penempatan objek.',
+    'ar_confirm_prompt' => "Memulai pengalaman AR untuk spot \":name\"?\n\nPastikan Anda berada di tempat yang memiliki pencahayaan cukup dan permukaan datar untuk penempatan objek.",
     'loading_tour' => 'Memuat Tur Virtual...',
     'preparing_panorama' => 'Menyiapkan panorama',
     'back_to_site_detail' => 'Kembali ke Detail Situs',
