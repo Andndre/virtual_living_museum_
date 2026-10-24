@@ -2,199 +2,171 @@
 
 return [
     'app_guide' => 'App Guide',
-    'learn_how_to_use' => 'Learn how to use this application',
+    'learn_how_to_use' => 'Learn how to use all the features of the Ganesha AR application',
 
-    'visit_heritage' => [
-        'id' => 'visit_heritage',
-        'title' => 'Visit Heritage',
-        'description' => 'Guide to using the Visit Heritage feature',
-        'icon' => 'fa-monument',
+    'progressive_learning' => [
+        'id' => 'progressive_learning',
+        'title' => 'E-Learning Progressive Path',
+        'description' => 'Guide to completing the 4 sequential learning stages',
+        'icon' => 'fa-graduation-cap',
         'steps' => [
             [
                 'title' => 'Open Visit Heritage Menu',
-                'description' => 'Select Visit Heritage menu from the main application page',
+                'description' => 'Select the Visit Heritage (E-Learning) menu on the home page, then choose the historical era or material you want to study.',
             ],
             [
-                'title' => 'Choose Material',
-                'description' => 'Choose the heritage material you want to learn about',
+                'title' => 'Stage 1: Complete the Pre-Test',
+                'description' => 'Take the preliminary quiz to assess your initial knowledge. Completing the pre-test unlocks the subsequent learning modules.',
             ],
             [
-                'title' => 'Follow Each Step',
-                'description' => 'Follow each step: take pretest, read e-book, visit AR feature, and take posttest',
+                'title' => 'Stage 2: Study the Interactive E-Book',
+                'description' => 'Read and study the digital e-book module completely to unlock access to the Virtual Living Museum.',
+            ],
+            [
+                'title' => 'Stage 3: Explore the Virtual Living Museum',
+                'description' => 'Immerse yourself in a 360° virtual reconstruction of the archaeological site and examine the historical artifacts within it.',
+            ],
+            [
+                'title' => 'Stage 4: Complete the Post-Test',
+                'description' => 'Finish the final evaluation quiz to measure your learning progress, record your score to the report card, and unlock the next era.',
             ],
         ],
     ],
 
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
-        'title' => 'Augmented Reality',
-        'description' => 'Guide to using AR feature in Visit Heritage menu',
+        'title' => 'Virtual Living Museum (WebXR 360°)',
+        'description' => 'Guide to placing and exploring site environments in physical space',
         'icon' => 'fa-vr-cardboard',
         'steps' => [
             [
-                'title' => 'Visit AR Feature',
-                'description' => 'Select AR feature from Visit Heritage page',
+                'title' => 'Open AR on Mobile Device',
+                'description' => 'Access the site on a WebXR-compatible Android or iOS device. If browsing from a desktop/laptop, scan the provided QR Token to continue on your mobile phone.',
             ],
             [
-                'title' => 'Choose Available AR Spot',
-                'description' => 'Choose one of the available AR spots on AR feature page',
+                'title' => 'Allow Camera & Scan Floor Surface',
+                'description' => 'Grant camera permissions, then slowly pan your phone across a flat, well-lit floor surface.',
             ],
             [
-                'title' => 'Allow Camera Access',
-                'description' => 'Allow the application to access your device camera',
+                'title' => 'Lock Reticle & Place the Site',
+                'description' => 'Target the white reticle circle onto the desired floor position, then tap the screen once to permanently anchor the 360° site.',
             ],
             [
-                'title' => 'Point Camera',
-                'description' => 'Point camera to open area until white circle appears',
-            ],
-            [
-                'title' => 'View AR Content',
-                'description' => 'Tap screen to place AR object. You can walk around to see AR object from different angles',
-            ],
-            [
-                'title' => 'View Heritage Information',
-                'description' => 'Use info button to see list of heritage information on AR object',
-            ],
-        ],
-    ],
-
-    'heritage_video' => [
-        'id' => 'heritage_video',
-        'title' => 'Heritage Video',
-        'description' => 'Guide to watching cultural heritage videos',
-        'icon' => 'fa-video',
-        'steps' => [
-            [
-                'title' => 'Open Heritage Video Menu',
-                'description' => 'Select Heritage Video menu from main page',
-            ],
-            [
-                'title' => 'Choose Video',
-                'description' => 'Select heritage video you want to watch from available list',
-            ],
-            [
-                'title' => 'Watch Video',
-                'description' => 'Video will play automatically. Use video controls to adjust volume and quality',
-            ],
-        ],
-    ],
-
-    'ebook' => [
-        'id' => 'ebook',
-        'title' => 'E-Book',
-        'description' => 'Guide to reading cultural heritage e-books',
-        'icon' => 'fa-book',
-        'steps' => [
-            [
-                'title' => 'Access E-Book',
-                'description' => 'E-book is available in learning process in Visit Heritage menu',
-            ],
-            [
-                'title' => 'Read Material',
-                'description' => 'Read e-book material carefully to understand cultural heritage',
-            ],
-            [
-                'title' => 'Page Navigation',
-                'description' => 'Use navigation buttons to move between e-book pages',
-            ],
-        ],
-    ],
-
-    'pretest_posttest' => [
-        'id' => 'pretest_posttest',
-        'title' => 'Pretest & Posttest',
-        'description' => 'Guide to taking pretest and posttest',
-        'icon' => 'fa-clipboard-check',
-        'steps' => [
-            [
-                'title' => 'Take Pretest',
-                'description' => 'Start by taking pretest to measure your initial knowledge',
-            ],
-            [
-                'title' => 'Study Material',
-                'description' => 'After pretest, study e-book material and visit AR feature',
-            ],
-            [
-                'title' => 'Take Posttest',
-                'description' => 'Complete learning process by taking posttest',
-            ],
-            [
-                'title' => 'View Results',
-                'description' => 'See your score improvement from pretest to posttest',
-            ],
-        ],
-    ],
-
-    'laporan_peninggalan' => [
-        'id' => 'laporan_peninggalan',
-        'title' => 'Heritage Report',
-        'description' => 'Guide to reporting cultural heritage you discover',
-        'icon' => 'fa-flag',
-        'steps' => [
-            [
-                'title' => 'Open Heritage Report Menu',
-                'description' => 'Select Heritage Report menu from the main application page',
-            ],
-            [
-                'title' => 'Add New Report',
-                'description' => 'Click "Add Report" button to create a new heritage report',
-            ],
-            [
-                'title' => 'Fill Heritage Data',
-                'description' => 'Enter heritage name, address, and description of the discovered heritage',
-            ],
-            [
-                'title' => 'Set Location',
-                'description' => 'Mark the heritage location on the map by clicking the correct position',
-            ],
-            [
-                'title' => 'Upload Photos',
-                'description' => 'Upload photos of the heritage to complete your report',
-            ],
-            [
-                'title' => 'Submit Report',
-                'description' => 'Click "Submit Report" to send your heritage report',
-            ],
-            [
-                'title' => 'Interact with Reports',
-                'description' => 'Like and comment on heritage reports from other users',
+                'title' => 'Walk Around & Inspect Artifacts',
+                'description' => 'Physically walk around inside the virtual site. Tap the "Lihat Objek Peninggalan" button to view the catalog and details of artifacts embedded in the site.',
             ],
         ],
     ],
 
     'ar_marker' => [
         'id' => 'ar_marker',
-        'title' => 'AR Marker',
-        'description' => 'Guide to using AR Marker for augmented reality experience',
+        'title' => 'Scan QR Marker & 3D AR',
+        'description' => 'Guide to scanning catalog QR codes and placing 3D artifacts in real space',
         'icon' => 'fa-qrcode',
         'steps' => [
             [
-                'title' => 'Download AR Catalog',
-                'description' => 'Download the catalog file containing AR markers from the app menu',
-            ],
-            [
-                'title' => 'Print Marker',
-                'description' => 'Print the AR marker from the downloaded catalog. Ensure good print quality and clarity',
-            ],
-            [
                 'title' => 'Open AR Marker Menu',
-                'description' => 'Select AR Marker menu from the main application page',
+                'description' => 'Select the AR Marker menu from the home page. You can download the PDF catalog if you do not have it yet.',
             ],
             [
-                'title' => 'Allow Camera Access',
-                'description' => 'Grant permission for the app to access your device camera',
+                'title' => 'Scan QR Code Marker',
+                'description' => 'Aim the scanner camera at the QR Code marker. QR codes can be scanned directly from computer screens, other phone screens, or printed copies.',
             ],
             [
-                'title' => 'Point Camera at Marker',
-                'description' => 'Point your device camera at the printed marker. Make sure the marker is clearly visible and not cut off',
+                'title' => 'Explore 3D Model & Audio Narration',
+                'description' => 'The interactive 3D artifact loads instantly. Rotate the model 360°, listen to audio narrations, read detailed descriptions, or switch artifacts via the thumbnail bar.',
             ],
             [
-                'title' => 'View AR Object',
-                'description' => '3D object will appear on top of the marker. Move your device to view the object from different angles',
+                'title' => 'Place in Real Space (AR)',
+                'description' => 'Tap "Tampilkan di Ruang Nyata (AR)". The model launches via Google Scene Viewer (Android) or Apple Quick Look (iOS) to stably place it on your real-world desk or floor.',
+            ],
+        ],
+    ],
+
+    'maps_heritage' => [
+        'id' => 'maps_heritage',
+        'title' => 'Heritage Site Map (Maps)',
+        'description' => 'Guide to exploring the interactive heritage map and navigation routes',
+        'icon' => 'fa-map-marked-alt',
+        'steps' => [
+            [
+                'title' => 'Open Maps Menu',
+                'description' => 'Select the Maps menu from the home screen to view the geographic distribution of all cultural heritage sites.',
             ],
             [
-                'title' => 'Interact with Object',
-                'description' => 'Tap the AR object to see detailed information or perform other interactions',
+                'title' => 'Search & Filter by Historical Era',
+                'description' => 'Use the search box or historical era filters to easily locate specific archaeological sites.',
+            ],
+            [
+                'title' => 'View Details & Directions',
+                'description' => 'Tap any site marker pin on the map to inspect photos, read brief descriptions, or open driving/walking directions to the physical location.',
+            ],
+        ],
+    ],
+
+    'laporan_peninggalan' => [
+        'id' => 'laporan_peninggalan',
+        'title' => 'Cultural Heritage Report',
+        'description' => 'Guide to reporting newly discovered historical objects or heritage sites',
+        'icon' => 'fa-flag',
+        'steps' => [
+            [
+                'title' => 'Open Report Menu',
+                'description' => 'Select the Report Heritage menu from the home screen and click the "Tambah Laporan" button.',
+            ],
+            [
+                'title' => 'Complete Discovery Details',
+                'description' => 'Enter the name of the artifact/site, physical address, and detailed description of the condition found.',
+            ],
+            [
+                'title' => 'Mark Coordinates on the Map',
+                'description' => 'Use the interactive map to precisely pin the GPS coordinates of the discovery location.',
+            ],
+            [
+                'title' => 'Upload Photos & Submit',
+                'description' => 'Attach clear documentation photos and submit your report. Your report can be viewed, liked, and commented on by other users.',
+            ],
+        ],
+    ],
+
+    'heritage_video' => [
+        'id' => 'heritage_video',
+        'title' => 'Heritage Videos',
+        'description' => 'Guide to watching audio-visual cultural heritage documentaries',
+        'icon' => 'fa-video',
+        'steps' => [
+            [
+                'title' => 'Open Heritage Video Menu',
+                'description' => 'Select the Heritage Video menu from the home page.',
+            ],
+            [
+                'title' => 'Select a Documentary',
+                'description' => 'Choose a historical documentary video from the curated list.',
+            ],
+            [
+                'title' => 'Watch & Learn',
+                'description' => 'Watch engaging video content providing context and history to deepen your learning comprehension.',
+            ],
+        ],
+    ],
+
+    'statistik_rapor' => [
+        'id' => 'statistik_rapor',
+        'title' => 'Statistics & Leaderboard',
+        'description' => 'Guide to monitoring evaluation scores and leaderboard standing',
+        'icon' => 'fa-chart-line',
+        'steps' => [
+            [
+                'title' => 'Open Statistics Menu',
+                'description' => 'Select the Statistics menu from the home screen.',
+            ],
+            [
+                'title' => 'Monitor Scores & Learning Progress',
+                'description' => 'Review post-test score summaries across completed materials and track your current learning level progression.',
+            ],
+            [
+                'title' => 'View Leaderboard Ranking',
+                'description' => 'Compare your average evaluation score with other learners on the global/class leaderboard.',
             ],
         ],
     ],

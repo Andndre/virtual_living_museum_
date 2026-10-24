@@ -2,58 +2,129 @@
 
 return [
     'app_guide' => 'Panduan Aplikasi',
-    'learn_how_to_use' => 'Pelajari cara menggunakan aplikasi ini',
+    'learn_how_to_use' => 'Pelajari cara menggunakan seluruh fitur aplikasi Ganesha AR',
 
-    'visit_heritage' => [
-        'id' => 'visit_heritage',
-        'title' => 'Kunjungi Peninggalan',
-        'description' => 'Panduan penggunaan fitur Kunjungi Peninggalan',
-        'icon' => 'fa-monument',
+    'progressive_learning' => [
+        'id' => 'progressive_learning',
+        'title' => 'Alur Pembelajaran E-Learning',
+        'description' => 'Panduan menyelesaikan 4 tahapan belajar bertingkat secara terstruktur',
+        'icon' => 'fa-graduation-cap',
         'steps' => [
             [
                 'title' => 'Buka Menu Kunjungi Peninggalan',
-                'description' => 'Pilih menu Kunjungi Peninggalan dari halaman utama aplikasi',
+                'description' => 'Pilih menu Kunjungi Peninggalan (E-Learning) di halaman utama, lalu pilih era atau materi sejarah yang ingin dipelajari.',
             ],
             [
-                'title' => 'Pilih Materi',
-                'description' => 'Pilih materi peninggalan yang ingin Anda pelajari',
+                'title' => 'Tahap 1: Kerjakan Pre-Test',
+                'description' => 'Kerjakan kuis awal untuk menguji pemahaman awal Anda. Menyelesaikan pre-test akan membuka akses modul materi berikutnya.',
             ],
             [
-                'title' => 'Ikuti Setiap Langkah',
-                'description' => 'Ikuti setiap langkah: isi pretest, baca e-book, kunjungi fitur AR, dan isi posttest',
+                'title' => 'Tahap 2: Pelajari E-Book Interaktif',
+                'description' => 'Baca dan pelajari e-book digital materi sejarah hingga tuntas untuk membuka gerbang Virtual Living Museum.',
+            ],
+            [
+                'title' => 'Tahap 3: Eksplorasi Virtual Living Museum',
+                'description' => 'Jelajahi rekonstruksi lingkungan situs 360° secara imersif dan pelajari objek peninggalan yang tersimpan di dalamnya.',
+            ],
+            [
+                'title' => 'Tahap 4: Kerjakan Post-Test',
+                'description' => 'Selesaikan kuis evaluasi akhir untuk mengukur peningkatan nilai Anda, mencatatkan skor ke rapor, dan membuka materi berikutnya.',
             ],
         ],
     ],
 
     'virtual_living_museum' => [
         'id' => 'virtual_living_museum',
-        'title' => 'Augmented Reality',
-        'description' => 'Panduan penggunaan fitur AR pada menu Kunjungi Peninggalan',
+        'title' => 'Virtual Living Museum (WebXR 360°)',
+        'description' => 'Panduan menempatkan dan menjelajahi lingkungan situs di ruang nyata',
         'icon' => 'fa-vr-cardboard',
         'steps' => [
             [
-                'title' => 'Kunjungi Fitur AR',
-                'description' => 'Pilih fitur AR dari halaman Kunjungi Peninggalan',
+                'title' => 'Buka AR di Perangkat Mobile',
+                'description' => 'Buka situs pada smartphone Android/iOS yang mendukung WebXR. Jika membuka dari laptop/PC, gunakan fitur QR Token untuk melanjutkan di ponsel.',
             ],
             [
-                'title' => 'Pilih Spot AR yang Tersedia',
-                'description' => 'Pilih salah satu spot AR yang tersedia pada halaman fitur AR',
+                'title' => 'Izinkan Kamera & Pindai Permukaan Lantai',
+                'description' => 'Berikan izin akses kamera, lalu gerakkan ponsel perlahan ke area lantai datar yang lapang dan berpenerangan cukup.',
             ],
             [
-                'title' => 'Izinkan Akses Kamera',
-                'description' => 'Izinkan aplikasi untuk mengakses kamera perangkat Anda',
+                'title' => 'Kunci Posisi Reticle & Letakkan Situs',
+                'description' => 'Arahkan lingkaran putih (reticle) ke posisi lantai yang diinginkan, lalu ketuk layar sekali untuk menempatkan situs 360° secara permanen.',
             ],
             [
-                'title' => 'Arahkan Kamera',
-                'description' => 'Arahkan kamera ke area lapang sampai muncul lingkaran putih',
+                'title' => 'Berkeliling & Buka Objek Peninggalan',
+                'description' => 'Anda dapat berjalan secara fisik untuk berkeliling di dalam situs. Ketuk tombol "Lihat Objek Peninggalan" untuk membuka katalog artefak yang berada di situs tersebut.',
+            ],
+        ],
+    ],
+
+    'ar_marker' => [
+        'id' => 'ar_marker',
+        'title' => 'Pindai QR Marker & 3D AR',
+        'description' => 'Panduan memindai QR katalog dan menampilkan objek artefak di ruang nyata',
+        'icon' => 'fa-qrcode',
+        'steps' => [
+            [
+                'title' => 'Buka Menu AR Marker',
+                'description' => 'Pilih menu AR Marker pada halaman utama. Anda dapat mengunduh katalog PDF jika belum memilikinya.',
             ],
             [
-                'title' => 'Lihat Konten AR',
-                'description' => 'Tekan layar untuk meletakkan objek AR. Anda bisa berkeliling untuk melihat objek AR dari sudut yang berbeda',
+                'title' => 'Pindai QR Code di Katalog',
+                'description' => 'Arahkan kamera scanner ke QR Code marker. QR dapat dipindai langsung dari layar monitor, layar ponsel lain, maupun katalog cetak.',
             ],
             [
-                'title' => 'Lihat Informasi Peninggalan',
-                'description' => 'Gunakan tombol info untuk melihat daftar informasi peninggalan pada objek AR',
+                'title' => 'Eksplorasi Model 3D & Audio Narasi',
+                'description' => 'Model 3D artefak akan dimuat secara interaktif. Anda dapat memutar model 360°, mendengarkan narasi audio sejarah, membaca deskripsi detail, atau memilih artefak lain melalui thumbnail bar.',
+            ],
+            [
+                'title' => 'Tampilkan di Ruang Nyata (AR)',
+                'description' => 'Tekan tombol "Tampilkan di Ruang Nyata (AR)". Model akan otomatis dibuka menggunakan Google Scene Viewer (Android) atau Apple Quick Look (iOS) untuk diletakkan di atas meja/lantai nyata Anda secara stabil.',
+            ],
+        ],
+    ],
+
+    'maps_heritage' => [
+        'id' => 'maps_heritage',
+        'title' => 'Peta Persebaran Situs (Maps)',
+        'description' => 'Panduan menjelajahi peta peninggalan sejarah dan navigasi lokasi',
+        'icon' => 'fa-map-marked-alt',
+        'steps' => [
+            [
+                'title' => 'Buka Menu Maps',
+                'description' => 'Pilih menu Maps dari halaman utama untuk melihat peta sebaran seluruh situs cagar budaya.',
+            ],
+            [
+                'title' => 'Cari & Filter Berdasarkan Era',
+                'description' => 'Gunakan kolom pencarian atau filter era sejarah untuk mempermudah penemuan situs arkeologi tertentu.',
+            ],
+            [
+                'title' => 'Lihat Detail & Petunjuk Arah',
+                'description' => 'Ketuk pin penanda situs pada peta untuk melihat foto, deskripsi singkat peninggalan, atau membuka rute navigasi menuju lokasi sebenarnya.',
+            ],
+        ],
+    ],
+
+    'laporan_peninggalan' => [
+        'id' => 'laporan_peninggalan',
+        'title' => 'Laporan Peninggalan Budaya',
+        'description' => 'Panduan melaporkan temuan objek atau cagar budaya di sekitar Anda',
+        'icon' => 'fa-flag',
+        'steps' => [
+            [
+                'title' => 'Buka Menu Lapor Peninggalan',
+                'description' => 'Pilih menu Lapor Peninggalan dari beranda dan klik tombol "Tambah Laporan".',
+            ],
+            [
+                'title' => 'Lengkapi Data Temuan',
+                'description' => 'Masukkan nama objek peninggalan, alamat, dan deskripsi kondisi peninggalan yang Anda temukan.',
+            ],
+            [
+                'title' => 'Tandai Titik Lokasi di Peta',
+                'description' => 'Gunakan peta interaktif untuk menandai titik koordinat penemuan peninggalan secara presisi.',
+            ],
+            [
+                'title' => 'Unggah Foto & Kirim Laporan',
+                'description' => 'Unggah foto dokumentasi artefak/situs, lalu kirimkan laporan. Laporan Anda dapat dilihat, disukai, dan didiskusikan oleh komunitas pengguna.',
             ],
         ],
     ],
@@ -61,140 +132,41 @@ return [
     'heritage_video' => [
         'id' => 'heritage_video',
         'title' => 'Video Peninggalan',
-        'description' => 'Panduan menonton video peninggalan budaya',
+        'description' => 'Panduan menonton dokumenter audio-visual cagar budaya',
         'icon' => 'fa-video',
         'steps' => [
             [
                 'title' => 'Buka Menu Video Peninggalan',
-                'description' => 'Pilih menu Video Peninggalan dari halaman utama',
+                'description' => 'Pilih menu Video Peninggalan dari halaman utama aplikasi.',
             ],
             [
-                'title' => 'Pilih Video',
-                'description' => 'Pilih video peninggalan yang ingin Anda tonton dari daftar yang tersedia',
+                'title' => 'Pilih Dokumenter Sejarah',
+                'description' => 'Pilih materi video dokumenter yang ingin Anda tonton dari daftar kurasi yang tersedia.',
             ],
             [
-                'title' => 'Tonton Video',
-                'description' => 'Video akan diputar secara otomatis. Gunakan kontrol video untuk mengatur volume dan kualitas',
-            ],
-        ],
-    ],
-
-    'ebook' => [
-        'id' => 'ebook',
-        'title' => 'E-Book',
-        'description' => 'Panduan membaca e-book peninggalan budaya',
-        'icon' => 'fa-book',
-        'steps' => [
-            [
-                'title' => 'Akses E-Book',
-                'description' => 'E-book tersedia dalam proses pembelajaran pada menu Kunjungi Peninggalan',
-            ],
-            [
-                'title' => 'Baca Materi',
-                'description' => 'Baca materi e-book dengan seksama untuk memahami peninggalan budaya',
-            ],
-            [
-                'title' => 'Navigasi Halaman',
-                'description' => 'Gunakan tombol navigasi untuk berpindah antar halaman e-book',
+                'title' => 'Tonton & Simak Penjelasan',
+                'description' => 'Tonton video dengan penjelasan informatif mengenai sejarah dan konteks peninggalan untuk memperdalam pemahaman materi.',
             ],
         ],
     ],
 
-    'pretest_posttest' => [
-        'id' => 'pretest_posttest',
-        'title' => 'Pretest & Posttest',
-        'description' => 'Panduan mengerjakan pretest dan posttest',
-        'icon' => 'fa-clipboard-check',
+    'statistik_rapor' => [
+        'id' => 'statistik_rapor',
+        'title' => 'Statistik & Papan Peringkat',
+        'description' => 'Panduan memantau capaian skor evaluasi dan posisi leaderboard',
+        'icon' => 'fa-chart-line',
         'steps' => [
             [
-                'title' => 'Kerjakan Pretest',
-                'description' => 'Mulai dengan mengerjakan pretest untuk mengukur pengetahuan awal Anda',
+                'title' => 'Buka Menu Statistik',
+                'description' => 'Pilih menu Statistik dari halaman utama aplikasi.',
             ],
             [
-                'title' => 'Pelajari Materi',
-                'description' => 'Setelah pretest, pelajari materi e-book dan kunjungi fitur AR',
+                'title' => 'Pantau Skor & Progres Belajar',
+                'description' => 'Lihat rekapitulasi nilai post-test dari setiap materi yang telah Anda selesaikan serta perkembangan level belajar Anda.',
             ],
             [
-                'title' => 'Kerjakan Posttest',
-                'description' => 'Selesaikan proses pembelajaran dengan mengerjakan posttest',
-            ],
-            [
-                'title' => 'Lihat Hasil',
-                'description' => 'Lihat peningkatan skor Anda dari pretest ke posttest',
-            ],
-        ],
-    ],
-
-    'laporan_peninggalan' => [
-        'id' => 'laporan_peninggalan',
-        'title' => 'Laporan Peninggalan',
-        'description' => 'Panduan melaporkan peninggalan budaya yang Anda temukan',
-        'icon' => 'fa-flag',
-        'steps' => [
-            [
-                'title' => 'Buka Menu Laporan Peninggalan',
-                'description' => 'Pilih menu Laporan Peninggalan dari halaman utama aplikasi',
-            ],
-            [
-                'title' => 'Tambah Laporan Baru',
-                'description' => 'Klik tombol "Tambah Laporan" untuk membuat laporan peninggalan baru',
-            ],
-            [
-                'title' => 'Isi Data Peninggalan',
-                'description' => 'Masukkan nama peninggalan, alamat, dan deskripsi peninggalan yang ditemukan',
-            ],
-            [
-                'title' => 'Tentukan Lokasi',
-                'description' => 'Tandai lokasi peninggalan pada peta dengan mengklik posisi yang tepat',
-            ],
-            [
-                'title' => 'Upload Foto',
-                'description' => 'Unggah foto-foto peninggalan untuk melengkapi laporan Anda',
-            ],
-            [
-                'title' => 'Kirim Laporan',
-                'description' => 'Klik "Kirim Laporan" untuk mengirimkan laporan peninggalan Anda',
-            ],
-            [
-                'title' => 'Berinteraksi dengan Laporan',
-                'description' => 'Beri like dan komentar pada laporan peninggalan dari pengguna lain',
-            ],
-        ],
-    ],
-
-    'ar_marker' => [
-        'id' => 'ar_marker',
-        'title' => 'AR Marker',
-        'description' => 'Panduan menggunakan AR Marker untuk pengalaman augmented reality',
-        'icon' => 'fa-qrcode',
-        'steps' => [
-            [
-                'title' => 'Download Katalog AR',
-                'description' => 'Download file katalog yang berisi marker AR dari menu aplikasi',
-            ],
-            [
-                'title' => 'Cetak Marker',
-                'description' => 'Cetak marker AR dari katalog yang sudah didownload. Pastikan kualitas cetakan bagus dan jelas',
-            ],
-            [
-                'title' => 'Buka Menu AR Marker',
-                'description' => 'Pilih menu AR Marker dari halaman utama aplikasi',
-            ],
-            [
-                'title' => 'Izinkan Akses Kamera',
-                'description' => 'Berikan izin aplikasi untuk mengakses kamera perangkat Anda',
-            ],
-            [
-                'title' => 'Arahkan Kamera ke Marker',
-                'description' => 'Arahkan kamera perangkat ke marker yang sudah dicetak. Pastikan marker terlihat jelas dan tidak terpotong',
-            ],
-            [
-                'title' => 'Lihat Objek AR',
-                'description' => 'Objek 3D akan muncul di atas marker. Gerakkan perangkat untuk melihat objek dari berbagai sudut',
-            ],
-            [
-                'title' => 'Interaksi dengan Objek',
-                'description' => 'Tap objek AR untuk melihat informasi detail atau melakukan interaksi lainnya',
+                'title' => 'Lihat Peringkat Belajar',
+                'description' => 'Bandingkan rata-rata skor evaluasi Anda dengan pengguna lain di papan peringkat (leaderboard).',
             ],
         ],
     ],
