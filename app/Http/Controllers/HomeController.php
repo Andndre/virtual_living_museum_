@@ -139,8 +139,8 @@ class HomeController extends Controller
         $currentUserRank = $currentUserData['rank'];
         $userScore = $currentUserData['total_score'];
 
-        // Get top 10 users
-        $topUsers = $users->take(10);
+        // Ambil semua user yang memiliki skor (atau semua user) untuk leaderboard
+        $topUsers = $users;
 
         return view('guest.statistik', compact('topUsers', 'currentUser', 'currentUserRank', 'userScore'));
     }

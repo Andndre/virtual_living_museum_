@@ -1,0 +1,4130 @@
+[
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 1,
+    "name": "A. A. A. ANDINI PRAMESUARI",
+    "gender": "P",
+    "nis": "20967"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 2,
+    "name": "ANAK AGUNG NGURAH MAHARTA WIDYA DANA",
+    "gender": "L",
+    "nis": "20968"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 3,
+    "name": "ANANDA DAVIYAH ALZETAH",
+    "gender": "P",
+    "nis": "20969"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 4,
+    "name": "AZKA NAYALAHAVA VALLANDRA DIPUTRA",
+    "gender": "L",
+    "nis": "20970"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 5,
+    "name": "DEWA AYU CANDRA KUSUMA RENI",
+    "gender": "P",
+    "nis": "20971"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 6,
+    "name": "DIMAS CHOIRUL AZZAM",
+    "gender": "L",
+    "nis": "20972"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 7,
+    "name": "FADHIL ARDIANSYAH PRADANA",
+    "gender": "L",
+    "nis": "20973"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 8,
+    "name": "GEDE ARYA DARMA SANJAYA",
+    "gender": "L",
+    "nis": "20974"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 9,
+    "name": "GEDE KALER RAKA PRATAMA",
+    "gender": "L",
+    "nis": "20975"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 10,
+    "name": "I DEWA NYOMAN ERLANGGA ANANDITA PUTRA",
+    "gender": "L",
+    "nis": "20976"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 11,
+    "name": "KADEK ALMIRA GANGGA PR.",
+    "gender": "P",
+    "nis": "20977"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 12,
+    "name": "KADEK ARTAWAN DWI PUTRA",
+    "gender": "L",
+    "nis": "20978"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 13,
+    "name": "KADEK AVANDITA DINDA ARIANI",
+    "gender": "P",
+    "nis": "20979"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 14,
+    "name": "KADEK BULAN YURI JUNITA",
+    "gender": "P",
+    "nis": "20980"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 15,
+    "name": "KADEK DEVANANDA KRISNA ARYA PRADIPTA",
+    "gender": "L",
+    "nis": "20981"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 16,
+    "name": "KADEK DEVINDRA SETIANDINI",
+    "gender": "P",
+    "nis": "20982"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 17,
+    "name": "KADEK HARISSA CELYA PRAMESWARI",
+    "gender": "P",
+    "nis": "20983"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 18,
+    "name": "KADEK JYOTINDRA SASTRA NANDA",
+    "gender": "L",
+    "nis": "20984"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 19,
+    "name": "KADEK KINARA DANUR PUTRI MAYSHIRA",
+    "gender": "P",
+    "nis": "20985"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 20,
+    "name": "KADEK MAHARANI PRADNYA ADWITYA",
+    "gender": "P",
+    "nis": "20986"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 21,
+    "name": "KAROL KHOLID IBNU ZUBAIR",
+    "gender": "L",
+    "nis": "20987"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 22,
+    "name": "KETUT ARYA SATYA WIGUNA",
+    "gender": "L",
+    "nis": "20988"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 23,
+    "name": "KETUT DIAH AYU LESTARI",
+    "gender": "P",
+    "nis": "20989"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 24,
+    "name": "KOMANG DAEVIKA KALYANI RAHJASA",
+    "gender": "P",
+    "nis": "20990"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 25,
+    "name": "KOMANG HENDRI WIRAWAN",
+    "gender": "L",
+    "nis": "20991"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 26,
+    "name": "KOMANG KERTA WIBAWA",
+    "gender": "L",
+    "nis": "20992"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 27,
+    "name": "KOMANG TEGUH DARMAWAN",
+    "gender": "L",
+    "nis": "20993"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 28,
+    "name": "KOMANG TRIANA YUNITASARI",
+    "gender": "P",
+    "nis": "20994"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 29,
+    "name": "LUH PUTU SUKMA EKA PUTRI",
+    "gender": "P",
+    "nis": "20995"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 30,
+    "name": "MADE ANGELICA ANJANI PUTRI",
+    "gender": "P",
+    "nis": "20996"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 31,
+    "name": "MADE ANGGATHA GAUTAMA",
+    "gender": "L",
+    "nis": "20997"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 32,
+    "name": "MADE DANISA ASHWINA ADI",
+    "gender": "P",
+    "nis": "20998"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 33,
+    "name": "MUHAMMAD AL MUTTAQIN",
+    "gender": "L",
+    "nis": "20999"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 34,
+    "name": "MUHAMMAD HAIDAR ALI",
+    "gender": "L",
+    "nis": "21000"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 35,
+    "name": "NI KADEK SHINTA DHARAYANTI",
+    "gender": "P",
+    "nis": "21001"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 36,
+    "name": "PUTU JYOTI AMBIKA NARAYANI",
+    "gender": "P",
+    "nis": "21002"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 37,
+    "name": "PUTU SATYA DHARMA WIJAYA",
+    "gender": "L",
+    "nis": "21003"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 38,
+    "name": "RAFFI SULTHAN AL MU'IZZU",
+    "gender": "L",
+    "nis": "21004"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 39,
+    "name": "RAISYA MIKHAILA",
+    "gender": "P",
+    "nis": "21005"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A1",
+    "no_absen": 40,
+    "name": "SYAHNAZ SITI KHAZANAH",
+    "gender": "P",
+    "nis": "21006"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 1,
+    "name": "AURELIA KEZIA DARMAWAN",
+    "gender": "P",
+    "nis": "21007"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 2,
+    "name": "CANDRA RAFFAEL DARMAWAN",
+    "gender": "L",
+    "nis": "21008"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 3,
+    "name": "CHERLY ALEXA CETTA KUMALA",
+    "gender": "P",
+    "nis": "21009"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 4,
+    "name": "DEWA AYU SUNDARI MAHESWARI PUTRI",
+    "gender": "P",
+    "nis": "21010"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 5,
+    "name": "GEDE CESSA LEONEL WINANTA",
+    "gender": "L",
+    "nis": "21011"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 6,
+    "name": "GUSTI NGURAH KADEK RIZKY ANGGA PUTRA KUSUMA",
+    "gender": "L",
+    "nis": "21012"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 7,
+    "name": "GUSTI NYOMAN VIKAN NANDA TRIANTINI",
+    "gender": "P",
+    "nis": "21013"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 8,
+    "name": "I GEDE ANANTA GITHA BIRAWA",
+    "gender": "L",
+    "nis": "21014"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 9,
+    "name": "I GEDE KESAWA REDITANA SUPUTRA",
+    "gender": "L",
+    "nis": "21015"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 10,
+    "name": "I GUSTI AGUNG AYU DEBY TRIANA",
+    "gender": "P",
+    "nis": "21016"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 11,
+    "name": "I GUSTI KOMANG PANJI NATA YUWARAJA",
+    "gender": "L",
+    "nis": "21017"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 12,
+    "name": "I KETUT DEVA PREMANTA",
+    "gender": "L",
+    "nis": "21018"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 13,
+    "name": "KADEK ALDIANO SURYA PRANATA",
+    "gender": "L",
+    "nis": "21019"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 14,
+    "name": "KADEK CANTIQA LOVELY ALUNA PUTRI",
+    "gender": "P",
+    "nis": "21020"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 15,
+    "name": "KADEK FANDY DWIPAYANA",
+    "gender": "L",
+    "nis": "21021"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 16,
+    "name": "KADEK FEBRI PERMANA PUTRA",
+    "gender": "L",
+    "nis": "21022"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 17,
+    "name": "KADEK KEYLA DWI SAVITRI S.",
+    "gender": "P",
+    "nis": "21023"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 18,
+    "name": "KADEK PRASTYA ADI UTAMA",
+    "gender": "L",
+    "nis": "21024"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 19,
+    "name": "KADEK SAKA SANJIVA VEDATAMA",
+    "gender": "L",
+    "nis": "21025"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 20,
+    "name": "KADEK YOGA WIDHI ANANTA",
+    "gender": "L",
+    "nis": "21026"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 21,
+    "name": "KENNETH ANDLER SEN",
+    "gender": "L",
+    "nis": "21027"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 22,
+    "name": "KETUT BALI MARDANA PUTRA",
+    "gender": "L",
+    "nis": "21028"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 23,
+    "name": "KOMANG DENI ARIAWAN",
+    "gender": "L",
+    "nis": "21029"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 24,
+    "name": "KOMANG REVA APRILIA ARSANI",
+    "gender": "P",
+    "nis": "21030"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 25,
+    "name": "LUH GEDE AYUNING HARUM",
+    "gender": "P",
+    "nis": "21031"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 26,
+    "name": "MADE AYU KARUNIA PUTRI",
+    "gender": "P",
+    "nis": "21032"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 27,
+    "name": "MADE DWI NINDYA SARASWATI",
+    "gender": "P",
+    "nis": "21033"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 28,
+    "name": "MADE KINETA JYOTI GAYATRI",
+    "gender": "P",
+    "nis": "21034"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 29,
+    "name": "MADE SATRYA BAGAS SANDI PRATAMA",
+    "gender": "L",
+    "nis": "21035"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 30,
+    "name": "MARVIN DHAMMAVANNO JOVANLIE",
+    "gender": "L",
+    "nis": "21036"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 31,
+    "name": "MAVERICK CLAUS EFFENDI",
+    "gender": "L",
+    "nis": "21037"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 32,
+    "name": "NI KETUT NIA PERMATA SARI",
+    "gender": "P",
+    "nis": "21038"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 33,
+    "name": "NI KOMANG ANGEL STITHA PRADNYA PUTRI",
+    "gender": "P",
+    "nis": "21039"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 34,
+    "name": "NI KOMANG SAYANG ARYANTINI",
+    "gender": "P",
+    "nis": "21040"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 35,
+    "name": "NI LUH VINA CANDRAWATI",
+    "gender": "P",
+    "nis": "21041"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 36,
+    "name": "PANDE GEDE BUMI SATRIA BRATHA",
+    "gender": "L",
+    "nis": "21042"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 37,
+    "name": "PUTU ARDIKA PRATAMA",
+    "gender": "L",
+    "nis": "21043"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 38,
+    "name": "PUTU CARISSA ADELIA PUTRI",
+    "gender": "P",
+    "nis": "21044"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 39,
+    "name": "PUTU KAYLA MAS OKTAVIANI",
+    "gender": "P",
+    "nis": "21045"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A2",
+    "no_absen": 40,
+    "name": "PUTU KAYRA PUTRI DARSANA",
+    "gender": "P",
+    "nis": "21046"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 1,
+    "name": "AHMAD FAHREZI",
+    "gender": "L",
+    "nis": "21047"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 2,
+    "name": "COKORDA ISTRI PRAJNA DEWI PRAMISWARI",
+    "gender": "P",
+    "nis": "21048"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 3,
+    "name": "DAVINA AZZALIA RAMADHINA",
+    "gender": "P",
+    "nis": "21049"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 4,
+    "name": "FAQIH ARDIANSYAH PRATAMA",
+    "gender": "L",
+    "nis": "21050"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 5,
+    "name": "GEDE FAJAR NANDA MAHAYANA",
+    "gender": "L",
+    "nis": "21051"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 6,
+    "name": "GEDE OKA MAHADIKA",
+    "gender": "L",
+    "nis": "21052"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 7,
+    "name": "GEDE RAMPU WIJA NEGARA",
+    "gender": "L",
+    "nis": "21053"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 8,
+    "name": "GUSTI AYU ATHALIA VIDYA PARAMITHA",
+    "gender": "P",
+    "nis": "21054"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 9,
+    "name": "I DEWA GEDE SATRIYA SURYA ADITYA",
+    "gender": "L",
+    "nis": "21055"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 10,
+    "name": "I KADEK MANG BAGUS WIBAWA DARMA PUTRA",
+    "gender": "L",
+    "nis": "21056"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 11,
+    "name": "I PUTU DEVAN SATRIA WIJAYA",
+    "gender": "L",
+    "nis": "21057"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 12,
+    "name": "IDA AYU PUTU LAKSITA ARTARI PUTRI",
+    "gender": "P",
+    "nis": "21058"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 13,
+    "name": "KADEK DIVYA ANGGRAINI",
+    "gender": "P",
+    "nis": "21059"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 14,
+    "name": "KADEK SAMENDRA PRADITHA NATAJAYA",
+    "gender": "L",
+    "nis": "21060"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 15,
+    "name": "KADEK SHERLY KAYLA PRISCAYANTI",
+    "gender": "P",
+    "nis": "21061"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 16,
+    "name": "KADEK VIKA KIREINA MARTA",
+    "gender": "P",
+    "nis": "21062"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 17,
+    "name": "KETUT ANDIKA PASEK PRADITYA",
+    "gender": "L",
+    "nis": "21063"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 18,
+    "name": "KETUT RAFFA MAHENDRA PUTRA",
+    "gender": "L",
+    "nis": "21064"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 19,
+    "name": "KOMANG ADITYA WIGUNA",
+    "gender": "L",
+    "nis": "21065"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 20,
+    "name": "KOMANG AGUS SUPUTRA YASA",
+    "gender": "L",
+    "nis": "21066"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 21,
+    "name": "KOMANG ALIT DEVIANI",
+    "gender": "P",
+    "nis": "21067"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 22,
+    "name": "KOMANG GRECIA ESTERLINA",
+    "gender": "P",
+    "nis": "21068"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 23,
+    "name": "LUH PUTU MIKHAELA DINDA PRANANTA",
+    "gender": "P",
+    "nis": "21069"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 24,
+    "name": "MADE ANANTA WICAKSANA",
+    "gender": "L",
+    "nis": "21070"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 25,
+    "name": "MADE BASKARA PUTRA",
+    "gender": "L",
+    "nis": "21071"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 26,
+    "name": "MADE SUBUDI PRIMANATA",
+    "gender": "L",
+    "nis": "21072"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 27,
+    "name": "MAULIDYA NABILA",
+    "gender": "P",
+    "nis": "21073"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 28,
+    "name": "MUHAMMAD RAFLY MAULANA",
+    "gender": "L",
+    "nis": "21074"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 29,
+    "name": "NI KADEK KRIPHA ARTHA DEVI",
+    "gender": "P",
+    "nis": "21075"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 30,
+    "name": "NI KETUT ANGGI PRIANDARI WIDYA SAVITRI",
+    "gender": "P",
+    "nis": "21076"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 31,
+    "name": "NI PUTU AYU DAVINA ANANDITA",
+    "gender": "P",
+    "nis": "21077"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 32,
+    "name": "NI PUTU BHADRIKA AISWARYANANDA OSHTRAWAN",
+    "gender": "P",
+    "nis": "21078"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 33,
+    "name": "PUTU AYUDYA RISANTI PUTRI",
+    "gender": "P",
+    "nis": "21079"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 34,
+    "name": "PUTU JULI ARTA JUNA",
+    "gender": "L",
+    "nis": "21080"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 35,
+    "name": "PUTU KHAIRA DANISUARI",
+    "gender": "P",
+    "nis": "21081"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 36,
+    "name": "RAFFA XAVIERA CHAIRY",
+    "gender": "L",
+    "nis": "21082"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 37,
+    "name": "REYSKA KIANDRA JIWA PAGEH",
+    "gender": "P",
+    "nis": "21083"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 38,
+    "name": "SAFIRA ZIYAN SARWAH",
+    "gender": "P",
+    "nis": "21084"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 39,
+    "name": "SAMIR",
+    "gender": "L",
+    "nis": "21085"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A3",
+    "no_absen": 40,
+    "name": "WEIDA FARIS ARTAWAN NUGRAHA",
+    "gender": "L",
+    "nis": "21086"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 1,
+    "name": "DESAK MADE AMISHA GITA PURNAMI",
+    "gender": "P",
+    "nis": "21088"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 2,
+    "name": "GEDE GIOVALENRA MAYSTHA ANGELO",
+    "gender": "L",
+    "nis": "21089"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 3,
+    "name": "GEDE SADHU PRADNYA GUNAWAN",
+    "gender": "L",
+    "nis": "21090"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 4,
+    "name": "GEDE WERDHI DANADYAKSA PUTRA HANGGARA",
+    "gender": "L",
+    "nis": "21091"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 5,
+    "name": "I DEWA GEDE NARENDRA WIJAYA",
+    "gender": "L",
+    "nis": "21092"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 6,
+    "name": "I GUSTI A.A. RAKA DEVIKA NALINI",
+    "gender": "P",
+    "nis": "21093"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 7,
+    "name": "I GUSTI BAGUS NARARYA SURYA PUTRA",
+    "gender": "L",
+    "nis": "21094"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 8,
+    "name": "I GUSTI GEDE HARINATHA KRISNAWAN",
+    "gender": "L",
+    "nis": "21095"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 9,
+    "name": "I KOMANG RAMA ANDIKA PUTRA",
+    "gender": "L",
+    "nis": "21096"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 10,
+    "name": "I KOMANG SURYA DHARMA JAYA YUDISENA",
+    "gender": "L",
+    "nis": "21097"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 11,
+    "name": "KADEK AGUS SAPUTRA",
+    "gender": "L",
+    "nis": "21098"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 12,
+    "name": "KADEK AGUS VINO RADITYA MAHOTAMA",
+    "gender": "L",
+    "nis": "21099"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 13,
+    "name": "KADEK AYU NABILA MAHARANI",
+    "gender": "P",
+    "nis": "21100"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 14,
+    "name": "KADEK AYUNDA SEKAR NARESWARI PASEK",
+    "gender": "P",
+    "nis": "21101"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 15,
+    "name": "KADEK DARA AYU DEVITA PRIMA",
+    "gender": "P",
+    "nis": "21102"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 16,
+    "name": "KADEK DINDA JIOTISYA LEONITA",
+    "gender": "P",
+    "nis": "21103"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 17,
+    "name": "KADEK DWI YUNITASARI",
+    "gender": "P",
+    "nis": "21104"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 18,
+    "name": "KADEK KIRANA EZRA PUTRI ATMAJA",
+    "gender": "P",
+    "nis": "21105"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 19,
+    "name": "KADEK MEI LISA PURNAMI",
+    "gender": "P",
+    "nis": "21106"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 20,
+    "name": "KETUT ABI PRAMANA HARDI PUTRA",
+    "gender": "L",
+    "nis": "21107"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 21,
+    "name": "KETUT HARI SANTA",
+    "gender": "L",
+    "nis": "21108"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 22,
+    "name": "KETUT SUMEIWI LESTARI",
+    "gender": "P",
+    "nis": "21109"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 23,
+    "name": "KETUT YUNDA SUWENDRA PUTRI",
+    "gender": "P",
+    "nis": "21110"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 24,
+    "name": "KOMANG AYU WARDANI",
+    "gender": "P",
+    "nis": "21111"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 25,
+    "name": "KOMANG LYA PRATIWI",
+    "gender": "P",
+    "nis": "21112"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 26,
+    "name": "KOMANG MANEK PUTRA SUSENA",
+    "gender": "L",
+    "nis": "21113"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 27,
+    "name": "KOMANG YULIA GANTARI",
+    "gender": "P",
+    "nis": "21114"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 28,
+    "name": "MADE ADARA AYUNDA PRADNYANDARI",
+    "gender": "P",
+    "nis": "21115"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 29,
+    "name": "MADE CINDY CARERA",
+    "gender": "P",
+    "nis": "21116"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 30,
+    "name": "MADE MAS MEISYA ARIASTHI",
+    "gender": "P",
+    "nis": "21117"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 31,
+    "name": "MADE RESTU ARI NARAYANA",
+    "gender": "L",
+    "nis": "21118"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 32,
+    "name": "MAVERICK NOEL HERIYANTO",
+    "gender": "L",
+    "nis": "21119"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 33,
+    "name": "NI PUTU WISMANTARI PUTRI MARGUNA",
+    "gender": "P",
+    "nis": "21120"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 34,
+    "name": "PUTU GHATAN ARYA RADITHYA",
+    "gender": "L",
+    "nis": "21121"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 35,
+    "name": "PUTU NGURAH PRINGGATAMA",
+    "gender": "L",
+    "nis": "21122"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 36,
+    "name": "PUTU NINA GABRIELLA WARDANA",
+    "gender": "P",
+    "nis": "21123"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 37,
+    "name": "PUTU NOVITA SUPRIANI",
+    "gender": "P",
+    "nis": "21124"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 38,
+    "name": "PUTU RAFA ADWIANDRA",
+    "gender": "L",
+    "nis": "21125"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 39,
+    "name": "WAYNE AGASTYA DEJAVA",
+    "gender": "L",
+    "nis": "21126"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A4",
+    "no_absen": 40,
+    "name": "TUBAGUS KEVINO SUARLIEM WIDJAJA",
+    "gender": "L",
+    "nis": "21405"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 1,
+    "name": "ADHYASTHA BAGUS PRATAMA",
+    "gender": "L",
+    "nis": "21127"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 2,
+    "name": "AMANY'ALIYYAH TSABITAH",
+    "gender": "P",
+    "nis": "21128"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 3,
+    "name": "ANAK AGUNG AYU MIRAH ANJANI",
+    "gender": "P",
+    "nis": "21129"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 4,
+    "name": "DARRA AYU MAHASMARA",
+    "gender": "P",
+    "nis": "21130"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 5,
+    "name": "DEWA GEDE SIVA SAPUTRA",
+    "gender": "L",
+    "nis": "21131"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 6,
+    "name": "GUSTI AYU KOMANG RASYA OLIVIA",
+    "gender": "P",
+    "nis": "21132"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 7,
+    "name": "GUSTI PUTU NOVIA RAHAYU NINGSIH",
+    "gender": "P",
+    "nis": "21133"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 8,
+    "name": "I GEDE DANENDRA SUDIARTHA",
+    "gender": "L",
+    "nis": "21134"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 9,
+    "name": "I KADEK ARI CIPTA NUGRAHA",
+    "gender": "L",
+    "nis": "21135"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 10,
+    "name": "IDA AYU KADE NADYA PUTRI WINANDA",
+    "gender": "P",
+    "nis": "21136"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 11,
+    "name": "IDA BAGUS ABHINAYA DANUR ARTHA",
+    "gender": "L",
+    "nis": "21137"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 12,
+    "name": "KADEK ABBY WIWEKA NAROTAMA",
+    "gender": "L",
+    "nis": "21138"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 13,
+    "name": "KADEK AGUS DARMA YASA",
+    "gender": "L",
+    "nis": "21139"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 14,
+    "name": "KADEK ANGGA PRANATA",
+    "gender": "L",
+    "nis": "21140"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 15,
+    "name": "KADEK BAYU JUNIARTA",
+    "gender": "L",
+    "nis": "21141"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 16,
+    "name": "KADEK NADIA ATHALIA PUTRI",
+    "gender": "P",
+    "nis": "21142"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 17,
+    "name": "KADEK NADIA INDRIYANA PUTRI",
+    "gender": "P",
+    "nis": "21143"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 18,
+    "name": "KADEK NATALIA MAHARANI",
+    "gender": "P",
+    "nis": "21144"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 19,
+    "name": "KAYLA NAZIVA",
+    "gender": "P",
+    "nis": "21145"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 20,
+    "name": "KETUT FARA DIANTY PUTRI VIRATAMA",
+    "gender": "P",
+    "nis": "21146"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 21,
+    "name": "KHOLIFAH RUBBANI",
+    "gender": "P",
+    "nis": "21147"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 22,
+    "name": "KOMANG BAGUS SUDANA",
+    "gender": "L",
+    "nis": "21148"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 23,
+    "name": "KOMANG DIKA TRIANA",
+    "gender": "L",
+    "nis": "21149"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 24,
+    "name": "KOMANG DINDA WIKA MALAYKA PUTRI",
+    "gender": "P",
+    "nis": "21150"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 25,
+    "name": "KOMANG YUNA SAVITA DANARWATI",
+    "gender": "P",
+    "nis": "21151"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 26,
+    "name": "LUH SINDI PRATIWI",
+    "gender": "P",
+    "nis": "21152"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 27,
+    "name": "MADE PRADISTA PRAISHANDRYNA POETRY",
+    "gender": "P",
+    "nis": "21153"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 28,
+    "name": "MADE SAKA MAHARDIKA",
+    "gender": "L",
+    "nis": "21154"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 29,
+    "name": "NENGAH ARDI JAYA WIGUNA",
+    "gender": "L",
+    "nis": "21155"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 30,
+    "name": "NI KADEK NOVINTRIA ALISYA PUTRI",
+    "gender": "P",
+    "nis": "21156"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 31,
+    "name": "PANDE PUTU EPICA KENZIE SUAMBA",
+    "gender": "L",
+    "nis": "21157"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 32,
+    "name": "PUTU AYUMAS SAFIRA ADI KYREINA",
+    "gender": "P",
+    "nis": "21158"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 33,
+    "name": "PUTU EBIYOGA SUPRADNYA ARIMBAWA",
+    "gender": "L",
+    "nis": "21159"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 34,
+    "name": "PUTU RAMA RADHITYA",
+    "gender": "L",
+    "nis": "21160"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 35,
+    "name": "PUTU RANGGA PRATAMA PUTRA DETA",
+    "gender": "L",
+    "nis": "21161"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 36,
+    "name": "PUTU WIDHI SEPTIANA",
+    "gender": "L",
+    "nis": "21162"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 37,
+    "name": "RADHITIA MAULANA AKBAR",
+    "gender": "L",
+    "nis": "21163"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 38,
+    "name": "SALVA ALL ZAHRA",
+    "gender": "P",
+    "nis": "21164"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 39,
+    "name": "XELLO DIOLAFA IRFAN",
+    "gender": "L",
+    "nis": "21165"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A5",
+    "no_absen": 40,
+    "name": "ZASKIA ANTIKA RACHMAN",
+    "gender": "P",
+    "nis": "21166"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 1,
+    "name": "ANAK AGUNG NGURAH RAMA BAKTI",
+    "gender": "L",
+    "nis": "21167"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 2,
+    "name": "DEWA MADE LASTYA MILAN SUKRABAWA",
+    "gender": "L",
+    "nis": "21168"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 3,
+    "name": "DEWA PUTU REIVAN DANURWENDA",
+    "gender": "L",
+    "nis": "21169"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 4,
+    "name": "GEDE RENDY SURYA UTAMA",
+    "gender": "L",
+    "nis": "21170"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 5,
+    "name": "GEDE WIDHIADA",
+    "gender": "L",
+    "nis": "21171"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 6,
+    "name": "I GUSTI AYU NASYA MAHARANI",
+    "gender": "P",
+    "nis": "21172"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 7,
+    "name": "I KADEK ADITYA SUWASMITA",
+    "gender": "L",
+    "nis": "21173"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 8,
+    "name": "I KADEK ARKA SAMBU NANDANA",
+    "gender": "L",
+    "nis": "21174"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 9,
+    "name": "I KADEK JUNA DARMA DWIYANA",
+    "gender": "L",
+    "nis": "21175"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 10,
+    "name": "I KADEK PANDU SATYA ANANTA",
+    "gender": "L",
+    "nis": "21176"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 11,
+    "name": "I MADE ARYA GIRINDRA WARDHANA",
+    "gender": "L",
+    "nis": "21177"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 12,
+    "name": "I MADE DIKA KATON ARDANA",
+    "gender": "L",
+    "nis": "21178"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 13,
+    "name": "KADEK AYU INTAN LESTARI",
+    "gender": "P",
+    "nis": "21179"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 14,
+    "name": "KADEK CHIRA LUNA PIENA",
+    "gender": "P",
+    "nis": "21180"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 15,
+    "name": "KADEK DINDA KANAYA PUTRI",
+    "gender": "P",
+    "nis": "21181"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 16,
+    "name": "KADEK DIVANIA DHAMAYANI",
+    "gender": "P",
+    "nis": "21182"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 17,
+    "name": "KADEK VIKA ARDIANI",
+    "gender": "P",
+    "nis": "21183"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 18,
+    "name": "KDEK GHANESSISYA PRYANKA ARSA",
+    "gender": "L",
+    "nis": "21184"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 19,
+    "name": "KOMANG ADHYASTA PRAJADEWA RUSMANTARA",
+    "gender": "L",
+    "nis": "21185"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 20,
+    "name": "KOMANG AGUS PUTRA YADNYA",
+    "gender": "L",
+    "nis": "21186"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 21,
+    "name": "KOMANG ANGGRENI",
+    "gender": "P",
+    "nis": "21187"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 22,
+    "name": "KOMANG DELIA AGUSTANA PUTRI",
+    "gender": "P",
+    "nis": "21188"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 23,
+    "name": "LUH KHAYLA WIRYA MAHADEWINDA",
+    "gender": "P",
+    "nis": "21189"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 24,
+    "name": "LUH YUKA GITA PRADNYANI",
+    "gender": "P",
+    "nis": "21190"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 25,
+    "name": "MADE NADYA PRADANI ISWARI",
+    "gender": "P",
+    "nis": "21191"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 26,
+    "name": "MADE NARENDRA ANANDA PUTRA",
+    "gender": "L",
+    "nis": "21192"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 27,
+    "name": "MADE PRADIPTA SAGUNA YODHA",
+    "gender": "L",
+    "nis": "21193"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 28,
+    "name": "NI KADEK CARISA FEBRIANA DEWI",
+    "gender": "P",
+    "nis": "21194"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 29,
+    "name": "NI KOMANG ADELIA TRI WIDIASIH",
+    "gender": "P",
+    "nis": "21195"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 30,
+    "name": "NI LUH PUTU INARA KUSUMA PUTRI",
+    "gender": "P",
+    "nis": "21196"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 31,
+    "name": "NI PUTU WIKANANDA KARISTA PUTRI",
+    "gender": "P",
+    "nis": "21197"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 32,
+    "name": "PUTU ADITYA ARYAWAN",
+    "gender": "L",
+    "nis": "21198"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 33,
+    "name": "PUTU ARSYAKAYLA JACINDA",
+    "gender": "P",
+    "nis": "21199"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 34,
+    "name": "PUTU ATHALIA HERMAWAN",
+    "gender": "P",
+    "nis": "21200"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 35,
+    "name": "PUTU GUSTANO RUSTADINATA",
+    "gender": "L",
+    "nis": "21201"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 36,
+    "name": "PUTU INTAN JANUARSARI RAHAYU",
+    "gender": "P",
+    "nis": "21202"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 37,
+    "name": "PUTU KAYLA MAHARANI",
+    "gender": "P",
+    "nis": "21203"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 38,
+    "name": "PUTU MARTHA AMELIA DEWI",
+    "gender": "P",
+    "nis": "21204"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 39,
+    "name": "PUTU WIRA MAHENDRA PUTRA",
+    "gender": "L",
+    "nis": "21205"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A6",
+    "no_absen": 40,
+    "name": "ROSSEELON PUNIAKA PUTRA ROBIN",
+    "gender": "L",
+    "nis": "21206"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 1,
+    "name": "AFANDI EZA WIRAWAN",
+    "gender": "L",
+    "nis": "21207"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 2,
+    "name": "AGUNG AGRA DANISWARA WISTARA SUDATHA",
+    "gender": "L",
+    "nis": "21208"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 3,
+    "name": "AHMAD RIZAL",
+    "gender": "L",
+    "nis": "21209"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 4,
+    "name": "DEWA BAGUS KSATRIA NARAWANGSA",
+    "gender": "L",
+    "nis": "21210"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 5,
+    "name": "GEDE BAGUS PRASETYA WIBAWA",
+    "gender": "L",
+    "nis": "21211"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 6,
+    "name": "GUSTI AYU PUTU DANESHA KAYANA YUDIRA",
+    "gender": "P",
+    "nis": "21212"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 7,
+    "name": "GUSTI AYU PUTU MERI WIDIASTUTI",
+    "gender": "P",
+    "nis": "21213"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 8,
+    "name": "I GEDE WEDA SEMARA YASA",
+    "gender": "L",
+    "nis": "21214"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 9,
+    "name": "I MADE JUNA ANANDA SUPUTRA",
+    "gender": "L",
+    "nis": "21215"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 10,
+    "name": "I NYOMAN NANDHA DIATMIKA",
+    "gender": "L",
+    "nis": "21216"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 11,
+    "name": "I PUTU DEVA ARTHA PRASETYA",
+    "gender": "L",
+    "nis": "21217"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 12,
+    "name": "INEZ AMALIA SABIBI",
+    "gender": "P",
+    "nis": "21218"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 13,
+    "name": "JOVANDI FAUZAN HIDAYAT",
+    "gender": "L",
+    "nis": "21219"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 14,
+    "name": "JULIO ANDRE ALFARO",
+    "gender": "L",
+    "nis": "21220"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 15,
+    "name": "KADEK AMICA VITARYANI",
+    "gender": "P",
+    "nis": "21221"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 16,
+    "name": "KADEK DEA AURELIA",
+    "gender": "P",
+    "nis": "21222"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 17,
+    "name": "KADEK WIDYA ISWARI",
+    "gender": "P",
+    "nis": "21223"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 18,
+    "name": "KAIRA NURUL ZAHRA",
+    "gender": "P",
+    "nis": "21224"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 19,
+    "name": "KETUT BHADRA WISTARA",
+    "gender": "L",
+    "nis": "21225"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 20,
+    "name": "KETUT LOUIS BUDIARTA",
+    "gender": "L",
+    "nis": "21226"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 21,
+    "name": "KETUT NANDI ANDIKA PUTRI",
+    "gender": "P",
+    "nis": "21227"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 22,
+    "name": "KETUT SATRIA ADI PRAYOGA",
+    "gender": "L",
+    "nis": "21228"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 23,
+    "name": "KETUT YUDI MAHENDRA PUTRA",
+    "gender": "L",
+    "nis": "21229"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 24,
+    "name": "KHANZA RUKHSANA",
+    "gender": "P",
+    "nis": "21230"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 25,
+    "name": "KOMANG AUDREY SUWADEWI SAPUTRI",
+    "gender": "P",
+    "nis": "21231"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 26,
+    "name": "KOMANG DIVYA ARTAYU SYAKIRANI",
+    "gender": "P",
+    "nis": "21232"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 27,
+    "name": "KOMANG GEDE SURYA ADHI WIRAWAN",
+    "gender": "L",
+    "nis": "21233"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 28,
+    "name": "KOMANG NAURA APRILLIA",
+    "gender": "P",
+    "nis": "21234"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 29,
+    "name": "M. ANUGERAH RAMADHAN",
+    "gender": "L",
+    "nis": "21235"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 30,
+    "name": "MADE PANJI ANGA DWIPAYANA",
+    "gender": "L",
+    "nis": "21236"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 31,
+    "name": "NI KADE CANDRA DEWI",
+    "gender": "P",
+    "nis": "21237"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 32,
+    "name": "NI LUH AURA EVITA MAHARANI",
+    "gender": "P",
+    "nis": "21238"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 33,
+    "name": "NYOMAN ZAGHITA PUTRI PASEK WIDYA LESTARI",
+    "gender": "P",
+    "nis": "21239"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 34,
+    "name": "PUTU AFNIE NATHANIA JAYANTI",
+    "gender": "P",
+    "nis": "21240"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 35,
+    "name": "PUTU GALANG ANDRA WIDANA",
+    "gender": "L",
+    "nis": "21241"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 36,
+    "name": "PUTU JANETTA PUTRI WAISYA",
+    "gender": "P",
+    "nis": "21242"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 37,
+    "name": "PUTU KEISHA ABHI NARENDRA",
+    "gender": "L",
+    "nis": "21243"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 38,
+    "name": "PUTU LINDA SUCIARI",
+    "gender": "P",
+    "nis": "21244"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 39,
+    "name": "PUTU NESYA CANDRA SURYA ANGGRENI",
+    "gender": "P",
+    "nis": "21245"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A7",
+    "no_absen": 40,
+    "name": "RIZA AL FARIZI SYABIBIE",
+    "gender": "L",
+    "nis": "21246"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 1,
+    "name": "AFIKA MISYANA PUTRI",
+    "gender": "P",
+    "nis": "21247"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 2,
+    "name": "ANAK AGUNG NGURAH NARA SAILENDRA PUTRA",
+    "gender": "L",
+    "nis": "21248"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 3,
+    "name": "ANAK AGUNG NGURAH SAGENI BIMA GADATRI",
+    "gender": "L",
+    "nis": "21249"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 4,
+    "name": "DANIEL JULIO SALANG KIABENI",
+    "gender": "L",
+    "nis": "21250"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 5,
+    "name": "EDDYSSA RAHMADINA KAMIL",
+    "gender": "P",
+    "nis": "21251"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 6,
+    "name": "GEDE ANANDA SATYA DHARMA",
+    "gender": "L",
+    "nis": "21252"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 7,
+    "name": "GEDE ARIA SUJANA",
+    "gender": "L",
+    "nis": "21253"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 8,
+    "name": "GEDE MAHADEWA PUTRA WIJAYA",
+    "gender": "L",
+    "nis": "21254"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 9,
+    "name": "GEDE RAMA DANISWARA PUTRA PERMANA",
+    "gender": "L",
+    "nis": "21255"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 10,
+    "name": "GEDE RAVA AGASTA WIRAPRATAMA",
+    "gender": "L",
+    "nis": "21256"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 11,
+    "name": "GEDE WIRA ANGGA PRADNYANA",
+    "gender": "L",
+    "nis": "21257"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 12,
+    "name": "GUSTI AYU KOMANG CAHAYA WULANDARI",
+    "gender": "P",
+    "nis": "21258"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 13,
+    "name": "I GEDE AIRLANGGA NUGRAHA",
+    "gender": "L",
+    "nis": "21259"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 14,
+    "name": "I GEDE SAKA KARUNIA VALENTINO",
+    "gender": "L",
+    "nis": "21260"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 15,
+    "name": "I GUSTI AYU KOMANG MAS MESTY YANI",
+    "gender": "P",
+    "nis": "21261"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 16,
+    "name": "I GUSTI BAGUS NGURAH AGUNG TEDJA ALIT WISHTARA",
+    "gender": "L",
+    "nis": "21262"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 17,
+    "name": "I MADE AMARENDRA ANANTA WIKRAMA DHARMA",
+    "gender": "L",
+    "nis": "21263"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 18,
+    "name": "KADEK AGAS TIA WIDIYASA",
+    "gender": "L",
+    "nis": "21264"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 19,
+    "name": "KADEK AISWARYA PREMA JYOTI",
+    "gender": "P",
+    "nis": "21265"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 20,
+    "name": "KADEK BAGAS SATYA ANANTA",
+    "gender": "L",
+    "nis": "21266"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 21,
+    "name": "KADEK CANDRA TIARA PUTRI",
+    "gender": "P",
+    "nis": "21267"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 22,
+    "name": "KADEK CHALISA SITHA MAHESWARI",
+    "gender": "P",
+    "nis": "21268"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 23,
+    "name": "KADEK GELVIN WAHYU PUTRA",
+    "gender": "L",
+    "nis": "21269"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 24,
+    "name": "KADEK REFFA ADITI SABDANI",
+    "gender": "P",
+    "nis": "21270"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 25,
+    "name": "KOMANG BAYU CHESAR MANTARA",
+    "gender": "L",
+    "nis": "21271"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 26,
+    "name": "KOMANG DARRELL APRILO",
+    "gender": "L",
+    "nis": "21272"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 27,
+    "name": "KOMANG WAHYU WEDANTA",
+    "gender": "L",
+    "nis": "21273"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 28,
+    "name": "LUH PUTU SHAMITA ANINDYA SANJAYA",
+    "gender": "P",
+    "nis": "21274"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 29,
+    "name": "MADE DIRA PRATISTA RADITYA",
+    "gender": "L",
+    "nis": "21275"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 30,
+    "name": "MADE VIO NEYSA BALITANAYA",
+    "gender": "L",
+    "nis": "21276"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 31,
+    "name": "MARCHEL GILBERT APTA DIPUTRA",
+    "gender": "L",
+    "nis": "21277"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 32,
+    "name": "NI KOMANG FREIZYA RISTANA ANGELIA",
+    "gender": "P",
+    "nis": "21278"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 33,
+    "name": "NI KOMANG PUJA ARTANTI PUTRI",
+    "gender": "P",
+    "nis": "21279"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 34,
+    "name": "NI PUTU NAILA EFIA ARIESTA",
+    "gender": "P",
+    "nis": "21280"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 35,
+    "name": "NI PUTU WANGI PRATIWI ARUNI",
+    "gender": "P",
+    "nis": "21281"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 36,
+    "name": "PUTU DODE WIDYA PASTIKA",
+    "gender": "L",
+    "nis": "21282"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 37,
+    "name": "PUTU DYMAS SARASWATI",
+    "gender": "P",
+    "nis": "21283"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 38,
+    "name": "PUTU KAMALUNA ARCAKA PUTRI",
+    "gender": "P",
+    "nis": "21284"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 39,
+    "name": "PUTU MILA SURYANI",
+    "gender": "P",
+    "nis": "21285"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A8",
+    "no_absen": 40,
+    "name": "SOLOMON HIZKIA TRISNA",
+    "gender": "L",
+    "nis": "21286"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 1,
+    "name": "A.A.NGURAH RADITHYA PUTRA ANANDA",
+    "gender": "L",
+    "nis": "21287"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 2,
+    "name": "ALIT WIKAN GUNADI",
+    "gender": "L",
+    "nis": "21288"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 3,
+    "name": "ANAK AGUNG GDE PRAMA NEGARA",
+    "gender": "L",
+    "nis": "21289"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 4,
+    "name": "ANAK AGUNG GEDE BEMBI SISYANA DIMATA",
+    "gender": "L",
+    "nis": "21290"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 5,
+    "name": "GEDE ALVARA WAYSA KUSUMA",
+    "gender": "L",
+    "nis": "21291"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 6,
+    "name": "GEDE YODHA PRAJATAMA",
+    "gender": "L",
+    "nis": "21292"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 7,
+    "name": "I GEDE RANGGA WIRA SAPUTRA",
+    "gender": "L",
+    "nis": "21293"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 8,
+    "name": "I MADE ADHYAKSA PUTRA WARDHANA",
+    "gender": "L",
+    "nis": "21294"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 9,
+    "name": "I MADE ARYAGUNA MUSEVA ROHDMANN",
+    "gender": "L",
+    "nis": "21295"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 10,
+    "name": "I NYOMAN NARARYA YOGAWIDANA WIRAHJASA",
+    "gender": "L",
+    "nis": "21296"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 11,
+    "name": "IDA AYU TATA PRAMESWARI",
+    "gender": "P",
+    "nis": "21297"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 12,
+    "name": "IDA BAGUS BIDJA SUDIATNYANA",
+    "gender": "L",
+    "nis": "21298"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 13,
+    "name": "IGA CALISTA NAIMAEDHA KASVI",
+    "gender": "P",
+    "nis": "21299"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 14,
+    "name": "KADEK ADINDA AULIA PUTRI",
+    "gender": "P",
+    "nis": "21300"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 15,
+    "name": "KADEK ANGGA SUARDIANA PUTRA",
+    "gender": "L",
+    "nis": "21301"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 16,
+    "name": "KADEK APSARA LENTERA PURNAMAWAN",
+    "gender": "P",
+    "nis": "21302"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 17,
+    "name": "KADEK AUDREY PERMANA",
+    "gender": "P",
+    "nis": "21303"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 18,
+    "name": "KADEK AYU BUDI SETIANINGSIH",
+    "gender": "P",
+    "nis": "21304"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 19,
+    "name": "KADEK MESHYA KAYIKA ERAWADY",
+    "gender": "P",
+    "nis": "21305"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 20,
+    "name": "KETUT DIRA PERMANA WIGUNA",
+    "gender": "L",
+    "nis": "21306"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 21,
+    "name": "KOMANG AGASTYA YOGISWARA",
+    "gender": "L",
+    "nis": "21307"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 22,
+    "name": "KOMANG BERLIANA WULAN SYFA AWATARI",
+    "gender": "P",
+    "nis": "21308"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 23,
+    "name": "KOMANG JYOTINDRA WIGUNA DHANESWARA",
+    "gender": "L",
+    "nis": "21309"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 24,
+    "name": "LUH WINDA PRADNYANI",
+    "gender": "P",
+    "nis": "21310"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 25,
+    "name": "LUHTU PUJA AYUDHYA LUCKSMIKA DEWI",
+    "gender": "P",
+    "nis": "21311"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 26,
+    "name": "MADE AIRLANGGA HERDYANTA PERMANA",
+    "gender": "L",
+    "nis": "21312"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 27,
+    "name": "MADE AURYN AYU NINGDYA",
+    "gender": "P",
+    "nis": "21313"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 28,
+    "name": "NI KOMANG LALITA STANEL CITANDINI",
+    "gender": "P",
+    "nis": "21314"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 29,
+    "name": "NI PUTU KAILA LAKSMINI JAYANTI",
+    "gender": "P",
+    "nis": "21315"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 30,
+    "name": "NI PUTU TIFA INDIRA MANDAYUNA",
+    "gender": "P",
+    "nis": "21316"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 31,
+    "name": "NYOMAN ADITYA NARAYANA RAI",
+    "gender": "L",
+    "nis": "21317"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 32,
+    "name": "PANDE KETUT YODA KANAYA",
+    "gender": "L",
+    "nis": "21319"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 33,
+    "name": "PUTU AGASTYA BHUWANA PRAKASA",
+    "gender": "L",
+    "nis": "21320"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 34,
+    "name": "PUTU DEVANI ADI CHANDRA",
+    "gender": "P",
+    "nis": "21321"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 35,
+    "name": "PUTU GENDIS CARISSA SARASWATI",
+    "gender": "P",
+    "nis": "21322"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 36,
+    "name": "PUTU PREMA SETIA NINGRAT",
+    "gender": "L",
+    "nis": "21323"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 37,
+    "name": "ZAHIFA ZAHIYA SAFITRI",
+    "gender": "P",
+    "nis": "21406"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 38,
+    "name": "PUTU ZIVARA ARALYN SUDARMAWAN",
+    "gender": "P",
+    "nis": "21325"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 39,
+    "name": "WAYAN RONY ANKORA",
+    "gender": "L",
+    "nis": "21326"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A9",
+    "no_absen": 40,
+    "name": "DESAK NYOMAN DEVITA ARTA PUTRI",
+    "gender": "P",
+    "nis": "21367"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 1,
+    "name": "AIRIN GEOVANNIE",
+    "gender": "P",
+    "nis": "21327"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 2,
+    "name": "AUREL AGATHI ARIAWAN",
+    "gender": "P",
+    "nis": "21328"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 3,
+    "name": "BRYAN ANANTA TEJA",
+    "gender": "L",
+    "nis": "21329"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 4,
+    "name": "CHANDRA RAFLY LESMANA",
+    "gender": "L",
+    "nis": "21330"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 5,
+    "name": "DEWA AYU PUTU SUPRABA DEWI",
+    "gender": "P",
+    "nis": "21331"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 6,
+    "name": "FREDY ARYA NATHANIEL YANA RADJA OEDJOE",
+    "gender": "L",
+    "nis": "21333"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 7,
+    "name": "GEDE RADITYA WAHYU KUSUMA",
+    "gender": "L",
+    "nis": "21334"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 8,
+    "name": "I GDE GERRALD ARKA NATA MAHENDRA",
+    "gender": "L",
+    "nis": "21335"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 9,
+    "name": "I GEDE KIANDRA ANANDA PUTRA",
+    "gender": "L",
+    "nis": "21336"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 10,
+    "name": "I GEDE MADE DENTA CAHYA PRAJNANA",
+    "gender": "L",
+    "nis": "21337"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 11,
+    "name": "I GUSTI AYU AGUNG CINTA MAHARANI",
+    "gender": "P",
+    "nis": "21338"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 12,
+    "name": "I MADE AIRLANGGA SATYA GANENDRA",
+    "gender": "L",
+    "nis": "21339"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 13,
+    "name": "I MADE PREMARDANA VINAYAKA",
+    "gender": "L",
+    "nis": "21340"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 14,
+    "name": "I PUTU ARYA DAFFA PUTRA RATHA",
+    "gender": "L",
+    "nis": "21341"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 15,
+    "name": "IDA AYU GITA ASHIANA",
+    "gender": "P",
+    "nis": "21342"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 16,
+    "name": "ILHAM FARIS",
+    "gender": "L",
+    "nis": "21344"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 17,
+    "name": "ISABEL ARNETA",
+    "gender": "P",
+    "nis": "21345"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 18,
+    "name": "KETUT CANIVA CINTA CAHYANI",
+    "gender": "P",
+    "nis": "21346"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 19,
+    "name": "KETUT GEDE REZZA ARJUNA APRIMAYLANO",
+    "gender": "L",
+    "nis": "21347"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 20,
+    "name": "KOMANG PUTRI WIDIA SARI",
+    "gender": "P",
+    "nis": "21348"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 21,
+    "name": "KOMANG TRISTAN PRIMA HARSANA",
+    "gender": "L",
+    "nis": "21349"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 22,
+    "name": "LUH PUTU CALLYSTA LAKEISHA PUTRI DHAMARI",
+    "gender": "P",
+    "nis": "21350"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 23,
+    "name": "LUH PUTU MUTIARA NIRMALA PRYACITTA",
+    "gender": "P",
+    "nis": "21351"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 24,
+    "name": "MADE ARKANANTHA PUTRA MIHARJA",
+    "gender": "L",
+    "nis": "21352"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 25,
+    "name": "MADE DEVANDRA ARYA WEDANGGA",
+    "gender": "L",
+    "nis": "21353"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 26,
+    "name": "MADE WENDAM CESIODINATA",
+    "gender": "L",
+    "nis": "21354"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 27,
+    "name": "NI KOMANG APSARI PERMATA SUCI",
+    "gender": "P",
+    "nis": "21355"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 28,
+    "name": "NI LUH GHEA ALENA DEWI",
+    "gender": "P",
+    "nis": "21356"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 29,
+    "name": "NI PUTU DHARAGITA BUDHI SUSILA",
+    "gender": "P",
+    "nis": "21357"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 30,
+    "name": "NI PUTU INTAN WAHYU KIRANI",
+    "gender": "P",
+    "nis": "21358"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 31,
+    "name": "NI PUTU SURYANING TYAS",
+    "gender": "P",
+    "nis": "21359"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 32,
+    "name": "NI PUTU VIDYA PRASHANTI",
+    "gender": "P",
+    "nis": "21360"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 33,
+    "name": "PUTU ALGA SATYA PRATAMA",
+    "gender": "L",
+    "nis": "21361"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 34,
+    "name": "PUTU RADHA CETTA KASYARA",
+    "gender": "P",
+    "nis": "21362"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 35,
+    "name": "PUTU RAISA ARINDRA SWARI",
+    "gender": "P",
+    "nis": "21363"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 36,
+    "name": "PUTU REGINA EVALINA",
+    "gender": "P",
+    "nis": "21364"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 37,
+    "name": "PUTU WIRADITYA",
+    "gender": "L",
+    "nis": "21365"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 38,
+    "name": "I GEDE BAGUS DHANESWARA MAHADIPUTRA",
+    "gender": "L",
+    "nis": "21374"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 39,
+    "name": "GEDE TRISNA EKA NARENDRA",
+    "gender": "L",
+    "nis": "21372"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A10",
+    "no_absen": 40,
+    "name": "I KADEK ABIRAMA DANENDRA DIVA",
+    "gender": "L",
+    "nis": "21380"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 1,
+    "name": "PUTU RANIA ANDINA SANTI",
+    "gender": "P",
+    "nis": "21324"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 2,
+    "name": "DEVLIN ADITYA TAUFIK SAPUTRA",
+    "gender": "L",
+    "nis": "21368"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 3,
+    "name": "DINDA MIKAYLA ZAHRA",
+    "gender": "P",
+    "nis": "21369"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 4,
+    "name": "GEDE ELVIS ISMAYANA",
+    "gender": "L",
+    "nis": "21370"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 5,
+    "name": "GEDE RADITYA SANDI PRATAMA",
+    "gender": "L",
+    "nis": "21371"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 6,
+    "name": "WAYAN VALROY MAHA NUGRAHA",
+    "gender": "L",
+    "nis": "21366"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 7,
+    "name": "GEDE WIRA HADINATHA",
+    "gender": "L",
+    "nis": "21373"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 8,
+    "name": "IDA AYU KADE DIKA ISWARYANTI PUTRI",
+    "gender": "P",
+    "nis": "21343"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 9,
+    "name": "I GUSTI AYU AIRA OXCELIA SUMAYANTI",
+    "gender": "P",
+    "nis": "21375"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 10,
+    "name": "I GUSTI AYU KEYLANIA SUMAHARANI",
+    "gender": "P",
+    "nis": "21376"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 11,
+    "name": "I GUSTI BAGUS ABI WIRA YUDA",
+    "gender": "L",
+    "nis": "21377"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 12,
+    "name": "I GUSTI BAGUS NUGRAHA PRANADIPTA",
+    "gender": "L",
+    "nis": "21378"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 13,
+    "name": "I GUSTI PUTU ARIENDRA NUGRAHA",
+    "gender": "L",
+    "nis": "21379"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 14,
+    "name": "I KADEK SHANDY WIRA ARTHA",
+    "gender": "L",
+    "nis": "21381"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 15,
+    "name": "I KETUT SANDYA DHARMA WIRANATHA",
+    "gender": "L",
+    "nis": "21382"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 16,
+    "name": "I MADE ANANTHA PUTRA BAGASKHARA",
+    "gender": "L",
+    "nis": "21383"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 17,
+    "name": "I NYOMAN NUGRAHA DARMAYASA WISASMITA",
+    "gender": "L",
+    "nis": "21384"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 18,
+    "name": "KADEK ADRIAN MAHADITRA PRABASWARA",
+    "gender": "L",
+    "nis": "21385"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 19,
+    "name": "KADEK ANINDYA SASTRA DINARA",
+    "gender": "P",
+    "nis": "21386"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 20,
+    "name": "KADEK REZA MAHENDRA",
+    "gender": "L",
+    "nis": "21387"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 21,
+    "name": "KELLY LUKMANTO",
+    "gender": "P",
+    "nis": "21388"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 22,
+    "name": "KOMANG DARIEL ADDY FABIAN",
+    "gender": "L",
+    "nis": "21389"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 23,
+    "name": "KOMANG DILA WISNA",
+    "gender": "P",
+    "nis": "21390"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 24,
+    "name": "KOMANG KENSHO SURYA SINDIVA",
+    "gender": "L",
+    "nis": "21391"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 25,
+    "name": "MADE AIRINA MAHADEWI DINATA",
+    "gender": "P",
+    "nis": "21392"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 26,
+    "name": "MADE FARREL NATHA WIJAYA",
+    "gender": "L",
+    "nis": "21393"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 27,
+    "name": "MARCELLO TIMOTHY HENDRAWAN",
+    "gender": "L",
+    "nis": "21394"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 28,
+    "name": "NENGAH GEO YASHWANT JANADHIPA",
+    "gender": "L",
+    "nis": "21395"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 29,
+    "name": "NI KADEK ADHENIA RATRIADI JAYANTHI",
+    "gender": "P",
+    "nis": "21396"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 30,
+    "name": "NYOMAN KANYA MAHESWARI",
+    "gender": "P",
+    "nis": "21397"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 31,
+    "name": "NYOMAN KARTIKA DIANASARI JAYA",
+    "gender": "P",
+    "nis": "21398"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 32,
+    "name": "PUTU ASHARADHA DAEVIANA WIRAWAN",
+    "gender": "P",
+    "nis": "21399"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 33,
+    "name": "PUTU DEVIKA KUSUMAWATI",
+    "gender": "P",
+    "nis": "21400"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 34,
+    "name": "PUTU DIPTA KANHA ARYA PUTRA",
+    "gender": "L",
+    "nis": "21401"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 35,
+    "name": "PUTU NADYA BHAKTIVEDANTA",
+    "gender": "P",
+    "nis": "21402"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 36,
+    "name": "PUTU SHEILA AYUNDA MAHARANI",
+    "gender": "P",
+    "nis": "21403"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 37,
+    "name": "PUTU YESSICA DAMAYANTHI",
+    "gender": "P",
+    "nis": "21404"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 38,
+    "name": "P. CANTIKA MIRACLE ADIL",
+    "gender": "P",
+    "nis": "21318"
+  },
+  {
+    "source_sheet": "kls VII",
+    "kelas": "KELAS VII A11",
+    "no_absen": 39,
+    "name": "DEWA NYOMAN ADRIAN DANISWARA",
+    "gender": "L",
+    "nis": "21332"
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 1,
+    "name": "DESYA MELDA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 2,
+    "name": "DIANA SHELYN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 3,
+    "name": "GEDE ALVIN ADNYANA PUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 4,
+    "name": "GEDE BAGUS ERLANGGA RADITAMA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 5,
+    "name": "GEDE DAVIN SATRIA GUNAWAN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 6,
+    "name": "HILMI ADHYATSA UTAMA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 7,
+    "name": "I DEWA AGUNG SUTA SINUKARTA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 8,
+    "name": "I GUSTI BAGAS PUTRA SENA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 9,
+    "name": "I MADE WIJAYA PUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 10,
+    "name": "IKA MAHARANI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 11,
+    "name": "KADEK ALISA WIDYA PUSPITA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 12,
+    "name": "KADEK BARA PUTRA DHARMASENA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 13,
+    "name": "KADEK HOLDEN WAHYUDI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 14,
+    "name": "KADEK RADHA AMRITA DITSA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 15,
+    "name": "KADEK SIVARA KIRANIA PUTRI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 16,
+    "name": "KADEK WIRA ADNYANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 17,
+    "name": "KADEK WRASTUTI APRILINA APSARI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 18,
+    "name": "KETUT GEMPAR SUPUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 19,
+    "name": "KETUT PEBRI YANTI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 20,
+    "name": "KOMANG ANDIKA PRISMATAMA YUDA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 21,
+    "name": "KOMANG GITA ARIYANTI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 22,
+    "name": "KOMANG PASEK BAGAS PUTRA SENA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 23,
+    "name": "KOMANG RADHA HARTA LESTARI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 24,
+    "name": "LUH KOMANG DEVIKA GHURKANI INDRYANIGRAHA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 25,
+    "name": "M. RIZAL AZIZI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 26,
+    "name": "MADE AYU DEA ARSWITA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 27,
+    "name": "MADE NIZEL TAURA SEMAWAN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 28,
+    "name": "MICHAEL TIMOTHY SETYAWAN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 29,
+    "name": "MIKHAEL",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 30,
+    "name": "MOHAMMAD HARDIANSYAH",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 31,
+    "name": "NENGAH SULAKSMI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 32,
+    "name": "NI MADE ALINA NARELLE RATNADEWI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 33,
+    "name": "PUTU ARVINA NATASYA ARDANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 34,
+    "name": "PUTU DARMA YASA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 35,
+    "name": "PUTU GHIESKA ANGGARA PUTRI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 36,
+    "name": "PUTU GOVIND SANDYA VICAKSANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 37,
+    "name": "PUTU NAURA ANINDYA NARISWARI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 38,
+    "name": "SANG KETUT ALIT NOVA SUARDANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 39,
+    "name": "SITI ASTIYAH",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 40,
+    "name": "ALVIN JUNIO EFFENDI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 41,
+    "name": "DEWA GEDE AGUS ARI PARTAWA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 42,
+    "name": "GEDE ADITYA PRANAVA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 43,
+    "name": "GEDE NARARYA PUTRA SENA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 44,
+    "name": "GEDE REZWAMEDA SARA PRISMAWAN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 45,
+    "name": "GST NGURAH KADEK BAGUS PEBIAWAN JELANTIK",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 46,
+    "name": "I DEWA PUTU RAMA ADITYA WIGUNA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 47,
+    "name": "I GEDE BAGUS DARMA PUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 48,
+    "name": "I GUSTI AGUNG AYU OKA AMRITA PRAMISUARI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 49,
+    "name": "I PUTU ARAY OKTARA SUDJANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 50,
+    "name": "I PUTU DEVASATYA WARDHANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 51,
+    "name": "KADEK ADELIA ORYZA SATIVA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 52,
+    "name": "KADEK HARTA PRADIVTA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 53,
+    "name": "KADEK HELENA MASYANTHI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 54,
+    "name": "KADEK NGURAH KEVANANDHA SURYAWAN",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 55,
+    "name": "KADEK WAHYU GUNA DHARMA WIJAYA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 56,
+    "name": "KOMANG DWIKA MAHA GANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 57,
+    "name": "KOMANG GESTIA SENA MALVA JANITRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 58,
+    "name": "MADE ANDRA SUWANGGA SUPUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 59,
+    "name": "MADE GANAND GATHA KYANA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 60,
+    "name": "MADE JYOTISHA SAVITRI WIJAYA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 61,
+    "name": "MADE MIRA SURYA MAHARANI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 62,
+    "name": "MADE NETHAN OKA SURYA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 63,
+    "name": "MADE RAFAEL WIRSIA WIBAWA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 64,
+    "name": "NI KETUT SULASIH KIRANI PUTRI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 65,
+    "name": "NI KOMANG RATIH DEVIA NARESWARI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 66,
+    "name": "NI KOMANG RIMA GRYANI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 67,
+    "name": "NI KOMANG RIRIN DELIA MAHARANI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 68,
+    "name": "NI MADE GEISHA AMANDA DEVI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 69,
+    "name": "NI PUTU LAKSMI HARTINI PRADNYA SHANTI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 70,
+    "name": "PUTU CANDRA INDRIYANI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 71,
+    "name": "PUTU CINTA AIRIN ANGEL",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 72,
+    "name": "PUTU CLARISA FORTUNA DEWI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 73,
+    "name": "PUTU DETA GANANDA PUTRA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 74,
+    "name": "PUTU GADIS ADHIKARI LAKSITA",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 75,
+    "name": "PUTU GITA PRASANTI DEWI",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 76,
+    "name": "TROY GHABRIEL PURNOMO",
+    "gender": "",
+    "nis": ""
+  },
+  {
+    "source_sheet": "edit",
+    "kelas": "edit",
+    "no_absen": 77,
+    "name": "WAYAN DINDA EKATHALIA DEWI",
+    "gender": "",
+    "nis": ""
+  }
+]

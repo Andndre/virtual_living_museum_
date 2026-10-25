@@ -76,15 +76,23 @@
 
     {{-- Content Section --}}
     <div class="px-6 py-8 bg-white rounded-t-3xl -mt-6 min-h-screen">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">{{ __('app.leaderboard') }}</h2>
+        <div class="max-w-7xl mx-auto" x-data="{ search: '' }">
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span>{{ __('app.leaderboard') }}</span>
+                    <span class="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-semibold">{{ count($topUsers) }} Siswa</span>
+                </h2>
+                <div class="relative w-full sm:w-72">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" x-model="search" placeholder="Cari nama siswa..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50">
+                </div>
             </div>
 
             <!-- Leaderboard -->
-            <div class="space-y-4 pb-32">
+            <div class="space-y-3 pb-32">
                 @foreach($topUsers as $user)
                     <div
+                        x-show="!search || '{{ strtolower(addslashes($user['name'])) }}'.includes(search.toLowerCase())"
                         class="flex items-center p-3 rounded-lg {{ $user['id'] === $currentUser->id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50' }}">
                         <!-- Rank -->
                         <div class="w-8 text-center font-bold {{ $user['rank'] <= 3 ? 'text-blue-600' : 'text-gray-700' }}">
