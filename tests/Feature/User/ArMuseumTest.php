@@ -24,6 +24,7 @@ test('authenticated user can view ar museum page with proper fallback elements',
     $response->assertSee('id="loading-container"', false);
     $response->assertSee('id="ar-share-url"', false);
     $response->assertSee('id="btn-copy-ar-link"', false);
+    $response->assertSee('class="back-button', false);
     $response->assertSee(__('ar.webxr_not_supported_title'));
 });
 

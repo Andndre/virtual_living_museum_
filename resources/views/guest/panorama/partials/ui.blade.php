@@ -12,7 +12,8 @@
 <div id="ui-layer">
     <div id="header-bar">
         <a href="{{ route('guest.situs.detail', $situs->situs_id) }}" class="btn-circle interactive"
-            title="{{ __('situs.back_to_site_detail') }}">
+            title="{{ __('situs.back_to_site_detail') }}"
+            onclick="if (window.history.length > 1 && document.referrer && document.referrer.startsWith(window.location.origin)) { event.preventDefault(); window.history.back(); }">
             <i class="fas fa-arrow-left"></i>
         </a>
 

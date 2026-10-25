@@ -1,8 +1,8 @@
 // Flag untuk mencegah multiple navigasi
 let isNavigating = false;
 
-// Fungsi untuk menangani navigasi back
-export function initBackButton(buttonSelector) {
+// Fungsi untuk menangani navigasi back dengan fallback cerdas
+export function initBackButton(buttonSelector, defaultFallbackUrl = null) {
     const backButtons = document.querySelectorAll(buttonSelector);
 
     if (backButtons.length > 0) {
@@ -20,22 +20,45 @@ export function initBackButton(buttonSelector) {
                 if (isNavigating) return;
                 isNavigating = true;
 
-                // Nonaktifkan tombol sementara
-                this.disabled = true;
+                // Nonaktifkan tombol sementara jika bertipe button
+                if (this.tagName === 'BUTTON') {
+                    this.disabled = true;
+                }
+
+                // Ambil fallback URL dari atribut atau parameter
+                const fallback = this.getAttribute('data-fallback-url')
+                    || (this.getAttribute('href') && this.getAttribute('href') !== '#' ? this.getAttribute('href') : null)
+                    || defaultFallbackUrl;
+
+                // Periksa apakah browser memiliki riwayat navigasi dari origin yang sama
+                const hasSameOriginReferrer = document.referrer && document.referrer.startsWith(window.location.origin);
+                const hasHistory = window.history.length > 1;
 
                 try {
-                    // Coba kembali ke halaman sebelumnya
-                    window.history.go(-1);
+                    if (hasHistory && hasSameOriginReferrer) {
+                        window.history.back();
+                    } else if (fallback) {
+                        window.location.href = fallback;
+                    } else {
+                        window.history.back();
+                    }
 
                     // Reset flag setelah timeout
                     setTimeout(() => {
                         isNavigating = false;
-                        this.disabled = false;
+                        if (this.tagName === 'BUTTON') {
+                            this.disabled = false;
+                        }
                     }, 1000);
                 } catch (error) {
                     console.error('Navigation error:', error);
                     isNavigating = false;
-                    this.disabled = false;
+                    if (this.tagName === 'BUTTON') {
+                        this.disabled = false;
+                    }
+                    if (fallback) {
+                        window.location.href = fallback;
+                    }
                 }
             });
         });

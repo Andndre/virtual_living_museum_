@@ -4,7 +4,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
-                    <a href="{{ route('guest.video-peninggalan') }}" class="mr-4">
+                    <a href="{{ route('guest.video-peninggalan') }}" class="back-button mr-4" data-fallback-url="{{ route('guest.video-peninggalan') }}" title="Kembali">
                         <i class="fas fa-arrow-left text-xl"></i>
                     </a>
                     <h1 class="text-lg font-bold">{{ __('video.title') }}</h1>

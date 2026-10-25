@@ -176,7 +176,10 @@
     </script>
     <div class="pointer-events-auto z-[10000000] rounded-b-3xl bg-primary px-6 py-6 text-white shadow-md">
         <div class="flex items-center space-x-4">
-            <a href="{{ route('guest.situs.detail', $situs->situs_id) }}" class="rounded-full p-2 transition-colors hover:bg-white/10" title="{{ __('ar.back_to_situs') }}">
+            <a href="{{ route('guest.situs.detail', $situs->situs_id) }}"
+                class="back-button rounded-full p-2 transition-colors hover:bg-white/10"
+                data-fallback-url="{{ route('guest.situs.detail', $situs->situs_id) }}"
+                title="{{ __('ar.back_to_situs') }}">
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>
             <div class="flex-1">
@@ -309,7 +312,8 @@
                     </button>
                 </div>
                 <a href="{{ route('guest.situs.detail', $situs->situs_id) }}"
-                    class="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                    class="back-button mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+                    data-fallback-url="{{ route('guest.situs.detail', $situs->situs_id) }}">
                     <i class="fas fa-arrow-left"></i>
                     <span>{{ __('ar.back_to_situs') }}</span>
                 </a>

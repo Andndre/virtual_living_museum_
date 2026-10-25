@@ -4,7 +4,9 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <button class="back-button rounded-full p-2 transition-colors hover:bg-white/10">
+                    <button class="back-button rounded-full p-2 transition-colors hover:bg-white/10"
+                        data-fallback-url="{{ $situs->materi ? route('guest.elearning.materi', $situs->materi->materi_id) : route('guest.elearning') }}"
+                        title="Kembali">
                         <i class="fas fa-arrow-left text-xl"></i>
                     </button>
                     <div class="flex-1">
