@@ -164,8 +164,8 @@ class SceneManager {
         this.camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
-            0.01,
-            1000,
+            0.05,
+            500,
         );
 
         this.reticle = new THREE.Mesh(
@@ -250,9 +250,18 @@ class SceneManager {
         // Set the scene's environment map for reflections on the model
         this.scene.environment = texture;
 
-        // Create sky dome with depthTest and depthWrite false so it renders purely as a background
-        // without occluding or clipping any 3D model geometry or Z-fighting with depth buffer
-        const skyGeometry = new THREE.SphereGeometry(500, 32, 20);
+        // Create upper hemisphere sky dome (thetaLength = Math.PI * 0.5)
+        // This renders ONLY the sky dome above the horizon (0 to 90 degrees),
+        // leaving the floor and lower hemisphere 100% open/transparent for the real camera feed.
+        const skyGeometry = new THREE.SphereGeometry(
+            150,
+            32,
+            16,
+            0,
+            Math.PI * 2,
+            0,
+            Math.PI * 0.5,
+        );
         const skyMaterial = new THREE.MeshBasicMaterial({
             map: texture,
             side: THREE.BackSide,
@@ -454,18 +463,19 @@ class RendererManager {
                 this.stopHitTestSource();
             }
 
-            // Update skybox position to follow the camera if it exists and is visible
+            // Update skybox position to follow the camera horizontally, keeping horizon on the ground
             if (
                 sceneManager.skybox &&
                 sceneManager.skybox.visible &&
                 sceneManager.placed
             ) {
                 const xrCam = this.renderer.xr.getCamera();
-                if (xrCam) {
-                    xrCam.getWorldPosition(sceneManager.skybox.position);
-                } else {
-                    sceneManager.camera.getWorldPosition(sceneManager.skybox.position);
-                }
+                const cam = xrCam || sceneManager.camera;
+                const camPos = new THREE.Vector3();
+                cam.getWorldPosition(camPos);
+                sceneManager.skybox.position.x = camPos.x;
+                sceneManager.skybox.position.z = camPos.z;
+                sceneManager.skybox.position.y = sceneManager.model ? sceneManager.model.position.y : 0;
             }
         }
 
