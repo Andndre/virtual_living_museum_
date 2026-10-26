@@ -170,9 +170,15 @@ class SceneManager {
 
         this.reticle = new THREE.Mesh(
             new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-            new THREE.MeshBasicMaterial(),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                polygonOffset: true,
+                polygonOffsetFactor: -1,
+                polygonOffsetUnits: -1,
+            }),
         );
         this.reticle.matrixAutoUpdate = false;
+        this.reticle.frustumCulled = false;
         this.reticle.visible = false;
         this.scene.add(this.reticle);
 
@@ -230,11 +236,9 @@ class SceneManager {
     }
 
     createSkybox() {
-        // Create a skybox using a spherical environment
+        // Load sky texture for scene environment reflections (PBR)
         const textureLoader = new THREE.TextureLoader();
 
-        // Load sky texture - we'll use a simple equirectangular texture
-        // This can be replaced with a more suitable texture for the museum context
         const texture = textureLoader.load("/images/hdri/langit.jpg", () => {
             console.log("Skybox texture loaded");
             showToaster("Skybox texture loaded");
@@ -243,27 +247,14 @@ class SceneManager {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         texture.colorSpace = THREE.SRGBColorSpace;
 
-        // Create a sphere for the skybox
-        // Radius 50 is safely within camera far frustum (1000), eliminating the clipping hole/leak
-        const skyGeometry = new THREE.SphereGeometry(50, 36, 24);
-
-        const skyMaterial = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.BackSide,
-            depthWrite: false,
-            toneMapped: false,
-        });
-
-        this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
-        this.skybox.frustumCulled = false;
-        this.skybox.renderOrder = -1;
-        this.skybox.visible = false; // Initially hidden
-        this.scene.add(this.skybox);
-
         // Set the scene's environment map for reflections on the model
         this.scene.environment = texture;
 
-        return this.skybox;
+        // In AR passthrough mode, do NOT add a physical skybox sphere to the scene
+        // because it would occlude or clip the real-world camera feed.
+        this.skybox = null;
+
+        return null;
     }
 }
 
@@ -316,6 +307,8 @@ class RendererManager {
 
         this.hitTestSource = null;
         this.hitTestSourceRequested = false;
+        this.hitTestMissedFrames = 0;
+        this.maxHitTestMissedFrames = 6;
 
         this.renderer.xr.addEventListener(
             "sessionstart",
@@ -363,6 +356,7 @@ class RendererManager {
      */
     onSessionEnd() {
         this.stopHitTestSource();
+        this.hitTestMissedFrames = 0;
 
         hideElement("instructions");
         hideElement("tracking-prompt");
@@ -424,11 +418,6 @@ class RendererManager {
      * @param {Object} sceneManager - The scene manager containing the scene and camera.
      */
     render(timestamp, frame, sceneManager) {
-        const activeCamera = getActiveCamera(
-            this.renderer,
-            sceneManager.camera,
-        );
-
         if (frame) {
             const referenceSpace = this.renderer.xr.getReferenceSpace();
             const session = this.renderer.xr.getSession();
@@ -451,20 +440,11 @@ class RendererManager {
             } else if (this.hitTestSource) {
                 this.stopHitTestSource();
             }
-
-            // Update skybox position to follow the camera if it exists and is visible
-            if (
-                sceneManager.skybox &&
-                sceneManager.skybox.visible &&
-                sceneManager.placed
-            ) {
-                const cameraPosition = new THREE.Vector3();
-                activeCamera.getWorldPosition(cameraPosition);
-                sceneManager.skybox.position.copy(cameraPosition);
-            }
         }
 
-        this.renderer.render(sceneManager.scene, activeCamera);
+        // Render using the application camera.
+        // Three.js WebXRManager automatically manages the XR camera internally during active XR sessions.
+        this.renderer.render(sceneManager.scene, sceneManager.camera);
     }
 
     /**
@@ -521,7 +501,10 @@ class RendererManager {
             }
             return;
         }
+
         if (hitTestResults.length > 0) {
+            this.hitTestMissedFrames = 0;
+
             if (!sceneManager.planeFound) {
                 sceneManager.planeFound = true;
                 hideElement("tracking-prompt");
@@ -529,12 +512,19 @@ class RendererManager {
             }
 
             const hit = hitTestResults[0];
-            sceneManager.reticle.visible = true;
-            sceneManager.reticle.matrix.fromArray(
-                hit.getPose(referenceSpace).transform.matrix,
-            );
+            const pose = hit.getPose(referenceSpace);
+            if (pose) {
+                sceneManager.reticle.visible = true;
+                sceneManager.reticle.matrix.fromArray(pose.transform.matrix);
+                sceneManager.reticle.matrixWorldNeedsUpdate = true;
+                sceneManager.reticle.updateMatrixWorld(true);
+            }
         } else {
-            sceneManager.reticle.visible = false;
+            this.hitTestMissedFrames = (this.hitTestMissedFrames || 0) + 1;
+            // Retain reticle for a few missed frames to prevent rapid blinking/flickering
+            if (this.hitTestMissedFrames > (this.maxHitTestMissedFrames || 6)) {
+                sceneManager.reticle.visible = false;
+            }
         }
     }
 }
@@ -551,15 +541,20 @@ class ModelLoader {
         this.loader.setDRACOLoader(this.dracoLoader);
         const model = await this.loader.loadAsync(name, onProgress);
 
-        // Enable shadows on the model
-        model.scenes[0].traverse((object) => {
+        const rootScene = model.scenes[0];
+        rootScene.frustumCulled = false;
+
+        // Enable shadows and disable frustum culling on all child meshes
+        // to prevent parts of the model from blinking/disappearing in AR
+        rootScene.traverse((object) => {
             if (object.isMesh) {
                 object.castShadow = true;
                 object.receiveShadow = true;
+                object.frustumCulled = false;
             }
         });
 
-        return model.scenes[0];
+        return rootScene;
     }
 }
 
@@ -693,11 +688,12 @@ async function main() {
 
     showToaster("Adding model to scene");
     model.visible = false;
+    model.frustumCulled = false;
     sceneManager.scene.add(model);
     model.updateMatrixWorld(true);
     sceneManager.model = model;
 
-    // Create the skybox
+    // Initialize environment reflections
     showToaster("Preparing environment");
     const skybox = sceneManager.createSkybox();
 
@@ -724,15 +720,11 @@ async function main() {
         const direction = new THREE.Vector3();
         direction.subVectors(targetPosition, model.position);
         direction.y = 0;
-        model.lookAt(direction.add(model.position));
-        model.visible = true;
-
-        // Position the skybox at the model position to ensure proper alignment
-        if (skybox) {
-            skybox.position.copy(model.position);
-            skybox.visible = true;
-            showToaster("Environment loaded");
+        if (direction.lengthSq() > 0.0001) {
+            model.lookAt(direction.add(model.position));
         }
+        model.visible = true;
+        model.updateMatrixWorld(true);
 
         // Update the sun light to cast shadows from the correct angle
         if (sceneManager.sunLight) {
