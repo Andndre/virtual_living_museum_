@@ -236,7 +236,7 @@ class SceneManager {
     }
 
     createSkybox() {
-        // Load sky texture for scene environment reflections (PBR)
+        // Load sky texture for environment reflections and sky dome
         const textureLoader = new THREE.TextureLoader();
 
         const texture = textureLoader.load("/images/hdri/langit.jpg", () => {
@@ -250,11 +250,24 @@ class SceneManager {
         // Set the scene's environment map for reflections on the model
         this.scene.environment = texture;
 
-        // In AR passthrough mode, do NOT add a physical skybox sphere to the scene
-        // because it would occlude or clip the real-world camera feed.
-        this.skybox = null;
+        // Create sky dome with depthTest and depthWrite false so it renders purely as a background
+        // without occluding or clipping any 3D model geometry or Z-fighting with depth buffer
+        const skyGeometry = new THREE.SphereGeometry(500, 32, 20);
+        const skyMaterial = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.BackSide,
+            depthWrite: false,
+            depthTest: false,
+            toneMapped: false,
+        });
 
-        return null;
+        this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+        this.skybox.frustumCulled = false;
+        this.skybox.renderOrder = -999;
+        this.skybox.visible = false; // Initially hidden until placement
+        this.scene.add(this.skybox);
+
+        return this.skybox;
     }
 }
 
@@ -439,6 +452,20 @@ class RendererManager {
                 }
             } else if (this.hitTestSource) {
                 this.stopHitTestSource();
+            }
+
+            // Update skybox position to follow the camera if it exists and is visible
+            if (
+                sceneManager.skybox &&
+                sceneManager.skybox.visible &&
+                sceneManager.placed
+            ) {
+                const xrCam = this.renderer.xr.getCamera();
+                if (xrCam) {
+                    xrCam.getWorldPosition(sceneManager.skybox.position);
+                } else {
+                    sceneManager.camera.getWorldPosition(sceneManager.skybox.position);
+                }
             }
         }
 
@@ -725,6 +752,13 @@ async function main() {
         }
         model.visible = true;
         model.updateMatrixWorld(true);
+
+        // Position and reveal the skybox upon placement
+        if (skybox) {
+            skybox.position.copy(model.position);
+            skybox.visible = true;
+            showToaster("Environment loaded");
+        }
 
         // Update the sun light to cast shadows from the correct angle
         if (sceneManager.sunLight) {
