@@ -3,21 +3,38 @@ import { GLTFLoader } from "three/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/jsm/loaders/DRACOLoader.js";
 import { ARButton } from "three/jsm/webxr/ARButton.js";
 
-let qrGenerated = false;
+let initialized = false;
+
+//If we have a valid Variant Launch SDK, we can generate a Launch Code. This will allow iOS users to jump right into the app without having to visit the Launch Card page.
+window.addEventListener("vlaunch-initialized", (e) => {
+    initialized = true;
+    document.getElementById("qr-code").innerHTML = "";
+    generateLaunchCode();
+});
+
+if (VLaunch.initialized) {
+    generateLaunchCode(); // generate a Launch Code for this url
+} else {
+    setTimeout(() => {
+        if (!initialized) {
+            showToaster("Variant Launch tidak terinisialisasi");
+            document.getElementById("qr-code").innerHTML =
+                "Web XR tidak didukung di Variant Launch Anda";
+            generateQRCode(window.location.href);
+        }
+    }, 10000);
+}
 
 function hideElement(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.classList.add("hidden");
-    el.style.display = "none";
+    el.style.visibility = "hidden";
     el.style.pointerEvents = "none";
 }
 
 function showElement(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.classList.remove("hidden", "invisible");
-    el.style.display = "";
     el.style.visibility = "visible";
     el.style.pointerEvents = "auto";
 }
@@ -32,131 +49,34 @@ function getActiveCamera(renderer, fallbackCamera) {
 }
 
 async function generateQRCode(text) {
-    const container = document.getElementById("qr-code");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const copyInput = document.getElementById("ar-share-url");
-    if (copyInput) {
-        copyInput.value = text;
-    }
-
-    if (typeof QRCode !== "undefined") {
-        new QRCode(container, {
-            text: text,
-            width: 160,
-            height: 160,
-            colorDark: "#111827",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M,
-        });
-    } else {
-        container.innerHTML = `<a href="${text}" target="_blank" class="text-xs text-primary underline break-all">${text}</a>`;
-    }
-    qrGenerated = true;
-    showToaster("QR berhasil dibuat");
+    new QRCode("qr-code", {
+        text: text,
+        width: 128,
+        height: 128,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+    });
 }
 
 async function generateLaunchCode() {
-    if (qrGenerated) return;
-
     let cleanUrl = window.location.origin + window.location.pathname;
-    let targetUrl = cleanUrl + (typeof arToken !== "undefined" && arToken ? "?arToken=" + arToken : "");
-    let launchUrl = targetUrl;
+    let url = await VLaunch.getLaunchUrl(cleanUrl + "?arToken=" + arToken);
+    console.log(url);
 
-    if (typeof VLaunch !== "undefined" && typeof VLaunch.getLaunchUrl === "function") {
-        try {
-            launchUrl = await VLaunch.getLaunchUrl(targetUrl);
-            console.log("VLaunch Launch URL:", launchUrl);
-        } catch (err) {
-            console.warn("VLaunch getLaunchUrl error, fallback ke target URL:", err);
-            launchUrl = targetUrl;
+    await generateQRCode(url);
+    showToaster("QR berhasil dibuat");
+}
+
+if ("xr" in navigator) {
+    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
+        if (supported) {
+            //hide "ar-not-supported"
+            hideElement("ar-not-supported");
+            main();
         }
-    }
-
-    await generateQRCode(launchUrl);
+    });
 }
-
-// Inisialisasi QR Code / Launch Code
-window.addEventListener("vlaunch-initialized", () => {
-    generateLaunchCode();
-});
-
-if (typeof VLaunch !== "undefined" && VLaunch.initialized) {
-    generateLaunchCode();
-} else {
-    // Fallback cepat jika VLaunch tidak terinisialisasi dalam 2.5 detik
-    setTimeout(() => {
-        if (!qrGenerated) {
-            let cleanUrl = window.location.origin + window.location.pathname;
-            let targetUrl = cleanUrl + (typeof arToken !== "undefined" && arToken ? "?arToken=" + arToken : "");
-            generateQRCode(targetUrl);
-        }
-    }, 2500);
-}
-
-// WebXR Support Check
-async function checkWebXRSupport() {
-    if (!("xr" in navigator) || !navigator.xr) {
-        return false;
-    }
-    if (typeof navigator.xr.isSessionSupported !== "function") {
-        return false;
-    }
-    try {
-        return await navigator.xr.isSessionSupported("immersive-ar");
-    } catch (err) {
-        console.warn("WebXR isSessionSupported error:", err);
-        return false;
-    }
-}
-
-function arNotSupported() {
-    showElement("ar-not-supported");
-    hideElement("ar-button-container");
-    hideElement("instructions");
-    hideElement("expand-bottom-sheet");
-    hideElement("loading-container");
-}
-
-checkWebXRSupport().then((supported) => {
-    if (supported) {
-        hideElement("ar-not-supported");
-        main();
-    } else {
-        arNotSupported();
-    }
-});
-
-// Setup tombol salin tautan
-document.addEventListener("DOMContentLoaded", () => {
-    const btnCopy = document.getElementById("btn-copy-ar-link");
-    const inputUrl = document.getElementById("ar-share-url");
-    const copyLabel = document.getElementById("copy-btn-label");
-
-    if (btnCopy && inputUrl) {
-        btnCopy.addEventListener("click", async () => {
-            const url = inputUrl.value || window.location.href;
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(url);
-                } else {
-                    inputUrl.select();
-                    document.execCommand("copy");
-                }
-                if (copyLabel) {
-                    const original = copyLabel.textContent;
-                    copyLabel.textContent = "✓ Disalin!";
-                    setTimeout(() => {
-                        copyLabel.textContent = original;
-                    }, 2000);
-                }
-            } catch (err) {
-                console.warn("Gagal menyalin tautan:", err);
-            }
-        });
-    }
-});
 
 class SceneManager {
     constructor(renderer) {
@@ -164,21 +84,15 @@ class SceneManager {
         this.camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
-            0.05,
-            500,
+            0.01,
+            999,
         );
 
         this.reticle = new THREE.Mesh(
             new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-            new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                polygonOffset: true,
-                polygonOffsetFactor: -1,
-                polygonOffsetUnits: -1,
-            }),
+            new THREE.MeshBasicMaterial(),
         );
         this.reticle.matrixAutoUpdate = false;
-        this.reticle.frustumCulled = false;
         this.reticle.visible = false;
         this.scene.add(this.reticle);
 
@@ -236,9 +150,11 @@ class SceneManager {
     }
 
     createSkybox() {
-        // Load sky texture for environment reflections and sky dome
+        // Create a skybox using a spherical environment
         const textureLoader = new THREE.TextureLoader();
 
+        // Load sky texture - we'll use a simple equirectangular texture
+        // This can be replaced with a more suitable texture for the museum context
         const texture = textureLoader.load("/images/hdri/langit.jpg", () => {
             console.log("Skybox texture loaded");
             showToaster("Skybox texture loaded");
@@ -247,34 +163,23 @@ class SceneManager {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         texture.colorSpace = THREE.SRGBColorSpace;
 
-        // Set the scene's environment map for reflections on the model
-        this.scene.environment = texture;
+        // Create a large sphere for the skybox
+        const skyGeometry = new THREE.SphereGeometry(1000, 64, 48);
 
-        // Create upper hemisphere sky dome (thetaLength = Math.PI * 0.5)
-        // This renders ONLY the sky dome above the horizon (0 to 90 degrees),
-        // leaving the floor and lower hemisphere 100% open/transparent for the real camera feed.
-        const skyGeometry = new THREE.SphereGeometry(
-            150,
-            32,
-            16,
-            0,
-            Math.PI * 2,
-            0,
-            Math.PI * 0.5,
-        );
         const skyMaterial = new THREE.MeshBasicMaterial({
             map: texture,
             side: THREE.BackSide,
             depthWrite: false,
-            depthTest: false,
             toneMapped: false,
         });
 
         this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
         this.skybox.frustumCulled = false;
-        this.skybox.renderOrder = -999;
-        this.skybox.visible = false; // Initially hidden until placement
+        this.skybox.visible = false; // Initially hidden
         this.scene.add(this.skybox);
+
+        // Set the scene's environment map for reflections on the model
+        this.scene.environment = texture;
 
         return this.skybox;
     }
@@ -329,16 +234,10 @@ class RendererManager {
 
         this.hitTestSource = null;
         this.hitTestSourceRequested = false;
-        this.hitTestMissedFrames = 0;
-        this.maxHitTestMissedFrames = 6;
 
         this.renderer.xr.addEventListener(
             "sessionstart",
             this.onSessionStart.bind(this),
-        );
-        this.renderer.xr.addEventListener(
-            "sessionend",
-            this.onSessionEnd.bind(this),
         );
     }
 
@@ -356,12 +255,10 @@ class RendererManager {
         );
 
         if (trackingPrompt) {
-            trackingPrompt.style.display = "flex";
-            trackingPrompt.classList.remove("invisible");
+            trackingPrompt.style.display = "block";
         }
         if (expandBottomSheet) {
-            expandBottomSheet.classList.add("hidden");
-            expandBottomSheet.style.display = "none";
+            expandBottomSheet.style.display = "block";
         }
         if (arButtonContainer) {
             arButtonContainer.style.display = "none";
@@ -373,60 +270,10 @@ class RendererManager {
     }
 
     /**
-     * Handles the end of an XR session (e.g. back button pressed).
-     * Resets UI and scene state.
-     */
-    onSessionEnd() {
-        this.stopHitTestSource();
-        this.hitTestMissedFrames = 0;
-
-        hideElement("instructions");
-        hideElement("tracking-prompt");
-
-        const expandBottomSheet = document.getElementById("expand-bottom-sheet");
-        if (expandBottomSheet) {
-            expandBottomSheet.classList.add("hidden");
-            expandBottomSheet.style.display = "none";
-            expandBottomSheet.classList.remove("opacity-0", "pointer-events-none");
-        }
-
-        const bottomSheet = document.getElementById("bottom-sheet");
-        if (bottomSheet) {
-            bottomSheet.classList.add("translate-y-full");
-            bottomSheet.classList.remove("translate-y-0");
-        }
-
-        showElement("app");
-
-        const arButtonContainer = document.getElementById("ar-button-container");
-        if (arButtonContainer) {
-            arButtonContainer.style.display = "block";
-        }
-
-        if (this.sceneManager) {
-            this.sceneManager.placed = false;
-            this.sceneManager.planeFound = false;
-            if (this.sceneManager.model) {
-                this.sceneManager.model.visible = false;
-            }
-            if (this.sceneManager.skybox) {
-                this.sceneManager.skybox.visible = false;
-            }
-            if (this.sceneManager.reticle) {
-                this.sceneManager.reticle.visible = false;
-                if (!this.sceneManager.scene.children.includes(this.sceneManager.reticle)) {
-                    this.sceneManager.scene.add(this.sceneManager.reticle);
-                }
-            }
-        }
-    }
-
-    /**
      * Starts the animation loop for rendering.
      * @param {Object} sceneManager - The scene manager containing the scene and camera.
      */
     animate(sceneManager) {
-        this.sceneManager = sceneManager;
         this.renderer.setAnimationLoop((timestamp, frame) =>
             this.render(timestamp, frame, sceneManager),
         );
@@ -440,48 +287,43 @@ class RendererManager {
      * @param {Object} sceneManager - The scene manager containing the scene and camera.
      */
     render(timestamp, frame, sceneManager) {
+        const activeCamera = getActiveCamera(
+            this.renderer,
+            sceneManager.camera,
+        );
+
         if (frame) {
             const referenceSpace = this.renderer.xr.getReferenceSpace();
             const session = this.renderer.xr.getSession();
 
-            if (!sceneManager.placed) {
-                if (!this.hitTestSourceRequested) {
-                    this.requestHitTestSource(session, referenceSpace);
-                }
-
-                if (this.hitTestSource) {
-                    const hitTestResults = frame.getHitTestResults(
-                        this.hitTestSource,
-                    );
-                    this.handleHitTestResults(
-                        hitTestResults,
-                        referenceSpace,
-                        sceneManager,
-                    );
-                }
-            } else if (this.hitTestSource) {
-                this.stopHitTestSource();
+            if (!this.hitTestSourceRequested) {
+                this.requestHitTestSource(session, referenceSpace);
             }
 
-            // Update skybox position to follow the camera horizontally, keeping horizon on the ground
+            if (this.hitTestSource) {
+                const hitTestResults = frame.getHitTestResults(
+                    this.hitTestSource,
+                );
+                this.handleHitTestResults(
+                    hitTestResults,
+                    referenceSpace,
+                    sceneManager,
+                );
+            }
+
+            // Update skybox position to follow the camera if it exists and is visible
             if (
                 sceneManager.skybox &&
                 sceneManager.skybox.visible &&
                 sceneManager.placed
             ) {
-                const xrCam = this.renderer.xr.getCamera();
-                const cam = xrCam || sceneManager.camera;
-                const camPos = new THREE.Vector3();
-                cam.getWorldPosition(camPos);
-                sceneManager.skybox.position.x = camPos.x;
-                sceneManager.skybox.position.z = camPos.z;
-                sceneManager.skybox.position.y = sceneManager.model ? sceneManager.model.position.y : 0;
+                const cameraPosition = new THREE.Vector3();
+                activeCamera.getWorldPosition(cameraPosition);
+                sceneManager.skybox.position.copy(cameraPosition);
             }
         }
 
-        // Render using the application camera.
-        // Three.js WebXRManager automatically manages the XR camera internally during active XR sessions.
-        this.renderer.render(sceneManager.scene, sceneManager.camera);
+        this.renderer.render(sceneManager.scene, activeCamera);
     }
 
     /**
@@ -490,37 +332,20 @@ class RendererManager {
      * @param {XRReferenceSpace} referenceSpace - The reference space for the XR session.
      */
     requestHitTestSource(session, referenceSpace) {
-        if (!session) return;
-        session
-            .requestReferenceSpace("viewer")
-            .then((viewerSpace) => {
-                return session.requestHitTestSource({ space: viewerSpace });
-            })
-            .then((source) => {
-                this.hitTestSource = source;
-            })
-            .catch((err) => {
-                console.warn("Hit test request error:", err);
-            });
+        session.requestReferenceSpace("viewer").then((viewerSpace) => {
+            session
+                .requestHitTestSource({ space: viewerSpace })
+                .then((source) => {
+                    this.hitTestSource = source;
+                });
+        });
 
         session.addEventListener("end", () => {
-            this.stopHitTestSource();
+            this.hitTestSourceRequested = false;
+            this.hitTestSource = null;
         });
 
         this.hitTestSourceRequested = true;
-    }
-
-    /**
-     * Cancels the active hit test source to save resources once placement is complete.
-     */
-    stopHitTestSource() {
-        if (this.hitTestSource) {
-            if (typeof this.hitTestSource.cancel === "function") {
-                this.hitTestSource.cancel();
-            }
-            this.hitTestSource = null;
-        }
-        this.hitTestSourceRequested = false;
     }
 
     /**
@@ -532,36 +357,25 @@ class RendererManager {
      */
     handleHitTestResults(hitTestResults, referenceSpace, sceneManager) {
         if (sceneManager.placed) {
-            sceneManager.reticle.visible = false;
-            if (sceneManager.scene.children.includes(sceneManager.reticle)) {
-                sceneManager.scene.remove(sceneManager.reticle);
-            }
             return;
         }
-
         if (hitTestResults.length > 0) {
-            this.hitTestMissedFrames = 0;
-
             if (!sceneManager.planeFound) {
-                sceneManager.planeFound = true;
+                sceneManager.reticle.visible = false;
+                // document.getElementById("tracking-prompt").style.display =
+                //     "none";
                 hideElement("tracking-prompt");
+                // document.getElementById("instructions").style.display = "block";
                 showElement("instructions");
             }
 
             const hit = hitTestResults[0];
-            const pose = hit.getPose(referenceSpace);
-            if (pose) {
-                sceneManager.reticle.visible = true;
-                sceneManager.reticle.matrix.fromArray(pose.transform.matrix);
-                sceneManager.reticle.matrixWorldNeedsUpdate = true;
-                sceneManager.reticle.updateMatrixWorld(true);
-            }
+            sceneManager.reticle.visible = true;
+            sceneManager.reticle.matrix.fromArray(
+                hit.getPose(referenceSpace).transform.matrix,
+            );
         } else {
-            this.hitTestMissedFrames = (this.hitTestMissedFrames || 0) + 1;
-            // Retain reticle for a few missed frames to prevent rapid blinking/flickering
-            if (this.hitTestMissedFrames > (this.maxHitTestMissedFrames || 6)) {
-                sceneManager.reticle.visible = false;
-            }
+            sceneManager.reticle.visible = false;
         }
     }
 }
@@ -578,20 +392,15 @@ class ModelLoader {
         this.loader.setDRACOLoader(this.dracoLoader);
         const model = await this.loader.loadAsync(name, onProgress);
 
-        const rootScene = model.scenes[0];
-        rootScene.frustumCulled = false;
-
-        // Enable shadows and disable frustum culling on all child meshes
-        // to prevent parts of the model from blinking/disappearing in AR
-        rootScene.traverse((object) => {
+        // Enable shadows on the model
+        model.scenes[0].traverse((object) => {
             if (object.isMesh) {
                 object.castShadow = true;
                 object.receiveShadow = true;
-                object.frustumCulled = false;
             }
         });
 
-        return rootScene;
+        return model.scenes[0];
     }
 }
 
@@ -700,24 +509,22 @@ async function main() {
     showToaster(
         "File size: " + (museum.file_size / 1024 / 1024).toFixed(2) + " MB",
     );
-    const percentEl = document.getElementById("loading-percentage");
     const model = await ModelLoader.loadModel(
         "/storage/" + museum.path_obj,
         (event) => {
             const fileSize = event.total || museum.file_size || 43445936; // Use server-provided size as fallback
             let progress = (event.loaded / fileSize) * 100;
+            // console.log(event.loaded, fileSize, progress);
             progress = Math.min(progress, 100); // Ensure progress does not exceed 100%
+            // document.getElementById("loading-container").style.display =
+            //     "block";
             showElement("loading-container");
-            const loadingBar = document.getElementById("loading-bar");
-            if (loadingBar) {
-                loadingBar.style.width = `${progress}%`;
-            }
-            if (percentEl) {
-                percentEl.textContent = `${Math.round(progress)}%`;
-            }
+            document.getElementById("loading-bar").style.width = `${progress}%`;
+            // showToaster(`Loading progress: ${progress}%`);
         },
     );
 
+    // document.getElementById("loading-container").style.display = "none";
     hideElement("loading-container");
 
     showToaster("Model loaded, creating AR button");
@@ -725,12 +532,11 @@ async function main() {
 
     showToaster("Adding model to scene");
     model.visible = false;
-    model.frustumCulled = false;
     sceneManager.scene.add(model);
     model.updateMatrixWorld(true);
     sceneManager.model = model;
 
-    // Initialize environment reflections
+    // Create the skybox
     showToaster("Preparing environment");
     const skybox = sceneManager.createSkybox();
 
@@ -757,13 +563,10 @@ async function main() {
         const direction = new THREE.Vector3();
         direction.subVectors(targetPosition, model.position);
         direction.y = 0;
-        if (direction.lengthSq() > 0.0001) {
-            model.lookAt(direction.add(model.position));
-        }
+        model.lookAt(direction.add(model.position));
         model.visible = true;
-        model.updateMatrixWorld(true);
 
-        // Position and reveal the skybox upon placement
+        // Position the skybox at the model position to ensure proper alignment
         if (skybox) {
             skybox.position.copy(model.position);
             skybox.visible = true;
@@ -791,25 +594,18 @@ async function main() {
             showToaster("Sunlight positioned");
         }
 
-        // Hide reticle and completely remove it from the scene graph
-        sceneManager.reticle.visible = false;
-        if (sceneManager.scene.children.includes(sceneManager.reticle)) {
-            sceneManager.scene.remove(sceneManager.reticle);
-        }
         sceneManager.placed = true;
-        rendererManager.stopHitTestSource();
-
-        // Reveal the "Lihat Objek Peninggalan" button in AR
-        const expandBottomSheet = document.getElementById("expand-bottom-sheet");
-        if (expandBottomSheet) {
-            expandBottomSheet.classList.remove("hidden");
-            expandBottomSheet.style.display = "inline-flex";
-            expandBottomSheet.style.visibility = "visible";
-            expandBottomSheet.style.pointerEvents = "auto";
-        }
     });
 
     showToaster("Starting animation loop");
 
     rendererManager.animate(sceneManager);
+}
+
+function arNotSupported() {
+    showElement("ar-not-supported");
+    hideElement("ar-button-container");
+    hideElement("instructions");
+    hideElement("expand-bottom-sheet");
+    hideElement("loading-container");
 }
